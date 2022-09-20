@@ -53,7 +53,9 @@ namespace Wiwa {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		
+		ImGui::Begin("FrameTime");
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
 		ImGui::BeginMainMenuBar();
 		if (ImGui::Button("Demo"))
 		{
