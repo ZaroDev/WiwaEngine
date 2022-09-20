@@ -24,6 +24,9 @@
 .exe
 *.out
 *.app
+.sln
+*.vcxproj
+*.vcxproj.filters
 
 !/vendor/premake
 # Temp
