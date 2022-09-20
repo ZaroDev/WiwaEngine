@@ -1,0 +1,10 @@
+[submodule "Wiwa/vendor/GLFW"]
+	path = Wiwa/vendor/GLFW
+	url = https://github.com/ZaroDev/glfw
+[submodule "Wiwa/vendor/imgui"]
+	path = Wiwa/vendor/imgui
+	url = https://github.com/ZaroDev/imgui/
+	branch = docking
+[submodule "Wiwa/vendor/spdlog"]
+	path = Wiwa/vendor/spdlog
+	url = https://github.com/gabime/spdlog
