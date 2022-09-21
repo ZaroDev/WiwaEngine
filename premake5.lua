@@ -15,7 +15,6 @@ IncludeDirs["GLFW"] = "Wiwa/vendor/GLFW/include"
 IncludeDirs["Glad"] = "Wiwa/vendor/Glad/include"
 IncludeDirs["ImGui"] = "Wiwa/vendor/imgui"
 IncludeDirs["MathGeoLib"] = "Wiwa/vendor/MathGeoLib"
-IncludeDirs["PCG"] = "Wiwa/vendor/PCG/include"
 
 include "Wiwa/vendor/GLFW"
 include "Wiwa/vendor/Glad"
@@ -51,8 +50,7 @@ project "Wiwa"
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.Glad}",
 		"%{IncludeDirs.ImGui}",
-		"%{IncludeDirs.MathGeoLib}",
-		"%{IncludeDirs.PCG}"
+		"%{IncludeDirs.MathGeoLib}"
 	}
 
 	links
