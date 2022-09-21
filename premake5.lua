@@ -12,13 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDirs = {}
 IncludeDirs["GLFW"] = "Wiwa/vendor/GLFW/include"
-IncludeDirs["Glad"] = "Wiwa/vendor/Glad/include"
+IncludeDirs["Glew"] = "Wiwa/vendor/Glew/include/GL"
 IncludeDirs["ImGui"] = "Wiwa/vendor/imgui"
 IncludeDirs["MathGeoLib"] = "Wiwa/vendor/MathGeoLib"
 IncludeDirs["PCG"] = "Wiwa/vendor/PCG/include"
 
 include "Wiwa/vendor/GLFW"
-include "Wiwa/vendor/Glad"
 include "Wiwa/vendor/imgui"
 
 project "Wiwa"
@@ -49,18 +48,18 @@ project "Wiwa"
 		"%{prj.name}/vendor/spdlog/include",
 		"Wiwa/src",
 		"%{IncludeDirs.GLFW}",
-		"%{IncludeDirs.Glad}",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.MathGeoLib}",
+		"%{IncludeDirs.Glew}",
 		"%{IncludeDirs.PCG}"
 	}
 
 	links
 	{
-		"Glad",
 		"GLFW",
 		"ImGui",
-		"opengl32.lib"
+		"opengl32.lib",
+		"Wiwa/vendor/Glew/lib/glew32.lib"
 	}
 	filter "system:windows"
 		cppdialect "C++17"

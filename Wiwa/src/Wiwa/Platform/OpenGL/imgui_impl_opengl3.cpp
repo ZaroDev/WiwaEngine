@@ -89,12 +89,11 @@
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-
-#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
+#include <glew.h>
+#include <gl/gl.h>
 #include <wipch.h>
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
-#include <glad/glad.h>
 #include <stdio.h>
 #if defined(_MSC_VER) && _MSC_VER <= 1500 // MSVC 2008 or earlier
 #include <stddef.h>     // intptr_t

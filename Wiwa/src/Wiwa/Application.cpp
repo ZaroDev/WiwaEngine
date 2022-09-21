@@ -4,7 +4,7 @@
 
 #include "Wiwa/Log.h"
 
-#include <glad/glad.h>
+#include <glew.h>
 
 #include "Input.h"
 

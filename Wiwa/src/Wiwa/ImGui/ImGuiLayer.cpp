@@ -10,7 +10,7 @@
 #include "Wiwa/KeyCodes.h"
 
 //Temp
-#include <glad/glad.h>
+#include <glew.h>
 #include <GLFW/glfw3.h>
 
 namespace Wiwa {
