@@ -28,7 +28,7 @@
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
-imgui.ini
+*.ini
 !/vendor/premake
 # Temp
 bin
