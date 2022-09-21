@@ -29,13 +29,11 @@ namespace Wiwa {
 	{
 		while (m_Running)
 		{
-			glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
-			auto [x, y] = Input::GetMousePosition();
-			WI_CORE_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}
@@ -50,7 +48,10 @@ namespace Wiwa {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
+#ifdef WI_DEBUG
 		WI_CORE_TRACE("{0}", e);
+#endif // WI_DEBUG
+
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

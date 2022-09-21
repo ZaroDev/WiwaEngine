@@ -29,6 +29,7 @@ namespace Wiwa {
 		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
 
+		void SetDarkTheme();
 	private:
 		float m_Time = 0.0f;
 		bool m_ShowDemo = false;
