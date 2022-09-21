@@ -14,6 +14,7 @@ IncludeDirs = {}
 IncludeDirs["GLFW"] = "Wiwa/vendor/GLFW/include"
 IncludeDirs["Glad"] = "Wiwa/vendor/Glad/include"
 IncludeDirs["ImGui"] = "Wiwa/vendor/imgui"
+IncludeDirs["MathGeoLib"] = "Wiwa/vendor/MathGeoLib"
 
 include "Wiwa/vendor/GLFW"
 include "Wiwa/vendor/Glad"
@@ -24,6 +25,7 @@ project "Wiwa"
 	kind "SharedLib"
 	language "C++"
 
+	
 	targetdir ("bin/".. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/".. outputdir .. "/%{prj.name}")
 
@@ -47,7 +49,8 @@ project "Wiwa"
 		"Wiwa/src",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.Glad}",
-		"%{IncludeDirs.ImGui}"
+		"%{IncludeDirs.ImGui}",
+		"%{IncludeDirs.MathGeoLib}"
 	}
 
 	links
@@ -71,10 +74,13 @@ project "Wiwa"
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox"),
+			("{COPY} %{cfg.buildtarget.relpath} ../Editor")
 		}
 
 
+	debugdir "$(SolutionDir)/Editor"
+	
 	filter "configurations:Debug"
 		defines "WI_DEBUG"
 		buildoptions "/MDd"
@@ -115,6 +121,8 @@ project "Sandbox"
 		"Wiwa"
 	}
 
+	debugdir "$(SolutionDir)/Editor"
+
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
@@ -124,13 +132,15 @@ project "Sandbox"
 		{
 			"WI_PLATFORM_WINDOWS"
 		}
-
+		postbuildcommands
+		{
+			("{COPY} %{cfg.buildtarget.relpath} ../Editor")
+		}
 
 	filter "configurations:Debug"
 		defines "WI_DEBUG"
 		buildoptions "/MDd"
 		symbols "On"
-
 	filter "configurations:Release"
 		defines "WI_RELEASE"
 		buildoptions "/MD"

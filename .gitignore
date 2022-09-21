@@ -10,7 +10,7 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-
+*.dll
 # Fortran module files
 *.mod
 *.smod
@@ -21,12 +21,13 @@
 *.a
 
 # Executables
-.exe
+*.exe
 *.out
 *.app
-.sln
+*.sln
 *.vcxproj
 *.vcxproj.filters
+*.vcxproj.user
 imgui.ini
 !/vendor/premake
 # Temp
