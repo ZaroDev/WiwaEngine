@@ -1,6 +1,7 @@
 #include "wipch.h"
 #include "Application.h"
 
+#include <Wiwa/ecs/EntityManager.h>
 
 #include "Wiwa/Log.h"
 
@@ -20,6 +21,9 @@ namespace Wiwa {
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		m_EntityManager = new EntityManager();
+		PushLayer(m_EntityManager);
 	}
 
 	Application::~Application()
