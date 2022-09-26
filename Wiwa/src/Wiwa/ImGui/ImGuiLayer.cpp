@@ -4,7 +4,6 @@
 #include "imgui.h"
 #include "Wiwa/Platform/OpenGL/imgui_impl_opengl3.h"
 #include "Wiwa/Platform/OpenGL/imgui_impl_glfw.h"
-#include <GLFW/glfw3.h>
 
 #include "Wiwa/Application.h"
 #include "Wiwa/KeyCodes.h"
