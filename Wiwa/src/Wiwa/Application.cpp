@@ -10,6 +10,9 @@
 
 #include "Input.h"
 
+#include <shellapi.h>
+#include <Windows.h>
+
 namespace Wiwa {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -20,9 +23,20 @@ namespace Wiwa {
 	{
 		WI_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
+		int min, major, rev;
+
+		glfwGetVersion(&min, &major, &rev);
+		sprintf_s(m_SysInfo.glfwVer, 32, "%i.%i.%i", min, major, rev);
+
+		SYSTEM_INFO info;
+		::GetSystemInfo(&info);
+
+
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
+		m_SysInfo.gpu = glGetString(GL_VENDOR);
+		m_SysInfo.gpuBrand = glGetStringi(GL_RENDERER, 0);
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
@@ -57,6 +71,11 @@ namespace Wiwa {
 			m_Window->OnUpdate();
 		}
 	}
+	void Application::RequestBrowser(const char* url)
+	{
+		ShellExecuteA(0, "open", url, NULL, NULL, SW_SHOWNORMAL);
+	}
+
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;
@@ -67,9 +86,6 @@ namespace Wiwa {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
-#ifdef WI_DEBUG
-		WI_CORE_TRACE("{0}", e);
-#endif // WI_DEBUG
 
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
