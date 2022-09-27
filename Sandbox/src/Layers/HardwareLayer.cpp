@@ -26,8 +26,6 @@ void HardwareLayer::OnDetach()
 
 void HardwareLayer::OnUpdate()
 {
-	Wiwa::Application::Get().SetHwInfo();
-
 	if (m_MSLog.size() > 64)
 		m_MSLog.erase(0);
 

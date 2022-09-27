@@ -16,7 +16,7 @@ public:
 	const char* GetName() const { return name.c_str(); }
 
 public:
-	bool active = true;
+	bool active = false;
 	int width, height, posx, posy;
 
 protected:

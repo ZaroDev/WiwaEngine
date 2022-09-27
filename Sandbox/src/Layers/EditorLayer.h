@@ -21,6 +21,7 @@ private:
 	void MainMenuBar();
 private:
 	bool m_ShowConfig = false;
+	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
 
 	AboutPanel* m_About = nullptr;

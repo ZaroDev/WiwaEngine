@@ -63,24 +63,31 @@ void EditorLayer::MainMenuBar()
 
 	if (ImGui::BeginMenu("View"))
 	{
-		if (ImGui::MenuItem("Configuration"))
+		if (ImGui::MenuItem("Configuration", "", m_ShowConfig))
 			m_ShowConfig = !m_ShowConfig;
-		if (ImGui::MenuItem("Console"))
-			m_ShowConfig = !m_ShowConfig;
+
+		if (ImGui::MenuItem("Console", "", m_ShowConsole))
+			m_ShowConsole = !m_ShowConsole;
+
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("Help"))
 	{
 		if (ImGui::MenuItem("GuiDemo"))
 			m_ShowDemo = !m_ShowDemo;
+
 		if (ImGui::MenuItem("Documentation"))
 			Wiwa::Application::Get().RequestBrowser("https://github.com/ZaroDev/WiwaEngine/wiki");
+
 		if (ImGui::MenuItem("Download Latest"))
 			Wiwa::Application::Get().RequestBrowser("https://github.com/ZaroDev/WiwaEngine/releases");
+
 		if (ImGui::MenuItem("Report a bug"))
 			Wiwa::Application::Get().RequestBrowser("https://github.com/ZaroDev/WiwaEngine/issues");
-		if (ImGui::MenuItem("About"))
+
+		if (ImGui::MenuItem("About", "", m_About->active))
 			m_About->SwitchActive();
+
 		ImGui::EndMenu();
 	}
 	ImGui::EndMainMenuBar();
