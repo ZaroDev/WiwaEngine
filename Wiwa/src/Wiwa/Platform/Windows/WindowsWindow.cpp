@@ -39,6 +39,12 @@ namespace Wiwa {
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 
+		m_OldData.Title = props.Title;
+		m_OldData.Width = props.Width;
+		m_OldData.Height = props.Height;
+		m_OldData.Refresh = props.Refresh;
+
+
 		WI_CORE_INFO("Creating window {0} {1} {2}", props.Title, props.Width, props.Height);
 		if (!s_GLFWInitialized)
 		{
@@ -53,8 +59,7 @@ namespace Wiwa {
 		GLenum status = glewInit();
 		WI_CORE_ASSERT(status, "Failed to initialize Glad!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
-
+		SetVSync(false);
 		//Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 		{
@@ -159,10 +164,30 @@ namespace Wiwa {
 			glfwSwapInterval(0);
 
 		m_Data.VSync = enabled;
-	
 	}
 	bool WindowsWindow::IsVSync() const
 	{
 		return m_Data.VSync;
+	}
+	void WindowsWindow::SetFullScreen(bool enabled)
+	{
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+		m_OldData.Refresh = mode->refreshRate;
+		m_Data.Refresh = mode->refreshRate;
+
+		if(enabled)
+			glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		else
+			glfwSetWindowMonitor(m_Window, nullptr, (m_Data.Width / 2) - (m_OldData.Width / 2), (m_Data.Height / 2) - (m_OldData.Height / 2),
+				m_OldData.Width, m_OldData.Height, m_OldData.Refresh);
+		WI_CORE_INFO("Window fullscreen changed {0}, {1}, {2}", m_OldData.Width, m_OldData.Height, m_OldData.Refresh);
+		m_Fullscreen = enabled;
+	}
+	void WindowsWindow::SetResizable(bool enabled)
+	{
+		glfwSetWindowAttrib(m_Window, GLFW_RESIZABLE, enabled);
+		m_Resizable = enabled;
 	}
 }

@@ -7,18 +7,22 @@
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
+
 }
 
 EditorLayer::~EditorLayer()
 {
+
 }
 
 void EditorLayer::OnAttach()
 {
+	m_About = new AboutPanel();
 }
 
 void EditorLayer::OnDetach()
 {
+	delete m_About;
 }
 
 void EditorLayer::OnUpdate()
@@ -30,24 +34,16 @@ void EditorLayer::OnImGuiRender()
 {
 	ImGuiContext* ctx = Wiwa::Application::Get().GetImGuiContext();
 	ImGui::SetCurrentContext(ctx);
-	if (m_ShowConfig)
-	{
-		if (ImGui::Begin("Configuration", &m_ShowConfig))
-			m_ShowConfig = !m_ShowConfig;
-		
-		FrameHistogram();
 
-		ImGui::End();
-	}
 	MainMenuBar();
-}
 
-
-void EditorLayer::FrameHistogram()
-{
-	
+	if (m_About->active)
+		m_About->Draw();
 
 }
+
+
+
 
 void EditorLayer::OnEvent(Wiwa::Event& event)
 {
@@ -56,6 +52,23 @@ void EditorLayer::OnEvent(Wiwa::Event& event)
 void EditorLayer::MainMenuBar()
 {
 	ImGui::BeginMainMenuBar();
+	if (ImGui::BeginMenu("File"))
+	{
+		if (ImGui::MenuItem("Quit"))
+		{
+			Wiwa::Application::Get().Quit();
+		}
+		ImGui::EndMenu();
+	}
+
+	if (ImGui::BeginMenu("View"))
+	{
+		if (ImGui::MenuItem("Configuration"))
+			m_ShowConfig = !m_ShowConfig;
+		if (ImGui::MenuItem("Console"))
+			m_ShowConfig = !m_ShowConfig;
+		ImGui::EndMenu();
+	}
 	if (ImGui::BeginMenu("Help"))
 	{
 		if (ImGui::MenuItem("GuiDemo"))
@@ -67,16 +80,7 @@ void EditorLayer::MainMenuBar()
 		if (ImGui::MenuItem("Report a bug"))
 			Wiwa::Application::Get().RequestBrowser("https://github.com/ZaroDev/WiwaEngine/issues");
 		if (ImGui::MenuItem("About"))
-		{
-
-		}
-		ImGui::EndMenu();
-	}
-	if (ImGui::BeginMenu("Windows"))
-	{
-		if (ImGui::MenuItem("Debug"))
-			m_ShowConfig = !m_ShowConfig;
-
+			m_About->SwitchActive();
 		ImGui::EndMenu();
 	}
 	ImGui::EndMainMenuBar();
