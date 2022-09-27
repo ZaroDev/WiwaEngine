@@ -1,5 +1,6 @@
 #pragma once
 
+#include "wipch.h"
 #include "Wiwa/Core.h"
 
 namespace Wiwa {

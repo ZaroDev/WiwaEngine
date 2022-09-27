@@ -7,6 +7,8 @@
 #include "Wiwa/Events/MouseEvent.h"
 #include "Wiwa/Events/ApplicationEvent.h"
 
+struct ImGuiContext;
+
 namespace Wiwa {
 	class WI_API ImGuiLayer : public Layer
 	{
@@ -14,11 +16,14 @@ namespace Wiwa {
 		ImGuiLayer();
 		~ImGuiLayer();
 
+		void Begin();
+		void End();
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnUpdate() override;
 		void OnEvent(Event& event) override;
+		
+		inline ImGuiContext* GetContext() { return m_Ctx; }
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
@@ -31,6 +36,7 @@ namespace Wiwa {
 
 		void SetDarkTheme();
 	private:
+		ImGuiContext* m_Ctx = nullptr;
 		float m_Time = 0.0f;
 		bool m_ShowDemo = false;
 	};
