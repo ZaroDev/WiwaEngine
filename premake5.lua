@@ -118,12 +118,14 @@ project "Sandbox"
 	includedirs
 	{
 		"Wiwa/vendor/spdlog/include",
+		"%{IncludeDirs.ImGui}",
 		"Wiwa/src"
 	}
 
 	links
 	{
-		"Wiwa"
+		"Wiwa",
+		"ImGui"
 	}
 
 	debugdir "$(SolutionDir)/Editor"
