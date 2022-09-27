@@ -1,6 +1,7 @@
-#include "../../headers/utilities/Timer.h"
+#include "wipch.h"
+#include "Timer.h"
 
-namespace EM {
+namespace Wiwa {
 
 	Timer::Timer()
 	{

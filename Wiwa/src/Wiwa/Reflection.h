@@ -131,7 +131,7 @@ extern const int TYPE_COUNT;
 
 // No return foreach
 template <size_t N, size_t I = 0>
-void GetTypes(Array<const Type*, N>& arr) {
+void GetTypes(Wiwa::Array<const Type*, N>& arr) {
 	// Take type
 	arr[I] = GetCompileType<I>();
 
@@ -140,8 +140,8 @@ void GetTypes(Array<const Type*, N>& arr) {
 };
 
 template <size_t count>
-const Array<const Type*, count>& GetTypes() {
-	static Array<const Type*, count> types{};
+const Wiwa::Array<const Type*, count>& GetTypes() {
+	static Wiwa::Array<const Type*, count> types{};
 
 	GetTypes<count, 0>(types);
 

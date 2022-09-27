@@ -1,73 +1,180 @@
 #pragma once
 
-#include "../../Core.h"
+typedef unsigned char byte;
 
-#include "../../simple_types.h"
-
-namespace EM {
+namespace Wiwa {
 	template<class T>
-	class EM_API List {
+	class List {
 	private:
-		T* mData;
+		byte* m_Data;
 
-		uint32 mSize;
-		uint32 mCapacity;
+		size_t m_Size;
+		size_t m_Capacity;
 
-		void ReAlloc(uint32 new_capacity);
+		void ReAlloc(size_t new_capacity);
 	public:
-		void PushBack(const T& value);
+		List();
+		~List();
 
+		void push_back(const T& value);
 
-		uint32 Size() const;
+		void insert(size_t index, const T& value);
 
-		T& operator[](uint32 index);
-		const T& operator[](uint32 index) const;
+		void erase(size_t index);
+
+		template<class... TArgs>
+		void emplace_back(TArgs&&... args);
+
+		void reserve(size_t amount);
+		void resize(size_t size);
+
+		T* data() const;
+
+		size_t capacity() const;
+		size_t size() const;
+
+		T& at(size_t index);
+
+		T& operator[](size_t index);
+		const T& operator[](size_t index) const;
 	};
 
 	template<class T>
-	inline void List<T>::ReAlloc(uint32 new_capacity)
+	inline void List<T>::ReAlloc(size_t new_capacity)
 	{
-		T* new_block = new T[new_capacity];
+		byte* new_block = new byte[new_capacity * sizeof(T)];
 
-		if (new_capacity < mSize) {
-			mSize = new_capacity;
+		if (new_capacity < m_Size) {
+			m_Size = new_capacity;
 		}
 
-		for (uint32 i = 0; i < mSize; i++) {
-			new_block[i] = mData[i];
+		for (size_t i = 0; i < m_Size; i++) {
+			//new (new_block + step) T(*(T*)&m_Data[step]);
+
+			// Assignment 100ms faster
+			((T*)new_block)[i] = ((T*)m_Data)[i];
 		}
 
-		delete[] mData;
+		delete[] m_Data;
 
-		mData = new_block;
+		m_Data = new_block;
+
+		m_Capacity = new_capacity;
 	}
 
 	template<class T>
-	inline void List<T>::PushBack(const T & value)
+	inline List<T>::List()
 	{
-		if (mSize >= mCapacity) {
-			ReAlloc(mCapacity + mCapacity / 2)
+		m_Size = 0;
+		m_Capacity = 0;
+
+		m_Data = NULL;
+	}
+
+	template<class T>
+	inline List<T>::~List()
+	{
+	}
+
+	template<class T>
+	inline void List<T>::push_back(const T& value)
+	{
+		if (m_Size >= m_Capacity) {
+			ReAlloc(m_Capacity + m_Capacity / 2 + 1);
 		}
 
-		mData[mSize] = value;
-		mSize++;
+		new (m_Data + m_Size * sizeof(T)) T(value);
+		m_Size++;
 	}
 
 	template<class T>
-	inline uint32 List<T>::Size() const
+	inline void List<T>::insert(size_t index, const T& value)
 	{
-		return mSize;
+		if (m_Size >= m_Capacity) {
+			ReAlloc(m_Capacity + m_Capacity / 2);
+		}
+
+		size_t c_size = m_Size - index;
+
+		for (size_t i = 0; i < c_size; i++) {
+			((T*)m_Data)[m_Size - i] = ((T*)m_Data)[m_Size - i - 1];
+		}
+
+		((T*)m_Data)[index] = value;
+		m_Size++;
 	}
 
 	template<class T>
-	inline T & List<T>::operator[](uint32 index)
+	inline void List<T>::erase(size_t index)
 	{
-		return mData[index];
+		size_t msize = m_Size - index;
+
+		for (size_t i = 0; i < msize; i++) {
+			((T*)m_Data)[index + i] = ((T*)m_Data)[index + i + 1];
+		}
+
+		m_Size--;
 	}
 
 	template<class T>
-	inline const T & List<T>::operator[](uint32 index) const
+	inline void List<T>::reserve(size_t amount)
 	{
-		return mData[index];
+		if (amount <= m_Capacity) return;
+
+		ReAlloc(amount);
+	}
+
+	template<class T>
+	inline void List<T>::resize(size_t size)
+	{
+		ReAlloc(size);
+	}
+
+	template<class T>
+	inline T* List<T>::data() const
+	{
+		return (T*)m_Data;
+	}
+
+	template<class T>
+	inline size_t List<T>::capacity() const
+	{
+		return m_Capacity;
+	}
+
+	template<class T>
+	inline size_t List<T>::size() const
+	{
+		return m_Size;
+	}
+
+	template<class T>
+	inline T& List<T>::at(size_t index)
+	{
+		return ((T*)m_Data)[index];
+	}
+
+	template<class T>
+	inline T& List<T>::operator[](size_t index)
+	{
+		return ((T*)m_Data)[index];
+	}
+
+	template<class T>
+	inline const T& List<T>::operator[](size_t index) const
+	{
+		return ((T*)m_Data)[index];
+	}
+
+	template<class T>
+	template<class ...TArgs>
+	inline void List<T>::emplace_back(TArgs&&...args)
+	{
+		if (m_Size >= m_Capacity) {
+			ReAlloc(m_Capacity + m_Capacity / 2 + 1);
+		}
+
+		new (m_Data + m_Size * sizeof(T)) (T)(args...);
+		m_Size++;
 	}
 }
