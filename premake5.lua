@@ -16,6 +16,8 @@ IncludeDirs["Glew"] = "Wiwa/vendor/Glew/include/GL"
 IncludeDirs["ImGui"] = "Wiwa/vendor/imgui"
 IncludeDirs["MathGeoLib"] = "Wiwa/vendor/MathGeoLib"
 IncludeDirs["PCG"] = "Wiwa/vendor/PCG/include"
+IncludeDirs["JSON"] = "Wiwa/vendor/rapidjson"
+IncludeDirs["XML"] = "Wiwa/vendor/pugixml/src"
 
 include "Wiwa/vendor/GLFW"
 include "Wiwa/vendor/imgui"
@@ -51,7 +53,9 @@ project "Wiwa"
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.MathGeoLib}",
 		"%{IncludeDirs.Glew}",
-		"%{IncludeDirs.PCG}"
+		"%{IncludeDirs.PCG}",
+		"%{IncludeDirs.JSON}",
+		"%{IncludeDirs.XML}"
 	}
 
 	links
