@@ -89,6 +89,15 @@ namespace Wiwa {
 		dispatcher.Dispatch<KeyReleasedEvent>(WI_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
 		dispatcher.Dispatch<WindowResizeEvent>(WI_BIND_EVENT_FN(ImGuiLayer::OnWindowResizeEvent));
 	}
+	void ImGuiLayer::OnImGuiRender()
+	{
+		ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
+		ImGui::Begin("Console");
+
+		ImGui::End();
+		m_Log.Draw("Console");
+	}
+
 	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();

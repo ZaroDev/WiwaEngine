@@ -6,6 +6,7 @@
 #include "Wiwa/Events/KeyEvent.h"
 #include "Wiwa/Events/MouseEvent.h"
 #include "Wiwa/Events/ApplicationEvent.h"
+#include "ImGuiLog.h"
 
 struct ImGuiContext;
 
@@ -22,7 +23,8 @@ namespace Wiwa {
 		void OnAttach() override;
 		void OnDetach() override;
 		void OnEvent(Event& event) override;
-		
+		void OnImGuiRender()override;
+		inline void Log(const char* log) { m_Log.AddLog(log); }
 		inline ImGuiContext* GetContext() { return m_Ctx; }
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
@@ -36,8 +38,8 @@ namespace Wiwa {
 
 		void SetDarkTheme();
 	private:
+	    ImGuiLog m_Log;
 		ImGuiContext* m_Ctx = nullptr;
 		float m_Time = 0.0f;
-		bool m_ShowDemo = false;
 	};
 }

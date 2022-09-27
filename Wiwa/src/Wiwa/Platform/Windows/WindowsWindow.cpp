@@ -6,6 +6,7 @@
 #include "Wiwa/Events/ApplicationEvent.h"
 #include "Wiwa/Events/MouseEvent.h"
 #include "Wiwa/Events/KeyEvent.h"
+#include "Wiwa/ImGui/ImGuiLayer.h"
 
 #include <glew.h>
 #include <gl/gl.h>
@@ -39,7 +40,6 @@ namespace Wiwa {
 		m_Data.Height = props.Height;
 
 		WI_CORE_INFO("Creating window {0} {1} {2}", props.Title, props.Width, props.Height);
-
 		if (!s_GLFWInitialized)
 		{
 			int success = glfwInit();

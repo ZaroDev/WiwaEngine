@@ -14,8 +14,8 @@ namespace Wiwa {
 	struct SysInfo
 	{
 		char glfwVer[32];
-		int cache;
-		int numCores;
+		uint32_t cache;
+		uint32_t numCores;
 		float ram;
 		const unsigned char* gpu;
 		const unsigned char* gpuBrand;
@@ -37,6 +37,7 @@ namespace Wiwa {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 
+		void SetHwInfo();
 		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
 		inline float GetDeltaTime() { return m_Time; }
