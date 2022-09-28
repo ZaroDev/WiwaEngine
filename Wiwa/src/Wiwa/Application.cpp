@@ -101,6 +101,11 @@ namespace Wiwa {
 		ShellExecuteA(0, "open", url, NULL, NULL, SW_SHOWNORMAL);
 	}
 
+	void Application::Quit()
+	{
+		m_Running = false;
+	}
+
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;

@@ -38,17 +38,24 @@ namespace Wiwa {
 		void PushOverlay(Layer* overlay);
 
 		void SetHwInfo();
+
 		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
 		inline float GetDeltaTime() { return m_Time; }
 		inline ImGuiContext* GetImGuiContext() { return m_ImGuiLayer->GetContext(); }
 		inline ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 		inline EntityManager* GetEntityManager() { return m_EntityManager; }
-		void RequestBrowser(const char* url);
 		inline SysInfo& GetSystemInfo() { return m_SysInfo; }
+		inline const char* GetVersion() { return m_Version; }
+
+
+		void RequestBrowser(const char* url);
+		void Quit();
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+
+		const char* m_Version = "0.1";
 
 		float m_Time = 0.0f;
 		std::unique_ptr<Window> m_Window;
