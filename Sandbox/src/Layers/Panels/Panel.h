@@ -13,12 +13,10 @@ public:
 	bool IsActive() const;
 	virtual void Draw() = 0;
 
-	const char* GetName() const { return name.c_str(); }
+	const char* GetName() const { return name; }
 
 public:
 	bool active = false;
-	int width, height, posx, posy;
-
 protected:
-	std::string name;
+	const char* name;
 };

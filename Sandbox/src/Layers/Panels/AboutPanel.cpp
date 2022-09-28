@@ -16,7 +16,7 @@ void AboutPanel::Draw()
 {
 	Wiwa::SysInfo& info = Wiwa::Application::Get().GetSystemInfo();
 
-	ImGui::Begin("About");
+	ImGui::Begin(name, &active);
 	ImGui::Separator();
 	ImGui::Text("Wiwa Engine version: %s", Wiwa::Application::Get().GetVersion());
 	ImGui::Text("Our attempt at doing a 3D Game engine");

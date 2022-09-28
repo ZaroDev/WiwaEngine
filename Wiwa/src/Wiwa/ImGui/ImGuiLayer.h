@@ -31,9 +31,6 @@ namespace Wiwa {
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
 		bool OnMouseMoveEvent(MouseMovedEvent& e);
 		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
-		bool OnKeyTypedEvent(KeyTypedEvent& e);
-		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
 
 		void SetDarkTheme();

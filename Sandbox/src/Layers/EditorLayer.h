@@ -4,6 +4,7 @@
 #include <Wiwa/utilities/containers/List.h>
 
 #include "Panels/AboutPanel.h"
+#include "Panels/ConfigurationPanel.h"
 
 class EditorLayer : public Wiwa::Layer
 {
@@ -19,10 +20,12 @@ public:
 	void OnEvent(Wiwa::Event& event) override;
 private:
 	void MainMenuBar();
+	void DockSpace();
 private:
-	bool m_ShowConfig = false;
 	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
 
+
 	AboutPanel* m_About = nullptr;
+	ConfigurationPanel* m_Configuration = nullptr;
 };
