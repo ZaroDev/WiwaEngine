@@ -29,6 +29,7 @@ namespace Wiwa {
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
 	};
 }
+
 //Core log macros
 #define WI_CORE_TRACE(...)      ::Wiwa::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define WI_CORE_INFO(...)       ::Wiwa::Log::GetCoreLogger()->info(__VA_ARGS__)
