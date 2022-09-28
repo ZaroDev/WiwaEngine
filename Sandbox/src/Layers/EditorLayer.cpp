@@ -20,12 +20,23 @@ void EditorLayer::OnAttach()
 	m_About = new AboutPanel();
 	m_Configuration = new ConfigurationPanel();
 	m_Console = new ConsolePanel();
+	m_Scene = new ScenePanel();
+	m_Hierarchy = new HierarchyPanel();
+	m_Assets = new AssetsPanel();
+
+	m_Panels.push_back(m_Configuration);
+	m_Panels.push_back(m_Console);
+	m_Panels.push_back(m_Scene);
+	m_Panels.push_back(m_Hierarchy);
+	m_Panels.push_back(m_Assets);
+
+	WI_TRACE("Editor layer attached!");
 }
 
 void EditorLayer::OnDetach()
 {
 	delete m_About;
-	delete m_Configuration;
+	m_Panels.clear();
 }
 
 void EditorLayer::OnUpdate()
@@ -42,12 +53,14 @@ void EditorLayer::OnImGuiRender()
 	MainMenuBar();
 	DockSpace();
 
+	for (auto p : m_Panels)
+	{
+		if (p->active)
+			p->Draw();
+	}
+
 	if (m_About->active)
 		m_About->Draw();
-	if (m_Configuration->active)
-		m_Configuration->Draw();
-	if (m_Console->active)
-		m_Configuration->Draw();
 	if (m_ShowDemo)
 		ImGui::ShowDemoWindow(&m_ShowDemo);
 
@@ -72,11 +85,11 @@ void EditorLayer::MainMenuBar()
 	}
 	if (ImGui::BeginMenu("View"))
 	{
-		if (ImGui::MenuItem("Configuration", "", m_Configuration->active))
-			m_Configuration->SwitchActive();
-
-		if (ImGui::MenuItem("Console", "", m_Console->active))
-			m_Console->SwitchActive();
+		for (auto p : m_Panels)
+		{
+			if (ImGui::MenuItem(p->GetName(), "", p->active))
+				p->SwitchActive();
+		}
 
 		ImGui::EndMenu();
 	}
