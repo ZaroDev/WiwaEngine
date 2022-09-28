@@ -5,6 +5,7 @@
 
 #include "Panels/AboutPanel.h"
 #include "Panels/ConfigurationPanel.h"
+#include "Panels/ConsolePanel.h"
 
 class EditorLayer : public Wiwa::Layer
 {
@@ -28,4 +29,5 @@ private:
 
 	AboutPanel* m_About = nullptr;
 	ConfigurationPanel* m_Configuration = nullptr;
+	ConsolePanel* m_Console = nullptr;
 };

@@ -17,9 +17,9 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
-	WI_WARN("PITOS");
 	m_About = new AboutPanel();
 	m_Configuration = new ConfigurationPanel();
+	m_Console = new ConsolePanel();
 }
 
 void EditorLayer::OnDetach()
@@ -45,6 +45,8 @@ void EditorLayer::OnImGuiRender()
 	if (m_About->active)
 		m_About->Draw();
 	if (m_Configuration->active)
+		m_Configuration->Draw();
+	if (m_Console->active)
 		m_Configuration->Draw();
 	if (m_ShowDemo)
 		ImGui::ShowDemoWindow(&m_ShowDemo);
@@ -73,8 +75,8 @@ void EditorLayer::MainMenuBar()
 		if (ImGui::MenuItem("Configuration", "", m_Configuration->active))
 			m_Configuration->SwitchActive();
 
-		if (ImGui::MenuItem("Console", "", m_ShowConsole))
-			m_ShowConsole = !m_ShowConsole;
+		if (ImGui::MenuItem("Console", "", m_Console->active))
+			m_Console->SwitchActive();
 
 		ImGui::EndMenu();
 	}

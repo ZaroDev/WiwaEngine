@@ -5,6 +5,3 @@
 	path = Wiwa/vendor/imgui
 	url = https://github.com/ZaroDev/imgui/
 	branch = docking
-[submodule "Wiwa/vendor/spdlog"]
-	path = Wiwa/vendor/spdlog
-	url = https://github.com/gabime/spdlog

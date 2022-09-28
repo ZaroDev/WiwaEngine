@@ -88,11 +88,6 @@ namespace Wiwa {
 	}
 	void ImGuiLayer::OnImGuiRender()
 	{
-		ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
-		ImGui::Begin("Console");
-                                 
-		ImGui::End();
-		m_Log.Draw("Console");
 	}
 
 	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
