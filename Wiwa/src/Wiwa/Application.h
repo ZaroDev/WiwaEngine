@@ -42,6 +42,7 @@ namespace Wiwa {
 		inline Window& GetWindow() { return *m_Window; }
 		inline float GetDeltaTime() { return m_Time; }
 		inline ImGuiContext* GetImGuiContext() { return m_ImGuiLayer->GetContext(); }
+		inline ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 		inline EntityManager* GetEntityManager() { return m_EntityManager; }
 		void RequestBrowser(const char* url);
 		inline SysInfo& GetSystemInfo() { return m_SysInfo; }

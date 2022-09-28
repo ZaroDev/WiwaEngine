@@ -24,7 +24,13 @@ namespace Wiwa {
 		void OnDetach() override;
 		void OnEvent(Event& event) override;
 		void OnImGuiRender()override;
-		inline void Log(const char* log) { m_Log.AddLog(log); }
+
+		inline void LogTrace(const char* log) { m_Log.AddLog(ImGuiLog::LogLevel::TRACE, log); }
+		inline void LogInfo(const char* log) { m_Log.AddLog(ImGuiLog::LogLevel::INFO, log); }
+		inline void LogWarn(const char* log) { m_Log.AddLog(ImGuiLog::LogLevel::WARN, log); }
+		inline void LogError(const char* log) { m_Log.AddLog(ImGuiLog::LogLevel::ERR, log); }
+		inline void LogCritical(const char* log) { m_Log.AddLog(ImGuiLog::LogLevel::CRITICAL, log); }
+
 		inline ImGuiContext* GetContext() { return m_Ctx; }
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);

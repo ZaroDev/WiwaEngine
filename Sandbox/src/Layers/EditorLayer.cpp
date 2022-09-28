@@ -15,6 +15,7 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
+	WI_WARN("PITOS");
 }
 
 void EditorLayer::OnDetach()

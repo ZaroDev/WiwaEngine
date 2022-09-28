@@ -4,25 +4,45 @@
 
 struct ImGuiLog
 {
+    enum LogLevel {
+        TRACE,
+        INFO,
+        WARN,
+        ERR,
+        CRITICAL,
+        LAST
+    };
+
     ImGuiTextBuffer     Buf;
     ImGuiTextFilter     Filter;
     ImVector<int>       LineOffsets; // Index to lines offset. We maintain this with AddLog() calls.
+    ImVector<LogLevel>  LogLevels;
     bool                AutoScroll;  // Keep scrolling if already at the bottom.
+
+    ImVec4 LevelColors[LogLevel::LAST];
 
     ImGuiLog()
     {
         AutoScroll = true;
         Clear();
+
+        LevelColors[LogLevel::TRACE] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+        LevelColors[LogLevel::INFO] = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+        LevelColors[LogLevel::WARN] = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+        LevelColors[LogLevel::ERR] = ImVec4(0.5f, 0.0f, 0.0f, 1.0f);
+        LevelColors[LogLevel::CRITICAL] = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
     }
 
     void    Clear()
     {
         Buf.clear();
+        LogLevels.clear();
         LineOffsets.clear();
         LineOffsets.push_back(0);
+        LogLevels.push_back(LogLevel::TRACE);
     }
 
-    void    AddLog(const char* fmt, ...) IM_FMTARGS(2)
+    void    AddLog(LogLevel level, const char* fmt, ...) IM_FMTARGS(2)
     {
         int old_size = Buf.size();
         va_list args;
@@ -30,8 +50,10 @@ struct ImGuiLog
         Buf.appendfv(fmt, args);
         va_end(args);
         for (int new_size = Buf.size(); old_size < new_size; old_size++)
-            if (Buf[old_size] == '\n')
+            if (Buf[old_size] == '\n') {
                 LineOffsets.push_back(old_size + 1);
+                LogLevels.push_back(level);
+            }
     }
 
     void    Draw(const char* title, bool* p_open = NULL)
@@ -81,7 +103,8 @@ struct ImGuiLog
                 const char* line_start = buf + LineOffsets[line_no];
                 const char* line_end = (line_no + 1 < LineOffsets.Size) ? (buf + LineOffsets[line_no + 1] - 1) : buf_end;
                 if (Filter.PassFilter(line_start, line_end))
-                    ImGui::TextUnformatted(line_start, line_end);
+                    ImGui::TextColored(LevelColors[LogLevels[line_no]], line_start);
+                    //ImGui::TextUnformatted(line_start, line_end);
             }
         }
         else
@@ -107,7 +130,8 @@ struct ImGuiLog
                 {
                     const char* line_start = buf + LineOffsets[line_no];
                     const char* line_end = (line_no + 1 < LineOffsets.Size) ? (buf + LineOffsets[line_no + 1] - 1) : buf_end;
-                    ImGui::TextUnformatted(line_start, line_end);
+                    //ImGui::TextUnformatted(line_start, line_end);
+                    ImGui::TextColored(LevelColors[LogLevels[line_no]], line_start);
                 }
             }
             clipper.End();
