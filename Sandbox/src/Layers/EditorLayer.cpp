@@ -24,6 +24,7 @@ void EditorLayer::OnAttach()
 	m_Hierarchy = new HierarchyPanel();
 	m_Assets = new AssetsPanel();
 	m_Inspector = new InspectorPanel();
+	m_Play = new PlayPanel();
 
 	m_Panels.push_back(m_Configuration);
 	m_Panels.push_back(m_Console);
@@ -60,7 +61,7 @@ void EditorLayer::OnImGuiRender()
 		if (p->active)
 			p->Draw();
 	}
-
+	m_Play->Draw();
 	if (m_About->active)
 		m_About->Draw();
 	if (m_ShowDemo)
