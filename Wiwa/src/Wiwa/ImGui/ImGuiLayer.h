@@ -31,7 +31,7 @@ namespace Wiwa {
 		inline void LogError(const char* log) { m_Log.AddLog(ImGuiLog::LogLevel::ERR, log); }
 		inline void LogCritical(const char* log) { m_Log.AddLog(ImGuiLog::LogLevel::CRITICAL, log); }
 
-		inline ImGuiLog GetLog() { return m_Log; }
+		inline ImGuiLog& GetLog() { return m_Log; }
 		inline ImGuiContext* GetContext() { return m_Ctx; }
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
