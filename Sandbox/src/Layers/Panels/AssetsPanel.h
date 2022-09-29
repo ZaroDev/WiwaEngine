@@ -2,6 +2,8 @@
 
 #include "Panel.h"
 
+#include <filesystem>
+
 class AssetsPanel : public Panel
 {
 public:
@@ -9,4 +11,7 @@ public:
 	virtual ~AssetsPanel();
 
 	void Draw() override;
+
+private:
+	std::filesystem::path m_CurrentPath;
 };

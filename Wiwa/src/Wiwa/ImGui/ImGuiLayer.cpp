@@ -164,7 +164,7 @@ namespace Wiwa {
 
 		ImGuiStyle* style = &ImGui::GetStyle();
 
-		style->WindowPadding = ImVec2(15, 15);
+		/*style->WindowPadding = ImVec2(15, 15);
 		style->WindowRounding = 5.0f;
 		style->FramePadding = ImVec2(5, 5);
 		style->FrameRounding = 4.0f;
@@ -174,7 +174,7 @@ namespace Wiwa {
 		style->ScrollbarSize = 15.0f;
 		style->ScrollbarRounding = 9.0f;
 		style->GrabMinSize = 5.0f;
-		style->GrabRounding = 3.0f;
+		style->GrabRounding = 3.0f;*/
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 15);
