@@ -11,12 +11,35 @@ namespace Wiwa {
 		JSONValue(rapidjson::Value* value);
 		~JSONValue();
 
-		template<class T> void Set(T data);
+		template<class T> void set(T data);
+		template<class T> void operator=(T data);
+
+		template<class T> T get();
+
+		template<class T> operator T();
 	};
 
 	template<class T>
-	inline void JSONValue::Set(T data)
+	inline void JSONValue::set(T data)
 	{
 		m_Value->Set<T>(data);
+	}
+
+	template<class T>
+	inline T JSONValue::get()
+	{
+		return m_Value->Get<T>();
+	}
+
+	template<class T>
+	inline void JSONValue::operator=(T data)
+	{
+		set<T>(data);
+	}
+
+	template<class T>
+	inline JSONValue::operator T()
+	{
+		return get<T>();
 	}
 }

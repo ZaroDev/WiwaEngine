@@ -30,6 +30,8 @@ private:
 	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
 
+	void LoadPanelConfig();
+	void SavePanelConfig();
 
 	AboutPanel* m_About = nullptr;
 	ConfigurationPanel* m_Configuration = nullptr;

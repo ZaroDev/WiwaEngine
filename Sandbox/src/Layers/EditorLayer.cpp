@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <stdio.h>
 #include <Wiwa/Application.h>
+#include <Wiwa/utilities/json/JSONDocument.h>
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
@@ -32,11 +33,15 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_Assets);
 	m_Panels.push_back(m_Inspector);
 
+	LoadPanelConfig();
+
 	WI_TRACE("Editor layer attached!");
 }
 
 void EditorLayer::OnDetach()
 {
+	SavePanelConfig();
+
 	delete m_About;
 	m_Panels.clear();
 }
@@ -147,4 +152,34 @@ void EditorLayer::DockSpace()
 	}
 
 	ImGui::End();
+}
+
+void EditorLayer::LoadPanelConfig()
+{
+	Wiwa::JSONDocument config("config/panels.json");
+
+	size_t psize = m_Panels.size();
+
+	for (size_t i = 0; i < psize; i++) {
+		Panel* p = m_Panels[i];
+
+		if (config.HasMember(p->GetName())) {
+			p->active = config[p->GetName()];
+		}
+	}
+}
+
+void EditorLayer::SavePanelConfig()
+{
+	Wiwa::JSONDocument config;
+
+	size_t psize = m_Panels.size();
+
+	for (size_t i = 0; i < psize; i++) {
+		Panel* p = m_Panels[i];
+
+		config.AddMember(p->GetName(), p->active);
+	}
+
+	config.save_file("config/panels.json");
 }

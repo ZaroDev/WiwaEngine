@@ -18,6 +18,8 @@ ConfigurationPanel::~ConfigurationPanel()
 
 void ConfigurationPanel::Draw()
 {
+	m_MSLog.push_back(1000.0f / ImGui::GetIO().Framerate);
+	m_FPSLog.push_back(ImGui::GetIO().Framerate);
 	ImGui::Begin(name, &active);
 	if (ImGui::CollapsingHeader("Window"))
 	{
@@ -85,9 +87,6 @@ void ConfigurationPanel::Update()
 
 	if (m_MemLog.size() > 64)
 		m_MemLog.erase(0);
-
-	m_MSLog.push_back(1000.0f / ImGui::GetIO().Framerate);
-	m_FPSLog.push_back(ImGui::GetIO().Framerate);
 
 	PROCESS_MEMORY_COUNTERS_EX pmc;
 	GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
