@@ -9,6 +9,7 @@
 #include "Panels/ScenePanel.h"
 #include "Panels/HierarchyPanel.h"
 #include "Panels/AssetsPanel.h"
+#include "Panels/InspectorPanel.h"
 
 class EditorLayer : public Wiwa::Layer
 {
@@ -36,6 +37,7 @@ private:
 	ScenePanel* m_Scene = nullptr;
 	HierarchyPanel* m_Hierarchy = nullptr;
 	AssetsPanel* m_Assets = nullptr;
+	InspectorPanel* m_Inspector = nullptr;
 
 	std::vector<Panel*> m_Panels;
 };

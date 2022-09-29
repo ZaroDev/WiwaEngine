@@ -23,12 +23,14 @@ void EditorLayer::OnAttach()
 	m_Scene = new ScenePanel();
 	m_Hierarchy = new HierarchyPanel();
 	m_Assets = new AssetsPanel();
+	m_Inspector = new InspectorPanel();
 
 	m_Panels.push_back(m_Configuration);
 	m_Panels.push_back(m_Console);
 	m_Panels.push_back(m_Scene);
 	m_Panels.push_back(m_Hierarchy);
 	m_Panels.push_back(m_Assets);
+	m_Panels.push_back(m_Inspector);
 
 	WI_TRACE("Editor layer attached!");
 }
@@ -77,7 +79,7 @@ void EditorLayer::MainMenuBar()
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("Quit"))
+		if (ImGui::MenuItem("Close"))
 		{
 			Wiwa::Application::Get().Quit();
 		}
