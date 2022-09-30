@@ -107,13 +107,13 @@ void EditorLayer::MainMenuBar()
 			m_ShowDemo = !m_ShowDemo;
 
 		if (ImGui::MenuItem("Documentation"))
-			Wiwa::Application::Get().RequestBrowser("https://github.com/ZaroDev/WiwaEngine/wiki");
+			Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/wiki");
 
 		if (ImGui::MenuItem("Download Latest"))
-			Wiwa::Application::Get().RequestBrowser("https://github.com/ZaroDev/WiwaEngine/releases");
+			Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/releases");
 
 		if (ImGui::MenuItem("Report a bug"))
-			Wiwa::Application::Get().RequestBrowser("https://github.com/ZaroDev/WiwaEngine/issues");
+			Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/issues");
 
 		if (ImGui::MenuItem("About", "", m_About->active))
 			m_About->SwitchActive();

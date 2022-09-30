@@ -96,9 +96,9 @@ namespace Wiwa {
 			m_Window->OnUpdate();
 		}
 	}
-	void Application::RequestBrowser(const char* url)
+	void Application::OpenDir(const char* path)
 	{
-		ShellExecuteA(0, "open", url, NULL, NULL, SW_SHOWNORMAL);
+		ShellExecuteA(0, "open", path, NULL, NULL, SW_SHOWNORMAL);
 	}
 
 	void Application::Quit()

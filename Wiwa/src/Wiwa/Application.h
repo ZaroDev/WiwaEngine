@@ -49,7 +49,7 @@ namespace Wiwa {
 		inline const char* GetVersion() { return m_Version; }
 
 
-		void RequestBrowser(const char* url);
+		void OpenDir(const char* url);
 		void Quit();
 
 	private:
