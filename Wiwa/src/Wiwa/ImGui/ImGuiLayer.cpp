@@ -8,10 +8,10 @@
 #include "Wiwa/Application.h"
 #include "Wiwa/KeyCodes.h"
 
-
 //Temp
 #include <glew.h>
 #include <GLFW/glfw3.h>
+#include <Wiwa/Resources.h>
 
 namespace Wiwa {
 	ImGuiLayer::ImGuiLayer()
@@ -48,6 +48,8 @@ namespace Wiwa {
 	}
 	void ImGuiLayer::OnAttach()
 	{
+		Resources::Load<Shader>("resources/shaders/colorShader");
+
 		m_Ctx = ImGui::CreateContext();
 		ImGui::StyleColorsDark();
 
