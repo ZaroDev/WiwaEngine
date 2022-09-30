@@ -11,6 +11,7 @@
 namespace Wiwa {
 	
 	class EntityManager;
+
 	struct SysInfo
 	{
 		char glfwVer[32];
@@ -24,6 +25,7 @@ namespace Wiwa {
 		float gpuVRAMAV;
 		float gpuVRAMReserve;
 	};
+
 	class WI_API Application
 	{	
 	public:

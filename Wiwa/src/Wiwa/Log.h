@@ -25,6 +25,8 @@ namespace Wiwa {
 		static void ImGuiLogError(const char* log);
 		static void ImGuiLogCritical(const char* log);
 	private:
+		Log() = default;
+
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
 	};
