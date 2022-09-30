@@ -66,7 +66,7 @@ void EditorLayer::OnImGuiRender()
 		if (p->active)
 			p->Draw();
 	}
-	m_Play->Draw();
+	//m_Play->Draw();
 	if (m_About->active)
 		m_About->Draw();
 	if (m_ShowDemo)

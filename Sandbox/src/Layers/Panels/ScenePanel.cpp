@@ -33,6 +33,23 @@ void ScenePanel::Draw()
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
+
+
+        //TODO: Render the scene
+
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+            {
+                const wchar_t* path = (const wchar_t*)payload->Data;
+                //TODO: Load the scene with the path
+                WI_INFO("Trying to load payload at path");
+            }
+
+            ImGui::EndDragDropTarget();
+        }
+
     }
     ImGui::End();
 }
