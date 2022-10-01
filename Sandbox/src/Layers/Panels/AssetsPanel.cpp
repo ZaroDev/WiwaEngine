@@ -42,6 +42,18 @@ void AssetsPanel::Draw()
 			ImGui::EndTable();
 		}
 		ImGui::TableNextColumn();
+
+		if (m_CurrentPath != std::filesystem::path(s_AssetsPath))
+		{
+			if (ImGui::Button("<-"))
+			{
+				m_CurrentPath = m_CurrentPath.parent_path();
+			}
+			ImGui::SameLine();
+		}
+
+		ImGui::Text(m_CurrentPath.string().c_str());
+
 		static float padding = 16.0f;
 		static float thumbnailSize = 64.0f;
 		float cellSize = thumbnailSize + padding;
@@ -50,29 +62,19 @@ void AssetsPanel::Draw()
 		int columnCount = (int)(panelWidth / cellSize);
 		if (columnCount < 1)
 			columnCount = 1;
-		if (m_CurrentPath != std::filesystem::path(s_AssetsPath))
-		{
-			if (ImGui::Button("<-"))
-			{
-				m_CurrentPath = m_CurrentPath.parent_path();
-			}
-		}
 
-		ImGui::SameLine();
-		ImGui::Text(m_CurrentPath.string().c_str());
 		if (ImGui::BeginTable("##assets", columnCount))
 		{
-			
-
-
 			int id = 0;
 			for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentPath))
 			{
 				ImGui::TableNextColumn();
 				ImGui::PushID(id++);
+
 				const auto& path = directoryEntry.path();
 				auto relativePath = std::filesystem::relative(directoryEntry.path(), s_AssetsPath);
 				std::string filenameString = relativePath.filename().string();
+
 				//TODO: Add the ImGui::ImageButton(Texture, { thumbnailSize, thumbnailSize }, {0, 1}, {1, 0});
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::Button(filenameString.c_str(), { thumbnailSize, thumbnailSize });
