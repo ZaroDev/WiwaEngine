@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include "wipch.h"
 #include <Wiwa/Application.h>
+#include <imgui_internal.h>
 
 //TODO: Change withing projects
 static const std::filesystem::path s_AssetsPath = "Assets";
@@ -23,14 +24,9 @@ void AssetsPanel::Draw()
 
 	ImGui::Begin(name, &active);
 
-	if (m_CurrentPath != std::filesystem::path(s_AssetsPath))
-	{
-		if (ImGui::Button("<-"))
-		{
-			m_CurrentPath = m_CurrentPath.parent_path();
-		}
-	}
+	
 	/*bool op = false;*/
+	//ImGui::Text(m_SearchPath.string().c_str());
 	if (ImGui::BeginTable("##content_browser", 2, ImGuiTableFlags_Resizable))
 	{
 		static ImGuiTableFlags flags = ImGuiTableFlags_BordersOuterH  | ImGuiTableFlags_RowBg | ImGuiTableFlags_NoBordersInBody;
@@ -54,14 +50,22 @@ void AssetsPanel::Draw()
 		int columnCount = (int)(panelWidth / cellSize);
 		if (columnCount < 1)
 			columnCount = 1;
+		if (m_CurrentPath != std::filesystem::path(s_AssetsPath))
+		{
+			if (ImGui::Button("<-"))
+			{
+				m_CurrentPath = m_CurrentPath.parent_path();
+			}
+		}
 
-		
-
+		ImGui::SameLine();
+		ImGui::Text(m_CurrentPath.string().c_str());
 		if (ImGui::BeginTable("##assets", columnCount))
 		{
+			
+
 
 			int id = 0;
-
 			for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentPath))
 			{
 				ImGui::TableNextColumn();
@@ -70,7 +74,6 @@ void AssetsPanel::Draw()
 				auto relativePath = std::filesystem::relative(directoryEntry.path(), s_AssetsPath);
 				std::string filenameString = relativePath.filename().string();
 				//TODO: Add the ImGui::ImageButton(Texture, { thumbnailSize, thumbnailSize }, {0, 1}, {1, 0});
-
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::Button(filenameString.c_str(), { thumbnailSize, thumbnailSize });
 				ImGui::PopStyleColor();
@@ -128,21 +131,42 @@ void AssetsPanel::Draw()
 void AssetsPanel::DisplayNode(const std::filesystem::directory_entry& directoryEntry)
 {
 	const auto& path = directoryEntry.path();
+	
+	//ImGui::Text("%s", path.string().c_str());
 	//auto relativePath = std::filesystem::relative(directoryEntry.path(), s_EditorPath);
 	std::string filenameString = path.filename().string();
+	
 	if (directoryEntry.is_directory())
 	{
-		bool open = ImGui::TreeNode(filenameString.c_str());
-		ImGui::TableNextColumn();
-		ImGui::TableNextColumn();
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0, 0));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
 
-		if (open)
+		if (!std::filesystem::is_empty(path))
 		{
-			for (auto& p : std::filesystem::directory_iterator(m_CurrentPath))
+			char str[25];
+			sprintf_s(str, 25, "##%s", filenameString.c_str());
+			bool open = ImGui::TreeNodeEx(str);
+			ImGui::SameLine();
+			if (open)
 			{
-				DisplayNode(p);
+				for (auto& p : std::filesystem::directory_iterator(path))
+				{
+					DisplayNode(p);
+				}
+				ImGui::TreePop();
 			}
-			ImGui::TreePop();
 		}
+
+		if (ImGui::Button(filenameString.c_str()))
+		{
+			m_CurrentPath = path;
+		}
+
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleColor();
+		ImGui::TableNextColumn();
+		ImGui::TableNextColumn();
 	}
 }

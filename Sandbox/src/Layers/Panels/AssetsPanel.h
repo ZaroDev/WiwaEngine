@@ -16,4 +16,5 @@ public:
 
 private:
 	std::filesystem::path m_CurrentPath;
+
 };
