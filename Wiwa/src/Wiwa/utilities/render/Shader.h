@@ -7,6 +7,9 @@
 #include <string>
 #include <typeinfo>
 
+#include <glm.hpp>
+#include <gtc/type_ptr.hpp>
+
 namespace Wiwa {
 	class WI_API Shader
 	{
@@ -34,7 +37,7 @@ namespace Wiwa {
 		bool m_AllOk;
 	};
 
-	/*template<>
+	template<>
 	inline void Shader::setUniform<glm::mat4>(unsigned int uniform_id, glm::mat4 value) {
 		glUseProgram(m_IDprogram);
 		glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(value));
@@ -56,7 +59,7 @@ namespace Wiwa {
 	inline void Shader::setUniform<glm::vec4>(unsigned int uniform_id, glm::vec4 value) {
 		glUseProgram(m_IDprogram);
 		glUniform4f(uniform_id, value.r, value.g, value.b, value.a);
-	}*/
+	}
 
 	template<class T>
 	inline void Shader::setUniform(unsigned int uniform_id, T value)

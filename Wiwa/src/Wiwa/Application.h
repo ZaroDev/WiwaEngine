@@ -7,6 +7,7 @@
 #include "Wiwa/Events/ApplicationEvent.h"
 #include "Wiwa/ImGui/ImGuiLayer.h"
 
+#include <Wiwa/utilities/math/Vector2i.h>
 
 namespace Wiwa {
 	
@@ -50,11 +51,14 @@ namespace Wiwa {
 		inline SysInfo& GetSystemInfo() { return m_SysInfo; }
 		inline const char* GetVersion() { return m_Version; }
 
+		inline Size2i& GetTargetResolution() { return m_TargetResolution; }
 
 		void OpenDir(const char* url);
 		void Quit();
 
 	private:
+		Size2i m_TargetResolution;
+
 		bool OnWindowClose(WindowCloseEvent& e);
 
 		const char* m_Version = "0.1";
