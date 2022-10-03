@@ -19,7 +19,7 @@ namespace Wiwa {
 	{
 	}
 
-	void Shader::Init(const GLchar * filename)
+	void Shader::Init(const char* filename)
 	{
 		std::string vertexFile = filename;
 		vertexFile += ".vs";

@@ -19,8 +19,8 @@ namespace Wiwa {
 			Vertex
 		};
 
-		void Init(const GLchar* filename);
-		GLuint getID() { return m_IDprogram; }
+		void Init(const char* filename);
+		uint32_t getID() { return m_IDprogram; }
 		void Use();
 		void Delete();
 
@@ -36,7 +36,7 @@ namespace Wiwa {
 		void setUniformVec4(unsigned int uniform_id, glm::vec4 value);
 	private:
 		std::string* getFileData(const char* file);
-		GLuint m_IDprogram;
+		uint32_t m_IDprogram;
 		bool m_AllOk;
 	};
 
