@@ -18,6 +18,6 @@ public:
 
 private:
 	std::filesystem::path m_CurrentPath;
-	ResourceId m_FileIcon;
-	ResourceId m_FolderIcon;
+	uint32_t m_FileIcon;
+	uint32_t m_FolderIcon;
 };

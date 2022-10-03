@@ -12,8 +12,10 @@ AssetsPanel::AssetsPanel()
 	: Panel("Assets"), m_CurrentPath(s_AssetsPath)
 {
 	//TODO: Load the icons textures
-	m_FolderIcon = Wiwa::Resources::Load<Wiwa::Image>("resources/images/tree.png");
-	m_FileIcon = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
+	ResourceId folderId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
+	ResourceId fileId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/file_icon.png");
+	m_FolderIcon = Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
+	m_FileIcon = Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
 }
 
 AssetsPanel::~AssetsPanel()
@@ -30,9 +32,8 @@ void AssetsPanel::Draw()
 	//ImGui::Text(m_SearchPath.string().c_str());
 	if (ImGui::BeginTable("##content_browser", 2, ImGuiTableFlags_Resizable))
 	{
-		static ImGuiTableFlags flags = ImGuiTableFlags_BordersOuterH  | ImGuiTableFlags_RowBg | ImGuiTableFlags_NoBordersInBody;
 		ImGui::TableNextColumn();
-		if (ImGui::BeginTable("##folder_browser", 1, flags))
+		if (ImGui::BeginTable("##folder_browser", 1))
 		{
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
@@ -55,10 +56,11 @@ void AssetsPanel::Draw()
 
 		ImGui::Text(m_CurrentPath.string().c_str());
 
-		static float padding = 16.0f;
-		static float thumbnailSize = 64.0f;
+	
+		float padding = 16.0f;
+		float thumbnailSize = 64.0f;
 		float cellSize = thumbnailSize + padding;
-
+		
 		float panelWidth = ImGui::GetContentRegionAvail().x;
 		int columnCount = (int)(panelWidth / cellSize);
 		if (columnCount < 1)
@@ -75,10 +77,11 @@ void AssetsPanel::Draw()
 				const auto& path = directoryEntry.path();
 				auto relativePath = std::filesystem::relative(directoryEntry.path(), s_AssetsPath);
 				std::string filenameString = relativePath.filename().string();
-				ResourceId texID = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
-				//TODO: Add the ImGui::ImageButton(Texture, { thumbnailSize, thumbnailSize }, {0, 1}, {1, 0});
+
+				uint32_t texID = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
+
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
 				ImGui::PopStyleColor();
 
 				if (ImGui::BeginDragDropSource())
@@ -90,19 +93,12 @@ void AssetsPanel::Draw()
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 				{
-					
 					if (directoryEntry.is_directory())
 						m_CurrentPath /= path.filename();
 					else
-					{
-						//TODO: Open file
-						//op = true;
-						
-						WI_INFO("Opening popup");
 						Wiwa::Application::Get().OpenDir(path.string().c_str());
-					}
-					
 				}
+
 				ImGui::TextWrapped(filenameString.c_str());
 
 				ImGui::PopID();
@@ -110,8 +106,6 @@ void AssetsPanel::Draw()
 
 			ImGui::EndTable();
 		}
-		ImGui::SliderFloat("Thumbnail Size", &thumbnailSize, 16, 512);
-		ImGui::SliderFloat("Padding Size", &padding, 0, 32);
 		ImGui::EndTable();
 	}
 	//if(op)
@@ -144,13 +138,12 @@ void AssetsPanel::DisplayNode(const std::filesystem::directory_entry& directoryE
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0, 0));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
-
+		ImGui::AlignTextToFramePadding();
 		if (!std::filesystem::is_empty(path))
 		{
 			char str[25];
 			sprintf_s(str, 25, "##%s", filenameString.c_str());
 			bool open = ImGui::TreeNodeEx(str);
-			ImGui::SameLine();
 			if (open)
 			{
 				for (auto& p : std::filesystem::directory_iterator(path))
@@ -159,13 +152,14 @@ void AssetsPanel::DisplayNode(const std::filesystem::directory_entry& directoryE
 				}
 				ImGui::TreePop();
 			}
+			ImGui::SameLine();
 		}
-
+		
 		if (ImGui::Button(filenameString.c_str()))
 		{
 			m_CurrentPath = path;
 		}
-
+		
 		ImGui::PopStyleColor();
 		ImGui::PopStyleColor();
 		ImGui::PopStyleColor();

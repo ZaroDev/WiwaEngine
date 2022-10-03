@@ -11,6 +11,8 @@
 #include <glew.h>
 #include <gl/gl.h>
 
+#include "../vendor/stb/stb_image.h"
+
 namespace Wiwa {
 
 	static bool s_GLFWInitialized = false;
@@ -44,7 +46,7 @@ namespace Wiwa {
 		m_OldData.Height = props.Height;
 		m_OldData.Refresh = props.Refresh;
 
-
+		
 		WI_CORE_INFO("Creating window {0} {1} {2}", props.Title, props.Width, props.Height);
 		if (!s_GLFWInitialized)
 		{
