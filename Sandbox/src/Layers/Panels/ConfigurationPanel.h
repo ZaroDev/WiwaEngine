@@ -13,7 +13,7 @@ public:
 
 	void Draw() override;
 
-	void Update();
+	void Update() override;
 private:
 	Wiwa::List<float> m_FPSLog;
 	Wiwa::List<float> m_MSLog;

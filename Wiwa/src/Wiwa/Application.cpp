@@ -41,6 +41,7 @@ namespace Wiwa {
 
 		m_EntityManager = new EntityManager();
 		PushLayer(m_EntityManager);
+
 	}
 
 	void Application::SetHwInfo()

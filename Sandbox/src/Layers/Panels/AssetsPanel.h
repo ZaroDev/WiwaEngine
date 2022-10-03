@@ -4,6 +4,8 @@
 
 #include <filesystem>
 
+typedef size_t ResourceId;
+
 class AssetsPanel : public Panel
 {
 public:
@@ -16,5 +18,6 @@ public:
 
 private:
 	std::filesystem::path m_CurrentPath;
-
+	ResourceId m_FileIcon;
+	ResourceId m_FolderIcon;
 };

@@ -2,8 +2,18 @@
 
 #include <imgui.h>
 #include <stdio.h>
+
 #include <Wiwa/Application.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
+
+#include "Panels/AboutPanel.h"
+#include "Panels/ConfigurationPanel.h"
+#include "Panels/ConsolePanel.h"
+#include "Panels/ScenePanel.h"
+#include "Panels/HierarchyPanel.h"
+#include "Panels/AssetsPanel.h"
+#include "Panels/InspectorPanel.h"
+#include "Panels/PlayPanel.h"
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
@@ -18,14 +28,14 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
-	m_About = new AboutPanel();
-	m_Configuration = new ConfigurationPanel();
-	m_Console = new ConsolePanel();
-	m_Scene = new ScenePanel();
-	m_Hierarchy = new HierarchyPanel();
-	m_Assets = new AssetsPanel();
-	m_Inspector = new InspectorPanel();
-	m_Play = new PlayPanel();
+	m_About = std::make_shared<AboutPanel>();
+	m_Configuration = std::make_shared<ConfigurationPanel>();
+	m_Console = std::make_shared<ConsolePanel>();
+	m_Scene = std::make_shared<ScenePanel>();
+	m_Hierarchy = std::make_shared<HierarchyPanel>();
+	m_Assets = std::make_shared<AssetsPanel>();
+	m_Inspector = std::make_shared<InspectorPanel>();
+	m_Play = std::make_shared<PlayPanel>();
 
 	m_Panels.push_back(m_Configuration);
 	m_Panels.push_back(m_Console);
@@ -42,8 +52,6 @@ void EditorLayer::OnAttach()
 void EditorLayer::OnDetach()
 {
 	SavePanelConfig();
-
-	delete m_About;
 	m_Panels.clear();
 }
 
@@ -61,7 +69,7 @@ void EditorLayer::OnImGuiRender()
 	MainMenuBar();
 	DockSpace();
 
-	for (auto p : m_Panels)
+	for (auto& p : m_Panels)
 	{
 		if (p->active)
 			p->Draw();
@@ -93,7 +101,7 @@ void EditorLayer::MainMenuBar()
 	}
 	if (ImGui::BeginMenu("View"))
 	{
-		for (auto p : m_Panels)
+		for (auto& p : m_Panels)
 		{
 			if (ImGui::MenuItem(p->GetName(), "", p->active))
 				p->SwitchActive();
@@ -162,7 +170,7 @@ void EditorLayer::LoadPanelConfig()
 	size_t psize = m_Panels.size();
 
 	for (size_t i = 0; i < psize; i++) {
-		Panel* p = m_Panels[i];
+		const auto& p = m_Panels[i];
 
 		if (config.HasMember(p->GetName())) {
 			p->active = config[p->GetName()];
@@ -177,7 +185,7 @@ void EditorLayer::SavePanelConfig()
 	size_t psize = m_Panels.size();
 
 	for (size_t i = 0; i < psize; i++) {
-		Panel* p = m_Panels[i];
+		const auto& p = m_Panels[i];
 
 		config.AddMember(p->GetName(), p->active);
 	}

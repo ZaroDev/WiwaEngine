@@ -12,7 +12,7 @@ public:
 	void SwitchActive();
 	bool IsActive() const;
 	virtual void Draw() = 0;
-
+	virtual void Update(){}
 	const char* GetName() const { return name; }
 
 public:

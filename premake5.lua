@@ -119,6 +119,7 @@ project "Sandbox"
 	{
 		"Wiwa/vendor/spdlog/include",
 		"%{IncludeDirs.ImGui}",
+		"%{IncludeDirs.GLM}",
 		"Wiwa/src"
 	}
 

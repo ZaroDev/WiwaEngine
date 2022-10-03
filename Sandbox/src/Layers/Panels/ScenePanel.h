@@ -2,8 +2,6 @@
 
 #include "Panel.h"
 
-#include "wipch.h"
-
 struct ShadingView
 {
 	const char* name;

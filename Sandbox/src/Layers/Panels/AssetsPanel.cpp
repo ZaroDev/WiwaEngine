@@ -3,7 +3,7 @@
 #include <imgui.h>
 #include "wipch.h"
 #include <Wiwa/Application.h>
-#include <imgui_internal.h>
+#include <Wiwa/Resources.h>
 
 //TODO: Change withing projects
 static const std::filesystem::path s_AssetsPath = "Assets";
@@ -12,7 +12,8 @@ AssetsPanel::AssetsPanel()
 	: Panel("Assets"), m_CurrentPath(s_AssetsPath)
 {
 	//TODO: Load the icons textures
-	
+	m_FolderIcon = Wiwa::Resources::Load<Wiwa::Image>("resources/images/tree.png");
+	m_FileIcon = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
 }
 
 AssetsPanel::~AssetsPanel()
@@ -74,10 +75,10 @@ void AssetsPanel::Draw()
 				const auto& path = directoryEntry.path();
 				auto relativePath = std::filesystem::relative(directoryEntry.path(), s_AssetsPath);
 				std::string filenameString = relativePath.filename().string();
-
+				ResourceId texID = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
 				//TODO: Add the ImGui::ImageButton(Texture, { thumbnailSize, thumbnailSize }, {0, 1}, {1, 0});
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-				ImGui::Button(filenameString.c_str(), { thumbnailSize, thumbnailSize });
+				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 				ImGui::PopStyleColor();
 
 				if (ImGui::BeginDragDropSource())

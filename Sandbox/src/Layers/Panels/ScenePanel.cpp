@@ -1,6 +1,9 @@
+#include "wipch.h"
+
 #include "ScenePanel.h"
 
 #include <imgui.h>
+
 ScenePanel::ScenePanel()
     : Panel("Scene")
 {
