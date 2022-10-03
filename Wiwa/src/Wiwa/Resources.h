@@ -5,7 +5,7 @@
 
 // Resources
 #include <Wiwa/utilities/render/Shader.h>
-//#include "utilities/Image.h"
+#include <Wiwa/utilities/render/Image.h>
 
 #include <string>
 #include <vector>
@@ -18,7 +18,7 @@ namespace Wiwa {
 	public:
 		// Enum that indicates all the resources that can be loaded by the engine
 		enum ResourceType {
-			WRT_SPRITE,
+			WRT_IMAGE,
 			WRT_AUDIOCLIP,
 			WRT_SHADER,
 			WRT_LAST
@@ -80,42 +80,24 @@ namespace Wiwa {
 	}
 
 	//--SPECIALIZATION FOR SPRITE
-	/*template<>
-	inline uint32 Resources::Load<Image>(const char * file)
+	template<>
+	inline ResourceId Resources::Load<Image>(const char * file)
 	{
-		size_t size = mResources[ResourceType::RT_SPRITE].size();
-		size_t i;
+		ResourceId position = getResourcePosition(WRT_IMAGE, file);
+		size_t size = m_Resources[WRT_IMAGE].size();
 
-		Uint32 resourceId = -1;
+		ResourceId resourceId;
 
-		for (i = 0; i < size; i++) {
-			if (mResources[RT_SPRITE][i]->filePath == file) {
-				resourceId = static_cast<Uint32>(i);
-				break;
-			}
+		if (position == size) {
+			Image* image = new Image();
+			image->Init(file);
+
+			PushResource(WRT_IMAGE, file, image);
+
+			resourceId = size;
 		}
-
-		if (i == size) {
-			Image* sprite = new Image();
-			if (sprite->Init(file)) {
-				Resource* resource = new Resource();
-
-				resource->filePath = file;
-
-				resource->resource = sprite;
-
-				resourceId = static_cast<uint32>(size);
-
-				mResources[RT_SPRITE].push_back(resource);
-
-				std::string message = "Loaded resource " + resource->filePath + " successfully.";
-				Debug::Log("Resources", message.c_str());
-			}
-			else {
-				Debug::LogError("Resources", SDL_GetError());
-
-				delete sprite;
-			}
+		else {
+			resourceId = position;
 		}
 
 		return resourceId;
@@ -124,14 +106,14 @@ namespace Wiwa {
 	template<>
 	inline Image* Resources::GetResourceById<Image>(ResourceId id)
 	{
-		Image* surface = NULL;
+		Image* image = NULL;
 	
-		if (id >= 0 && id < mResources[RT_SPRITE].size()) {
-			surface = static_cast<Image*>(mResources[RT_SPRITE][id]->resource);
+		if (id >= 0 && id < m_Resources[WRT_IMAGE].size()) {
+			image = static_cast<Image*>(m_Resources[WRT_IMAGE][id]->resource);
 		}
 	
-		return surface;
-	}*/
+		return image;
+	}
 }
 
 // SPECIALIZATION FOR MIX_CHUNK
