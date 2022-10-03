@@ -43,8 +43,10 @@ void ScenePanel::Draw()
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
             {
                 const wchar_t* path = (const wchar_t*)payload->Data;
+                std::wstring ws(path);
+                std::string pathS(ws.begin(), ws.end());
                 //TODO: Load the scene with the path
-                WI_INFO("Trying to load payload at path");
+                WI_INFO("Trying to load payload at path {0}", pathS.c_str());
             }
 
             ImGui::EndDragDropTarget();
