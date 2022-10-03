@@ -6,6 +6,8 @@
 #include <string>
 #include <sstream>
 
+#include <glew.h>
+
 namespace Wiwa {
 	Shader::Shader()
 	{
@@ -113,9 +115,43 @@ namespace Wiwa {
 		m_AllOk = true;
 	}
 
+	void Shader::Use()
+	{
+		glUseProgram(m_IDprogram);
+	}
+
+	void Shader::Delete()
+	{
+		glDeleteProgram(m_IDprogram);
+	}
+
 	unsigned int Shader::getUniformLocation(const char * uniform_name)
 	{
 		return glGetUniformLocation(m_IDprogram, uniform_name);
+	}
+
+	void Shader::setUniformMat4(unsigned int uniform_id, glm::mat4 value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void Shader::setUniformFloat(unsigned int uniform_id, float value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform1f(uniform_id, value);
+	}
+
+	void Shader::setUniformVec3(unsigned int uniform_id, glm::vec3 value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform3f(uniform_id, value.x, value.y, value.z);
+	}
+
+	void Shader::setUniformVec4(unsigned int uniform_id, glm::vec4 value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform4f(uniform_id, value.r, value.g, value.b, value.a);
 	}
 
 	std::string* Shader::getFileData(const char * file)

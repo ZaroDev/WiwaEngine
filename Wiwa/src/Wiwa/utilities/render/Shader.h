@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glew.h>
-
 #include <Wiwa/Log.h>
 
 #include <string>
@@ -23,14 +21,19 @@ namespace Wiwa {
 
 		void Init(const GLchar* filename);
 		GLuint getID() { return m_IDprogram; }
-		void Use() { glUseProgram(m_IDprogram); }
-		void Delete() { glDeleteProgram(m_IDprogram); }
+		void Use();
+		void Delete();
 
 		bool getAllOk() { return m_AllOk; }
 
 		unsigned int getUniformLocation(const char* uniform_name);
 
 		template<class T> void setUniform(unsigned int uniform_id, T value);
+
+		void setUniformMat4(unsigned int uniform_id, glm::mat4 value);
+		void setUniformFloat(unsigned int uniform_id, float value);
+		void setUniformVec3(unsigned int uniform_id, glm::vec3 value);
+		void setUniformVec4(unsigned int uniform_id, glm::vec4 value);
 	private:
 		std::string* getFileData(const char* file);
 		GLuint m_IDprogram;
@@ -39,26 +42,22 @@ namespace Wiwa {
 
 	template<>
 	inline void Shader::setUniform<glm::mat4>(unsigned int uniform_id, glm::mat4 value) {
-		glUseProgram(m_IDprogram);
-		glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(value));
+		setUniformMat4(uniform_id, value);
 	}
 
 	template<>
 	inline void Shader::setUniform<float>(unsigned int uniform_id, float value) {
-		glUseProgram(m_IDprogram);
-		glUniform1f(uniform_id, value);
+		setUniformFloat(uniform_id, value);
 	}
 
 	template<>
 	inline void Shader::setUniform<glm::vec3>(unsigned int uniform_id, glm::vec3 value) {
-		glUseProgram(m_IDprogram);
-		glUniform3f(uniform_id, value.x, value.y, value.z);
+		setUniformVec3(uniform_id, value);
 	}
 
 	template<>
 	inline void Shader::setUniform<glm::vec4>(unsigned int uniform_id, glm::vec4 value) {
-		glUseProgram(m_IDprogram);
-		glUniform4f(uniform_id, value.r, value.g, value.b, value.a);
+		setUniformVec4(uniform_id, value);
 	}
 
 	template<class T>
