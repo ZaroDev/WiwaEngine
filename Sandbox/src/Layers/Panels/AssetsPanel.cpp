@@ -5,13 +5,11 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
 
-//TODO: Change withing projects
-static const std::filesystem::path s_AssetsPath = "Assets";
-
 AssetsPanel::AssetsPanel()
-	: Panel("Assets"), m_CurrentPath(s_AssetsPath)
+	: Panel("Assets")
 {
-	//TODO: Load the icons textures
+	m_Directory.path = "Assets";
+	m_CurrentPath = m_Directory.path;
 	ResourceId folderId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
 	ResourceId fileId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/file_icon.png");
 	m_FolderIcon = Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
@@ -19,6 +17,10 @@ AssetsPanel::AssetsPanel()
 }
 
 AssetsPanel::~AssetsPanel()
+{
+}
+
+void AssetsPanel::Update()
 {
 }
 
@@ -37,15 +39,15 @@ void AssetsPanel::Draw()
 		{
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			for (auto& directoryEntry : std::filesystem::directory_iterator(s_AssetsPath))
+			for (auto& path : m_Directory.directories)
 			{
-				DisplayNode(directoryEntry);
+				DisplayNode(path);
 			}
 			ImGui::EndTable();
 		}
 		ImGui::TableNextColumn();
 
-		if (m_CurrentPath != std::filesystem::path(s_AssetsPath))
+		if (m_CurrentPath != std::filesystem::path(m_Directory.path))
 		{
 			if (ImGui::Button("<-"))
 			{
@@ -69,16 +71,16 @@ void AssetsPanel::Draw()
 		if (ImGui::BeginTable("##assets", columnCount))
 		{
 			int id = 0;
-			for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentPath))
+			for (auto& directoryEntry : m_Directory.directories)
 			{
 				ImGui::TableNextColumn();
 				ImGui::PushID(id++);
 
-				const auto& path = directoryEntry.path();
-				auto relativePath = std::filesystem::relative(directoryEntry.path(), s_AssetsPath);
+				const auto& path = directoryEntry.path;
+				auto relativePath = std::filesystem::relative(directoryEntry.path, m_Directory.path);
 				std::string filenameString = relativePath.filename().string();
-
-				uint32_t texID = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
+				bool isDir = std::filesystem::is_directory(path);
+				uint32_t texID = isDir ? m_FolderIcon : m_FileIcon;
 
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
@@ -93,7 +95,7 @@ void AssetsPanel::Draw()
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 				{
-					if (directoryEntry.is_directory())
+					if (isDir)
 						m_CurrentPath /= path.filename();
 					else
 						Wiwa::Application::Get().OpenDir(path.string().c_str());
@@ -108,32 +110,19 @@ void AssetsPanel::Draw()
 		}
 		ImGui::EndTable();
 	}
-	//if(op)
-	//	ImGui::OpenPopup("Warning##openfile");
-	//if (ImGui::BeginPopupModal("Warning##openfile"))
-	//{
-	//	
-	//	ImGui::Text("Opening file");
-	//	if (ImGui::Button("Close"))
-	//	{
-	//		ImGui::CloseCurrentPopup();
-
-	//	}
-	//	ImGui::EndPopup();
-	//}
 	
 	ImGui::End();
 }
 
-void AssetsPanel::DisplayNode(const std::filesystem::directory_entry& directoryEntry)
+void AssetsPanel::DisplayNode(Directory directoryEntry)
 {
-	const auto& path = directoryEntry.path();
+	const auto& path = directoryEntry.path;
 	
 	//ImGui::Text("%s", path.string().c_str());
 	//auto relativePath = std::filesystem::relative(directoryEntry.path(), s_EditorPath);
 	std::string filenameString = path.filename().string();
-	
-	if (directoryEntry.is_directory())
+	bool isDir = std::filesystem::is_directory(path);
+	if (isDir)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0, 0));
@@ -146,7 +135,7 @@ void AssetsPanel::DisplayNode(const std::filesystem::directory_entry& directoryE
 			bool open = ImGui::TreeNodeEx(str);
 			if (open)
 			{
-				for (auto& p : std::filesystem::directory_iterator(path))
+				for (auto& p : m_Directory.directories)
 				{
 					DisplayNode(p);
 				}
