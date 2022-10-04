@@ -4,6 +4,8 @@
 #include "wipch.h"
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
+#include <optick.h>
+
 
 AssetsPanel::AssetsPanel()
 	: Panel("Assets")
@@ -22,14 +24,15 @@ AssetsPanel::~AssetsPanel()
 
 void AssetsPanel::Update()
 {
+	OPTICK_EVENT();
 }
 
 void AssetsPanel::Draw()
 {
 
+	OPTICK_EVENT();
 	ImGui::Begin(name, &active);
 
-	
 	/*bool op = false;*/
 	//ImGui::Text(m_SearchPath.string().c_str());
 	if (ImGui::BeginTable("##content_browser", 2, ImGuiTableFlags_Resizable))

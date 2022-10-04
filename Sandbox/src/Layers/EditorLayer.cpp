@@ -15,6 +15,8 @@
 #include "Panels/InspectorPanel.h"
 #include "Panels/PlayPanel.h"
 
+#include <optick.h>
+
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -57,12 +59,16 @@ void EditorLayer::OnDetach()
 
 void EditorLayer::OnUpdate()
 {
+	OPTICK_FRAME("OnUpdate");
+	OPTICK_EVENT();
 	if(m_Configuration->active)
 		m_Configuration->Update();
 }
 
 void EditorLayer::OnImGuiRender()
 {
+	OPTICK_FRAME("OnImguiRender");
+	OPTICK_EVENT();
 	ImGuiContext* ctx = Wiwa::Application::Get().GetImGuiContext();
 	ImGui::SetCurrentContext(ctx);
 
@@ -85,6 +91,7 @@ void EditorLayer::OnImGuiRender()
 
 void EditorLayer::OnEvent(Wiwa::Event& event)
 {
+	OPTICK_EVENT();
 }
 
 void EditorLayer::MainMenuBar()

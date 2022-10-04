@@ -14,6 +14,8 @@
 #include <Windows.h>
 
 
+
+
 #define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
 #define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
 
@@ -25,9 +27,9 @@ namespace Wiwa {
 
 	Application::Application()
 	{
+
 		WI_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
-
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
@@ -73,11 +75,14 @@ namespace Wiwa {
 
 	Application::~Application()
 	{
+
 	}
 	void Application::Run()
 	{
 		while (m_Running)
 		{
+			OPTICK_FRAME("Application Loop");
+			OPTICK_EVENT();
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
@@ -106,6 +111,7 @@ namespace Wiwa {
 	void Application::Quit()
 	{
 		m_Running = false;
+	
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
