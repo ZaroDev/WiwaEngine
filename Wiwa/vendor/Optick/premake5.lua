@@ -1,5 +1,5 @@
 project "Optick"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C"
 	staticruntime "off"
 

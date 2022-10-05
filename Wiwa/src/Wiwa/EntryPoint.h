@@ -1,5 +1,5 @@
 #pragma once
-#include <optick.h>
+
 #ifdef WI_PLATFORM_WINDOWS
 extern Wiwa::Application* Wiwa::CreateApplication();
 

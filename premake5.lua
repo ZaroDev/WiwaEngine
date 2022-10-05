@@ -19,6 +19,7 @@ IncludeDirs["PCG"] = "Wiwa/vendor/PCG/include"
 IncludeDirs["JSON"] = "Wiwa/vendor/rapidjson"
 IncludeDirs["XML"] = "Wiwa/vendor/pugixml/src"
 IncludeDirs["Optick"] = "Wiwa/vendor/Optick/include"
+IncludeDirs["assimp"] = "Wiwa/vendor/assimp"
  
 include "Wiwa/vendor/GLFW"
 include "Wiwa/vendor/imgui"
@@ -58,7 +59,8 @@ project "Wiwa"
 		"%{IncludeDirs.PCG}",
 		"%{IncludeDirs.JSON}",
 		"%{IncludeDirs.XML}",
-		"%{IncludeDirs.Optick}"
+		"%{IncludeDirs.Optick}",
+		"%{IncludeDirs.assimp}"
 	}
 
 	links
@@ -67,7 +69,8 @@ project "Wiwa"
 		"ImGui",
 		"opengl32.lib",
 		"Wiwa/vendor/Glew/lib/glew32.lib",
-		"Optick"
+		"Optick",
+		"Wiwa/vendor/assimp/libx86/assimp-vc142-mt.lib"
 	}
 	filter "system:windows"
 		cppdialect "C++17"
