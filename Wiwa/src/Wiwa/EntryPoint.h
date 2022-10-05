@@ -1,5 +1,5 @@
 #pragma once
-
+#include <optick.h>
 #ifdef WI_PLATFORM_WINDOWS
 extern Wiwa::Application* Wiwa::CreateApplication();
 
@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 
 	auto app = Wiwa::CreateApplication();
 	app->Run();
+
 	delete app;
 }
 #endif // ZO_PLATFORM_WINDOWS

@@ -20,7 +20,7 @@
 *.a
 
 # Executables
-*.exe
+
 *.out
 *.app
 *.sln
@@ -28,7 +28,8 @@
 *.vcxproj.filters
 *.vcxproj.user
 *.ini
-!/vendor/premake
+/Editor/Sandbox.exe
+/Editor/Assets
 # Temp
 bin
 bin-int

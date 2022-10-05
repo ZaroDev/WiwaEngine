@@ -18,9 +18,11 @@ IncludeDirs["GLM"] = "Wiwa/vendor/glm/glm"
 IncludeDirs["PCG"] = "Wiwa/vendor/PCG/include"
 IncludeDirs["JSON"] = "Wiwa/vendor/rapidjson"
 IncludeDirs["XML"] = "Wiwa/vendor/pugixml/src"
-
+IncludeDirs["Optick"] = "Wiwa/vendor/Optick/include"
+ 
 include "Wiwa/vendor/GLFW"
 include "Wiwa/vendor/imgui"
+include "Wiwa/vendor/Optick"
 
 project "Wiwa"
 	location "Wiwa"
@@ -34,8 +36,8 @@ project "Wiwa"
 	pchheader "wipch.h"
 	pchsource "Wiwa/src/wipch.cpp"
 
-	ignoredefaultlibraries {
-
+	ignoredefaultlibraries 
+	{
 		"libcmtd"
 	}
 	
@@ -55,7 +57,8 @@ project "Wiwa"
 		"%{IncludeDirs.Glew}",
 		"%{IncludeDirs.PCG}",
 		"%{IncludeDirs.JSON}",
-		"%{IncludeDirs.XML}"
+		"%{IncludeDirs.XML}",
+		"%{IncludeDirs.Optick}"
 	}
 
 	links
@@ -63,7 +66,8 @@ project "Wiwa"
 		"GLFW",
 		"ImGui",
 		"opengl32.lib",
-		"Wiwa/vendor/Glew/lib/glew32.lib"
+		"Wiwa/vendor/Glew/lib/glew32.lib",
+		"Optick"
 	}
 	filter "system:windows"
 		cppdialect "C++17"
@@ -120,13 +124,15 @@ project "Sandbox"
 		"Wiwa/vendor/spdlog/include",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.GLM}",
-		"Wiwa/src"
+		"Wiwa/src",
+		"%{IncludeDirs.Optick}"
 	}
 
 	links
 	{
 		"Wiwa",
-		"ImGui"
+		"ImGui",
+		"Optick"
 	}
 
 	debugdir "$(SolutionDir)/Editor"

@@ -13,6 +13,8 @@
 
 #include "../vendor/stb/stb_image.h"
 
+
+
 namespace Wiwa {
 
 	static bool s_GLFWInitialized = false;
@@ -61,7 +63,7 @@ namespace Wiwa {
 		GLenum status = glewInit();
 		WI_CORE_ASSERT(status, "Failed to initialize Glad!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(false);
+		SetVSync(true);
 		SetResizable(true);
 		//Set GLFW callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)

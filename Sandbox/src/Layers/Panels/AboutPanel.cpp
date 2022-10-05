@@ -31,6 +31,7 @@ void AboutPanel::Draw()
 	ImGui::BulletText("PugiXML v1.6");
 	ImGui::BulletText("RapiJson v1.1.0");
 	ImGui::BulletText("Spdlog v1.10.0");
+	ImGui::BulletText("Optick v1.4.0");
 	ImGui::Separator();
 	ImGui::Text("MIT License\n");
 	ImGui::Text("Copyright (c) 2022 Xymaru & ZaroDev");
