@@ -148,7 +148,7 @@ namespace Wiwa {
 		Application& app = Application::Get();
 
 		for (size_t i = 0; i < m_ComponentCount; i++) {
-			m_Components[i][index] = app.GetEntityManager()->GetComponent(m_RegisteredEntities[index], m_ComponentIds[i], m_ComponentSize[i]);
+			m_Components[i][index] = app.GetEntityManager().GetComponent(m_RegisteredEntities[index], m_ComponentIds[i], m_ComponentSize[i]);
 		}
 	}
 
@@ -167,7 +167,7 @@ namespace Wiwa {
 	{
 		Application& app = Application::Get();
 
-		bool valid = app.GetEntityManager()->HasComponents(entity, m_ComponentIds, m_ComponentCount);
+		bool valid = app.GetEntityManager().HasComponents(entity, m_ComponentIds, m_ComponentCount);
 
 		if (valid) {
 			AddEntity(entity);
@@ -184,7 +184,7 @@ namespace Wiwa {
 
 		size_t c_i = GetComponentIndex<C>();
 
-		m_ComponentIds[c_i] = app.GetEntityManager()->GetComponentId<C>();
+		m_ComponentIds[c_i] = app.GetEntityManager().GetComponentId<C>();
 		m_ComponentSize[c_i] = sizeof(C);
 	}
 
@@ -204,7 +204,7 @@ namespace Wiwa {
 
 		Application& app = Application::Get();
 
-		m_Components[cid][index] = app.GetEntityManager()->GetComponent(m_RegisteredEntities[index], m_ComponentIds[cid], m_ComponentSize[cid]);
+		m_Components[cid][index] = app.GetEntityManager().GetComponent(m_RegisteredEntities[index], m_ComponentIds[cid], m_ComponentSize[cid]);
 	}
 
 	template<class T, class T2, class ...TArgs>

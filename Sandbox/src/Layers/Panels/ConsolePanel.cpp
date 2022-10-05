@@ -19,5 +19,5 @@ void ConsolePanel::Draw()
 	ImGui::Begin(name, &active);
 
 	ImGui::End();
-	Wiwa::Application::Get().GetImGuiLayer()->GetLog().Draw(name, &active);
+	Wiwa::Application::Get().GetImGuiLayer().GetLog().Draw(name, &active);
 }

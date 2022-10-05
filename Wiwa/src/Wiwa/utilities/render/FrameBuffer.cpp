@@ -4,12 +4,9 @@
 #include <glew.h>
 #include <Wiwa/Log.h>
 
-#include <Wiwa/Application.h>
-
 namespace Wiwa {
-	void FrameBuffer::Init()
+	void FrameBuffer::Init(int width, int height)
 	{
-		Window& window = Application::Get().GetWindow();
 		// FRAMEBUFFER
 		glGenFramebuffers(1, &m_FBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
@@ -17,7 +14,7 @@ namespace Wiwa {
 		// Color texture
 		glGenTextures(1, &m_ColorBufferTexture);
 		glBindTexture(GL_TEXTURE_2D, m_ColorBufferTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window.GetWidth(), window.GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorBufferTexture, 0);
@@ -29,6 +26,9 @@ namespace Wiwa {
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			WI_CORE_ASSERT("Framebuffer not completed");
+		else
+			WI_CORE_INFO("Framebuffer completed");
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 

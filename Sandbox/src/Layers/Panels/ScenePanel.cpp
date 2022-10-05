@@ -4,6 +4,10 @@
 
 #include <imgui.h>
 
+#include <Wiwa/utilities/math/Math.h>
+#include <Wiwa/Application.h>
+#include <Wiwa/Renderer2D.h>
+
 ScenePanel::ScenePanel()
     : Panel("Scene")
 {
@@ -56,5 +60,20 @@ void ScenePanel::Draw()
         }
 
     }
+
+    ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+
+    Wiwa::Size2i resolution = Wiwa::Application::Get().GetTargetResolution();
+    Wiwa::Size2f scales = { viewportPanelSize.x / (float)resolution.w, viewportPanelSize.y / (float)resolution.h };
+
+    float scale = scales.x < scales.y ? scales.x : scales.y;
+
+    ImVec2 isize = { resolution.w * scale, resolution.h * scale };
+
+    ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer2D().getColorBufferTexture();
+
+    //ImGui::SetCursorPos(ImVec2((viewportPanelSize.x - isize.x) / 2, (viewportPanelSize.y - isize.y) / 2));
+    ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
+
     ImGui::End();
 }

@@ -19,7 +19,7 @@ namespace Wiwa {
 	{
 		int w, h, ch;
 
-		unsigned char* image = stbi_load(path, &w, &h, &ch, 0);
+		unsigned char* image = stbi_load(path, &w, &h, &ch, STBI_rgb_alpha);
 
 		if (!image) {
 			return false;
@@ -29,8 +29,8 @@ namespace Wiwa {
 		glBindTexture(GL_TEXTURE_2D, m_TextureId);
 
 		int PicType = GL_RGBA;
-		if (ch == 3)
-			PicType = GL_RGB;
+		/*if (ch == 3)
+			PicType = GL_RGB;*/
 		glTexImage2D(GL_TEXTURE_2D, 0, PicType, w, h, 0, PicType, GL_UNSIGNED_BYTE, image);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

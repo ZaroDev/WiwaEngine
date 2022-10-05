@@ -33,23 +33,23 @@ namespace Wiwa {
 
 	void Log::ImGuiLogTrace(const char* log)
 	{
-		Application::Get().GetImGuiLayer()->LogTrace(log);
+		Application::Get().GetImGuiLayer().LogTrace(log);
 	}
 
 	void Log::ImGuiLogInfo(const char* log)
 	{
-		Application::Get().GetImGuiLayer()->LogInfo(log);
+		Application::Get().GetImGuiLayer().LogInfo(log);
 	}
 	void Log::ImGuiLogWarn(const char* log)
 	{
-		Application::Get().GetImGuiLayer()->LogWarn(log);
+		Application::Get().GetImGuiLayer().LogWarn(log);
 	}
 	void Log::ImGuiLogError(const char* log)
 	{
-		Application::Get().GetImGuiLayer()->LogError(log);
+		Application::Get().GetImGuiLayer().LogError(log);
 	}
 	void Log::ImGuiLogCritical(const char* log)
 	{
-		Application::Get().GetImGuiLayer()->LogCritical(log);
+		Application::Get().GetImGuiLayer().LogCritical(log);
 	}
 }

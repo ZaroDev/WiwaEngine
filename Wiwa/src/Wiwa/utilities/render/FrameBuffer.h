@@ -11,7 +11,7 @@ namespace Wiwa {
 		// Future render buffer object for depth
 		//uint32 m_RBO;
 	public:
-		void Init();
+		void Init(int width, int height);
 		void Bind();
 		void Unbind();
 
