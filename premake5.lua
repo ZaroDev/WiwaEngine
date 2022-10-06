@@ -70,7 +70,7 @@ project "Wiwa"
 		"opengl32.lib",
 		"Wiwa/vendor/Glew/lib/glew32.lib",
 		"Optick",
-		"Wiwa/vendor/assimp/libx86/assimp-vc142-mt.lib"
+		"Wiwa/vendor/assimp/assimp/libx86/assimp-vc142-mt.lib"
 	}
 	filter "system:windows"
 		cppdialect "C++17"
