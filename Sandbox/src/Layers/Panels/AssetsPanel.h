@@ -24,6 +24,9 @@ public:
 
 
 	void Update() override;
+
+	void UpdateDir(const std::filesystem::directory_entry& p);
+
 	void Draw() override;
 
 	void DisplayNode(Directory directoryEntry);
@@ -33,4 +36,5 @@ private:
 	uint32_t m_FileIcon;
 	uint32_t m_FolderIcon;
 	Directory m_Directory;
+	std::filesystem::file_time_type lastWriteTime;
 };

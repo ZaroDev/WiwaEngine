@@ -141,7 +141,7 @@ project "Sandbox"
 	debugdir "$(SolutionDir)/Editor"
 
 	filter "system:windows"
-		cppdialect "C++17"
+		cppdialect "C++latest"
 		staticruntime "On"
 		systemversion "latest"
 

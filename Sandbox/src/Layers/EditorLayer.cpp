@@ -63,6 +63,8 @@ void EditorLayer::OnUpdate()
 	OPTICK_EVENT();
 	if(m_Configuration->active)
 		m_Configuration->Update();
+	if (m_Assets->active)
+		m_Assets->Update();
 }
 
 void EditorLayer::OnImGuiRender()

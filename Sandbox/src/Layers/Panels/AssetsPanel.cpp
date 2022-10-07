@@ -5,7 +5,16 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
 #include <optick.h>
+#include <format>
 
+//std::string serializeTimePoint(const std::filesystem::file_time_type &time, const std::string& format)
+//{
+//	std::time_t tt = std::chrono::system_clock::to_time_t(time);
+//	std::tm tm = *std::gmtime(&tt); //GMT (UTC)
+//	std::stringstream ss;
+//	ss << std::put_time(&tm, format.c_str());
+//	return ss.str();
+//}
 
 AssetsPanel::AssetsPanel()
 	: Panel("Assets")
@@ -22,10 +31,42 @@ AssetsPanel::~AssetsPanel()
 {
 }
 
-void AssetsPanel::Update()
-{
-	OPTICK_EVENT();
-}
+//void AssetsPanel::Update()
+//{
+//	auto lastWrite = std::filesystem::last_write_time(m_Directory.path);
+//	if (lastWriteTime != lastWrite)
+//	{
+//		WI_INFO("Updated {0} Folder!", m_Directory.path.string().c_str());
+//		for (auto& p : std::filesystem::directory_iterator(m_Directory.path))
+//		{
+//			UpdateDir(p);
+//		}
+//		lastWriteTime = lastWrite;
+//	}
+//
+//}
+//
+//void AssetsPanel::UpdateDir(const std::filesystem::directory_entry& p)
+//{	
+//	if (p.is_directory())
+//	{
+//		Directory dir;
+//		dir.path = p.path();
+//		m_Directory.directories.push_back(dir);
+//		for (auto& path : std::filesystem::directory_iterator(p))
+//		{
+//			UpdateDir(p);
+//		}
+//	}
+//	else
+//	{
+//		File file;
+//		file.path = p.path();
+//		file.size = p.file_size();
+//		m_Directory.files.push_back(file);
+//	}
+//}
+
 
 void AssetsPanel::Draw()
 {
@@ -97,15 +138,37 @@ void AssetsPanel::Draw()
 				}
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-				{
-					if (isDir)
-						m_CurrentPath /= path.filename();
-					else
-						Wiwa::Application::Get().OpenDir(path.string().c_str());
-				}
+					m_CurrentPath /= path.filename();	
 
 				ImGui::TextWrapped(filenameString.c_str());
+				ImGui::PopID();
+			}
+			for (auto& directoryEntry : m_Directory.files)
+			{
+				ImGui::TableNextColumn();
+				ImGui::PushID(id++);
 
+				const auto& path = directoryEntry.path;
+				auto relativePath = std::filesystem::relative(directoryEntry.path, m_Directory.path);
+				std::string filenameString = relativePath.filename().string();
+				bool isDir = std::filesystem::is_directory(path);
+				uint32_t texID = isDir ? m_FolderIcon : m_FileIcon;
+
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
+				ImGui::PopStyleColor();
+
+				if (ImGui::BeginDragDropSource())
+				{
+					const wchar_t* itemPath = relativePath.c_str();
+					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
+					ImGui::EndDragDropSource();
+				}
+
+				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+					Wiwa::Application::Get().OpenDir(directoryEntry.path.string().c_str());
+
+				ImGui::TextWrapped(filenameString.c_str());
 				ImGui::PopID();
 			}
 
