@@ -27,6 +27,7 @@ namespace Wiwa {
 		size_t m_ComponentIdCount;
 
 		std::vector<byte*> m_Components;
+		std::vector<const Type*> m_ComponentTypes;
 		std::unordered_map<size_t, componentData> m_ComponentIds;
 		std::vector<size_t> m_ComponentsSize;
 		std::vector<size_t> m_ComponentsReserved;
@@ -55,11 +56,13 @@ namespace Wiwa {
 		// Create entity
 		EntityId CreateEntity();
 
-
-		inline size_t GetEntityCount() { return m_EntityComponents.size(); };
+		inline std::map<ComponentId, size_t>& GetEntityComponents(EntityId id) { return m_EntityComponents[id]; }
+		inline size_t GetEntityCount() { return m_EntityComponents.size(); }
+		inline const Type* GetComponentType(ComponentId id) { return m_ComponentTypes[id]; }
 		// Component functions
 		template<class T> T* AddComponent(EntityId entity, T value = {});
 		template<class T> T* GetComponents(size_t* size);
+		inline byte* GetComponents(ComponentId id) { return m_Components[id]; }
 
 		template<class T> void AddComponents(EntityId entity, T arg = {});
 		template<class T, class T2, class... TArgs> void AddComponents(EntityId entity, T arg1, T2 arg2, TArgs... args);
@@ -162,6 +165,8 @@ namespace Wiwa {
 				m_Components[cid] = block;
 				m_ComponentsSize[cid]++;
 				ec->insert_or_assign(cid, 0);
+
+				m_ComponentTypes.push_back(GetType<T>());
 			}
 			else {
 				// If more components reserved, just construct me TOO MEEEEEEEEEEEEE :) :3 "^0^" ÙwÚ
@@ -270,6 +275,7 @@ namespace Wiwa {
 		}
 		else {
 			m_Components[cid] = new byte[amount * sizeof(T)];
+			m_ComponentTypes.push_back(GetType<T>());
 		}
 
 		m_ComponentsReserved[cid] = m_ComponentsSize[cid] + amount;
