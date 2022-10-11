@@ -4,14 +4,16 @@
 
 class ShadingView;
 
-class ScenePanel : public Panel
+class MeshViewPanel : public Panel
 {
 public:
-	ScenePanel();
-	virtual ~ScenePanel();
+	MeshViewPanel();
+	virtual ~MeshViewPanel();
 
 	void Draw() override;
 
 private:
 	std::vector<ShadingView*> m_Shadings;
+
+
 };

@@ -29,9 +29,6 @@ namespace Wiwa {
 		Size2i& res = Application::Get().GetTargetResolution();
 
 		for (size_t i = 0; i < size; i++) {
-			t2d[i]->position.x = (t2d[i]->position.x + 1) % res.w;
-			t2d[i]->position.y = (t2d[i]->position.y + 1) % res.h;
-
 			r2d.UpdateInstancedQuadTex(i, t2d[i]->position, spr[i]->pivot);
 		}
 	}

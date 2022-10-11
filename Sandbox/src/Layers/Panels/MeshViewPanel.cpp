@@ -1,6 +1,6 @@
 #include "wipch.h"
 
-#include "ScenePanel.h"
+#include "MeshViewPanel.h"
 #include "../../ShadingView.h"
 
 #include <imgui.h>
@@ -9,8 +9,8 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/Renderer2D.h>
 
-ScenePanel::ScenePanel()
-    : Panel("Scene")
+MeshViewPanel::MeshViewPanel()
+    : Panel("Mesh view")
 {
     
     m_Shadings.push_back(new ShadingView("Shading", true));
@@ -19,11 +19,11 @@ ScenePanel::ScenePanel()
     m_Shadings.push_back(new ShadingView("XD", false));
 }
 
-ScenePanel::~ScenePanel()
+MeshViewPanel::~MeshViewPanel()
 {
 }
 
-void ScenePanel::Draw()
+void MeshViewPanel::Draw()
 {
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
 

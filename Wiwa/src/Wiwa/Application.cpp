@@ -13,14 +13,11 @@
 #include <shellapi.h>
 #include <Windows.h>
 
-#include "Renderer2D.h"
-
-
-
 #define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
 #define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
 
-#include "ecs/systems/SpriteRenderer.h"
+#include "Renderer2D.h"
+#include "Renderer3D.h"
 
 namespace Wiwa {
 
@@ -30,7 +27,6 @@ namespace Wiwa {
 
 	Application::Application()
 	{
-
 		WI_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
@@ -51,40 +47,44 @@ namespace Wiwa {
 		m_EntityManager = new EntityManager();
 		PushLayer(m_EntityManager);
 
-		m_Renderer = new Renderer2D();
-		m_Renderer->Init();
+		m_Renderer2D = new Renderer2D();
+		m_Renderer2D->Init();
+
+		m_Renderer3D = new Renderer3D();
+		m_Renderer3D->Init();
 
 		// test
-		ResourceId tree = Resources::Load<Image>("resources/images/tree.png");
+		// TODO: REMOVE TEST
+		//ResourceId tree = Resources::Load<Image>("resources/images/tree.png");
 
-		m_EntityManager->RegisterSystem<SpriteRenderer>();
+		//m_EntityManager->RegisterSystem<SpriteRenderer>();
 
-		m_EntityManager->ReserveEntities(MAXQUADS);
-		m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
-		m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);
-		m_EntityManager->ReserveComponent<Transform2D>(MAXQUADS);
-		
-		Image* spr = Resources::GetResourceById<Image>(tree);
-		Size2i size = spr->GetSize();
+		//m_EntityManager->ReserveEntities(MAXQUADS);
+		//m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
+		//m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);
+		//m_EntityManager->ReserveComponent<Transform2D>(MAXQUADS);
+		//
+		//Image* spr = Resources::GetResourceById<Image>(tree);
+		//Size2i size = spr->GetSize();
 
-		for (int i = 0; i < MAXQUADS; i++) {
-			EntityId EntityMyTree = m_EntityManager->CreateEntity();
-			int x = (i * 32) % m_TargetResolution.w;
-			int y = (i * 32) % m_TargetResolution.h;
+		//for (int i = 0; i < MAXQUADS; i++) {
+		//	EntityId EntityMyTree = m_EntityManager->CreateEntity();
+		//	int x = (i * 32) % m_TargetResolution.w;
+		//	int y = (i * 32) % m_TargetResolution.h;
 
-			/*entityManager->AddComponent<Sprite>(EntityMyTree, { {32,32}, KawaiTree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
-			entityManager->AddComponent<Transform2D>(EntityMyTree, { {x,y},0.f,{1.0,1.0} });*/
+		//	/*entityManager->AddComponent<Sprite>(EntityMyTree, { {32,32}, KawaiTree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
+		//	entityManager->AddComponent<Transform2D>(EntityMyTree, { {x,y},0.f,{1.0,1.0} });*/
 
-			/*m_EntityManager->AddComponents<Sprite, Transform2D>(EntityMyTree,
-				{ {32,32}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2 }, Renderer2D::Pivot::UPLEFT },
-				{ {x,y},0.f,{1.0,1.0} }
-			);*/
+		//	/*m_EntityManager->AddComponents<Sprite, Transform2D>(EntityMyTree,
+		//		{ {32,32}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2 }, Renderer2D::Pivot::UPLEFT },
+		//		{ {x,y},0.f,{1.0,1.0} }
+		//	);*/
 
-			m_EntityManager->AddComponents<Sprite, Transform2D>(EntityMyTree,
-				{ {32,32}, tree,{0, 0, size.w, size.h }, Renderer2D::Pivot::UPLEFT },
-				{ {x,y},0.0f,{1.0,1.0} }
-			);
-		}
+		//	m_EntityManager->AddComponents<Sprite, Transform2D>(EntityMyTree,
+		//		{ {32,32}, tree,{0, 0, size.w, size.h }, Renderer2D::Pivot::UPLEFT },
+		//		{ {x,y},0.0f,{1.0,1.0} }
+		//	);
+		//}
 	}
 
 	void Application::SetHwInfo()
@@ -126,7 +126,8 @@ namespace Wiwa {
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			m_Renderer->Update();
+			m_Renderer2D->Update();
+			m_Renderer3D->Update();
 
 			m_Time = (float)glfwGetTime();
 

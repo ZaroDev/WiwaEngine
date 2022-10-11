@@ -159,9 +159,7 @@ namespace Wiwa {
 
 	void Renderer2D::UpdateInstanced()
 	{
-		Size2i& resolution = Application::Get().GetTargetResolution();
-
-		glViewport(0, 0, resolution.w, resolution.h);
+		glViewport(0, 0, m_FrameBuffer.getWidth(), m_FrameBuffer.getHeight());
 
 		m_FrameBuffer.Bind();
 

@@ -14,6 +14,7 @@
 #include "Panels/AssetsPanel.h"
 #include "Panels/InspectorPanel.h"
 #include "Panels/PlayPanel.h"
+#include "Panels/MeshViewPanel.h"
 
 #include <optick.h>
 
@@ -38,6 +39,7 @@ void EditorLayer::OnAttach()
 	m_Assets = std::make_shared<AssetsPanel>();
 	m_Inspector = std::make_shared<InspectorPanel>();
 	m_Play = std::make_shared<PlayPanel>();
+	m_MeshView = std::make_shared<MeshViewPanel>();
 
 	m_Panels.push_back(m_Configuration);
 	m_Panels.push_back(m_Console);
@@ -45,6 +47,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_Hierarchy);
 	m_Panels.push_back(m_Assets);
 	m_Panels.push_back(m_Inspector);
+	m_Panels.push_back(m_MeshView);
 
 	LoadPanelConfig();
 

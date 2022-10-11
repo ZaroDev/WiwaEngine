@@ -18,16 +18,24 @@
 //#include "Empathy/headers/utilities/renderer/Batch.h"
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
+#include <Wiwa/utilities/render/Mesh.h>
 
 namespace Wiwa {
-	class InstanceRenderer;
-
 	class WI_API Renderer3D {
 	public:
 
 	private:
 		// Default FrameBuffer
 		FrameBuffer m_FrameBuffer;
+
+		// Color shader
+		ResourceId m_ColorShaderId;
+		Shader* m_ColorShader;
+
+		uint32_t m_CSColorUniformLocation;
+		uint32_t m_CSModelUniformLocation;
+		uint32_t m_CSViewUniformLocation;
+		uint32_t m_CSProjectionUniformLocation;
 
 		glm::mat4 m_PersProj;
 		glm::mat4 m_View;
@@ -38,6 +46,8 @@ namespace Wiwa {
 
 		bool Init();
 		void Update();
+
+		void RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL);
 
 		void Close();
 

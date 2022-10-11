@@ -7,6 +7,9 @@
 namespace Wiwa {
 	void FrameBuffer::Init(int width, int height)
 	{
+		m_Width = width;
+		m_Height = height;
+
 		// FRAMEBUFFER
 		glGenFramebuffers(1, &m_FBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);

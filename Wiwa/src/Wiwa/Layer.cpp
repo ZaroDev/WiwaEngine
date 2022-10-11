@@ -10,5 +10,6 @@ namespace Wiwa
 
 	Layer::~Layer()
 	{
+		
 	}
 }

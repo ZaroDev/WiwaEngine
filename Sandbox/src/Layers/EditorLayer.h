@@ -35,6 +35,7 @@ private:
 	std::shared_ptr<Panel> m_Assets = nullptr;
 	std::shared_ptr<Panel> m_Inspector = nullptr;
 	std::shared_ptr<Panel> m_Play = nullptr;
+	std::shared_ptr<Panel> m_MeshView = nullptr;
 
 	std::vector<std::shared_ptr<Panel>> m_Panels;
 };

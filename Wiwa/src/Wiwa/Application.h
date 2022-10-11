@@ -13,6 +13,7 @@ namespace Wiwa {
 	
 	class EntityManager;
 	class Renderer2D;
+	class Renderer3D;
 
 	struct SysInfo
 	{
@@ -46,7 +47,8 @@ namespace Wiwa {
 		inline static Application& Get() { return *s_Instance; }
 
 		inline Window& GetWindow() { return *m_Window; }
-		inline Renderer2D& GetRenderer2D(){ return *m_Renderer; }
+		inline Renderer2D& GetRenderer2D(){ return *m_Renderer2D; }
+		inline Renderer3D& GetRenderer3D() { return *m_Renderer3D; }
 		inline EntityManager& GetEntityManager() { return *m_EntityManager; }
 		inline ImGuiLayer& GetImGuiLayer() { return *m_ImGuiLayer; }
 
@@ -71,7 +73,8 @@ namespace Wiwa {
 
 		float m_Time = 0.0f;
 
-		Renderer2D* m_Renderer;
+		Renderer2D* m_Renderer2D;
+		Renderer3D* m_Renderer3D;
 
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
