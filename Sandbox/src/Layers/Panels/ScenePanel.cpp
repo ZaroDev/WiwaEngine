@@ -9,14 +9,20 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/Renderer2D.h>
 
+
+
+
 ScenePanel::ScenePanel()
     : Panel("Scene")
 {
     
-    m_Shadings.push_back(new ShadingView("Shading", true));
-    m_Shadings.push_back(new ShadingView("Wireframe", false));
-    m_Shadings.push_back(new ShadingView("Light", false));
-    m_Shadings.push_back(new ShadingView("XD", false));
+    m_Shadings.push_back(new ShadingView("Depth Test", Wiwa::Renderer3D::Options::DEPTH_TEST, false));
+    m_Shadings.push_back(new ShadingView("Cull face", Wiwa::Renderer3D::Options::CULL_FACE, false));
+    m_Shadings.push_back(new ShadingView("Lighting", Wiwa::Renderer3D::Options::LIGHTING, false));
+    m_Shadings.push_back(new ShadingView("Color material", Wiwa::Renderer3D::Options::COLOR_MATERIAL, false));
+    m_Shadings.push_back(new ShadingView("Texture 2D", Wiwa::Renderer3D::Options::TEXTURE_2D, false));
+    m_Shadings.push_back(new ShadingView("Wireframe", Wiwa::Renderer3D::Options::WIREFRAME, false));
+
 }
 
 ScenePanel::~ScenePanel()
@@ -29,13 +35,15 @@ void ScenePanel::Draw()
 
     if (ImGui::BeginMenuBar())
     {
-        if (ImGui::BeginMenu("Shading"))
+
+        if (ImGui::BeginMenu("Options"))
         {
             for (auto c : m_Shadings)
             {
                 if (ImGui::MenuItem(c->name, "", &c->active))
                 {
-                    WI_INFO("{0}, {1}", c->name, c->active);
+                    if (c->active) Wiwa::Application::Get().GetRenderer3D().SetOption(c->glValue);
+                    else Wiwa::Application::Get().GetRenderer3D().DisableOption(c->glValue);
                 }
             }
             ImGui::EndMenu();

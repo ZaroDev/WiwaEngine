@@ -31,21 +31,20 @@ AssetsPanel::~AssetsPanel()
 {
 }
 
-//void AssetsPanel::Update()
-//{
-//	auto lastWrite = std::filesystem::last_write_time(m_Directory.path);
-//	if (lastWriteTime != lastWrite)
-//	{
-//		WI_INFO("Updated {0} Folder!", m_Directory.path.string().c_str());
-//		for (auto& p : std::filesystem::directory_iterator(m_Directory.path))
-//		{
-//			UpdateDir(p);
-//		}
-//		lastWriteTime = lastWrite;
-//	}
-//
-//}
-//
+void AssetsPanel::Update()
+{
+	auto lastWrite = std::filesystem::last_write_time(m_Directory.path);
+	if (lastWriteTime != lastWrite)
+	{
+		WI_INFO("Updated {0} Folder!", m_Directory.path.string().c_str());
+		for (auto& p : std::filesystem::directory_iterator(m_Directory.path))
+		{
+			//UpdateDir(p);
+		}
+		lastWriteTime = lastWrite;
+	}
+}
+
 //void AssetsPanel::UpdateDir(const std::filesystem::directory_entry& p)
 //{	
 //	if (p.is_directory())

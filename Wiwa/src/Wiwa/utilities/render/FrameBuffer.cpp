@@ -33,6 +33,7 @@ namespace Wiwa {
 			WI_CORE_INFO("Framebuffer completed");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	}
 
 	void FrameBuffer::Bind()

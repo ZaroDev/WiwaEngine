@@ -31,13 +31,21 @@ namespace Wiwa {
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
 	};
 }
-
+#ifdef WI_DEBUG
 //Core log macros
 #define WI_CORE_TRACE(...)      ::Wiwa::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define WI_CORE_INFO(...)       ::Wiwa::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define WI_CORE_WARN(...)       ::Wiwa::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define WI_CORE_ERROR(...)      ::Wiwa::Log::GetCoreLogger()->error(__VA_ARGS__)
 #define WI_CORE_CRITICAL(...)      ::Wiwa::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#else
+#define WI_CORE_TRACE(...)   
+#define WI_CORE_INFO(...)    
+#define WI_CORE_WARN(...)    
+#define WI_CORE_ERROR(...)   
+#define WI_CORE_CRITICAL(...)
+#endif
+
 
 //Client log macros
 #define WI_TRACE(...)           ::Wiwa::Log::GetClientLogger()->trace(__VA_ARGS__); ::Wiwa::Log::ImGuiLogTrace(::Wiwa::Log::GetClientLastLog())

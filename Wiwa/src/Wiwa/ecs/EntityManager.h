@@ -55,6 +55,8 @@ namespace Wiwa {
 		// Create entity
 		EntityId CreateEntity();
 
+
+		inline size_t GetEntityCount() { return m_EntityComponents.size(); };
 		// Component functions
 		template<class T> T* AddComponent(EntityId entity, T value = {});
 		template<class T> T* GetComponents(size_t* size);

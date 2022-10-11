@@ -14,5 +14,10 @@ InspectorPanel::~InspectorPanel()
 void InspectorPanel::Draw()
 {
 	ImGui::Begin(name, &active);
+
 	ImGui::End();
+}
+
+void InspectorPanel::Update()
+{
 }

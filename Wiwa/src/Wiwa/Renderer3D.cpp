@@ -72,6 +72,64 @@ namespace Wiwa {
 		target->Unbind();
 	}
 
+	void Renderer3D::SetOption(Options option)
+	{
+		switch (option)
+		{
+		case Wiwa::Renderer3D::DEPTH_TEST:
+			glEnable(GL_DEPTH_TEST);
+			break;
+		case Wiwa::Renderer3D::CULL_FACE:
+			glEnable(GL_CULL_FACE);
+			break;
+		case Wiwa::Renderer3D::LIGHTING:
+			glEnable(GL_LIGHTING);
+			break;
+		case Wiwa::Renderer3D::COLOR_MATERIAL:
+			glEnable(GL_COLOR_MATERIAL);
+			break;
+		case Wiwa::Renderer3D::TEXTURE_2D:
+			glEnable(GL_TEXTURE_2D);
+			break;
+		case Wiwa::Renderer3D::WIREFRAME:
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			break;
+		default:
+			break;
+		}
+		WI_CORE_INFO("Option: {0} enabled!", option);
+	}
+
+	void Renderer3D::DisableOption(Options option)
+	{
+		switch (option)
+		{
+		case Wiwa::Renderer3D::DEPTH_TEST:
+			glDisable(GL_DEPTH_TEST);
+			break;
+		case Wiwa::Renderer3D::CULL_FACE:
+			glDisable(GL_CULL_FACE);
+			break;
+		case Wiwa::Renderer3D::LIGHTING:
+			glDisable(GL_LIGHTING);
+			break;
+		case Wiwa::Renderer3D::COLOR_MATERIAL:
+			glDisable(GL_COLOR_MATERIAL);
+			break;
+		case Wiwa::Renderer3D::TEXTURE_2D:
+			glDisable(GL_TEXTURE_2D);
+			break;
+		case Wiwa::Renderer3D::WIREFRAME:
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			break;
+		default:
+			break;
+		}
+		WI_CORE_INFO("Option: {0} disabled!", option);
+
+
+	}
+
 	void Renderer3D::Close()
 	{
 		

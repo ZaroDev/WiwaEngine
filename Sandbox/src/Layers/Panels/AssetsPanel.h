@@ -25,7 +25,7 @@ public:
 
 	void Update() override;
 
-	void UpdateDir(const std::filesystem::directory_entry& p);
+	//void UpdateDir(const std::filesystem::directory_entry& p);
 
 	void Draw() override;
 

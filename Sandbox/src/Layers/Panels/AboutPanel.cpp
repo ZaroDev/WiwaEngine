@@ -26,7 +26,7 @@ void AboutPanel::Draw()
 	ImGui::BulletText("GLFW v%s", info.glfwVer);
 	ImGui::BulletText("Glew v7.0");
 	ImGui::BulletText("ImGui v1.89");
-	ImGui::BulletText("MathGeoLib v1.5");
+	ImGui::BulletText("GLM v0.9.9.8");
 	ImGui::BulletText("PCG v0.9");
 	ImGui::BulletText("PugiXML v1.6");
 	ImGui::BulletText("RapiJson v1.1.0");

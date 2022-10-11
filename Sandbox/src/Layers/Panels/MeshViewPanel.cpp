@@ -13,10 +13,10 @@ MeshViewPanel::MeshViewPanel()
     : Panel("Mesh view")
 {
     
-    m_Shadings.push_back(new ShadingView("Shading", true));
-    m_Shadings.push_back(new ShadingView("Wireframe", false));
-    m_Shadings.push_back(new ShadingView("Light", false));
-    m_Shadings.push_back(new ShadingView("XD", false));
+    //m_Shadings.push_back(new ShadingView("Shading", true));
+    //m_Shadings.push_back(new ShadingView("Wireframe", false));
+    //m_Shadings.push_back(new ShadingView("Light", false));
+    //m_Shadings.push_back(new ShadingView("XD", false));
 }
 
 MeshViewPanel::~MeshViewPanel()
@@ -31,13 +31,13 @@ void MeshViewPanel::Draw()
     {
         if (ImGui::BeginMenu("Shading"))
         {
-            for (auto c : m_Shadings)
-            {
-                if (ImGui::MenuItem(c->name, "", &c->active))
-                {
-                    WI_INFO("{0}, {1}", c->name, c->active);
-                }
-            }
+            //for (auto c : m_Shadings)
+            //{
+            //    if (ImGui::MenuItem(c->name, "", &c->active))
+            //    {
+            //        WI_INFO("{0}, {1}", c->name, c->active);
+            //    }
+            //}
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();

@@ -23,7 +23,15 @@
 namespace Wiwa {
 	class WI_API Renderer3D {
 	public:
-
+		enum Options
+		{
+			DEPTH_TEST = 0,
+			CULL_FACE,
+			LIGHTING,
+			COLOR_MATERIAL,
+			TEXTURE_2D,
+			WIREFRAME
+		};
 	private:
 		// Default FrameBuffer
 		FrameBuffer m_FrameBuffer;
@@ -40,6 +48,7 @@ namespace Wiwa {
 		glm::mat4 m_PersProj;
 		glm::mat4 m_View;
 		Camera m_ActiveCamera;
+
 	public:
 		Renderer3D();
 		~Renderer3D();
@@ -48,7 +57,8 @@ namespace Wiwa {
 		void Update();
 
 		void RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL);
-
+		void SetOption(Options option);
+		void DisableOption(Options option);
 		void Close();
 
 		// Getters
