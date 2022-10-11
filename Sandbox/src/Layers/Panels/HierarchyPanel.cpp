@@ -4,6 +4,7 @@
 
 #include <Wiwa/Application.h>
 #include <Wiwa/ecs/EntityManager.h>
+#include "InspectorPanel.h"
 
 HierarchyPanel::HierarchyPanel()
 	: Panel("Hierarchy")
@@ -34,7 +35,10 @@ void HierarchyPanel::Draw()
 	float width = ImGui::GetWindowContentRegionWidth();
 	for (size_t i = 0; i < Wiwa::Application::Get().GetEntityManager().GetEntityCount(); i++)
 	{
-		if (ImGui::Button("Entity!", ImVec2(width, 20)));
+		if (ImGui::Button("Entity!", ImVec2(width, 20)))
+		{
+			InspectorPanel::SetEntity(i);
+		}
 	}
 
 	ImGui::End();

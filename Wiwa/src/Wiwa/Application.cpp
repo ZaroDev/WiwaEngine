@@ -19,6 +19,8 @@
 #include "Renderer2D.h"
 #include "Renderer3D.h"
 
+#include "ecs/systems/SpriteRenderer.h"
+
 namespace Wiwa {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -55,18 +57,20 @@ namespace Wiwa {
 
 		// test
 		// TODO: REMOVE TEST
-		//ResourceId tree = Resources::Load<Image>("resources/images/tree.png");
+		ResourceId tree = Resources::Load<Image>("resources/images/tree.png");
 
-		//m_EntityManager->RegisterSystem<SpriteRenderer>();
+		m_EntityManager->RegisterSystem<SpriteRenderer>();
 
-		//m_EntityManager->ReserveEntities(MAXQUADS);
-		//m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
-		//m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);
-		//m_EntityManager->ReserveComponent<Transform2D>(MAXQUADS);
-		//
-		//Image* spr = Resources::GetResourceById<Image>(tree);
-		//Size2i size = spr->GetSize();
-
+		m_EntityManager->ReserveEntities(MAXQUADS);
+		m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
+		m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);
+		m_EntityManager->ReserveComponent<Transform2D>(MAXQUADS);
+		
+		Image* spr = Resources::GetResourceById<Image>(tree);
+		Size2i size = spr->GetSize();
+		EntityId EntityMyTree = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Transform2D>(EntityMyTree, { {0,0},0.f,{1.0,1.0} });
+		m_EntityManager->AddComponent<Sprite>(EntityMyTree, { {256,256}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
 		//for (int i = 0; i < MAXQUADS; i++) {
 		//	EntityId EntityMyTree = m_EntityManager->CreateEntity();
 		//	int x = (i * 32) % m_TargetResolution.w;

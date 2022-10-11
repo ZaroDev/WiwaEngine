@@ -2,6 +2,7 @@
 
 #include <Wiwa/Core.h>
 #include <Wiwa/utilities/math/Vector3f.h>
+#include <Wiwa/Reflection.h>
 
 namespace Wiwa {
 	struct WI_API Transform3D {
@@ -10,3 +11,9 @@ namespace Wiwa {
 		Vector3f scale;
 	};
 }
+
+REFLECTION_BEGIN(Wiwa::Transform3D)
+	REFLECT_MEMBER(position)
+	REFLECT_MEMBER(rotation)
+	REFLECT_MEMBER(scale)
+REFLECTION_END;
