@@ -77,13 +77,23 @@ namespace Wiwa {
 		if (scene != nullptr && scene->HasMeshes())
 		{
 			for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+				for (unsigned int j = 0; j < scene->mMeshes[i]->mNumVertices; j++) {
+					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].x);
+					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].y);
+					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].z);
+				}
 
+				for (unsigned int j = 0; j < scene->mMeshes[i]->mNumFaces; j++) {
+					for (unsigned int k = 0; k < scene->mMeshes[i]->mFaces[j].mNumIndices; k++) {
+						ebo_data.push_back(scene->mMeshes[i]->mFaces[j].mIndices[k]);
+					}
+				}
 			}
 
 			aiReleaseImport(scene);
 		}
 		else {
-			WI_CORE_ERROR("Error loading mesh {0}", file);
+			WI_CORE_ERROR("Error loading mesh {0} with error {1}", file, aiGetErrorString());
 		}
 	}
 

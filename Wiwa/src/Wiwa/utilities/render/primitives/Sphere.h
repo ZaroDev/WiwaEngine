@@ -4,9 +4,9 @@
 #include "../Mesh.h"
 
 namespace Wiwa {
-	class WI_API Cube : public Mesh {
+	class WI_API Sphere : public Mesh {
 	public:
-		Cube();
-		~Cube();
+		Sphere();
+		~Sphere();
 	};
 }

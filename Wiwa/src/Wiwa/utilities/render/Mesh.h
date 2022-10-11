@@ -1,11 +1,12 @@
 #pragma once
 
-#include <vector>
+#include <Wiwa/Core.h>
 
+#include <vector>
 #include <Wiwa/utilities/math/Math.h>
 
 namespace Wiwa {
-	class Mesh
+	class WI_API Mesh
 	{
 	protected:
 		std::vector<float> vbo_data;

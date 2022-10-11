@@ -17,7 +17,7 @@ namespace Wiwa {
 
 		// Initialize camera view
 		//m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
-		m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
+		updateView();
 
 		// Start camera as INVALID
 		m_CameraType = CameraType::INVALID;
@@ -26,6 +26,11 @@ namespace Wiwa {
 
 	Camera::~Camera()
 	{
+	}
+
+	void Camera::updateView()
+	{
+		m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
 	}
 
 	void Camera::setAspectRatio(float aspectRatio)
@@ -52,6 +57,18 @@ namespace Wiwa {
 
 		if (m_CameraType == CameraType::PERSPECTIVE)
 			m_Projection = glm::perspective(glm::radians(fov), m_AspectRatio, m_NearPlaneDist, m_FarPlaneDist);
+	}
+
+	void Camera::setPosition(Vector3f position)
+	{
+		m_CameraPos = glm::vec3(position.x, position.y, position.z);
+
+		updateView();
+	}
+
+	void Camera::lookat(Vector3f position)
+	{
+		m_View = glm::lookAt(m_CameraPos, glm::vec3(position.x, position.y, position.z), m_CameraUp);
 	}
 
 	void Camera::SetPerspective(float fov, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)

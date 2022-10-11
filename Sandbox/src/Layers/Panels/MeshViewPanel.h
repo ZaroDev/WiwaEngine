@@ -4,6 +4,13 @@
 
 struct ShadingView;
 
+namespace Wiwa
+{
+	class FrameBuffer;
+	class Camera;
+	class Mesh;
+};
+
 class MeshViewPanel : public Panel
 {
 public:
@@ -13,7 +20,15 @@ public:
 	void Draw() override;
 
 private:
-	std::vector<ShadingView*> m_Shadings;
+	std::vector<ShadingView *> m_Shadings;
+	std::unique_ptr<Wiwa::FrameBuffer> m_FrameBuffer;
+	std::unique_ptr<Wiwa::Camera> m_Camera;
 
+	Wiwa::Mesh *m_ActiveMesh;
 
+	Wiwa::Vector3f m_MeshPosition;
+	Wiwa::Vector3f m_MeshRotation;
+	Wiwa::Vector3f m_MeshScale;
+
+	Wiwa::Vector4f m_MeshColor;
 };

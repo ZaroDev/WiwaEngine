@@ -59,6 +59,7 @@ namespace Wiwa {
 		void RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL);
 		void SetOption(Options option);
 		void DisableOption(Options option);
+		void RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL, Camera* camera=NULL);
 		void Close();
 
 		// Getters

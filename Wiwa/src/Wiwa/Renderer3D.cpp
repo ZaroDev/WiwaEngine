@@ -47,16 +47,17 @@ namespace Wiwa {
 		
 	}
 
-	void Renderer3D::RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target)
+	void Renderer3D::RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target, Camera* camera)
 	{
 		if (!target) target = &m_FrameBuffer;
+		if (!camera) camera = &m_ActiveCamera;
 
 		glViewport(0, 0, target->getWidth(), target->getHeight());
 
 		target->Bind();
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(position.x, position.y ,position.z));
+		model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
 		// TODO: ROTATION
 		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
 
@@ -64,8 +65,8 @@ namespace Wiwa {
 
 		m_ColorShader->setUniform(m_CSColorUniformLocation, glm::vec4(color.r, color.g, color.b, color.a));
 		m_ColorShader->setUniform(m_CSModelUniformLocation, model);
-		m_ColorShader->setUniform(m_CSViewUniformLocation, m_ActiveCamera.getView());
-		m_ColorShader->setUniform(m_CSProjectionUniformLocation, m_ActiveCamera.getProjection());
+		m_ColorShader->setUniform(m_CSViewUniformLocation, camera->getView());
+		m_ColorShader->setUniform(m_CSProjectionUniformLocation, camera->getProjection());
 
 		mesh.Render();
 
