@@ -3,6 +3,7 @@
 #include <Wiwa/Core.h>
 
 #include <glm.hpp>
+#include <Wiwa/utilities/math/Math.h>
 
 namespace Wiwa {
 	class WI_API Camera
@@ -28,6 +29,8 @@ namespace Wiwa {
 		float m_NearPlaneDist;
 		float m_FarPlaneDist;
 		float m_AspectRatio;
+
+		void updateView();
 	public:
 		Camera();
 		~Camera();
@@ -39,6 +42,9 @@ namespace Wiwa {
 
 		void setFOV(float fov);
 		float getFOV() { return m_FOV; }
+
+		void setPosition(Vector3f position);
+		void lookat(Vector3f position);
 
 		void SetPerspective(float fov, float aspectRatio, float nearPlaneDistance=0.1f, float farPlaneDistance=100.0f);
 		void SetOrthographic(int width, int height, float nearPlaneDistance=0.1f, float farPlaneDistance=100.0f);

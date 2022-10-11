@@ -20,6 +20,10 @@
 #endif
 
 
-#define BIT(x) (1 << x)
+#define BIT(x) (1 << (x))
+#define CLAMP(x, mn, mx) (x) < (mn) ? (x) = (mn) : (x) = (x); (x) > (mx) ? (x) = (mx) : (x) = (x)
+
+#define PI 3.14159265359
+#define PI_F 3.14159265359f
 
 #define WI_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
