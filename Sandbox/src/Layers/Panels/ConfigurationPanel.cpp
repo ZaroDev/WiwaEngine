@@ -5,7 +5,7 @@
 #include "windows.h"
 #include "psapi.h"
 ConfigurationPanel::ConfigurationPanel()
-	: Panel("Configuration")
+	: Panel("Configuration"), info()
 {
 	m_Resizable = Wiwa::Application::Get().GetWindow().GetResizable();
 	m_Fullscreen = Wiwa::Application::Get().GetWindow().GetFullScreen();
@@ -35,11 +35,11 @@ void ConfigurationPanel::Draw()
 	if (ImGui::CollapsingHeader("Info"))
 	{
 		sprintf_s(title, 25, "Framerate %.1f", m_FPSLog[m_FPSLog.size() - 1]);
-		ImGui::PlotHistogram("##framerate", &m_FPSLog[0], m_FPSLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotHistogram("##framerate", &m_FPSLog[0], (int)m_FPSLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
 		sprintf_s(title, 25, "Frametime %.1f", m_MSLog[m_MSLog.size() - 1]);
-		ImGui::PlotHistogram("##frametime", &m_MSLog[0], m_MSLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotHistogram("##frametime", &m_MSLog[0], (int)m_MSLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
 		sprintf_s(title, 25, "Mem used %.1f", m_MemLog[m_MemLog.size() - 1]);
-		ImGui::PlotHistogram("##memory", &m_MemLog[0], m_MemLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotHistogram("##memory", &m_MemLog[0], (int)m_MemLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
@@ -91,5 +91,5 @@ void ConfigurationPanel::Update()
 	PROCESS_MEMORY_COUNTERS_EX pmc;
 	GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
 	SIZE_T virtualMemUsedByMe = pmc.WorkingSetSize >> 20;
-	m_MemLog.push_back(virtualMemUsedByMe);
+	m_MemLog.push_back((float)virtualMemUsedByMe);
 }

@@ -80,7 +80,8 @@ project "Wiwa"
 		{
 			"WI_PLATFORM_WINDOWS",
 			"WI_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"_CRT_SECURE_NO_WARNINGS"
 		}
 
 
@@ -148,6 +149,7 @@ project "Sandbox"
 		defines
 		{
 			"WI_PLATFORM_WINDOWS"
+
 		}
 		postbuildcommands
 		{

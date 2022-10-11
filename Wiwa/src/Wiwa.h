@@ -1,4 +1,6 @@
 #pragma once
+#pragma warning(disable : 4251)
+
 //For use by Wiwa applications
 
 #include "Wiwa/Application.h"

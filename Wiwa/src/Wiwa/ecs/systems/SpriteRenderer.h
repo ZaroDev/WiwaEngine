@@ -1,5 +1,5 @@
 #pragma once
-
+#pragma warning(disable : 4267)
 #include "System.h"
 #include "../components/Transform2D.h"
 #include "../components/Sprite.h"

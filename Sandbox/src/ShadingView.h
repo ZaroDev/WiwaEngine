@@ -1,5 +1,5 @@
 #pragma once
-
+#pragma warning(disable : 4099)
 #include <Wiwa/Renderer3D.h>
 
 struct ShadingView

@@ -62,8 +62,6 @@ void EditorLayer::OnDetach()
 
 void EditorLayer::OnUpdate()
 {
-	OPTICK_FRAME("OnUpdate");
-	OPTICK_EVENT();
 	if(m_Configuration->active)
 		m_Configuration->Update();
 	if (m_Assets->active)
@@ -72,8 +70,6 @@ void EditorLayer::OnUpdate()
 
 void EditorLayer::OnImGuiRender()
 {
-	OPTICK_FRAME("OnImguiRender");
-	OPTICK_EVENT();
 	ImGuiContext* ctx = Wiwa::Application::Get().GetImGuiContext();
 	ImGui::SetCurrentContext(ctx);
 

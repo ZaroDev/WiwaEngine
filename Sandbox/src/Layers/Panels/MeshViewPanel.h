@@ -2,7 +2,7 @@
 
 #include "Panel.h"
 
-class ShadingView;
+struct ShadingView;
 
 class MeshViewPanel : public Panel
 {

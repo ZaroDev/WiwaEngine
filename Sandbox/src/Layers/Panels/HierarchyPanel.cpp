@@ -37,7 +37,7 @@ void HierarchyPanel::Draw()
 	{
 		if (ImGui::Button("Entity!", ImVec2(width, 20)))
 		{
-			InspectorPanel::SetEntity(i);
+			InspectorPanel::SetEntity((uint32_t)i);
 		}
 	}
 

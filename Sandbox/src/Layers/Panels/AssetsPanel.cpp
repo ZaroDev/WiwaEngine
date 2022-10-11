@@ -7,66 +7,76 @@
 #include <optick.h>
 #include <format>
 
-//std::string serializeTimePoint(const std::filesystem::file_time_type &time, const std::string& format)
-//{
-//	std::time_t tt = std::chrono::system_clock::to_time_t(time);
-//	std::tm tm = *std::gmtime(&tt); //GMT (UTC)
-//	std::stringstream ss;
-//	ss << std::put_time(&tm, format.c_str());
-//	return ss.str();
-//}
-
+static const std::filesystem::path s_AssetsPath = "Assets";
 AssetsPanel::AssetsPanel()
-	: Panel("Assets")
+	: Panel("Assets"), m_CurrentPath("Assets")
 {
 	m_Directory.path = "Assets";
-	m_CurrentPath = m_Directory.path;
+
 	ResourceId folderId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
 	ResourceId fileId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/file_icon.png");
-	m_FolderIcon = Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
-	m_FileIcon = Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
+
+	m_FolderIcon = (ImTextureID)Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
+	m_FileIcon = (ImTextureID)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
 }
 
 AssetsPanel::~AssetsPanel()
 {
+	m_Directory.directories.clear();
+	m_Directory.files.clear();
 }
 
 void AssetsPanel::Update()
 {
-	auto lastWrite = std::filesystem::last_write_time(m_Directory.path);
-	if (lastWriteTime != lastWrite)
+	auto lastAbsoluteDirTime = std::filesystem::last_write_time(m_Directory.path);
+	if (lastWriteTime != lastAbsoluteDirTime)
 	{
-		WI_INFO("Updated {0} Folder!", m_Directory.path.string().c_str());
-		for (auto& p : std::filesystem::directory_iterator(m_Directory.path))
+		m_Directory.directories.clear();
+		m_Directory.files.clear();
+		for (auto &p : std::filesystem::directory_iterator(m_Directory.path))
 		{
-			//UpdateDir(p);
+			if (p.is_directory())
+			{
+				Directory *dir = new Directory();
+				dir->path = p.path();
+				m_Directory.directories.push_back(dir);
+				for (auto &p1 : std::filesystem::directory_iterator(dir->path))
+				{
+					UpdateDir(p1, dir);
+				}
+			}
+			else
+			{
+				File f;
+				f.path = p.path();
+				f.size = p.file_size();
+				m_Directory.files.push_back(f);
+			}
 		}
-		lastWriteTime = lastWrite;
+
+		lastWriteTime = lastAbsoluteDirTime;
 	}
 }
-
-//void AssetsPanel::UpdateDir(const std::filesystem::directory_entry& p)
-//{	
-//	if (p.is_directory())
-//	{
-//		Directory dir;
-//		dir.path = p.path();
-//		m_Directory.directories.push_back(dir);
-//		for (auto& path : std::filesystem::directory_iterator(p))
-//		{
-//			UpdateDir(p);
-//		}
-//	}
-//	else
-//	{
-//		File file;
-//		file.path = p.path();
-//		file.size = p.file_size();
-//		m_Directory.files.push_back(file);
-//	}
-//}
-
-
+void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Directory *dir)
+{
+	if (p1.is_directory())
+	{
+		Directory *d = new Directory();
+		d->path = p1.path();
+		dir->directories.push_back(d);
+		for (auto &p2 : std::filesystem::directory_iterator(d->path))
+		{
+			UpdateDir(p2, d);
+		}
+	}
+	else
+	{
+		File f;
+		f.path = p1.path();
+		f.size = p1.file_size();
+		dir->files.push_back(f);
+	}
+}
 void AssetsPanel::Draw()
 {
 
@@ -74,7 +84,7 @@ void AssetsPanel::Draw()
 	ImGui::Begin(name, &active);
 
 	/*bool op = false;*/
-	//ImGui::Text(m_SearchPath.string().c_str());
+	// ImGui::Text(m_SearchPath.string().c_str());
 	if (ImGui::BeginTable("##content_browser", 2, ImGuiTableFlags_Resizable))
 	{
 		ImGui::TableNextColumn();
@@ -82,7 +92,7 @@ void AssetsPanel::Draw()
 		{
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			for (auto& path : m_Directory.directories)
+			for (auto &path : m_Directory.directories)
 			{
 				DisplayNode(path);
 			}
@@ -96,16 +106,14 @@ void AssetsPanel::Draw()
 			{
 				m_CurrentPath = m_CurrentPath.parent_path();
 			}
-			ImGui::SameLine();
 		}
 
 		ImGui::Text(m_CurrentPath.string().c_str());
 
-	
 		float padding = 16.0f;
 		float thumbnailSize = 64.0f;
 		float cellSize = thumbnailSize + padding;
-		
+
 		float panelWidth = ImGui::GetContentRegionAvail().x;
 		int columnCount = (int)(panelWidth / cellSize);
 		if (columnCount < 1)
@@ -114,16 +122,16 @@ void AssetsPanel::Draw()
 		if (ImGui::BeginTable("##assets", columnCount))
 		{
 			int id = 0;
-			for (auto& directoryEntry : m_Directory.directories)
+			for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentPath))
 			{
 				ImGui::TableNextColumn();
 				ImGui::PushID(id++);
 
-				const auto& path = directoryEntry.path;
-				auto relativePath = std::filesystem::relative(directoryEntry.path, m_Directory.path);
+				const auto& path = directoryEntry.path();
+				auto relativePath = std::filesystem::relative(directoryEntry.path(), s_AssetsPath);
 				std::string filenameString = relativePath.filename().string();
-				bool isDir = std::filesystem::is_directory(path);
-				uint32_t texID = isDir ? m_FolderIcon : m_FileIcon;
+
+				ImTextureID texID = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
 
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
@@ -137,37 +145,15 @@ void AssetsPanel::Draw()
 				}
 
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-					m_CurrentPath /= path.filename();	
-
-				ImGui::TextWrapped(filenameString.c_str());
-				ImGui::PopID();
-			}
-			for (auto& directoryEntry : m_Directory.files)
-			{
-				ImGui::TableNextColumn();
-				ImGui::PushID(id++);
-
-				const auto& path = directoryEntry.path;
-				auto relativePath = std::filesystem::relative(directoryEntry.path, m_Directory.path);
-				std::string filenameString = relativePath.filename().string();
-				bool isDir = std::filesystem::is_directory(path);
-				uint32_t texID = isDir ? m_FolderIcon : m_FileIcon;
-
-				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
-				ImGui::PopStyleColor();
-
-				if (ImGui::BeginDragDropSource())
 				{
-					const wchar_t* itemPath = relativePath.c_str();
-					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
-					ImGui::EndDragDropSource();
+					if (directoryEntry.is_directory())
+						m_CurrentPath /= path.filename();
+					else
+						Wiwa::Application::Get().OpenDir(path.string().c_str());
 				}
-
-				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-					Wiwa::Application::Get().OpenDir(directoryEntry.path.string().c_str());
-
+				
 				ImGui::TextWrapped(filenameString.c_str());
+
 				ImGui::PopID();
 			}
 
@@ -175,46 +161,49 @@ void AssetsPanel::Draw()
 		}
 		ImGui::EndTable();
 	}
-	
+
 	ImGui::End();
 }
 
-void AssetsPanel::DisplayNode(Directory directoryEntry)
+void AssetsPanel::DisplayNode(Directory *directoryEntry)
 {
-	const auto& path = directoryEntry.path;
-	
-	//ImGui::Text("%s", path.string().c_str());
-	//auto relativePath = std::filesystem::relative(directoryEntry.path(), s_EditorPath);
+	const auto &path = directoryEntry->path;
+
+	// ImGui::Text("%s", path.string().c_str());
+	// auto relativePath = std::filesystem::relative(directoryEntry.path(), s_EditorPath);
 	std::string filenameString = path.filename().string();
 	bool isDir = std::filesystem::is_directory(path);
 	if (isDir)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0, 0, 0, 0));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
 		ImGui::AlignTextToFramePadding();
-		if (!std::filesystem::is_empty(path))
+		if (!directoryEntry->directories.empty())
 		{
 			char str[25];
 			sprintf_s(str, 25, "##%s", filenameString.c_str());
 			bool open = ImGui::TreeNodeEx(str);
+			ImGui::SameLine();
+			if (ImGui::Button(filenameString.c_str()))
+			{
+				m_CurrentPath = path;
+			}
 			if (open)
 			{
-				for (auto& p : m_Directory.directories)
+				for (auto &p : directoryEntry->directories)
 				{
 					DisplayNode(p);
 				}
 				ImGui::TreePop();
 			}
-			ImGui::SameLine();
 		}
-		
-		if (ImGui::Button(filenameString.c_str()))
+		else
 		{
-			m_CurrentPath = path;
+			if (ImGui::Button(filenameString.c_str()))
+			{
+				m_CurrentPath = path;
+			}
 		}
-		
-		ImGui::PopStyleColor();
 		ImGui::PopStyleColor();
 		ImGui::PopStyleColor();
 		ImGui::TableNextColumn();

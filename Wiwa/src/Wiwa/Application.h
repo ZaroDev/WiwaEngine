@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma warning(disable : 4251)
+
 #include "Core.h"
 #include "Window.h"
 #include "Wiwa/LayerStack.h"
@@ -17,6 +19,8 @@ namespace Wiwa {
 
 	struct SysInfo
 	{
+		SysInfo() = default;
+
 		char glfwVer[32];
 		uint32_t cache;
 		uint32_t numCores;

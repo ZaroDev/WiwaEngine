@@ -1,5 +1,5 @@
 #pragma once
-
+#pragma warning(disable : 4251)
 #include "Core.h"
 
 #include "imgui.h"

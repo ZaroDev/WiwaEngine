@@ -1,3 +1,4 @@
+
 #include "wipch.h"
 #include "Application.h"
 
@@ -108,13 +109,13 @@ namespace Wiwa {
 		glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX, &cur_reserv_mem_kb);
 
 		m_SysInfo.numCores = info.dwNumberOfProcessors;
-		m_SysInfo.ram = memInfo.ullTotalPhys >> 20;
-		m_SysInfo.gpu = glGetString(GL_VENDOR);
+		m_SysInfo.ram = (float)(memInfo.ullTotalPhys >> 20);
+		m_SysInfo.gpu = (const unsigned char*)glGetString(GL_VENDOR);
 		m_SysInfo.gpuBrand = glGetString(GL_RENDERER);
-		m_SysInfo.gpuVRAM = total_mem_kb >> 10;
-		m_SysInfo.gpuVRAMAV = cur_avail_mem_kb >> 10;
-		m_SysInfo.gpuVRAMUsage = (total_mem_kb - cur_avail_mem_kb) >> 10;
-		m_SysInfo.gpuVRAMReserve = cur_reserv_mem_kb >> 10;
+		m_SysInfo.gpuVRAM = (float)(total_mem_kb >> 10);
+		m_SysInfo.gpuVRAMAV = (float)(cur_avail_mem_kb >> 10);
+		m_SysInfo.gpuVRAMUsage = (float)((total_mem_kb - cur_avail_mem_kb) >> 10);
+		m_SysInfo.gpuVRAMReserve = (float)(cur_reserv_mem_kb >> 10);
 	}
 
 	Application::~Application()

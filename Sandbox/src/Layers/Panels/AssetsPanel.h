@@ -3,16 +3,16 @@
 #include "Panel.h"
 
 #include <filesystem>
-
+typedef void* ImTextureID;
 struct File
 {
 	std::filesystem::path path;
-	uint16_t size;
+	uintmax_t size = 0;
 };
 struct Directory
 {
 	std::filesystem::path path;
-	std::vector<Directory> directories;
+	std::vector<Directory *> directories;
 	std::vector<File> files;
 };
 
@@ -22,19 +22,17 @@ public:
 	AssetsPanel();
 	virtual ~AssetsPanel();
 
-
 	void Update() override;
-
-	//void UpdateDir(const std::filesystem::directory_entry& p);
-
+	void UpdateDir(const std::filesystem::directory_entry &p1, Directory *dir);
 	void Draw() override;
 
-	void DisplayNode(Directory directoryEntry);
+private:
+	void DisplayNode(Directory *directoryEntry);
 
 private:
-	std::filesystem::path m_CurrentPath;
-	uint32_t m_FileIcon;
-	uint32_t m_FolderIcon;
+	ImTextureID m_FileIcon;
+	ImTextureID m_FolderIcon;
 	Directory m_Directory;
+	std::filesystem::path m_CurrentPath;
 	std::filesystem::file_time_type lastWriteTime;
 };

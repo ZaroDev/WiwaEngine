@@ -36,7 +36,7 @@ struct Function {
 
 struct Class : public Type {
 	std::vector<Field> fields;
-	size_t field_count;
+	size_t field_count = 0;
 };
 
 struct EnumMember {

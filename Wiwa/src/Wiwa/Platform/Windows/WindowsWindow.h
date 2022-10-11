@@ -12,11 +12,11 @@ namespace Wiwa {
 
 		struct WindowData
 		{
-			std::string Title;
-			uint32_t Width;
-			uint32_t Height;
-			bool VSync;
-			uint32_t Refresh;
+			std::string Title = "";
+			uint32_t Width = 0;
+			uint32_t Height = 0;
+			bool VSync = false;
+			uint32_t Refresh = 0;
 
 			EventCallbackFn EventCallback;
 		};
@@ -47,7 +47,7 @@ namespace Wiwa {
 		virtual void SetResizable(bool enabled) override;
 		inline virtual void* GetNativeWindow() const { return m_Window; }
 	private:
-		virtual void Init(const const WindowProps& props);
+		virtual void Init(const WindowProps& props);
 		virtual void ShutDown();
 	};
 }

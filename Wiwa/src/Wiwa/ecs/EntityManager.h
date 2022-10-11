@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4251)
 #include <Wiwa/Core.h>
 #include <Wiwa/Layer.h>
 
