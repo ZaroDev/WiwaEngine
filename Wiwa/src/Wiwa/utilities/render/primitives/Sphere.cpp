@@ -17,7 +17,7 @@ namespace Wiwa {
         // Generate vertices
         for (int i = 0; i <= stack_count; ++i)
         {
-            stackAngle = PI / 2 - i * stackStep;
+            stackAngle = (float)PI / 2 - i * stackStep;
             xy = radius * cosf(stackAngle);
             z = radius * sinf(stackAngle);
 

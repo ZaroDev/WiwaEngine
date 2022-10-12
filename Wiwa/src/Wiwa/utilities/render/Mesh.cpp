@@ -119,7 +119,8 @@ namespace Wiwa {
 	}
 
 
-	Mesh::Mesh(const char* file)
+	Mesh::Mesh(const char* file) 
+		: ebo(0), vbo(0), vao(0)
 	{
 		if (file) {
 			getMeshFromFile(file);

@@ -49,27 +49,9 @@ void ScenePanel::Draw()
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
-
-
-        //TODO: Render the scene
-
-
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-            {
-                const wchar_t* path = (const wchar_t*)payload->Data;
-                std::wstring ws(path);
-                std::string pathS(ws.begin(), ws.end());
-                //TODO: Load the scene with the path
-                WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-            }
-
-            ImGui::EndDragDropTarget();
-        }
-
     }
 
+    //TODO: Render the scene
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
     Wiwa::Size2i resolution = Wiwa::Application::Get().GetTargetResolution();
@@ -83,6 +65,20 @@ void ScenePanel::Draw()
 
     //ImGui::SetCursorPos(ImVec2((viewportPanelSize.x - isize.x) / 2, (viewportPanelSize.y - isize.y) / 2));
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+        {
+            const wchar_t* path = (const wchar_t*)payload->Data;
+            std::wstring ws(path);
+            std::string pathS(ws.begin(), ws.end());
+            //TODO: Load the scene with the path
+            WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+        }
+
+        ImGui::EndDragDropTarget();
+    }
 
     ImGui::End();
 }

@@ -15,4 +15,5 @@ public:
 
 	static uint32_t m_CurrentID;
 	static bool m_EntitySet;
+
 };

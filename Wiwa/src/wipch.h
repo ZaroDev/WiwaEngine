@@ -14,6 +14,8 @@
 #include <unordered_set>
 #include <optick.h>
 
+#include <filesystem>
+
 #include "Wiwa/Log.h"
 
 #ifdef WI_PLATFORM_WINDOWS

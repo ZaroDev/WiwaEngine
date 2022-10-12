@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Panel.h"
-
+#include <Wiwa/utilities/math/Math.h>
 struct ShadingView;
 
 namespace Wiwa

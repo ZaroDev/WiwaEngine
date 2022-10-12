@@ -1,11 +1,10 @@
+#include "wipch.h"
 #include "AssetsPanel.h"
 
 #include <imgui.h>
-#include "wipch.h"
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
-#include <optick.h>
-#include <format>
+#include <direct.h>
 
 static const std::filesystem::path s_AssetsPath = "Assets";
 AssetsPanel::AssetsPanel()
@@ -15,9 +14,11 @@ AssetsPanel::AssetsPanel()
 
 	ResourceId folderId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
 	ResourceId fileId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/file_icon.png");
+	ResourceId backId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/back_icon.png");
 
-	m_FolderIcon = (ImTextureID)Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
-	m_FileIcon = (ImTextureID)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
+	m_FolderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
+	m_FileIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
+	m_BackIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(backId)->GetTextureId();
 }
 
 AssetsPanel::~AssetsPanel()
@@ -79,15 +80,14 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 }
 void AssetsPanel::Draw()
 {
-
-	OPTICK_EVENT();
 	ImGui::Begin(name, &active);
 
-	/*bool op = false;*/
-	// ImGui::Text(m_SearchPath.string().c_str());
+	
+
 	if (ImGui::BeginTable("##content_browser", 2, ImGuiTableFlags_Resizable))
 	{
 		ImGui::TableNextColumn();
+		//Folder browser
 		if (ImGui::BeginTable("##folder_browser", 1))
 		{
 			ImGui::TableNextRow();
@@ -100,16 +100,47 @@ void AssetsPanel::Draw()
 		}
 		ImGui::TableNextColumn();
 
-		if (m_CurrentPath != std::filesystem::path(m_Directory.path))
+		//Back button
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		if (ImGui::ImageButton((ImTextureID)m_BackIcon, { 16, 16 }))
 		{
-			if (ImGui::Button("<-"))
-			{
+			if (m_CurrentPath != std::filesystem::path(m_Directory.path))
 				m_CurrentPath = m_CurrentPath.parent_path();
-			}
 		}
+		ImGui::PopStyleColor();
 
+		ImGui::SameLine();
+		ImGui::AlignTextToFramePadding();
 		ImGui::Text(m_CurrentPath.string().c_str());
-
+		ImGui::SameLine();
+		//Create a folder button
+		if (ImGui::Button("Create a folder"))
+		{
+			ImGui::OpenPopup("Creating a folder##folder");
+		}
+		bool open = true;
+		if (ImGui::BeginPopupModal("Creating a folder##folder", &open))
+		{
+			static char buffer[64] = { 0 };
+			ImGui::Text("Folder name");
+			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
+			if (ImGui::Button("Create"))
+			{
+				std::filesystem::path path = m_CurrentPath;
+				std::filesystem::path dir = buffer;
+				path /= dir;
+				if (mkdir(path.string().c_str()) == -1)
+					WI_ERROR("Folder can't be created");
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Close"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+		
+		ImGui::Separator();
+		//Assets display
 		float padding = 16.0f;
 		float thumbnailSize = 64.0f;
 		float cellSize = thumbnailSize + padding;
@@ -118,7 +149,6 @@ void AssetsPanel::Draw()
 		int columnCount = (int)(panelWidth / cellSize);
 		if (columnCount < 1)
 			columnCount = 1;
-
 		if (ImGui::BeginTable("##assets", columnCount))
 		{
 			int id = 0;
@@ -130,20 +160,26 @@ void AssetsPanel::Draw()
 				const auto& path = directoryEntry.path();
 				auto relativePath = std::filesystem::relative(directoryEntry.path(), s_AssetsPath);
 				std::string filenameString = relativePath.filename().string();
-
+				
 				ImTextureID texID = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
-
+				if (directoryEntry.path().extension() == ".png")
+				{
+					ResourceId pngID = Wiwa::Resources::Load<Wiwa::Image>(path.string().c_str());
+					texID = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pngID)->GetTextureId();
+				}
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
 				ImGui::PopStyleColor();
 
+				//Drag and drop
 				if (ImGui::BeginDragDropSource())
 				{
-					const wchar_t* itemPath = relativePath.c_str();
+					const wchar_t* itemPath = directoryEntry.path().c_str();
 					ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (wcslen(itemPath) + 1) * sizeof(wchar_t));
 					ImGui::EndDragDropSource();
 				}
 
+				//Either opening a file or a folder
 				if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 				{
 					if (directoryEntry.is_directory())
@@ -156,12 +192,20 @@ void AssetsPanel::Draw()
 
 				ImGui::PopID();
 			}
-
 			ImGui::EndTable();
 		}
 		ImGui::EndTable();
 	}
 
+	//Assets context window
+	if (ImGui::BeginPopupContextWindow("Assets context window"))
+	{
+		if (ImGui::MenuItem("Find in explorer"))
+		{
+			Wiwa::Application::Get().OpenDir(m_CurrentPath.string().c_str());
+		}
+		ImGui::EndPopup();
+	}
 	ImGui::End();
 }
 

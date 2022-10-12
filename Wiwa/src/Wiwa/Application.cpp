@@ -63,9 +63,9 @@ namespace Wiwa {
 		m_EntityManager->RegisterSystem<SpriteRenderer>();
 
 		m_EntityManager->ReserveEntities(MAXQUADS);
-		m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
-		m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);
-		m_EntityManager->ReserveComponent<Transform2D>(MAXQUADS);
+		//m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
+		//m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);
+		//m_EntityManager->ReserveComponent<Transform2D>(MAXQUADS);
 		
 		Image* spr = Resources::GetResourceById<Image>(tree);
 		Size2i size = spr->GetSize();

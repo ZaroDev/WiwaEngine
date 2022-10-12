@@ -45,8 +45,8 @@ namespace Wiwa {
 		uint32_t m_CSViewUniformLocation;
 		uint32_t m_CSProjectionUniformLocation;
 
-		glm::mat4 m_PersProj;
-		glm::mat4 m_View;
+		glm::mat4 m_PersProj{ 0.0f };
+		glm::mat4 m_View{ 0.0f };
 		Camera m_ActiveCamera;
 
 	public:

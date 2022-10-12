@@ -23,11 +23,6 @@
 MeshViewPanel::MeshViewPanel()
     : Panel("Mesh view")
 {
-    //m_Shadings.push_back(new ShadingView("Shading", true));
-    //m_Shadings.push_back(new ShadingView("Wireframe", false));
-    //m_Shadings.push_back(new ShadingView("Light", false));
-    //m_Shadings.push_back(new ShadingView("XD", false));
-
     m_FrameBuffer = std::make_unique<Wiwa::FrameBuffer>();
     m_Camera = std::make_unique<Wiwa::Camera>();
 
@@ -37,7 +32,7 @@ MeshViewPanel::MeshViewPanel()
     m_FrameBuffer.get()->Init(res.w, res.h);
 
     m_Camera.get()->SetPerspective(60.0f, ar);
-    m_Camera.get()->setPosition({ 0.0f, 1.0f, 2.0f });
+    m_Camera.get()->setPosition({ 0.0f, 1.0f, -5.0f });
 
     m_ActiveMesh = new Wiwa::Mesh("resources/meshes/cube.fbx");
 
@@ -58,41 +53,7 @@ void MeshViewPanel::Draw()
 {
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
 
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("Shading"))
-        {
-            //for (auto c : m_Shadings)
-            //{
-            //    if (ImGui::MenuItem(c->name, "", &c->active))
-            //    {
-            //        WI_INFO("{0}, {1}", c->name, c->active);
-            //    }
-            //}
-            ImGui::EndMenu();
-        }
-        ImGui::EndMenuBar();
-
-
-        //TODO: Render the scene
-
-
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-            {
-                const wchar_t* path = (const wchar_t*)payload->Data;
-                std::wstring ws(path);
-                std::string pathS(ws.begin(), ws.end());
-                WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-                //TODO: Load the model
-            }
-
-            ImGui::EndDragDropTarget();
-        }
-
-    }
-
+    
     // Calculate viewport aspect ratio
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
@@ -122,5 +83,23 @@ void MeshViewPanel::Draw()
     Wiwa::Application::Get().GetRenderer3D().RenderMeshColor(*m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_MeshColor, m_FrameBuffer.get(), m_Camera.get());
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+        {
+            const wchar_t* path = (const wchar_t*)payload->Data;
+            std::wstring ws(path);
+            std::string pathS(ws.begin(), ws.end());
+            std::filesystem::path p = pathS.c_str();
+            if (p.extension() == ".fbx" || p.extension() == ".FBX")
+            {
+                WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+                //TODO: Load the model
+                m_ActiveMesh = new Wiwa::Mesh(pathS.c_str());
+            }
+        }
+    
+        ImGui::EndDragDropTarget();
+    }
     ImGui::End();
 }
