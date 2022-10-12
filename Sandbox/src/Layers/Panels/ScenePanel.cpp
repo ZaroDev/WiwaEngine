@@ -3,14 +3,17 @@
 #include "ScenePanel.h"
 #include "../../ShadingView.h"
 
-#include <imgui.h>
+
+#include "ImGuizmo.h"
 
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/Application.h>
 #include <Wiwa/Renderer2D.h>
+#include <Wiwa/Renderer3D.h>
+#include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/Input.h>
 
-
-
+#include "InspectorPanel.h"
 
 ScenePanel::ScenePanel()
     : Panel("Scene")
@@ -79,6 +82,41 @@ void ScenePanel::Draw()
 
         ImGui::EndDragDropTarget();
     }
+
+    //Gizmos
+    Wiwa::EntityManager& entityManager = Wiwa::Application::Get().GetEntityManager();
+    uint32_t entId;
+    if (InspectorPanel::GetCurrentEntity(entId))
+    {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+        float windowWidth = (float)ImGui::GetWindowWidth();
+        float windowHeight = (float)ImGui::GetWindowHeight();
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+        glm::mat4 cameraView = Wiwa::Application::Get().GetRenderer3D().GetView();
+        const glm::mat4& cameraProjection = Wiwa::Application::Get().GetRenderer3D().GetPersProjection();
+        //TODO: Change to get the transform of the entity
+        
+        glm::mat4 transform(1);
+
+        //Snaping
+        bool snap = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl);
+        float snapValue = 0.5f; //Snap to 0.5m for translation/scale
+        if(snap)
+            WI_TRACE("Snap value true");
+        float snapValues[3] = { snapValue, snapValue, snapValue };
+
+        ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+            (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+            nullptr, snap ? snapValues : nullptr);
+
+        if (ImGuizmo::IsUsing())
+        {
+            //TODO: Change the transform matrix!
+        }
+    }
+
 
     ImGui::End();
 }

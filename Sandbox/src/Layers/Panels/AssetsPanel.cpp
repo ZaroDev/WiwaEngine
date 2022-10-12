@@ -133,6 +133,7 @@ void AssetsPanel::Draw()
 					WI_ERROR("Folder can't be created");
 				ImGui::CloseCurrentPopup();
 			}
+
 			ImGui::SameLine();
 			if (ImGui::Button("Close"))
 				ImGui::CloseCurrentPopup();
@@ -167,8 +168,10 @@ void AssetsPanel::Draw()
 					ResourceId pngID = Wiwa::Resources::Load<Wiwa::Image>(path.string().c_str());
 					texID = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pngID)->GetTextureId();
 				}
+
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
+
 				ImGui::PopStyleColor();
 
 				//Drag and drop
@@ -187,6 +190,28 @@ void AssetsPanel::Draw()
 					else
 						Wiwa::Application::Get().OpenDir(path.string().c_str());
 				}
+				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+				{
+					ImGui::OpenPopup("Assets context window");
+				}
+				if (ImGui::BeginPopup("Assets context window"))
+				{
+					if (ImGui::MenuItem("Find in explorer"))
+					{
+						Wiwa::Application::Get().OpenDir(m_CurrentPath.string().c_str());
+					}
+					if (directoryEntry.is_directory())
+					{
+						if (ImGui::MenuItem("Delete"))
+						{
+							std::filesystem::path p = m_CurrentPath;
+							p /= path.filename();
+							if (rmdir(p.string().c_str()) == -1)
+								WI_ERROR("Folder can't be destroyed");
+						}
+					}
+					ImGui::EndPopup();
+				}
 				
 				ImGui::TextWrapped(filenameString.c_str());
 
@@ -198,14 +223,6 @@ void AssetsPanel::Draw()
 	}
 
 	//Assets context window
-	if (ImGui::BeginPopupContextWindow("Assets context window"))
-	{
-		if (ImGui::MenuItem("Find in explorer"))
-		{
-			Wiwa::Application::Get().OpenDir(m_CurrentPath.string().c_str());
-		}
-		ImGui::EndPopup();
-	}
 	ImGui::End();
 }
 

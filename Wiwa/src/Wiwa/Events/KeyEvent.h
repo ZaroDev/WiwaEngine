@@ -19,20 +19,21 @@ namespace Wiwa {
 	class WI_API KeyPressedEvent : public KeyEvent
 	{
 	public: 
-		KeyPressedEvent(KeyCode keycode, KeyCode repeatCount) : KeyEvent(keycode), m_RepeatCount(repeatCount) {}
+		KeyPressedEvent(const KeyCode keycode, bool isRepeat = false)
+			: KeyEvent(keycode), m_IsRepeat(isRepeat) {}
 
-		inline KeyCode GetRepeatCount() const { return m_RepeatCount; }
+		bool IsRepeat() const { return m_IsRepeat; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_KeyCode << "(" << m_RepeatCount << "repeats)";
+			ss << "KeyPressedEvent: " << m_KeyCode << "(repeat :" << m_IsRepeat << ")";
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		KeyCode m_RepeatCount;
+		bool m_IsRepeat;
 	};
 
 	class WI_API KeyReleasedEvent : public KeyEvent

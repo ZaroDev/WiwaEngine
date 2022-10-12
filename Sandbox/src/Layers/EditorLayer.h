@@ -5,6 +5,16 @@
 
 #include "Panels/Panel.h"
 
+#include "Panels/AboutPanel.h"
+#include "Panels/ConfigurationPanel.h"
+#include "Panels/ConsolePanel.h"
+#include "Panels/ScenePanel.h"
+#include "Panels/HierarchyPanel.h"
+#include "Panels/AssetsPanel.h"
+#include "Panels/InspectorPanel.h"
+#include "Panels/PlayPanel.h"
+#include "Panels/MeshViewPanel.h"
+
 class EditorLayer : public Wiwa::Layer
 {
 public:
@@ -16,26 +26,29 @@ public:
 	void OnDetach() override;
 	void OnUpdate() override;
 	void OnImGuiRender() override;
-	void OnEvent(Wiwa::Event& event) override;
+	void OnEvent(Wiwa::Event& e) override;
 private:
 	void MainMenuBar();
 	void DockSpace();
-private:
-	bool m_ShowConsole = false;
-	bool m_ShowDemo = false;
 
 	void LoadPanelConfig();
 	void SavePanelConfig();
 
-	std::shared_ptr<Panel> m_About = nullptr;
-	std::shared_ptr<Panel> m_Configuration = nullptr;
-	std::shared_ptr<Panel> m_Console = nullptr;
-	std::shared_ptr<Panel> m_Scene = nullptr;
-	std::shared_ptr<Panel> m_Hierarchy = nullptr;
-	std::shared_ptr<Panel> m_Assets = nullptr;
-	std::shared_ptr<Panel> m_Inspector = nullptr;
-	std::shared_ptr<Panel> m_Play = nullptr;
-	std::shared_ptr<Panel> m_MeshView = nullptr;
+	bool OnKeyPressed(Wiwa::KeyPressedEvent& e);
+
+private:
+	bool m_ShowConsole = false;
+	bool m_ShowDemo = false;
+
+	std::shared_ptr<AboutPanel>			m_About = nullptr;
+	std::shared_ptr<ConfigurationPanel> m_Configuration = nullptr;
+	std::shared_ptr<ConsolePanel>		m_Console = nullptr;
+	std::shared_ptr<ScenePanel>			m_Scene = nullptr;
+	std::shared_ptr<HierarchyPanel>		m_Hierarchy = nullptr;
+	std::shared_ptr<AssetsPanel>		m_Assets = nullptr;
+	std::shared_ptr<InspectorPanel>		m_Inspector = nullptr;
+	std::shared_ptr<PlayPanel>			m_Play = nullptr;
+	std::shared_ptr<MeshViewPanel>		m_MeshView = nullptr;
 
 	std::vector<std::shared_ptr<Panel>> m_Panels;
 };

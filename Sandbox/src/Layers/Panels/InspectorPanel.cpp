@@ -35,6 +35,7 @@ bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 InspectorPanel::InspectorPanel()
 	: Panel("Inspector")
 {
+	m_Components = GetTypes<1>();
 }
 
 InspectorPanel::~InspectorPanel()
@@ -48,6 +49,8 @@ void InspectorPanel::Draw()
 	if (m_EntitySet)
 	{
 		int id = 0;
+		const char* entName = entityManager.GetEntityName(m_CurrentID);
+		ImGui::Text(entName);
 		std::map<ComponentId, size_t>& map = entityManager.GetEntityComponents(m_CurrentID);
 		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
 		{
@@ -66,23 +69,23 @@ void InspectorPanel::Draw()
 					ImGui::PushID(id++);
 					if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Vector2i") == 0)
 					{
-						ImGui::InputInt("x", (int*)(data));
-						ImGui::InputInt("y", (int*)(data + 4));
+						ImGui::InputInt("x",		(int*)(data + cl->fields[i].offset));
+						ImGui::InputInt("y",		(int*)(data + cl->fields[i].offset + sizeof(int)));
 					}
 					else if (std::strcmp(cl->fields[i].type->name, "float") == 0)
 					{
-						ImGui::InputFloat("", (float*)(data + cl->fields[i].offset));
+						ImGui::InputFloat("",		(float*)(data + cl->fields[i].offset));
 					}
 					else if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Vector2f") == 0)
 					{
-						ImGui::InputFloat("x", (float*)(data));
-						ImGui::InputFloat("y", (float*)(data + cl->fields[i].offset));
+						ImGui::InputFloat("x",		(float*)(data + cl->fields[i].offset));
+						ImGui::InputFloat("y",		(float*)(data + cl->fields[i].offset + sizeof(float)));
 					}
 					else if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Vector3f") == 0)
 					{
-						ImGui::InputFloat("x", (float*)(data));
-						ImGui::InputFloat("y", (float*)(data + cl->fields[i].offset));
-						ImGui::InputFloat("z", (float*)(data + (cl->fields[i].offset * 2)));
+						ImGui::InputFloat("x",		(float*)(data + cl->fields[i].offset));
+						ImGui::InputFloat("y",		(float*)(data + cl->fields[i].offset + sizeof(float)));
+						ImGui::InputFloat("z",		(float*)(data + cl->fields[i].offset + (sizeof(float) * 2)));
 					}
 					else if (std::strcmp(cl->fields[i].type->name, "unsigned __int64") == 0)
 					{
@@ -90,14 +93,14 @@ void InspectorPanel::Draw()
 					}
 					else if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Rect2i") == 0)
 					{
-						ImGui::InputInt("x", (int*)(data));
-						ImGui::InputInt("y", (int*)(data + cl->fields[i].offset));
-						ImGui::InputInt("width", (int*)(data + (cl->fields[i].offset * 2)));
-						ImGui::InputInt("height", (int*)(data + (cl->fields[i].offset * 3)));
+						ImGui::InputInt("x",		(int*)(data + cl->fields[i].offset));
+						ImGui::InputInt("y",		(int*)(data + cl->fields[i].offset + sizeof(int)));
+						ImGui::InputInt("width",	(int*)(data + cl->fields[i].offset + sizeof(int) * 2));
+						ImGui::InputInt("height",	(int*)(data + cl->fields[i].offset + sizeof(int) * 3));
 					}
 					else if (std::strcmp(cl->fields[i].type->name, "enum Wiwa::Renderer2D::Pivot") == 0)
 					{
-						ImGui::InputInt("", (int*)(data + cl->fields[i].offset));
+						ImGui::InputInt("",			(int*)(data + cl->fields[i].offset));
 					}
 
 					ImGui::PopID();
@@ -107,15 +110,31 @@ void InspectorPanel::Draw()
 		}
 
 		if (ButtonCenteredOnLine("Add component"))
-		{
-			
-		}
+			ImGui::OpenPopup("Components");
 
-	
-		if (ImGui::BeginMenu("Components"))
+		if (ImGui::BeginPopup("Components"))
 		{
-			if (ImGui::MenuItem("Transform3D")) entityManager.AddComponent<Wiwa::Transform3D>(m_CurrentID);
-			ImGui::EndMenu();
+			static ImGuiTextFilter filter;
+			ImGui::Text("Search:");
+			filter.Draw("##searchbar", 340.f);
+			ImGui::BeginChild("listbox child", ImVec2(300, 200));
+			for (int i = 0; i < m_Components.Size(); i++) {
+				const char* paintkit = m_Components[i]->name;
+				if (filter.PassFilter(paintkit)) 
+				{
+					std::string label = paintkit;
+					RemoveWordFromLine(label, "struct Wiwa::");
+					label += "##" + std::to_string(i);
+					if (ImGui::MenuItem(label.c_str()))
+					{
+						entityManager.AddComponent<Wiwa::Transform3D>(m_CurrentID);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+
+			}
+			ImGui::EndChild();
+			ImGui::EndPopup();
 		}
 	}
 	ImGui::End();

@@ -20,10 +20,12 @@ IncludeDirs["JSON"] = "Wiwa/vendor/rapidjson"
 IncludeDirs["XML"] = "Wiwa/vendor/pugixml/src"
 IncludeDirs["Optick"] = "Wiwa/vendor/Optick/include"
 IncludeDirs["assimp"] = "Wiwa/vendor/assimp/include"
+IncludeDirs["ImGuizmo"] = "Wiwa/vendor/imguizmo"
  
 include "Wiwa/vendor/GLFW"
 include "Wiwa/vendor/imgui"
 include "Wiwa/vendor/Optick"
+include "Wiwa/vendor/imguizmo"
 
 project "Wiwa"
 	location "Wiwa"
@@ -45,7 +47,7 @@ project "Wiwa"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
 	}
 
 	includedirs
@@ -60,7 +62,8 @@ project "Wiwa"
 		"%{IncludeDirs.JSON}",
 		"%{IncludeDirs.XML}",
 		"%{IncludeDirs.Optick}",
-		"%{IncludeDirs.assimp}"
+		"%{IncludeDirs.assimp}",
+		"%{IncludeDirs.ImGuizmo}"
 	}
 
 	links
@@ -70,8 +73,12 @@ project "Wiwa"
 		"opengl32.lib",
 		"Wiwa/vendor/Glew/lib/glew32.lib",
 		"Optick",
-		"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
+		"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib",
+		"ImGuizmo"
 	}
+
+	filter "files:%{prj.name}/vendor/imguizmo/**.cpp"
+		flags {"NoPCH"}
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
@@ -129,14 +136,16 @@ project "Sandbox"
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.GLM}",
 		"Wiwa/src",
-		"%{IncludeDirs.Optick}"
+		"%{IncludeDirs.Optick}",
+		"%{IncludeDirs.ImGuizmo}"
 	}
 
 	links
 	{
 		"Wiwa",
 		"ImGui",
-		"Optick"
+		"Optick",
+		"ImGuizmo"
 	}
 
 	debugdir "$(SolutionDir)/Editor"

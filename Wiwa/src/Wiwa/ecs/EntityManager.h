@@ -34,6 +34,7 @@ namespace Wiwa {
 		std::vector<size_t> m_ComponentsReserved;
 		std::vector<std::map<ComponentId, size_t>> m_EntityComponents;
 		std::vector<std::vector<SystemId>> m_EntitySystems;
+		std::vector<std::string> m_EntityNames;
 
 		template<class T> bool HasComponents(EntityId entityId);
 
@@ -56,6 +57,9 @@ namespace Wiwa {
 
 		// Create entity
 		EntityId CreateEntity();
+		EntityId CreateEntity(const char* name);
+
+		inline const char* GetEntityName(EntityId id) { return m_EntityNames[id].c_str(); }
 
 		inline std::map<ComponentId, size_t>& GetEntityComponents(EntityId id) { return m_EntityComponents[id]; }
 		inline size_t GetEntityCount() { return m_EntityComponents.size(); }

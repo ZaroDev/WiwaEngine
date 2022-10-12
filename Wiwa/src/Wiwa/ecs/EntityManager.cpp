@@ -51,7 +51,15 @@ namespace Wiwa {
 	{
 		m_EntityComponents.emplace_back();
 		m_EntitySystems.emplace_back();
+		m_EntityNames.emplace_back("New entity");
+		return m_EntityComponents.size() - 1;
+	}
 
+	EntityId EntityManager::CreateEntity(const char* name)
+	{
+		m_EntityNames.emplace_back(name);
+		m_EntityComponents.emplace_back();
+		m_EntitySystems.emplace_back();
 		return m_EntityComponents.size() - 1;
 	}
 

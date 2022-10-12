@@ -13,6 +13,10 @@ public:
 
 	void Draw() override;
 
+	inline void SetGizmoType(int type) { m_GizmoType = type; }
+
 private:
 	std::vector<ShadingView*> m_Shadings;
+
+	int m_GizmoType = -1;
 };

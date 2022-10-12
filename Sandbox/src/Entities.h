@@ -12,25 +12,25 @@
 
 void CreateCube()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity();
+	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Cube");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Cube cube;
 }
 void CreatePlane()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity();
+	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Plane");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Plane plane;
 }
 void CreatePyramid()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity();
+	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Pyramid");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Pyramid pyramid;
 }
 void CreateSphere()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity();
+	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Sphere");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Sphere sphere;
 }

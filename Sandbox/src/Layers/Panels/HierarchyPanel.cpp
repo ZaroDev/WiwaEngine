@@ -28,7 +28,7 @@ void HierarchyPanel::Draw()
 	{
 		if (ImGui::MenuItem("Create New Entity"))
 		{
-			entityManager.CreateEntity();
+			entityManager.CreateEntity("New entity");
 		}
 		//TODO: Remove test
 		if(ImGui::MenuItem("Create 2D tree"))
@@ -36,7 +36,7 @@ void HierarchyPanel::Draw()
 			ResourceId tree = Wiwa::Resources::Load<Wiwa::Image>("resources/images/tree.png");
 			Wiwa::Image* spr = Wiwa::Resources::GetResourceById<Wiwa::Image>(tree);
 			Wiwa::Size2i size = spr->GetSize();
-			EntityId EntityMyTree = entityManager.CreateEntity();
+			EntityId EntityMyTree = entityManager.CreateEntity("Arbolsito rechulon");
 			entityManager.AddComponent<Wiwa::Transform2D>(EntityMyTree, { {0,0},0.f,{1.0,1.0} });
 			entityManager.AddComponent<Wiwa::Sprite>(EntityMyTree, { {256,256}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
 		}
@@ -70,8 +70,10 @@ void HierarchyPanel::Draw()
 	int id = 0;
 	for (size_t i = 0; i < Wiwa::Application::Get().GetEntityManager().GetEntityCount(); i++)
 	{
+		const char* entName = entityManager.GetEntityName(i);
+		
 		ImGui::PushID(id++);
-		if (ImGui::Button("Entity!", ImVec2(width, 20)))
+		if (ImGui::Button(entName, ImVec2(width, 20)))
 		{
 			InspectorPanel::SetEntity((uint32_t)i);
 		}

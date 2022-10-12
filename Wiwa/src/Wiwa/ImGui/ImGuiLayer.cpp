@@ -12,6 +12,7 @@
 #include <glew.h>
 #include <GLFW/glfw3.h>
 #include <Wiwa/Resources.h>
+#include <ImGuizmo.h>
 
 namespace Wiwa {
 	ImGuiLayer::ImGuiLayer()
@@ -26,6 +27,7 @@ namespace Wiwa {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 	void ImGuiLayer::End()
 	{

@@ -6,17 +6,10 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 
-#include "Panels/AboutPanel.h"
-#include "Panels/ConfigurationPanel.h"
-#include "Panels/ConsolePanel.h"
-#include "Panels/ScenePanel.h"
-#include "Panels/HierarchyPanel.h"
-#include "Panels/AssetsPanel.h"
-#include "Panels/InspectorPanel.h"
-#include "Panels/PlayPanel.h"
-#include "Panels/MeshViewPanel.h"
 
-#include <optick.h>
+
+#include <Wiwa/Input.h>
+#include <ImGuizmo.h>
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
@@ -90,9 +83,10 @@ void EditorLayer::OnImGuiRender()
 
 }
 
-void EditorLayer::OnEvent(Wiwa::Event& event)
+void EditorLayer::OnEvent(Wiwa::Event& e)
 {
-	OPTICK_EVENT();
+	Wiwa::EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<Wiwa::KeyPressedEvent>(WI_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 }
 
 void EditorLayer::MainMenuBar()
@@ -101,14 +95,13 @@ void EditorLayer::MainMenuBar()
 	ImGui::BeginMainMenuBar();
 	if (ImGui::BeginMenu("File"))
 	{
-		if (ImGui::MenuItem("Close"))
-		{
+		if (ImGui::MenuItem("Close", "ALT + Q"))
 			Wiwa::Application::Get().Quit();
-		}
 		ImGui::EndMenu();
 	}
 	if (ImGui::BeginMenu("View"))
 	{
+		int i = 1;
 		for (auto& p : m_Panels)
 		{
 			if (ImGui::MenuItem(p->GetName(), "", p->active))
@@ -199,4 +192,82 @@ void EditorLayer::SavePanelConfig()
 	}
 
 	config.save_file("config/panels.json");
+}
+
+bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
+{
+	// Shortcuts
+	if (e.IsRepeat())
+		return false;
+
+	bool control = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl) || Wiwa::Input::IsKeyPressed(Wiwa::Key::RightControl);
+	bool shift = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift) || Wiwa::Input::IsKeyPressed(Wiwa::Key::RightShift);
+	bool alt = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftAlt) || Wiwa::Input::IsKeyPressed(Wiwa::Key::RightAlt);
+
+	switch (e.GetKeyCode())
+	{
+	case Wiwa::Key::N:
+	{
+		if (control)
+			//NewScene();
+
+		break;
+	}
+	case Wiwa::Key::O:
+	{
+		if (control)
+			//OpenScene();
+
+		break;
+	}
+	case Wiwa::Key::S:
+	{
+		if (control)
+		{
+			//if (shift)
+			//	//SaveSceneAs();
+			//else
+			//	//SaveScene();
+		}
+
+		break;
+	}
+
+	// Scene Commands
+	case Wiwa::Key::D:
+	{
+		if (control)
+			//OnDuplicateEntity();
+
+		break;
+	}
+
+	// Gizmos
+	case Wiwa::Key::Q:
+	{
+		if (alt)
+			Wiwa::Application::Get().Quit();
+		if (!ImGuizmo::IsUsing())
+			m_Scene->SetGizmoType(-1);
+		break;
+	}
+	case Wiwa::Key::W:
+	{
+		if (!ImGuizmo::IsUsing())
+			m_Scene->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
+		break;
+	}
+	case Wiwa::Key::E:
+	{
+		if (!ImGuizmo::IsUsing())
+			m_Scene->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
+		break;
+	}
+	case Wiwa::Key::R:
+	{
+		if (!ImGuizmo::IsUsing())
+			m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE);
+		break;
+	}
+	}
 }
