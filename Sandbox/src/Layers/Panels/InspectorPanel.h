@@ -2,12 +2,22 @@
 
 #include "Panel.h"
 
-
 #include <Wiwa/Reflection.h>
 #include <Wiwa/utilities/containers/Array.h>
 
+namespace Wiwa {
+	class EntityManager;
+};
+
 class InspectorPanel : public Panel
 {
+private:
+	void ClearComponentName(std::string& cname);
+
+	void DrawComponent(size_t componentId);
+	void DrawField(unsigned char* data, const Field& field);
+
+	Wiwa::EntityManager* m_EntityManager;
 public:
 	InspectorPanel();
 	virtual ~InspectorPanel();

@@ -5,7 +5,8 @@
 
 #include <functional>
 
-#include "utilities/containers/Array.h"
+#include <Wiwa/Core.h>
+#include <Wiwa/utilities/containers/Array.h>
 
 #define memberoffset(type, member) (int)&((type*)0)->member
 
@@ -78,7 +79,7 @@ template<class T> inline const Enum* GetEnum() {
 }
 
 // COMPILE-TIME FUNCTIONS
-template<int c>
+template<size_t c>
 const Type* GetCompileType() {
 	return NULL;
 }
@@ -96,6 +97,7 @@ template<> inline const Type* GetType_impl<rtype>(){ \
 	type.hash = std::hash<std::string>{}(type.name); \
 	type.is_class = true; \
 	type.is_enum = false; \
+	type.is_array = false; \
 	type.field_count = 0; \
 	rtype temp;
 
@@ -108,13 +110,15 @@ template<> inline const Type* GetType_impl<rtype>(){ \
 #define REFLECTION_END return &type; }
 
 // REFLECT ENUMERATOR
-#define ENUM_REFLECTION_BEGIN(rtype) template<> inline const Type* GetType_impl<rtype>(){ \
+#define ENUM_REFLECTION_BEGIN(rtype) \
+template<> inline const Type* GetType_impl<rtype>(){ \
 	static Enum type; \
 	type.name = typeid(rtype).name(); \
 	type.size = sizeof(rtype); \
 	type.hash = std::hash<std::string>{}(type.name); \
 	type.is_class = false; \
 	type.is_enum = true; \
+	type.is_array = false; \
 	type.member_count = 0; \
 	rtype temp;
 
@@ -127,7 +131,7 @@ template<> inline const Type* GetType_impl<rtype>(){ \
 
 //======== Compile-time types ================================================================================================================
 
-extern const int TYPE_COUNT;
+extern const size_t TYPE_COUNT;
 
 // No return foreach
 template <size_t N, size_t I = 0>

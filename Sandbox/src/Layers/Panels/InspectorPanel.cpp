@@ -32,9 +32,140 @@ bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 	return ImGui::Button(label);
 }
 
+void InspectorPanel::ClearComponentName(std::string& cname)
+{
+	// Clear namespace
+	size_t nspace = cname.find(':');
+
+	if (nspace != cname.npos) {
+		cname.erase(0, nspace + 2);
+		return;
+	}
+
+	// Clear class
+	size_t ptype = cname.find("class ");
+
+	if (ptype != cname.npos) {
+		cname.erase(0, 6);
+		return;
+	}
+
+	// Clear struct
+	ptype = cname.find("struct ");
+
+	if (ptype != cname.npos) {
+		cname.erase(0, 7);
+		return;
+	}
+
+	// Clear enum
+	ptype = cname.find("enum ");
+
+	if (ptype != cname.npos) {
+		cname.erase(0, 5);
+		return;
+	}
+}
+
+void InspectorPanel::DrawComponent(size_t componentId)
+{
+	const Type* type = m_EntityManager->GetComponentType(componentId);
+	const Class* cl = (const Class*)type;
+
+	std::string name = cl->name;
+	ClearComponentName(name);
+
+	if (ImGui::TreeNodeEx(name.c_str()))
+	{
+		byte* data = m_EntityManager->GetComponent(m_CurrentID, componentId, cl->size);
+		for (size_t i = 0; i < cl->fields.size(); i++)
+		{
+			DrawField(data, cl->fields[i]);
+		}
+		ImGui::TreePop();
+	}
+}
+
+void InspectorPanel::DrawField(unsigned char* data, const Field& field)
+{
+	// Draw class field
+	if (field.type->is_class) {
+		const Class* cl = (const Class*)field.type;
+
+		std::string name = field.name;
+		ClearComponentName(name);
+
+		if (ImGui::TreeNodeEx(name.c_str()))
+		{
+			for (size_t i = 0; i < cl->fields.size(); i++)
+			{
+				DrawField(data + field.offset, cl->fields[i]);
+			}
+			ImGui::TreePop();
+		}
+		return;
+	}
+
+	// Draw enum field
+	if (field.type->is_enum) {
+		const Enum* en = (const Enum*)field.type;
+
+		ImGui::Text(field.name);
+		ImGui::PushID(field.name);
+
+		//TODO: DRAW LIST OF ENUMS TO CHOOSE FROM
+
+		ImGui::PopID();
+		return;
+	}
+
+	// Draw basic fields
+	ImGui::Text(field.name);
+	ImGui::PushID(field.name);
+	if (std::strcmp(field.type->name, "struct Wiwa::Vector2i") == 0)
+	{
+		ImGui::InputInt("x", (int*)(data + field.offset));
+		ImGui::InputInt("y", (int*)(data + field.offset + sizeof(int)));
+	}
+	else if (std::strcmp(field.type->name, "float") == 0)
+	{
+		ImGui::InputFloat("", (float*)(data + field.offset));
+	}
+	else if (std::strcmp(field.type->name, "struct Wiwa::Vector2f") == 0)
+	{
+		ImGui::InputFloat("x", (float*)(data + field.offset));
+		ImGui::InputFloat("y", (float*)(data + field.offset + sizeof(float)));
+	}
+	else if (std::strcmp(field.type->name, "struct Wiwa::Vector3f") == 0)
+	{
+		ImGui::InputFloat("x", (float*)(data + field.offset));
+		ImGui::InputFloat("y", (float*)(data + field.offset + sizeof(float)));
+		ImGui::InputFloat("z", (float*)(data + field.offset + (sizeof(float) * 2)));
+	}
+	else if (std::strcmp(field.type->name, "unsigned __int64") == 0)
+	{
+		ImGui::InputInt("", (int*)(data + field.offset));
+	}
+	else if (std::strcmp(field.type->name, "struct Wiwa::Rect2i") == 0)
+	{
+		ImGui::InputInt("x", (int*)(data + field.offset));
+		ImGui::InputInt("y", (int*)(data + field.offset + sizeof(int)));
+		ImGui::InputInt("width", (int*)(data + field.offset + sizeof(int) * 2));
+		ImGui::InputInt("height", (int*)(data + field.offset + sizeof(int) * 3));
+	}
+	else if (std::strcmp(field.type->name, "enum Wiwa::Renderer2D::Pivot") == 0)
+	{
+		ImGui::InputInt("", (int*)(data + field.offset));
+	}
+
+	ImGui::PopID();
+}
+
 InspectorPanel::InspectorPanel()
 	: Panel("Inspector")
 {
+	m_EntityManager = &Wiwa::Application::Get().GetEntityManager();
+
 	m_Components = GetTypes<1>();
 }
 
@@ -48,65 +179,12 @@ void InspectorPanel::Draw()
 	ImGui::Begin(name, &active);
 	if (m_EntitySet)
 	{
-		int id = 0;
 		const char* entName = entityManager.GetEntityName(m_CurrentID);
 		ImGui::Text(entName);
 		std::map<ComponentId, size_t>& map = entityManager.GetEntityComponents(m_CurrentID);
 		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
 		{
-			const Type* type = entityManager.GetComponentType(comp->first);
-			const Class* cl = (const Class*)type;
-
-			std::string name = cl->name;
-			RemoveWordFromLine(name, "struct Wiwa::");
-
-			if (ImGui::TreeNodeEx(name.c_str()))
-			{
-				byte* data = entityManager.GetComponent(m_CurrentID, comp->first, cl->size);
-				for (size_t i = 0; i < cl->fields.size(); i++)
-				{
-					ImGui::Text(cl->fields[i].name);
-					ImGui::PushID(id++);
-					if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Vector2i") == 0)
-					{
-						ImGui::InputInt("x",		(int*)(data + cl->fields[i].offset));
-						ImGui::InputInt("y",		(int*)(data + cl->fields[i].offset + sizeof(int)));
-					}
-					else if (std::strcmp(cl->fields[i].type->name, "float") == 0)
-					{
-						ImGui::InputFloat("",		(float*)(data + cl->fields[i].offset));
-					}
-					else if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Vector2f") == 0)
-					{
-						ImGui::InputFloat("x",		(float*)(data + cl->fields[i].offset));
-						ImGui::InputFloat("y",		(float*)(data + cl->fields[i].offset + sizeof(float)));
-					}
-					else if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Vector3f") == 0)
-					{
-						ImGui::InputFloat("x",		(float*)(data + cl->fields[i].offset));
-						ImGui::InputFloat("y",		(float*)(data + cl->fields[i].offset + sizeof(float)));
-						ImGui::InputFloat("z",		(float*)(data + cl->fields[i].offset + (sizeof(float) * 2)));
-					}
-					else if (std::strcmp(cl->fields[i].type->name, "unsigned __int64") == 0)
-					{
-						ImGui::InputInt("", (int*)(data + cl->fields[i].offset));
-					}
-					else if (std::strcmp(cl->fields[i].type->name, "struct Wiwa::Rect2i") == 0)
-					{
-						ImGui::InputInt("x",		(int*)(data + cl->fields[i].offset));
-						ImGui::InputInt("y",		(int*)(data + cl->fields[i].offset + sizeof(int)));
-						ImGui::InputInt("width",	(int*)(data + cl->fields[i].offset + sizeof(int) * 2));
-						ImGui::InputInt("height",	(int*)(data + cl->fields[i].offset + sizeof(int) * 3));
-					}
-					else if (std::strcmp(cl->fields[i].type->name, "enum Wiwa::Renderer2D::Pivot") == 0)
-					{
-						ImGui::InputInt("",			(int*)(data + cl->fields[i].offset));
-					}
-
-					ImGui::PopID();
-				}
-				ImGui::TreePop();
-			}
+			DrawComponent(comp->first);
 		}
 
 		if (ButtonCenteredOnLine("Add component"))
