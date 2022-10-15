@@ -12,8 +12,9 @@
 #include "Panels/HierarchyPanel.h"
 #include "Panels/AssetsPanel.h"
 #include "Panels/InspectorPanel.h"
-#include "Panels/PlayPanel.h"
 #include "Panels/MeshViewPanel.h"
+
+typedef void* ImTextureID;
 
 class EditorLayer : public Wiwa::Layer
 {
@@ -47,8 +48,12 @@ private:
 	std::shared_ptr<HierarchyPanel>		m_Hierarchy = nullptr;
 	std::shared_ptr<AssetsPanel>		m_Assets = nullptr;
 	std::shared_ptr<InspectorPanel>		m_Inspector = nullptr;
-	std::shared_ptr<PlayPanel>			m_Play = nullptr;
 	std::shared_ptr<MeshViewPanel>		m_MeshView = nullptr;
 
 	std::vector<std::shared_ptr<Panel>> m_Panels;
+
+	ImTextureID m_PlayIcon;
+	ImTextureID m_PauseIcon;
+
+	int m_GizmoType = -1;
 };

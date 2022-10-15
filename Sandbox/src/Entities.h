@@ -10,27 +10,33 @@
 #include <Wiwa/utilities/render/primitives/Pyramid.h>
 #include <Wiwa/utilities/render/primitives/Sphere.h>
 
-void CreateCube()
+Wiwa::Mesh* CreateCube()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Cube");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Cube cube;
+	Wiwa::Cube* cube = new Wiwa::Cube();
+
+	return cube;
 }
-void CreatePlane()
+Wiwa::Mesh* CreatePlane()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Plane");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Plane plane;
+	Wiwa::Plane* plane = new Wiwa::Plane();
+
+	return plane;
 }
-void CreatePyramid()
+Wiwa::Mesh* CreatePyramid()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Pyramid");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Pyramid pyramid;
+	Wiwa::Pyramid* pyramid = new Wiwa::Pyramid();
+	return pyramid;
 }
-void CreateSphere()
+Wiwa::Mesh* CreateSphere()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Sphere");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Sphere sphere;
+	Wiwa::Sphere* sphere = new Wiwa::Sphere();
+	return sphere;
 }
