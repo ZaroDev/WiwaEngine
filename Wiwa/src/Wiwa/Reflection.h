@@ -131,25 +131,34 @@ template<> inline const Type* GetType_impl<rtype>(){ \
 
 //======== Compile-time types ================================================================================================================
 
+// Type count of objects in the engine
 extern const size_t TYPE_COUNT;
 
 // No return foreach
 template <size_t N, size_t I = 0>
-void GetTypes(Wiwa::Array<const Type*, N>& arr) {
+void GetTypes_loop(Wiwa::Array<const Type*, N>& arr) {
 	// Take type
 	arr[I] = GetCompileType<I>();
 
 	// Recurse from I to N
-	if constexpr (I + 1 < N) GetTypes<N, I + 1>(arr);
+	if constexpr (I + 1 < N) GetTypes_loop<N, I + 1>(arr);
 };
 
 template <size_t count>
-const Wiwa::Array<const Type*, count>& GetTypes() {
+const Wiwa::Array<const Type*, count>* GetTypes_impl() {
 	static Wiwa::Array<const Type*, count> types{};
 
-	GetTypes<count, 0>(types);
+	GetTypes_loop<count, 0>(types);
+
+	return &types;
+};
+
+template<size_t count>
+inline const Wiwa::Array<const Type*, count>* GetTypes() {
+	static const Wiwa::Array<const Type*, count>* types = GetTypes_impl<count>();
 
 	return types;
 };
 
+// Call where TYPE_COUNT is defined
 #define GET_TYPES() GetTypes<TYPE_COUNT>()

@@ -12,6 +12,7 @@
 
 typedef size_t EntityId;
 typedef size_t ComponentId;
+typedef size_t ComponentHash;
 typedef size_t SystemId;
 typedef unsigned char byte;
 
@@ -29,7 +30,7 @@ namespace Wiwa {
 
 		std::vector<byte*> m_Components;
 		std::vector<const Type*> m_ComponentTypes;
-		std::unordered_map<size_t, componentData> m_ComponentIds;
+		std::unordered_map<ComponentHash, componentData> m_ComponentIds;
 		std::vector<size_t> m_ComponentsSize;
 		std::vector<size_t> m_ComponentsReserved;
 		std::vector<std::map<ComponentId, size_t>> m_EntityComponents;
@@ -65,6 +66,7 @@ namespace Wiwa {
 		inline size_t GetEntityCount() { return m_EntityComponents.size(); }
 		inline const Type* GetComponentType(ComponentId id) { return m_ComponentTypes[id]; }
 		// Component functions
+		void AddComponent(EntityId entity, ComponentHash hash);
 		template<class T> T* AddComponent(EntityId entity, T value = {});
 		template<class T> T* GetComponents(size_t* size);
 		inline byte* GetComponents(ComponentId id) { return m_Components[id]; }
@@ -84,6 +86,7 @@ namespace Wiwa {
 		bool HasComponents(EntityId entityId, ComponentId* componentIds, size_t size);
 		template<class T, class T2, class... TArgs> bool HasComponents(EntityId entityId);
 		
+		ComponentId GetComponentId(ComponentHash hash);
 		template<class T> ComponentId GetComponentId();
 
 		// System functions
@@ -120,21 +123,9 @@ namespace Wiwa {
 	template<class T>
 	inline ComponentId EntityManager::GetComponentId()
 	{
-		size_t component_id = 0;
-
 		const Type* ctype = GetType<T>();
-		std::unordered_map<size_t, componentData>::iterator cid = m_ComponentIds.find(ctype->hash);
 
-		if (cid == m_ComponentIds.end()) {
-			component_id = m_ComponentIdCount++;
-
-			m_ComponentIds[ctype->hash] = { GetType<T>(), component_id };
-		}
-		else {
-			component_id = cid->second.cid;
-		}
-
-		return component_id;
+		return GetComponentId(ctype->hash);
 	}
 
 	template<class T>

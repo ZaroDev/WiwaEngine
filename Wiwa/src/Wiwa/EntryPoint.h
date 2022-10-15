@@ -5,8 +5,6 @@
 #ifdef WI_PLATFORM_WINDOWS
 extern Wiwa::Application* Wiwa::CreateApplication();
 
-const size_t TYPE_COUNT = __COUNTER__;
-
 int main(int argc, char** argv)
 {
 	Wiwa::Log::Init();

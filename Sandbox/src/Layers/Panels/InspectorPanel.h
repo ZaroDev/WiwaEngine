@@ -24,8 +24,6 @@ public:
 
 	void Draw() override;
 	void Update() override;
-
-	Wiwa::Array<const Type*, 1> m_Components;
 public:
 	static inline void SetEntity(uint32_t entityID) { m_CurrentID = entityID; m_EntitySet = true; };
 	static inline bool GetCurrentEntity(uint32_t& entityID) 

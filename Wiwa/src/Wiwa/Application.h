@@ -10,6 +10,8 @@
 #include "Wiwa/ImGui/ImGuiLayer.h"
 
 #include <Wiwa/utilities/math/Vector2i.h>
+#include <Wiwa/ecs/components/Transform3D.h>
+#include <Wiwa/Reflection.h>
 
 namespace Wiwa {
 	
@@ -65,6 +67,11 @@ namespace Wiwa {
 		inline void SetTargetResolution(int width, int height) { m_TargetResolution = { width, height }; }
 		inline Size2i& GetTargetResolution() { return m_TargetResolution; }
 
+		// Reflection
+		size_t getTypeCount() const;
+		const Type* getType(size_t index) const;
+		const Type* getTypeH(size_t hash) const;
+
 		void OpenDir(const char* url);
 		void Quit();
 
@@ -93,4 +100,3 @@ namespace Wiwa {
 	//To be defined in a client
 	Application* CreateApplication();
 }
-

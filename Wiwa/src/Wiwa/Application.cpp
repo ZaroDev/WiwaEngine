@@ -22,6 +22,8 @@
 
 #include "ecs/systems/SpriteRenderer.h"
 
+const size_t TYPE_COUNT = __COUNTER__;
+
 namespace Wiwa {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -151,6 +153,33 @@ namespace Wiwa {
 			m_Window->OnUpdate();
 		}
 	}
+
+	size_t Application::getTypeCount() const
+	{
+		return TYPE_COUNT;
+	}
+
+	const Type* Application::getType(size_t index) const
+	{
+		return GET_TYPES()->at(index);
+	}
+
+	const Type* Application::getTypeH(size_t hash) const
+	{
+		const Wiwa::Array<const Type*, TYPE_COUNT>* types = GET_TYPES();
+
+		const Type* type = NULL;
+
+		for (size_t i = 0; i < TYPE_COUNT; i++) {
+			if (types->at(i)->hash == hash) {
+				type = types->at(i);
+				break;
+			}
+		}
+
+		return type;
+	}
+
 	void Application::OpenDir(const char* path)
 	{
 		ShellExecuteA(0, "open", path, NULL, NULL, SW_SHOWNORMAL);

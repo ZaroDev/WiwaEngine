@@ -6,12 +6,18 @@ namespace Wiwa {
 	private:
 		_Ty arr[_Size];
 	public:
-		_Ty& at(size_t index) { return arr[index]; }
-		const _Ty& at(size_t index) const { return arr[index]; }
+		Array() = default;
+		inline Array(const Array<_Ty, _Size>& other) { for (int i = 0; i < _Size; i++) arr[i] = other[i]; }
+		
+		inline constexpr Array(const _Ty other[_Size]){ for (int i = 0; i < _Size; i++) arr[i] = other[i]; }
+		inline constexpr Array(_Ty other[_Size]){ for (int i = 0; i < _Size; i++) arr[i] = other[i]; }
 
-		_Ty& operator[](size_t index) { return arr[index]; }
-		const _Ty& operator[](size_t index) const { return arr[index]; }
+		inline _Ty& at(size_t index) { return arr[index]; }
+		inline const _Ty& at(size_t index) const { return arr[index]; }
 
-		size_t Size() { return _Size; }
+		inline _Ty& operator[](size_t index) { return arr[index]; }
+		inline const _Ty& operator[](size_t index) const { return arr[index]; }
+
+		inline constexpr size_t Size() const { return _Size; }
 	};
 }

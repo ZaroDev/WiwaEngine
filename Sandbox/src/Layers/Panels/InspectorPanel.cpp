@@ -165,8 +165,6 @@ InspectorPanel::InspectorPanel()
 	: Panel("Inspector")
 {
 	m_EntityManager = &Wiwa::Application::Get().GetEntityManager();
-
-	m_Components = GetTypes<1>();
 }
 
 InspectorPanel::~InspectorPanel()
@@ -190,14 +188,17 @@ void InspectorPanel::Draw()
 		if (ButtonCenteredOnLine("Add component"))
 			ImGui::OpenPopup("Components");
 
+		size_t tcount = Wiwa::Application::Get().getTypeCount();
+
 		if (ImGui::BeginPopup("Components"))
 		{
 			static ImGuiTextFilter filter;
 			ImGui::Text("Search:");
 			filter.Draw("##searchbar", 340.f);
 			ImGui::BeginChild("listbox child", ImVec2(300, 200));
-			for (int i = 0; i < m_Components.Size(); i++) {
-				const char* paintkit = m_Components[i]->name;
+			for (size_t i = 0; i < tcount; i++) {
+				const Type* type = Wiwa::Application::Get().getType(i);
+				const char* paintkit = type->name;
 				if (filter.PassFilter(paintkit)) 
 				{
 					std::string label = paintkit;
@@ -205,7 +206,7 @@ void InspectorPanel::Draw()
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{
-						entityManager.AddComponent<Wiwa::Transform3D>(m_CurrentID);
+						entityManager.AddComponent(m_CurrentID, type->hash);
 						ImGui::CloseCurrentPopup();
 					}
 				}

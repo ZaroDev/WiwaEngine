@@ -14,8 +14,8 @@ namespace Wiwa {
 	};
 }
 
-REFLECTION_BEGIN(Wiwa::Transform2D);
-	REFLECT_MEMBER(position);
-	REFLECT_MEMBER(rotation);
-	REFLECT_MEMBER(scale);
+REFLECTION_BEGIN(Wiwa::Transform2D)
+	REFLECT_MEMBER(position)
+	REFLECT_MEMBER(rotation)
+	REFLECT_MEMBER(scale)
 REFLECTION_END;
