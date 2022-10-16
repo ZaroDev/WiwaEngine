@@ -69,10 +69,15 @@ namespace Wiwa
 		inline void SetTargetResolution(int width, int height) { m_TargetResolution = {width, height}; }
 		inline Size2i &GetTargetResolution() { return m_TargetResolution; }
 
-		// Reflection
-		size_t getTypeCount() const;
-		const Type *getType(size_t index) const;
-		const Type *getTypeH(size_t hash) const;
+		// Core Reflection
+		size_t getCoreTypeCount() const;
+		const Type *getCoreType(size_t index) const;
+		const Type *getCoreTypeH(size_t hash) const;
+		// App Reflection
+		virtual size_t getAppTypeCount() const = 0;
+		virtual const Type* getAppType(size_t index) const = 0;
+		virtual const Type* getAppTypeH(size_t hash) const = 0;
+
 		inline void SetRenderColor(Vector4f color) { m_RenderColor = color; }
 		inline Vector4f GetRenderColor() { return m_RenderColor; }
 

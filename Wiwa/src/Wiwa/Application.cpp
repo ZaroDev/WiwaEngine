@@ -156,17 +156,17 @@ namespace Wiwa {
 		}
 	}
 
-	size_t Application::getTypeCount() const
+	size_t Application::getCoreTypeCount() const
 	{
 		return TYPE_COUNT;
 	}
 
-	const Type* Application::getType(size_t index) const
+	const Type* Application::getCoreType(size_t index) const
 	{
 		return GET_TYPES()->at(index);
 	}
 
-	const Type* Application::getTypeH(size_t hash) const
+	const Type* Application::getCoreTypeH(size_t hash) const
 	{
 		const Wiwa::Array<const Type*, TYPE_COUNT>* types = GET_TYPES();
 

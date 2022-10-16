@@ -78,7 +78,8 @@ namespace Wiwa {
 		// Take components map of the entity
 		std::map<ComponentId, size_t>* ec = &m_EntityComponents[entityId];
 
-		const Type* ctype = Application::Get().getTypeH(hash);
+		const Type* ctype = Application::Get().getCoreTypeH(hash);
+		if (!ctype) ctype = Application::Get().getAppTypeH(hash);
 		byte* component = NULL;
 
 		// Look if the entity has this component
@@ -92,6 +93,7 @@ namespace Wiwa {
 				m_Components.resize(cid + 1, NULL);
 				m_ComponentsSize.resize(cid + 1, 0);
 				m_ComponentsReserved.resize(cid + 1, 0);
+				m_ComponentTypes.resize(cid + 1, NULL);
 			}
 
 			// If it's the first component, create new block MARTA WAS HERE
@@ -104,7 +106,7 @@ namespace Wiwa {
 				m_ComponentsSize[cid]++;
 				ec->insert_or_assign(cid, 0);
 
-				m_ComponentTypes.push_back(ctype);
+				m_ComponentTypes[cid] = ctype;
 			}
 			else {
 				// If more components reserved, just construct me TOO MEEEEEEEEEEEEE :) :3 "^0^" ÙwÚ
@@ -166,7 +168,10 @@ namespace Wiwa {
 		if (cid == m_ComponentIds.end()) {
 			component_id = m_ComponentIdCount++;
 
-			m_ComponentIds[hash] = { Application::Get().getTypeH(hash), component_id};
+			const Type* ctype = Application::Get().getCoreTypeH(hash);
+			if (!ctype) ctype = Application::Get().getAppTypeH(hash);
+
+			m_ComponentIds[hash] = { ctype, component_id};
 		}
 		else {
 			component_id = cid->second.cid;

@@ -150,6 +150,7 @@ namespace Wiwa {
 				m_Components.resize(cid + 1, NULL);
 				m_ComponentsSize.resize(cid + 1, 0);
 				m_ComponentsReserved.resize(cid + 1, 0);
+				m_ComponentTypes.resize(cid + 1, NULL);
 			}
 
 			// If it's the first component, create new block MARTA WAS HERE
@@ -162,7 +163,7 @@ namespace Wiwa {
 				m_ComponentsSize[cid]++;
 				ec->insert_or_assign(cid, 0);
 
-				m_ComponentTypes.push_back(GetType<T>());
+				m_ComponentTypes[cid] = GetType<T>();
 			}
 			else {
 				// If more components reserved, just construct me TOO MEEEEEEEEEEEEE :) :3 "^0^" ÙwÚ
@@ -254,6 +255,7 @@ namespace Wiwa {
 			m_Components.resize(cid + 1, NULL);
 			m_ComponentsSize.resize(cid + 1, 0);
 			m_ComponentsReserved.resize(cid + 1, 0);
+			m_ComponentTypes.resize(cid + 1, NULL);
 		}
 
 		if (m_Components[cid]) {
@@ -271,7 +273,7 @@ namespace Wiwa {
 		}
 		else {
 			m_Components[cid] = new byte[amount * sizeof(T)];
-			m_ComponentTypes.push_back(GetType<T>());
+			m_ComponentTypes[cid] = GetType<T>();
 		}
 
 		m_ComponentsReserved[cid] = m_ComponentsSize[cid] + amount;
