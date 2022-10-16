@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Wiwa/Reflection.h>
-
 namespace Wiwa {
 	struct Vector4f {
 		union
@@ -18,10 +16,3 @@ namespace Wiwa {
 		const Color4f WHITE = { 1.0f, 1.0f, 1.0f };
 	}
 }
-
-REFLECTION_BEGIN(Wiwa::Vector4f)
-	REFLECT_MEMBER(x)
-	REFLECT_MEMBER(y)
-	REFLECT_MEMBER(z)
-	REFLECT_MEMBER(w)
-REFLECTION_END;

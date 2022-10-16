@@ -3,7 +3,6 @@
 #include <imgui.h>
 
 #include <Wiwa/ecs/EntityManager.h>
-#include <Wiwa/ecs/components/Transform3D.h>
 #include <Wiwa/Application.h>
 
 uint32_t InspectorPanel::m_CurrentID = 0;
@@ -144,6 +143,9 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	}
 	else if (std::strcmp(field.type->name, "unsigned __int64") == 0)
 	{
+		ImGui::InputInt("", (int*)(data + field.offset));
+	}
+	else if (std::strcmp(field.type->name, "int") == 0) {
 		ImGui::InputInt("", (int*)(data + field.offset));
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Rect2i") == 0)

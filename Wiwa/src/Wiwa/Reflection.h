@@ -109,6 +109,16 @@ template<> inline const Type* GetType_impl<rtype>(){ \
 
 #define REFLECTION_END return &type; }
 
+#ifdef WI_BUILD_DLL
+#define CORE_REFLECTION_BEGIN(rtype) REFLECTION_BEGIN(rtype)
+#define CORE_REFLECT_MEMBER(member) REFLECT_MEMBER(member)
+#define CORE_REFLECTION_END REFLECTION_END
+#else
+#define CORE_REFLECTION_BEGIN(rtype)
+#define CORE_REFLECT_MEMBER(member)
+#define CORE_REFLECTION_END
+#endif
+
 // REFLECT ENUMERATOR
 #define ENUM_REFLECTION_BEGIN(rtype) \
 template<> inline const Type* GetType_impl<rtype>(){ \

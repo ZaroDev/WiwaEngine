@@ -2,9 +2,7 @@
 
 #include "Layers/EditorLayer.h"
 
-struct rtest {
-	int x, y;
-};
+const size_t TYPE_COUNT = __COUNTER__;
 
 class WiwaApp : public Wiwa::Application
 {
@@ -13,16 +11,11 @@ public:
 	{
 		PushOverlay(new EditorLayer());
 
-		//Wiwa::Array<const Type*, TYPE_COUNT> arr = GET_TYPES();
+		const Wiwa::Array<const Type*, TYPE_COUNT>* arr = GET_TYPES();
 
-		/*GET_TYPES();*/
-
-		size_t test = 0;
-		const Type* t = GetCompileType<1>();
-
-		const Type* typesito = GetType<int>();
-
-		printf("%u", test);
+		for (size_t i = 0; i < arr->Size(); i++) {
+			printf("%s, ", arr->at(i)->name);
+		}
 	}
 
 	~WiwaApp()

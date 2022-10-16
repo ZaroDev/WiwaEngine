@@ -6,8 +6,6 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 
-
-
 #include <Wiwa/Input.h>
 #include <ImGuizmo.h>
 

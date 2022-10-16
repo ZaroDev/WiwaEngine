@@ -15,6 +15,6 @@ namespace Wiwa {
 		void OnUpdate() override;
 
 	protected:
-		virtual void OnEntityAdded(EntityId entityID) override;
+		void OnEntityAdded(EntityId entityID) override;
 	};
 }
