@@ -11,6 +11,8 @@
 
 #include <Wiwa/ecs/systems/SpriteRenderer.h>
 
+#include "ScenePanel.h"
+
 HierarchyPanel::HierarchyPanel()
 	: Panel("Hierarchy")
 {
@@ -44,19 +46,19 @@ void HierarchyPanel::Draw()
 		{
 			if (ImGui::MenuItem("Create cube"))
 			{
-				CreateCube();
+				ScenePanel::SetMesh(CreateCube());
 			}
 			if (ImGui::MenuItem("Create plane"))
 			{
-				CreatePlane();
+				ScenePanel::SetMesh(CreatePlane());
 			}
 			if (ImGui::MenuItem("Create sphere"))
 			{
-				CreateSphere();
+				ScenePanel::SetMesh(CreateSphere());
 			}
 			if (ImGui::MenuItem("Create pyramid"))
 			{
-				CreatePyramid();
+				ScenePanel::SetMesh(CreatePyramid());
 			}
 			ImGui::EndMenu();
 		}

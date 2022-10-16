@@ -9,6 +9,10 @@
 #include <Wiwa/Input.h>
 #include <ImGuizmo.h>
 
+#include <imgui_internal.h>
+
+#include <Wiwa/Resources.h>
+
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -29,7 +33,6 @@ void EditorLayer::OnAttach()
 	m_Hierarchy = std::make_shared<HierarchyPanel>();
 	m_Assets = std::make_shared<AssetsPanel>();
 	m_Inspector = std::make_shared<InspectorPanel>();
-	m_Play = std::make_shared<PlayPanel>();
 	m_MeshView = std::make_shared<MeshViewPanel>();
 
 	m_Panels.push_back(m_Configuration);
@@ -41,6 +44,12 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_MeshView);
 
 	LoadPanelConfig();
+
+	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
+	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");
+
+	m_PlayIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(playId)->GetTextureId();
+	m_PauseIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pauseId)->GetTextureId();
 
 	WI_TRACE("Editor layer attached!");
 }
@@ -72,7 +81,6 @@ void EditorLayer::OnImGuiRender()
 		if (p->active)
 			p->Draw();
 	}
-	//m_Play->Draw();
 	if (m_About->active)
 		m_About->Draw();
 	if (m_ShowDemo)
@@ -89,53 +97,90 @@ void EditorLayer::OnEvent(Wiwa::Event& e)
 
 void EditorLayer::MainMenuBar()
 {
-
-	ImGui::BeginMainMenuBar();
-	if (ImGui::BeginMenu("File"))
+	if (ImGui::BeginMainMenuBar())
 	{
-		if (ImGui::MenuItem("Close", "ALT + Q"))
-			Wiwa::Application::Get().Quit();
-		ImGui::EndMenu();
-	}
-	if (ImGui::BeginMenu("View"))
-	{
-		int i = 1;
-		for (auto& p : m_Panels)
+		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem(p->GetName(), "", p->active))
-				p->SwitchActive();
+			if (ImGui::MenuItem("Close", "ALT + Q"))
+				Wiwa::Application::Get().Quit();
+			ImGui::EndMenu();
 		}
+		if (ImGui::BeginMenu("View"))
+		{
+			int i = 1;
+			for (auto& p : m_Panels)
+			{
+				if (ImGui::MenuItem(p->GetName(), "", p->active))
+					p->SwitchActive();
+			}
 
-		ImGui::EndMenu();
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Help"))
+		{
+			if (ImGui::MenuItem("GuiDemo", "", m_ShowDemo))
+				m_ShowDemo = !m_ShowDemo;
+
+			if (ImGui::MenuItem("Documentation"))
+				Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/wiki");
+
+			if (ImGui::MenuItem("Download Latest"))
+				Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/releases");
+
+			if (ImGui::MenuItem("Report a bug"))
+				Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/issues");
+
+			if (ImGui::MenuItem("About", "", m_About->active))
+				m_About->SwitchActive();
+
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
 	}
-	if (ImGui::BeginMenu("Help"))
-	{
-		if (ImGui::MenuItem("GuiDemo", "", m_ShowDemo))
-			m_ShowDemo = !m_ShowDemo;
+	ImGuiViewportP* viewport = (ImGuiViewportP*)(void*)ImGui::GetMainViewport();
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+	float height = ImGui::GetFrameHeight();
 
-		if (ImGui::MenuItem("Documentation"))
-			Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/wiki");
+	if (ImGui::BeginViewportSideBar("##SecondaryMenuBar", viewport, ImGuiDir_Up, height, window_flags)) {
+		if (ImGui::BeginMenuBar()) 
+		{
+			if(ImGui::Button("All"))
+				m_Scene->SetGizmoType(-1);
 
-		if (ImGui::MenuItem("Download Latest"))
-			Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/releases");
+			if (ImGui::Button("Trns"))
+				m_Scene->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
 
-		if (ImGui::MenuItem("Report a bug"))
-			Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/issues");
+			if (ImGui::Button("Rot"))
+				m_Scene->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
 
-		if (ImGui::MenuItem("About", "", m_About->active))
-			m_About->SwitchActive();
+			if (ImGui::Button("Scl"))
+				m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE);
 
-		ImGui::EndMenu();
+			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
+			ImGui::ImageButton(m_PlayIcon, { 15, 15 });
+			ImGui::ImageButton(m_PauseIcon, { 15, 15 });
+			ImGui::PopStyleColor();
+			
+			ImGui::EndMenuBar();
+		}
+		ImGui::End();
 	}
-	ImGui::EndMainMenuBar();
 
+	if (ImGui::BeginViewportSideBar("##MainStatusBar", viewport, ImGuiDir_Down, height, window_flags)) {
+		if (ImGui::BeginMenuBar()) {
+			
+			ImGui::EndMenuBar();
+		}
+		ImGui::End();
+	}
 	
 }
 
 void EditorLayer::DockSpace()
 {
-	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar;
+	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode;
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoBackground;
 
 	const ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(viewport->WorkPos);
@@ -246,25 +291,37 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		if (alt)
 			Wiwa::Application::Get().Quit();
 		if (!ImGuizmo::IsUsing())
-			m_Scene->SetGizmoType(-1);
+		{
+			m_Scene->SetGizmoType(-1); 
+			m_GizmoType = -1;
+		}
 		break;
 	}
 	case Wiwa::Key::W:
 	{
 		if (!ImGuizmo::IsUsing())
+		{
 			m_Scene->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
+			m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+		}
 		break;
 	}
 	case Wiwa::Key::E:
 	{
 		if (!ImGuizmo::IsUsing())
+		{
 			m_Scene->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
+			m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+		}
 		break;
 	}
 	case Wiwa::Key::R:
 	{
 		if (!ImGuizmo::IsUsing())
-			m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE);
+		{
+			m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE); 
+			m_GizmoType = ImGuizmo::OPERATION::SCALE;
+		}
 		break;
 	}
 	}

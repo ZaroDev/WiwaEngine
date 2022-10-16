@@ -58,6 +58,8 @@ namespace Wiwa {
 		m_Renderer3D = new Renderer3D();
 		m_Renderer3D->Init();
 
+		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+
 		// test
 		// TODO: REMOVE TEST
 		ResourceId tree = Resources::Load<Image>("resources/images/tree.png");
@@ -130,7 +132,7 @@ namespace Wiwa {
 		{
 			OPTICK_FRAME("Application Loop");
 			OPTICK_EVENT();
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClearColor(m_RenderColor.r, m_RenderColor.g, m_RenderColor.b, m_RenderColor.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			m_Renderer2D->Update();

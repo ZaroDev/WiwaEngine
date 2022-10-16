@@ -73,9 +73,13 @@ project "Wiwa"
 		"opengl32.lib",
 		"Wiwa/vendor/Glew/lib/glew32.lib",
 		"Optick",
-		"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib",
 		"ImGuizmo"
 	}
+
+	filter "configurations:Release"
+
+	filter "configurations:Dist"
+
 
 	filter "files:%{prj.name}/vendor/imguizmo/**.cpp"
 		flags {"NoPCH"}
@@ -103,18 +107,32 @@ project "Wiwa"
 	
 	filter "configurations:Debug"
 		defines "WI_DEBUG"
-		buildoptions "/MDd"
+		staticruntime "off"
+		runtime "Debug"
 		symbols "On"
+		links
+		{
+			"Wiwa/vendor/assimp/lib/x64/debug/assimp-vc143-mtd.lib"
+		}
 
 	filter "configurations:Release"
 		defines "WI_RELEASE"
-		buildoptions "/MD"
+		staticruntime "off"
+		runtime "Release"
 		optimize "On"
-
+		links
+		{
+			"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
+		}
 	filter "configurations:Dist"
 		defines "WI_DIST"
-		buildoptions "/MD"
+		staticruntime "off"
+		runtime "Release"
 		optimize "On"
+		links
+		{
+			"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
+		}
 
 project "Sandbox"
 	location "Sandbox"
@@ -167,14 +185,18 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "WI_DEBUG"
-		buildoptions "/MDd"
+		staticruntime "off"
+		runtime "Debug"
 		symbols "On"
+
 	filter "configurations:Release"
 		defines "WI_RELEASE"
-		buildoptions "/MD"
+		staticruntime "off"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "WI_DIST"
-		buildoptions "/MD"
+		staticruntime "off"
+		runtime "Release"
 		optimize "On"
