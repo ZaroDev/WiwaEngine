@@ -5,6 +5,8 @@
 #include <Wiwa/Reflection.h>
 #include <Wiwa/utilities/containers/Array.h>
 
+#include <Wiwa/utilities/math/Vector3f.h>
+
 namespace Wiwa {
 	class EntityManager;
 };
@@ -16,6 +18,11 @@ private:
 
 	void DrawComponent(size_t componentId);
 	void DrawField(unsigned char* data, const Field& field);
+
+	void DrawVec3Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
+	void DrawVec2Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
+	void DrawInt2Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
+	void DrawRect2Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
 
 	Wiwa::EntityManager* m_EntityManager;
 public:

@@ -2,6 +2,7 @@
 #include "AssetsPanel.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
 #include <direct.h>
@@ -190,11 +191,7 @@ void AssetsPanel::Draw()
 					else
 						Wiwa::Application::Get().OpenDir(path.string().c_str());
 				}
-				if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-				{
-					ImGui::OpenPopup("Assets context window");
-				}
-				if (ImGui::BeginPopup("Assets context window"))
+				if (ImGui::BeginPopupContextWindow("Assets context window"))
 				{
 					if (ImGui::MenuItem("Find in explorer"))
 					{
@@ -245,6 +242,8 @@ void AssetsPanel::DisplayNode(Directory *directoryEntry)
 			sprintf_s(str, 25, "##%s", filenameString.c_str());
 			bool open = ImGui::TreeNodeEx(str);
 			ImGui::SameLine();
+			ImGui::Image(m_FolderIcon, ImVec2(16, 16));
+			ImGui::SameLine();
 			if (ImGui::Button(filenameString.c_str()))
 			{
 				m_CurrentPath = path;
@@ -260,6 +259,8 @@ void AssetsPanel::DisplayNode(Directory *directoryEntry)
 		}
 		else
 		{
+			ImGui::Image(m_FolderIcon, ImVec2(16, 16));
+			ImGui::SameLine();
 			if (ImGui::Button(filenameString.c_str()))
 			{
 				m_CurrentPath = path;

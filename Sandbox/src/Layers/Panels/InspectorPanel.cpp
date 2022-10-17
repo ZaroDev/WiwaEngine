@@ -3,6 +3,7 @@
 #include <imgui.h>
 
 #include <Wiwa/ecs/EntityManager.h>
+#include <imgui_internal.h>
 #include <Wiwa/Application.h>
 
 uint32_t InspectorPanel::m_CurrentID = 0;
@@ -74,14 +75,13 @@ void InspectorPanel::DrawComponent(size_t componentId)
 	std::string name = cl->name;
 	ClearComponentName(name);
 
-	if (ImGui::TreeNodeEx(name.c_str()))
+	if (ImGui::CollapsingHeader(name.c_str()))
 	{
 		byte* data = m_EntityManager->GetComponent(m_CurrentID, componentId, cl->size);
 		for (size_t i = 0; i < cl->fields.size(); i++)
 		{
 			DrawField(data, cl->fields[i]);
 		}
-		ImGui::TreePop();
 	}
 }
 
@@ -123,8 +123,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	ImGui::PushID(field.name);
 	if (std::strcmp(field.type->name, "struct Wiwa::Vector2i") == 0)
 	{
-		ImGui::InputInt("x", (int*)(data + field.offset));
-		ImGui::InputInt("y", (int*)(data + field.offset + sizeof(int)));
+		DrawInt2Control(field.name, data, field);
 	}
 	else if (std::strcmp(field.type->name, "float") == 0)
 	{
@@ -132,14 +131,11 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Vector2f") == 0)
 	{
-		ImGui::InputFloat("x", (float*)(data + field.offset));
-		ImGui::InputFloat("y", (float*)(data + field.offset + sizeof(float)));
+		DrawVec2Control(field.name, data, field);
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Vector3f") == 0)
 	{
-		ImGui::InputFloat("x", (float*)(data + field.offset));
-		ImGui::InputFloat("y", (float*)(data + field.offset + sizeof(float)));
-		ImGui::InputFloat("z", (float*)(data + field.offset + (sizeof(float) * 2)));
+		DrawVec3Control("", data, field);
 	}
 	else if (std::strcmp(field.type->name, "unsigned __int64") == 0)
 	{
@@ -150,15 +146,289 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Rect2i") == 0)
 	{
-		ImGui::InputInt("x", (int*)(data + field.offset));
-		ImGui::InputInt("y", (int*)(data + field.offset + sizeof(int)));
-		ImGui::InputInt("width", (int*)(data + field.offset + sizeof(int) * 2));
-		ImGui::InputInt("height", (int*)(data + field.offset + sizeof(int) * 3));
+		DrawRect2Control(field.name, data, field);
 	}
 	else if (std::strcmp(field.type->name, "enum Wiwa::Renderer2D::Pivot") == 0)
 	{
 		ImGui::InputInt("", (int*)(data + field.offset));
 	}
+
+	ImGui::PopID();
+}
+
+void InspectorPanel::DrawVec3Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	auto boldFont = io.Fonts->Fonts[0];
+
+	ImGui::PushID(label);
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label);
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("X", buttonSize));
+
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragFloat("##X", (float*)(data + field.offset), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("Y", buttonSize));
+
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragFloat("##Y", (float*)(data + field.offset + (sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("Z", buttonSize));
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragFloat("##Z", (float*)(data + field.offset + (sizeof(float) * 2)), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void InspectorPanel::DrawVec2Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	auto boldFont = io.Fonts->Fonts[0];
+
+	ImGui::PushID(label);
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label);
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("X", buttonSize));
+		//data = resetValue;
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragFloat("##X", (float*)(data + field.offset), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("Y", buttonSize));
+	/*	values.y = resetValue;*/
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragFloat("##Y", (float*)(data + field.offset +(sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	///*ImGui::SameLine();*/
+
+	//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+	//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
+	//ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+	//ImGui::PushFont(boldFont);
+	///*if (ImGui::Button("Z", buttonSize))
+	//	values.z = resetValue;*/
+	//ImGui::PopFont();
+	//ImGui::PopStyleColor(3);
+
+	//ImGui::SameLine();
+	//ImGui::DragFloat("##Z", (float*)(data + field.offset + (sizeof(float) * 2)), 0.1f, 0.0f, 0.0f, "%.2f");
+	//ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	auto boldFont = io.Fonts->Fonts[0];
+
+	ImGui::PushID(label);
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label);
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("X", buttonSize));
+	//data = resetValue;
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragInt("##X", (int*)(data + field.offset), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("Y", buttonSize));
+	/*	values.y = resetValue;*/
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragInt("##Y", (int*)(data + field.offset + (sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	///*ImGui::SameLine();*/
+
+	//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+	//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
+	//ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+	//ImGui::PushFont(boldFont);
+	///*if (ImGui::Button("Z", buttonSize))
+	//	values.z = resetValue;*/
+	//ImGui::PopFont();
+	//ImGui::PopStyleColor(3);
+
+	//ImGui::SameLine();
+	//ImGui::DragFloat("##Z", (float*)(data + field.offset + (sizeof(float) * 2)), 0.1f, 0.0f, 0.0f, "%.2f");
+	//ImGui::PopItemWidth();
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
+
+	ImGui::PopID();
+}
+
+void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	auto boldFont = io.Fonts->Fonts[0];
+
+	ImGui::PushID(label);
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label);
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("X", buttonSize));
+	//data = resetValue;
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragInt("##X", (int*)(data + field.offset), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("Y", buttonSize));
+	/*	values.y = resetValue;*/
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragInt("##Y", (int*)(data + field.offset + (sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("W", buttonSize));
+	//data = resetValue;
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragInt("##Width", (int*)(data + field.offset + (sizeof(float) * 2)), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
+	ImGui::PushFont(boldFont);
+	if (ImGui::Button("H", buttonSize));
+	/*	values.y = resetValue;*/
+	ImGui::PopFont();
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragInt("##H", (int*)(data + field.offset + (sizeof(float) * 3)), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::PopItemWidth();
+
+
+	ImGui::PopStyleVar();
+
+	ImGui::Columns(1);
 
 	ImGui::PopID();
 }
