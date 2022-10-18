@@ -21,6 +21,8 @@
 #include "Renderer3D.h"
 
 #include "ecs/systems/SpriteRenderer.h"
+#include "ecs/systems/MeshRenderer.h"
+
 #include "ecs/components/Transform3D.h"
 
 #include "scene/SceneManager.h"
@@ -70,8 +72,8 @@ namespace Wiwa {
 		// TODO: REMOVE TEST
 		//ResourceId tree = Resources::Load<Image>("resources/images/tree.png");
 
-		//m_EntityManager->RegisterSystem<SpriteRenderer>();
-
+		m_EntityManager->RegisterSystem<SpriteRenderer>();
+		m_EntityManager->RegisterSystem<MeshRenderer>();
 		//m_EntityManager->ReserveEntities(MAXQUADS);
 		////m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
 		////m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);

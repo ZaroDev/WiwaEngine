@@ -18,7 +18,7 @@
 //#include "Empathy/headers/utilities/renderer/Batch.h"
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
-#include <Wiwa/utilities/render/Mesh.h>
+#include <Wiwa/utilities/render/Model.h>
 
 namespace Wiwa {
 	class WI_API Renderer3D {
@@ -56,10 +56,10 @@ namespace Wiwa {
 		bool Init();
 		void Update();
 
-		void RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL);
+		
 		void SetOption(Options option);
 		void DisableOption(Options option);
-		void RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL, Camera* camera=NULL);
+		void RenderMeshColor(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL, Camera* camera=NULL);
 		void Close();
 
 		// Getters

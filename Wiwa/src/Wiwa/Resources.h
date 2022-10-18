@@ -6,6 +6,7 @@
 // Resources
 #include <Wiwa/utilities/render/Shader.h>
 #include <Wiwa/utilities/render/Image.h>
+#include <Wiwa/utilities/render/Model.h>
 
 #include <string>
 #include <vector>
@@ -21,6 +22,7 @@ namespace Wiwa {
 			WRT_IMAGE,
 			WRT_AUDIOCLIP,
 			WRT_SHADER,
+			WRT_MODEL,
 			WRT_LAST
 		};
 
@@ -113,6 +115,39 @@ namespace Wiwa {
 		}
 	
 		return image;
+	}
+	//--SPECIALIZATION FOR MODEL
+	template<>
+	inline ResourceId Resources::Load<Model>(const char* file)
+	{
+		ResourceId position = getResourcePosition(WRT_MODEL, file);
+		size_t size = m_Resources[WRT_MODEL].size();
+
+		ResourceId resourceId;
+
+		if (position == size) {
+			Model* model = new Model(file);
+
+			PushResource(WRT_MODEL, file, model);
+
+			resourceId = size;
+		}
+		else {
+			resourceId = position;
+		}
+
+		return resourceId;
+	}
+	template<>
+	inline Model* Resources::GetResourceById<Model>(ResourceId id)
+	{
+		Model* model = NULL;
+
+		if (id >= 0 && id < m_Resources[WRT_MODEL].size()) {
+			model = static_cast<Model*>(m_Resources[WRT_MODEL][id]->resource);
+		}
+
+		return model;
 	}
 }
 

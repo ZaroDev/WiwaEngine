@@ -14,12 +14,7 @@
 
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
-#include <Wiwa/utilities/render/Mesh.h>
-
-#include <Wiwa/utilities/render/primitives/Cube.h>
-#include <Wiwa/utilities/render/primitives/Pyramid.h>
-#include <Wiwa/utilities/render/primitives/Sphere.h>
-#include <Wiwa/utilities/render/primitives/Plane.h>
+#include <Wiwa/utilities/render/Model.h>
 
 #include <Wiwa/Input.h>
 #include <Wiwa/KeyCodes.h>
@@ -35,7 +30,7 @@ MeshViewPanel::MeshViewPanel()
     m_Camera.SetPerspective(60.0f, ar);
     m_Camera.setPosition({ 0.0f, 1.0f, -5.0f });
 
-    m_ActiveMesh = new Wiwa::Mesh("resources/meshes/cube.fbx");
+    m_ActiveMesh = new Wiwa::Model("resources/meshes/cube.fbx");
 
     m_MeshPosition = { 0.0f, 0.0f, 0.0f };
     m_MeshRotation = {};
@@ -156,7 +151,7 @@ void MeshViewPanel::Draw()
             {
                 WI_INFO("Trying to load payload at path {0}", pathS.c_str());
                 //TODO: Load the model
-                m_ActiveMesh = new Wiwa::Mesh(pathS.c_str());
+                m_ActiveMesh = new Wiwa::Model(pathS.c_str());
             }
         }
 

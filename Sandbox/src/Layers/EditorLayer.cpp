@@ -81,9 +81,6 @@ void EditorLayer::OnImGuiRender()
 
 	MainMenuBar();
 	DockSpace();
-	WI_TRACE("PABLO ES PUTO");
-	WI_ERROR("JIJIA");
-	WI_WARN("TONTO EL QUE LO LEA");
 	for (auto& p : m_Panels)
 	{
 		if (p->active)
@@ -178,22 +175,34 @@ void EditorLayer::MainMenuBar()
 	if (ImGui::BeginViewportSideBar("##MainStatusBar", viewport, ImGuiDir_Down, height, window_flags)) {
 		if (ImGui::BeginMenuBar()) 
 		{
-			float iconSize = 22.0f;
+			float iconSize = 16.0f;
 			auto log = Wiwa::Application::Get().GetImGuiLayer().GetConsole();
-			ImGui::Image(m_InfoIcon, { iconSize, iconSize });
+
+			ImGui::PushStyleColor(ImGuiCol_Button, { 0.0, 0, 0,0 });
+			ImGui::AlignTextToFramePadding();
+			if (ImGui::ImageButton(m_InfoIcon, { iconSize, iconSize }))
+			{
+
+			}
 			ImGui::SetCursorPosX(40.0f);
 			char buff[16];
 			sprintf_s(buff, 16, "%i", log.infoCount);
 			ImGui::Text(buff);
-			ImGui::Image(m_WarningIcon, { iconSize, iconSize });
-			ImGui::SetCursorPosX(100.0f);
+			if (ImGui::ImageButton(m_WarningIcon, { iconSize, iconSize }))
+			{
+
+			}
+			ImGui::SetCursorPosX(102.0f);
 			sprintf_s(buff, 16, "%i", log.warnCount);
 			ImGui::Text(buff);
-			ImGui::Image(m_ErrorIcon, { iconSize, iconSize });
-			ImGui::SetCursorPosX(160.0f);
+			if (ImGui::ImageButton(m_ErrorIcon, { iconSize, iconSize }))
+			{
+				
+			}
+			ImGui::SetCursorPosX(162.0f);
 			sprintf_s(buff, 16, "%i", log.errorCount);
 			ImGui::Text(buff);
-
+			ImGui::PopStyleColor();
 			const char* beg = log.Buf.begin() + log.LineOffsets[log.LineOffsets.Size - 2];
 			ImGui::TextUnformatted(beg, log.Buf.end());
 			

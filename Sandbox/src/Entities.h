@@ -4,39 +4,33 @@
 
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/ecs/components/Transform3D.h>
+#include <Wiwa/ecs/components/Mesh.h>
 
-#include <Wiwa/utilities/render/primitives/Cube.h>
-#include <Wiwa/utilities/render/primitives/Plane.h>
-#include <Wiwa/utilities/render/primitives/Pyramid.h>
-#include <Wiwa/utilities/render/primitives/Sphere.h>
-
-Wiwa::Mesh* CreateCube()
+void CreateCube()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Cube");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Cube* cube = new Wiwa::Cube();
-
-	return cube;
+	ResourceId id = Wiwa::Resources::Load<Wiwa::Model>("cube");
+	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, { id });
 }
-Wiwa::Mesh* CreatePlane()
+void CreatePlane()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Plane");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Plane* plane = new Wiwa::Plane();
-
-	return plane;
+	ResourceId id = Wiwa::Resources::Load<Wiwa::Model>("plane");
+	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, { id });
 }
-Wiwa::Mesh* CreatePyramid()
+void CreatePyramid()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Pyramid");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Pyramid* pyramid = new Wiwa::Pyramid();
-	return pyramid;
+	ResourceId id = Wiwa::Resources::Load<Wiwa::Model>("pyramid");
+	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, { id });
 }
-Wiwa::Mesh* CreateSphere()
+void CreateSphere()
 {
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Sphere");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-	Wiwa::Sphere* sphere = new Wiwa::Sphere();
-	return sphere;
+	ResourceId id = Wiwa::Resources::Load<Wiwa::Model>("sphere");
+	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, { id });
 }

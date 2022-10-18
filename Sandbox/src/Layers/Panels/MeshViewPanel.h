@@ -4,7 +4,7 @@
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/utilities/render/Camera.h>
 #include <Wiwa/utilities/render/FrameBuffer.h>
-#include <Wiwa/utilities/render/Mesh.h>
+#include <Wiwa/utilities/render/Model.h>
 
 struct ShadingView;
 
@@ -22,7 +22,7 @@ private:
 	Wiwa::FrameBuffer m_FrameBuffer;
 	Wiwa::Camera m_Camera;
 
-	Wiwa::Mesh *m_ActiveMesh;
+	Wiwa::Model *m_ActiveMesh;
 
 	Wiwa::Vector3f m_MeshPosition;
 	Wiwa::Vector3f m_MeshRotation;

@@ -11,7 +11,7 @@ namespace Wiwa
 {
 	class FrameBuffer;
 	class Camera;
-	class Mesh;
+	class Model;
 };
 
 class ScenePanel : public Panel
@@ -23,11 +23,6 @@ public:
 	void Draw() override;
 
 	inline void SetGizmoType(int type) { m_GizmoType = type; }
-	//TODO: Change to add meshes to scene
-	inline static void SetMesh(Wiwa::Mesh* mesh) { m_ActiveMesh = mesh; }
-
-private:
-	static Wiwa::Mesh* m_ActiveMesh;
 
 private:
 	std::vector<ShadingView*> m_Shadings;

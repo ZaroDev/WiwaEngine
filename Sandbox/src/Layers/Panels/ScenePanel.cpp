@@ -17,16 +17,10 @@
 
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
-#include <Wiwa/utilities/render/Mesh.h>
+#include <Wiwa/utilities/render/Model.h>
 
-#include <Wiwa/utilities/render/primitives/Cube.h>
-#include <Wiwa/utilities/render/primitives/Pyramid.h>
-#include <Wiwa/utilities/render/primitives/Sphere.h>
-#include <Wiwa/utilities/render/primitives/Plane.h>
 
 #include <gtx/matrix_decompose.hpp>
-
-Wiwa::Mesh* ScenePanel::m_ActiveMesh = nullptr;
 
 ScenePanel::ScenePanel()
     : Panel("Scene")
@@ -50,7 +44,6 @@ ScenePanel::ScenePanel()
     m_Camera.get()->SetPerspective(60.0f, ar);
     m_Camera.get()->setPosition({ 0.0f, 1.0f, -5.0f });
 
-    m_ActiveMesh = new Wiwa::Mesh("resources/meshes/cube.fbx");
 
     m_MeshPosition = { 0.0f, 0.0f, 0.0f };
     m_MeshRotation = {};
@@ -110,7 +103,6 @@ void ScenePanel::Draw()
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
 
-    Wiwa::Application::Get().GetRenderer3D().RenderMeshColor(*m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_MeshColor, m_FrameBuffer.get(), m_Camera.get());
     ImTextureID tex = (ImTextureID)(intptr_t)m_FrameBuffer.get()->getColorBufferTexture();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
@@ -123,6 +115,7 @@ void ScenePanel::Draw()
             std::string pathS(ws.begin(), ws.end());
             //TODO: Load the scene with the path
             WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+
         }
 
         ImGui::EndDragDropTarget();

@@ -46,19 +46,19 @@ void HierarchyPanel::Draw()
 		{
 			if (ImGui::MenuItem("Create cube"))
 			{
-				ScenePanel::SetMesh(CreateCube());
+				CreateCube();
 			}
 			if (ImGui::MenuItem("Create plane"))
 			{
-				ScenePanel::SetMesh(CreatePlane());
+				CreatePlane();
 			}
 			if (ImGui::MenuItem("Create sphere"))
 			{
-				ScenePanel::SetMesh(CreateSphere());
+				CreateSphere();
 			}
 			if (ImGui::MenuItem("Create pyramid"))
 			{
-				ScenePanel::SetMesh(CreatePyramid());
+				CreatePyramid();
 			}
 			ImGui::EndMenu();
 		}

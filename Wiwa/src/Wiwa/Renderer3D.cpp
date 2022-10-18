@@ -47,7 +47,7 @@ namespace Wiwa {
 		
 	}
 
-	void Renderer3D::RenderMeshColor(Mesh& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target, Camera* camera)
+	void Renderer3D::RenderMeshColor(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target, Camera* camera)
 	{
 		if (!target) target = &m_FrameBuffer;
 		if (!camera) camera = &m_ActiveCamera;
