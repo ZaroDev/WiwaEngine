@@ -20,6 +20,9 @@ struct ImGuiLog
     bool                AutoScroll;  // Keep scrolling if already at the bottom.
 
     ImVec4 LevelColors[LogLevel::LAST];
+    int infoCount;
+    int warnCount;
+    int errorCount;
 
     ImGuiLog()
     {
@@ -31,6 +34,8 @@ struct ImGuiLog
         LevelColors[LogLevel::WARN] = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
         LevelColors[LogLevel::ERR] = ImVec4(0.5f, 0.0f, 0.0f, 1.0f);
         LevelColors[LogLevel::CRITICAL] = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+
     }
 
     void    Clear()
@@ -38,8 +43,9 @@ struct ImGuiLog
         Buf.clear();
         LogLevels.clear();
         LineOffsets.clear();
-
         LineOffsets.push_back(0);
+
+        infoCount = warnCount = errorCount = 0;
     }
 
     void    AddLog(LogLevel level, const char* fmt, ...) IM_FMTARGS(2)
@@ -54,6 +60,9 @@ struct ImGuiLog
                 LineOffsets.push_back(old_size + 1);
                 LogLevels.push_back(level);
             }
+        if (level == LogLevel::INFO || level == LogLevel::TRACE) infoCount++;
+        if (level == LogLevel::WARN) warnCount++;
+        if (level == LogLevel::ERR || level == LogLevel::CRITICAL) errorCount++;
     }
 
     void    Draw(const char* title, bool* p_open = NULL)

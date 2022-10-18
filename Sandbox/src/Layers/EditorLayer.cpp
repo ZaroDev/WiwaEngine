@@ -47,9 +47,15 @@ void EditorLayer::OnAttach()
 
 	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
 	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");
+	ResourceId infoId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/info_icon.png");
+	ResourceId warnId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/warning_icon.png");
+	ResourceId errorId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/error_icon.png");
 
 	m_PlayIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(playId)->GetTextureId();
 	m_PauseIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pauseId)->GetTextureId();
+	m_InfoIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(infoId)->GetTextureId();
+	m_WarningIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(warnId)->GetTextureId();
+	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
 
 	WI_TRACE("Editor layer attached!");
 }
@@ -75,7 +81,9 @@ void EditorLayer::OnImGuiRender()
 
 	MainMenuBar();
 	DockSpace();
-
+	WI_TRACE("PABLO ES PUTO");
+	WI_ERROR("JIJIA");
+	WI_WARN("TONTO EL QUE LO LEA");
 	for (auto& p : m_Panels)
 	{
 		if (p->active)
@@ -168,8 +176,29 @@ void EditorLayer::MainMenuBar()
 	}
 
 	if (ImGui::BeginViewportSideBar("##MainStatusBar", viewport, ImGuiDir_Down, height, window_flags)) {
-		if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenuBar()) 
+		{
+			float iconSize = 22.0f;
+			auto log = Wiwa::Application::Get().GetImGuiLayer().GetConsole();
+			ImGui::Image(m_InfoIcon, { iconSize, iconSize });
+			ImGui::SetCursorPosX(40.0f);
+			char buff[16];
+			sprintf_s(buff, 16, "%i", log.infoCount);
+			ImGui::Text(buff);
+			ImGui::Image(m_WarningIcon, { iconSize, iconSize });
+			ImGui::SetCursorPosX(100.0f);
+			sprintf_s(buff, 16, "%i", log.warnCount);
+			ImGui::Text(buff);
+			ImGui::Image(m_ErrorIcon, { iconSize, iconSize });
+			ImGui::SetCursorPosX(160.0f);
+			sprintf_s(buff, 16, "%i", log.errorCount);
+			ImGui::Text(buff);
+
+			const char* beg = log.Buf.begin() + log.LineOffsets[log.LineOffsets.Size - 2];
+			ImGui::TextUnformatted(beg, log.Buf.end());
 			
+
+
 			ImGui::EndMenuBar();
 		}
 		ImGui::End();

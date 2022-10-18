@@ -54,6 +54,9 @@ private:
 
 	ImTextureID m_PlayIcon;
 	ImTextureID m_PauseIcon;
+	ImTextureID m_InfoIcon;
+	ImTextureID m_WarningIcon;
+	ImTextureID m_ErrorIcon;
 
 	int m_GizmoType = -1;
 };

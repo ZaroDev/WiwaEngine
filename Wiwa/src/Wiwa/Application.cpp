@@ -23,11 +23,6 @@
 #include "ecs/systems/SpriteRenderer.h"
 #include "ecs/components/Transform3D.h"
 
-REFLECTION_BEGIN(Wiwa::Transform3D)
-REFLECT_MEMBER(position)
-REFLECT_MEMBER(rotation)
-REFLECT_MEMBER(scale)
-REFLECTION_END;
 
 const size_t TYPE_COUNT = __COUNTER__;
 

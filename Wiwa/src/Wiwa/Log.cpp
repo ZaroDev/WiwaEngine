@@ -2,6 +2,8 @@
 #include "Log.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include "ImGui/ImGuiLayer.h"
+#include "ImGui/ImGuiLog.h"
 #include "Application.h"
 
 namespace Wiwa {
@@ -33,22 +35,42 @@ namespace Wiwa {
 
 	void Log::ImGuiLogTrace(const char* log)
 	{
-		Application::Get().GetImGuiLayer().LogTrace(log);
+		ImGuiLayer::CoreLogTrace(log);
 	}
 
 	void Log::ImGuiLogInfo(const char* log)
 	{
-		Application::Get().GetImGuiLayer().LogInfo(log);
+		ImGuiLayer::CoreLogInfo(log);
 	}
 	void Log::ImGuiLogWarn(const char* log)
 	{
-		Application::Get().GetImGuiLayer().LogWarn(log);
+		ImGuiLayer::CoreLogWarn(log);
 	}
 	void Log::ImGuiLogError(const char* log)
 	{
-		Application::Get().GetImGuiLayer().LogError(log);
+		ImGuiLayer::CoreLogError(log);
 	}
 	void Log::ImGuiLogCritical(const char* log)
+	{
+		ImGuiLayer::CoreLogCritical(log);
+	}
+	void Log::ImGuiConsoleTrace(const char* log)
+	{
+		Application::Get().GetImGuiLayer().LogTrace(log);
+	}
+	void Log::ImGuiConsoleInfo(const char* log)
+	{
+		Application::Get().GetImGuiLayer().LogInfo(log);
+	}
+	void Log::ImGuiConsoleWarn(const char* log)
+	{
+		Application::Get().GetImGuiLayer().LogWarn(log);
+	}
+	void Log::ImGuiConsoleError(const char* log)
+	{
+		Application::Get().GetImGuiLayer().LogError(log);
+	}
+	void Log::ImGuiConsoleCritical(const char* log)
 	{
 		Application::Get().GetImGuiLayer().LogCritical(log);
 	}
