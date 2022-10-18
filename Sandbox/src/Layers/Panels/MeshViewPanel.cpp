@@ -21,19 +21,19 @@
 #include <Wiwa/utilities/render/primitives/Sphere.h>
 #include <Wiwa/utilities/render/primitives/Plane.h>
 
+#include <Wiwa/Input.h>
+#include <Wiwa/KeyCodes.h>
+
 MeshViewPanel::MeshViewPanel()
     : Panel("Mesh view")
 {
-    m_FrameBuffer = std::make_unique<Wiwa::FrameBuffer>();
-    m_Camera = std::make_unique<Wiwa::Camera>();
-
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
 
-    m_FrameBuffer.get()->Init(res.w, res.h);
+    m_FrameBuffer.Init(res.w, res.h);
 
-    m_Camera.get()->SetPerspective(60.0f, ar);
-    m_Camera.get()->setPosition({ 0.0f, 1.0f, -5.0f });
+    m_Camera.SetPerspective(60.0f, ar);
+    m_Camera.setPosition({ 0.0f, 1.0f, -5.0f });
 
     m_ActiveMesh = new Wiwa::Mesh("resources/meshes/cube.fbx");
 
@@ -43,11 +43,71 @@ MeshViewPanel::MeshViewPanel()
     
     m_MeshColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-    m_Camera.get()->lookat(m_MeshPosition);
+    m_Camera.lookat(m_MeshPosition);
+
+    // Camera control
+    rotSpeed = 0.01;
+    camSpeed = 0.1f;
+    sensitivity = 0.2f;
+
+    yaw = -90.0f;
+    pitch = 0.0f;
 }
 
 MeshViewPanel::~MeshViewPanel()
 {
+}
+
+void MeshViewPanel::Update()
+{
+    //glm::vec3 cpos = m_Camera.GetCameraPos();
+
+    //if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
+    //    cpos += cam.GetCameraFront() * camSpeed;
+    //}
+
+    //if (input.getKey(SDL_SCANCODE_S)) {
+    //    cpos -= cam.GetCameraFront() * camSpeed;
+    //}
+
+    //if (input.getKey(SDL_SCANCODE_A)) {
+    //    cpos -= glm::normalize(glm::cross(cam.GetCameraFront(), cam.GetCameraUp())) * camSpeed;
+    //}
+
+    //if (input.getKey(SDL_SCANCODE_D)) {
+    //    cpos += glm::normalize(glm::cross(cam.GetCameraFront(), cam.GetCameraUp())) * camSpeed;
+    //}
+
+    //if (input.getKey(SDL_SCANCODE_LSHIFT)) {
+    //    cpos -= cam.GetCameraUp() * camSpeed;
+    //}
+
+    //if (input.getKey(SDL_SCANCODE_SPACE)) {
+    //    cpos += cam.GetCameraUp() * camSpeed;
+    //}
+
+    //// Mouse
+    //if (input.MouseMotion()) {
+    //    float xoffset = input.GetMouseX() * sensitivity;
+    //    float yoffset = -input.GetMouseY() * sensitivity;
+
+    //    yaw += xoffset;
+    //    pitch += yoffset;
+
+    //    if (pitch > 89.0f) pitch = 89.0f;
+    //    if (pitch < -89.0f) pitch = -89.0f;
+
+    //    glm::vec3 direction;
+    //    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    //    direction.y = sin(glm::radians(pitch));
+    //    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+
+    //    cam.SetCameraFront(glm::normalize(direction));
+    //}
+
+    //cam.SetCameraPos(cpos);
+    //cam.Update();
 }
 
 void MeshViewPanel::Draw()
@@ -65,7 +125,7 @@ void MeshViewPanel::Draw()
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
 
-    ImTextureID tex = (ImTextureID)(intptr_t)m_FrameBuffer.get()->getColorBufferTexture();
+    ImTextureID tex = (ImTextureID)(intptr_t)m_FrameBuffer.getColorBufferTexture();
 
     // Horizontal-align viewport
     ImVec2 cpos = ImGui::GetCursorPos();
@@ -81,7 +141,7 @@ void MeshViewPanel::Draw()
     CLAMP(rpos.y, 0.0f, isize.y);
 
     // Render to frame buffer and imgui viewport
-    Wiwa::Application::Get().GetRenderer3D().RenderMeshColor(*m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_MeshColor, m_FrameBuffer.get(), m_Camera.get());
+    Wiwa::Application::Get().GetRenderer3D().RenderMeshColor(*m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_MeshColor, &m_FrameBuffer, &m_Camera);
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::BeginDragDropTarget())

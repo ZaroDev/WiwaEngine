@@ -86,11 +86,8 @@ namespace Wiwa {
 	void ImGuiLayer::OnEvent(Event& event)
 	{
 		EventDispatcher  dispatcher(event);
-		dispatcher.Dispatch<MouseButtonPressedEvent>(WI_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent));
-		dispatcher.Dispatch<MouseButtonReleasedEvent>(WI_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent));
-		dispatcher.Dispatch<MouseMovedEvent>(WI_BIND_EVENT_FN(ImGuiLayer::OnMouseMoveEvent));
-		dispatcher.Dispatch<MouseScrolledEvent>(WI_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent));
-		dispatcher.Dispatch<WindowResizeEvent>(WI_BIND_EVENT_FN(ImGuiLayer::OnWindowResizeEvent));
+	
+
 	}
 	void ImGuiLayer::OnImGuiRender()
 	{

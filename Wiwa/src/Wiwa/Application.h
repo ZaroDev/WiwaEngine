@@ -18,6 +18,7 @@ namespace Wiwa
 {
 
 	class EntityManager;
+	class SceneManager;
 	class Renderer2D;
 	class Renderer3D;
 
@@ -59,6 +60,7 @@ namespace Wiwa
 		inline Renderer3D &GetRenderer3D() { return *m_Renderer3D; }
 		inline EntityManager &GetEntityManager() { return *m_EntityManager; }
 		inline ImGuiLayer &GetImGuiLayer() { return *m_ImGuiLayer; }
+		inline SceneManager& GetSceneManager() { return *m_SceneManager; }
 
 		inline float GetDeltaTime() { return m_Time; }
 		inline ImGuiContext *GetImGuiContext() { return m_ImGuiLayer->GetContext(); }
@@ -81,6 +83,8 @@ namespace Wiwa
 		inline void SetRenderColor(Vector4f color) { m_RenderColor = color; }
 		inline Vector4f GetRenderColor() { return m_RenderColor; }
 
+		inline float getDeltaTime() { return m_DeltaTime; }
+
 		void OpenDir(const char *url);
 		void Quit();
 
@@ -92,6 +96,7 @@ namespace Wiwa
 		const char *m_Version = "0.1";
 
 		float m_Time = 0.0f;
+		float m_DeltaTime = 0.0f;
 
 		Renderer2D *m_Renderer2D;
 		Renderer3D *m_Renderer3D;
@@ -105,6 +110,7 @@ namespace Wiwa
 		LayerStack m_LayerStack;
 		ImGuiLayer *m_ImGuiLayer;
 		EntityManager *m_EntityManager;
+		SceneManager* m_SceneManager;
 
 	private:
 		static Application *s_Instance;

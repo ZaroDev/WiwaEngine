@@ -2,14 +2,11 @@
 
 #include "Panel.h"
 #include <Wiwa/utilities/math/Math.h>
-struct ShadingView;
+#include <Wiwa/utilities/render/Camera.h>
+#include <Wiwa/utilities/render/FrameBuffer.h>
+#include <Wiwa/utilities/render/Mesh.h>
 
-namespace Wiwa
-{
-	class FrameBuffer;
-	class Camera;
-	class Mesh;
-};
+struct ShadingView;
 
 class MeshViewPanel : public Panel
 {
@@ -17,12 +14,13 @@ public:
 	MeshViewPanel();
 	virtual ~MeshViewPanel();
 
+	void Update() override;
 	void Draw() override;
 
 private:
 	std::vector<ShadingView *> m_Shadings;
-	std::unique_ptr<Wiwa::FrameBuffer> m_FrameBuffer;
-	std::unique_ptr<Wiwa::Camera> m_Camera;
+	Wiwa::FrameBuffer m_FrameBuffer;
+	Wiwa::Camera m_Camera;
 
 	Wiwa::Mesh *m_ActiveMesh;
 
@@ -31,4 +29,12 @@ private:
 	Wiwa::Vector3f m_MeshScale;
 
 	Wiwa::Vector4f m_MeshColor;
+
+	// Camera control
+	double rotSpeed;
+	float camSpeed;
+	float sensitivity;
+
+	float yaw;
+	float pitch;
 };

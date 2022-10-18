@@ -17,9 +17,9 @@ namespace Wiwa {
 	};
 }
 
-CORE_REFLECTION_BEGIN(Wiwa::Sprite);
-	CORE_REFLECT_MEMBER(sizeScreen);
-	CORE_REFLECT_MEMBER(spriteResource);
-	CORE_REFLECT_MEMBER(rect);
-	CORE_REFLECT_MEMBER(pivot);
-CORE_REFLECTION_END;
+REFLECTION_BEGIN(Wiwa::Sprite);
+	REFLECT_MEMBER(sizeScreen);
+	REFLECT_MEMBER(spriteResource);
+	REFLECT_MEMBER(rect);
+	REFLECT_MEMBER(pivot);
+REFLECTION_END;
