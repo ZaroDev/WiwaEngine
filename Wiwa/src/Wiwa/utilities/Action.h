@@ -1,6 +1,7 @@
 #pragma once
+#include "../Core.h"
 
-class Callable {};
+class WI_API Callable {};
 
 template<class... _params>
 class Action {
@@ -8,6 +9,8 @@ private:
 	void (Callable::* action)(_params...);
 	Callable* obj;
 public:
+	Action() = default;
+
 	template<class T>
 	Action(void (T::* _action)(_params...), void* _obj) {
 		action = (void (Callable::*)(_params...))_action;

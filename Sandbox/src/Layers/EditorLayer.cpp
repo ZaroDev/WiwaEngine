@@ -13,6 +13,7 @@
 
 #include <Wiwa/Resources.h>
 
+
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -43,8 +44,6 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_Inspector);
 	m_Panels.push_back(m_MeshView);
 
-	LoadPanelConfig();
-
 	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
 	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");
 	ResourceId infoId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/info_icon.png");
@@ -57,12 +56,16 @@ void EditorLayer::OnAttach()
 	m_WarningIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(warnId)->GetTextureId();
 	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
 
+
+	m_EventCallback = { &Wiwa::Application::OnEvent, &Wiwa::Application::Get()};
+
+	LoadCallback();
+
 	WI_TRACE("Editor layer attached!");
 }
 
 void EditorLayer::OnDetach()
 {
-	SavePanelConfig();
 	m_Panels.clear();
 }
 
@@ -99,6 +102,9 @@ void EditorLayer::OnEvent(Wiwa::Event& e)
 {
 	Wiwa::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Wiwa::KeyPressedEvent>(WI_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+	dispatcher.Dispatch<Wiwa::OnLoadEvent>(WI_BIND_EVENT_FN(EditorLayer::OnLoad));
+	dispatcher.Dispatch<Wiwa::OnSaveEvent>(WI_BIND_EVENT_FN(EditorLayer::OnSave));
+	dispatcher.Dispatch<Wiwa::WindowCloseEvent>(WI_BIND_EVENT_FN(EditorLayer::OnWindowClose));
 }
 
 void EditorLayer::MainMenuBar()
@@ -107,8 +113,21 @@ void EditorLayer::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("Open", ""))
+			{
+
+			}
+			if (ImGui::MenuItem("Load File", ""))
+			{
+
+			}
+			if (ImGui::MenuItem("Save project"))
+			{
+
+			}
 			if (ImGui::MenuItem("Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
+			
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("View"))
@@ -276,6 +295,18 @@ void EditorLayer::SavePanelConfig()
 	config.save_file("config/panels.json");
 }
 
+void EditorLayer::LoadCallback()
+{
+	Wiwa::OnLoadEvent event;
+	m_EventCallback(event);
+}
+
+void EditorLayer::SaveCallback()
+{
+	Wiwa::OnSaveEvent event;
+	m_EventCallback(event);
+}
+
 bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 {
 	// Shortcuts
@@ -364,4 +395,24 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		break;
 	}
 	}
+}
+
+bool EditorLayer::OnLoad(Wiwa::OnLoadEvent& e)
+{
+	LoadPanelConfig();
+
+	return false;
+}
+
+bool EditorLayer::OnSave(Wiwa::OnSaveEvent& e)
+{
+	SavePanelConfig();
+
+	return false;
+}
+
+bool EditorLayer::OnWindowClose(Wiwa::WindowCloseEvent& e)
+{
+	SaveCallback();
+	return false;
 }

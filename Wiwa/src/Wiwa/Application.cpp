@@ -27,11 +27,12 @@
 
 #include "scene/SceneManager.h"
 
+#include "utilities/json/JSONDocument.h"
+
 const size_t TYPE_COUNT = __COUNTER__;
 
 namespace Wiwa {
-
-#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
+#define BIND_EVENT_FN(x) std::bind(&Wiwa::Application::x, this, std::placeholders::_1)
 
 	Application* Application::s_Instance = nullptr;
 
@@ -68,40 +69,9 @@ namespace Wiwa {
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
-		// test
-		// TODO: REMOVE TEST
-		//ResourceId tree = Resources::Load<Image>("resources/images/tree.png");
-
 		m_EntityManager->RegisterSystem<SpriteRenderer>();
 		m_EntityManager->RegisterSystem<MeshRenderer>();
-		//m_EntityManager->ReserveEntities(MAXQUADS);
-		////m_EntityManager->ReserveSystem<SpriteRenderer>(MAXQUADS);
-		////m_EntityManager->ReserveComponent<Sprite>(MAXQUADS);
-		////m_EntityManager->ReserveComponent<Transform2D>(MAXQUADS);
-		//
-		//Image* spr = Resources::GetResourceById<Image>(tree);
-		//Size2i size = spr->GetSize();
-		//EntityId EntityMyTree = m_EntityManager->CreateEntity();
-		//m_EntityManager->AddComponent<Transform2D>(EntityMyTree, { {0,0},0.f,{1.0,1.0} });
-		//m_EntityManager->AddComponent<Sprite>(EntityMyTree, { {256,256}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
-		//for (int i = 0; i < MAXQUADS; i++) {
-		//	EntityId EntityMyTree = m_EntityManager->CreateEntity();
-		//	int x = (i * 32) % m_TargetResolution.w;
-		//	int y = (i * 32) % m_TargetResolution.h;
 
-		//	/*entityManager->AddComponent<Sprite>(EntityMyTree, { {32,32}, KawaiTree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
-		//	entityManager->AddComponent<Transform2D>(EntityMyTree, { {x,y},0.f,{1.0,1.0} });*/
-
-		//	/*m_EntityManager->AddComponents<Sprite, Transform2D>(EntityMyTree,
-		//		{ {32,32}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2 }, Renderer2D::Pivot::UPLEFT },
-		//		{ {x,y},0.f,{1.0,1.0} }
-		//	);*/
-
-		//	m_EntityManager->AddComponents<Sprite, Transform2D>(EntityMyTree,
-		//		{ {32,32}, tree,{0, 0, size.w, size.h }, Renderer2D::Pivot::UPLEFT },
-		//		{ {x,y},0.0f,{1.0,1.0} }
-		//	);
-		//}
 	}
 
 	void Application::SetHwInfo()
@@ -206,10 +176,39 @@ namespace Wiwa {
 		m_Running = false;
 		return true;
 	}
+	bool Application::OnLoad(OnLoadEvent& e)
+	{
+		JSONDocument config("config/application.json");
+
+		if (config.HasMember("vsync"))
+			m_Window->SetVSync(config["vsync"]);
+
+		if (config.HasMember("fullscreen"))
+			m_Window->SetVSync(config["fullscreen"]);
+
+		if (config.HasMember("resizable"))
+			m_Window->SetVSync(config["resizable"]);
+
+		return false;
+	}
+	bool Application::OnSave(OnSaveEvent& e)
+	{
+		JSONDocument config;
+
+		config.AddMember("vsync", m_Window->IsVSync());
+		config.AddMember("fullscreen", m_Window->GetFullScreen());
+		config.AddMember("resizable", m_Window->GetResizable());
+
+		config.save_file("config/application.json");
+
+		return false;
+	}
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<OnSaveEvent>(BIND_EVENT_FN(OnSave));
+		dispatcher.Dispatch<OnLoadEvent>(BIND_EVENT_FN(OnLoad));
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

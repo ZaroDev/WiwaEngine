@@ -14,10 +14,13 @@
 #include "Panels/InspectorPanel.h"
 #include "Panels/MeshViewPanel.h"
 
+#include <Wiwa/utilities/Action.h>
+
 typedef void* ImTextureID;
 
 class EditorLayer : public Wiwa::Layer
 {
+	typedef std::function<void(Wiwa::Event&)> EventCallbackFn;
 public:
 	EditorLayer();
 	~EditorLayer();
@@ -28,6 +31,7 @@ public:
 	void OnUpdate() override;
 	void OnImGuiRender() override;
 	void OnEvent(Wiwa::Event& e) override;
+	
 private:
 	void MainMenuBar();
 	void DockSpace();
@@ -35,8 +39,13 @@ private:
 	void LoadPanelConfig();
 	void SavePanelConfig();
 
-	bool OnKeyPressed(Wiwa::KeyPressedEvent& e);
+	void LoadCallback();
+	void SaveCallback();
 
+	bool OnKeyPressed(Wiwa::KeyPressedEvent& e);
+	bool OnLoad(Wiwa::OnLoadEvent& e);
+	bool OnSave(Wiwa::OnSaveEvent& e);
+	bool OnWindowClose(Wiwa::WindowCloseEvent& e);
 private:
 	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
@@ -57,6 +66,8 @@ private:
 	ImTextureID m_InfoIcon;
 	ImTextureID m_WarningIcon;
 	ImTextureID m_ErrorIcon;
+
+	Action<Wiwa::Event&> m_EventCallback;
 
 	int m_GizmoType = -1;
 };

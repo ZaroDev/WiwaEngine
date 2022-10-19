@@ -61,4 +61,21 @@ namespace Wiwa
 		EVENT_CLASS_TYPE(AppRender)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
+
+	class OnLoadEvent : public Event
+	{
+	public:
+		OnLoadEvent() = default;
+
+		EVENT_CLASS_TYPE(OnLoad)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	};
+	class OnSaveEvent : public Event
+	{
+	public:
+		OnSaveEvent() = default;
+
+		EVENT_CLASS_TYPE(OnSave)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	};
 }

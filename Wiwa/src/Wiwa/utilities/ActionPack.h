@@ -2,7 +2,7 @@
 #include "Action.h"
 
 template<class... _params>
-class ActionPack {
+class WI_API ActionPack {
 private:
 	std::vector<Action<_params...>> actions;
 public:

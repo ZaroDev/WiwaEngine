@@ -92,6 +92,8 @@ namespace Wiwa
 		Size2i m_TargetResolution;
 
 		bool OnWindowClose(WindowCloseEvent &e);
+		bool OnLoad(OnLoadEvent &e);
+		bool OnSave(OnSaveEvent &e);
 
 		const char *m_Version = "0.1";
 
