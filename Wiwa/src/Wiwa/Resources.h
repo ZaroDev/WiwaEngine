@@ -2,6 +2,7 @@
 #pragma warning(disable : 4251)
 
 #include <Wiwa/Core.h>
+#include <Wiwa/Application.h>
 
 // Resources
 #include <Wiwa/utilities/render/Shader.h>
@@ -10,8 +11,12 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
 
 typedef size_t ResourceId;
+
 
 namespace Wiwa {
 	class WI_API Resources
@@ -40,8 +45,11 @@ namespace Wiwa {
 
 		static void PushResource(ResourceType rt, const char* file, void* rsc);
 		static ResourceId getResourcePosition(ResourceType rt, const char* file);
+		template<class T> static bool Save(T* resource, const char* file);
+		template<class T> static bool Import(T* resource, const char* file);
 	public:
 		template<class T> static ResourceId Load(const char* file);
+
 		template<class T> static T* GetResourceById(ResourceId id);
 
 		static void Clear();
@@ -69,7 +77,6 @@ namespace Wiwa {
 
 		return resourceId;
 	}
-
 	template<>
 	inline Shader* Resources::GetResourceById<Shader>(ResourceId id) {
 		Shader* resource = NULL;
@@ -118,27 +125,6 @@ namespace Wiwa {
 	}
 	//--SPECIALIZATION FOR MODEL
 	template<>
-	inline ResourceId Resources::Load<Model>(const char* file)
-	{
-		ResourceId position = getResourcePosition(WRT_MODEL, file);
-		size_t size = m_Resources[WRT_MODEL].size();
-
-		ResourceId resourceId;
-
-		if (position == size) {
-			Model* model = new Model(file);
-
-			PushResource(WRT_MODEL, file, model);
-
-			resourceId = size;
-		}
-		else {
-			resourceId = position;
-		}
-
-		return resourceId;
-	}
-	template<>
 	inline Model* Resources::GetResourceById<Model>(ResourceId id)
 	{
 		Model* model = NULL;
@@ -148,6 +134,88 @@ namespace Wiwa {
 		}
 
 		return model;
+	}
+	template<>
+	inline bool Resources::Import<Model>(Model* resource, const char* file)
+	{
+		float time = Application::Get().GetTime();
+		std::ifstream infile;
+		infile.open(file, std::ios::binary | std::ios::in);
+		if (infile.is_open())
+		{
+			resource->ClearEBO();
+			resource->ClearVBO();
+			std::string eboString;
+			std::string vboString;
+	
+			std::getline(infile, eboString, ',');
+			for (int i = 0; i < eboString.size(); i++)
+			{
+				resource->AddIndex(eboString[i]);
+			}
+			std::getline(infile, vboString);
+			for (int i = 0; i < vboString.size(); i++)
+			{
+				resource->AddVertex(vboString[i]);
+			}
+
+			float endtime = Application::Get().GetTime();
+			endtime -= time;
+
+			WI_CORE_TRACE("Asset imported at {0} in {1} ms", file, endtime);
+
+			return true;
+		}
+
+		return false;
+	}
+	template<>
+	inline bool Resources::Save<Model>(Model* resource, const char* file)
+	{
+		std::ofstream outfile;
+		outfile.open(file, std::ios::binary | std::ios::out);
+		outfile.write((char*)resource->GetIndicies(), resource->GetNumIndicies());
+		outfile.write((char*)resource->GetVerticies(), resource->GetNumVertex());
+		outfile.close();
+
+		return true;
+	}
+	template<>
+	inline ResourceId Resources::Load<Model>(const char* file)
+	{
+		ResourceId position = getResourcePosition(WRT_MODEL, file);
+		size_t size = m_Resources[WRT_MODEL].size();
+
+		ResourceId resourceId;
+
+		std::filesystem::path fileString = file;
+		std::string filename = fileString.filename().string().c_str();
+		std::filesystem::path newPath = "Library/Models";
+		filename = filename.substr(0, filename.size() - 4);
+		filename += ".wiassets";
+		newPath /= filename;
+
+		if (position == size) {
+
+			Model* model = new Model(file);
+			//
+			//if (!Import<Model>(model, newPath.string().c_str()))
+			//{
+			//	Save<Model>(model, newPath.string().c_str());
+			//}
+			//else
+			//{
+			//	model = new Model(file);
+			//}
+
+			PushResource(WRT_MODEL, file, model);
+			resourceId = size;
+		}
+		else {
+			resourceId = position;
+		}
+
+		return resourceId;
 	}
 }
 

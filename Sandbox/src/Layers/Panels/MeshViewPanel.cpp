@@ -12,6 +12,8 @@
 #include <Wiwa/Renderer2D.h>
 #include <Wiwa/Renderer3D.h>
 
+#include <Wiwa/Resources.h>
+
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
 #include <Wiwa/utilities/render/Model.h>
@@ -108,38 +110,37 @@ void MeshViewPanel::Draw()
     CLAMP(rpos.y, 0.0f, isize.y);
 
     glm::vec3 campos = m_Camera.getPosition();
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-        campos += m_Camera.getFront() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
-        campos -= m_Camera.getFront() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
-        campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
-        campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
-        campos -= m_Camera.getUp() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
-        campos += m_Camera.getUp() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
-        campos -= m_Camera.getUp() * camSpeed;
-    }
-
     if (ImGui::IsWindowHovered())
     {
-        WI_INFO("PUTA");
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
+            campos += m_Camera.getFront() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
+            campos -= m_Camera.getFront() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
+            campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
+            campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
+            campos -= m_Camera.getUp() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
+            campos += m_Camera.getUp() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
+            campos -= m_Camera.getUp() * camSpeed;
+        }
+
     }
 
     m_Camera.setPosition({ campos.x, campos.y, campos.z });
@@ -160,7 +161,8 @@ void MeshViewPanel::Draw()
             {
                 WI_INFO("Trying to load payload at path {0}", pathS.c_str());
                 //TODO: Load the model
-                m_ActiveMesh = new Wiwa::Model(pathS.c_str());
+                ResourceId id  = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
+                m_ActiveMesh = Wiwa::Resources::GetResourceById<Wiwa::Model>(id);
             }
         }
 

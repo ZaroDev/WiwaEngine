@@ -26,7 +26,7 @@ namespace Wiwa
 		unsigned int m_Width, m_Height;
 	};
 
-	class WindowCloseEvent : public Event
+	class WI_API WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() = default;
@@ -59,6 +59,23 @@ namespace Wiwa
 		AppRenderEvent() = default;
 
 		EVENT_CLASS_TYPE(AppRender)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	};
+
+	class WI_API OnLoadEvent : public Event
+	{
+	public:
+		OnLoadEvent() = default;
+
+		EVENT_CLASS_TYPE(OnLoad)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	};
+	class WI_API OnSaveEvent : public Event
+	{
+	public:
+		OnSaveEvent() = default;
+
+		EVENT_CLASS_TYPE(OnSave)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 }

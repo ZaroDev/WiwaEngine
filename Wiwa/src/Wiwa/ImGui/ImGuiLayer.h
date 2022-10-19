@@ -11,6 +11,7 @@
 struct ImGuiContext;
 
 namespace Wiwa {
+
 	class WI_API ImGuiLayer : public Layer
 	{
 	public:

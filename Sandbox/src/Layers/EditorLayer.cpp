@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include <Wiwa/Application.h>
+#include <Wiwa/Events/ApplicationEvent.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 
 #include <Wiwa/Input.h>
@@ -43,7 +44,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_Inspector);
 	m_Panels.push_back(m_MeshView);
 
-	LoadPanelConfig();
+	CallLoad();
 
 	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
 	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");
@@ -73,6 +74,10 @@ void EditorLayer::OnUpdate()
 		if (p->active)
 			p->Update();
 	}
+
+	if (m_Assets->active)
+		m_Assets->Update();
+
 }
 
 void EditorLayer::OnImGuiRender()
@@ -92,13 +97,45 @@ void EditorLayer::OnImGuiRender()
 	if (m_ShowDemo)
 		ImGui::ShowDemoWindow(&m_ShowDemo);
 
+	bool s = true;
+	ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+	if (ImGui::BeginPopupModal("Unsaved changes", &s, flags))
+	{
+		ImGui::Text("Do you wish to save them?");
+		if (ImGui::Button("Yes"))
+		{
+			ImGui::CloseCurrentPopup();
+			CallSave();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("No"))
+			ImGui::CloseCurrentPopup();
 
+		ImGui::EndPopup();
+	}
 }
 
 void EditorLayer::OnEvent(Wiwa::Event& e)
 {
 	Wiwa::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<Wiwa::KeyPressedEvent>(WI_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+	dispatcher.Dispatch<Wiwa::OnLoadEvent>(WI_BIND_EVENT_FN(EditorLayer::OnLoad));
+	dispatcher.Dispatch<Wiwa::OnSaveEvent>(WI_BIND_EVENT_FN(EditorLayer::OnSave));
+	dispatcher.Dispatch<Wiwa::WindowCloseEvent>(WI_BIND_EVENT_FN(EditorLayer::OnApplicationClose));
+}
+
+bool EditorLayer::OnLoad(Wiwa::OnLoadEvent& e)
+{
+	LoadPanelConfig();
+
+	return false;
+}
+
+bool EditorLayer::OnSave(Wiwa::OnSaveEvent& e)
+{
+	SavePanelConfig();
+
+	return false;
 }
 
 void EditorLayer::MainMenuBar()
@@ -107,6 +144,12 @@ void EditorLayer::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("Load", "CTR + O"))		
+				CallLoad();
+			
+			if(ImGui::MenuItem("Save", "CTR + S"))
+				CallSave();
+
 			if (ImGui::MenuItem("Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
 			ImGui::EndMenu();
@@ -216,6 +259,18 @@ void EditorLayer::MainMenuBar()
 	
 }
 
+void EditorLayer::CallSave()
+{
+	Wiwa::OnSaveEvent event;
+	OnSave(event);
+}
+
+void EditorLayer::CallLoad()
+{
+	Wiwa::OnLoadEvent event;
+	OnLoad(event);
+}
+
 void EditorLayer::DockSpace()
 {
 	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode;
@@ -278,7 +333,6 @@ void EditorLayer::SavePanelConfig()
 
 bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 {
-	// Shortcuts
 	if (e.IsRepeat())
 		return false;
 
@@ -293,14 +347,14 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		if (control)
 			//NewScene();
 
-		break;
+			break;
 	}
 	case Wiwa::Key::O:
 	{
 		if (control)
 			//OpenScene();
 
-		break;
+			break;
 	}
 	case Wiwa::Key::S:
 	{
@@ -321,7 +375,7 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		if (control)
 			//OnDuplicateEntity();
 
-		break;
+			break;
 	}
 
 	// Gizmos
@@ -331,7 +385,7 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 			Wiwa::Application::Get().Quit();
 		if (!ImGuizmo::IsUsing())
 		{
-			m_Scene->SetGizmoType(-1); 
+			m_Scene->SetGizmoType(-1);
 			m_GizmoType = -1;
 		}
 		break;
@@ -358,10 +412,16 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	{
 		if (!ImGuizmo::IsUsing())
 		{
-			m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE); 
+			m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE);
 			m_GizmoType = ImGuizmo::OPERATION::SCALE;
 		}
 		break;
 	}
 	}
+	return false;
+}
+
+bool EditorLayer::OnApplicationClose(Wiwa::WindowCloseEvent& e)
+{
+	return false;
 }
