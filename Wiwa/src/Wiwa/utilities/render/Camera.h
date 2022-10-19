@@ -44,6 +44,12 @@ namespace Wiwa {
 		float getFOV() { return m_FOV; }
 
 		void setPosition(Vector3f position);
+		void setFront(Vector3f front);
+
+		glm::vec3 getPosition() { return m_CameraPos; }
+		glm::vec3 getFront() { return m_CameraFront; }
+		glm::vec3 getUp() { return m_CameraUp; }
+
 		void lookat(Vector3f position);
 
 		void SetPerspective(float fov, float aspectRatio, float nearPlaneDistance=0.1f, float farPlaneDistance=100.0f);

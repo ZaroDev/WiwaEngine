@@ -27,7 +27,7 @@ MeshViewPanel::MeshViewPanel()
 
     m_FrameBuffer.Init(res.w, res.h);
 
-    m_Camera.SetPerspective(60.0f, ar);
+    m_Camera.SetPerspective(45.0f, ar);
     m_Camera.setPosition({ 0.0f, 1.0f, -5.0f });
 
     m_ActiveMesh = new Wiwa::Model("resources/meshes/cube.fbx");
@@ -55,60 +55,32 @@ MeshViewPanel::~MeshViewPanel()
 
 void MeshViewPanel::Update()
 {
-    //glm::vec3 cpos = m_Camera.GetCameraPos();
+    // Mouse
+    /*if (input.MouseMotion()) {
+        float xoffset = input.GetMouseX() * sensitivity;
+        float yoffset = -input.GetMouseY() * sensitivity;
 
-    //if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-    //    cpos += cam.GetCameraFront() * camSpeed;
-    //}
+        yaw += xoffset;
+        pitch += yoffset;
 
-    //if (input.getKey(SDL_SCANCODE_S)) {
-    //    cpos -= cam.GetCameraFront() * camSpeed;
-    //}
+        if (pitch > 89.0f) pitch = 89.0f;
+        if (pitch < -89.0f) pitch = -89.0f;
 
-    //if (input.getKey(SDL_SCANCODE_A)) {
-    //    cpos -= glm::normalize(glm::cross(cam.GetCameraFront(), cam.GetCameraUp())) * camSpeed;
-    //}
+        glm::vec3 direction;
+        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        direction.y = sin(glm::radians(pitch));
+        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
-    //if (input.getKey(SDL_SCANCODE_D)) {
-    //    cpos += glm::normalize(glm::cross(cam.GetCameraFront(), cam.GetCameraUp())) * camSpeed;
-    //}
+        glm::vec3 front = glm::normalize(direction);
+        m_Camera.setFront({ front.x, front.y, front.z });
+    }*/
 
-    //if (input.getKey(SDL_SCANCODE_LSHIFT)) {
-    //    cpos -= cam.GetCameraUp() * camSpeed;
-    //}
-
-    //if (input.getKey(SDL_SCANCODE_SPACE)) {
-    //    cpos += cam.GetCameraUp() * camSpeed;
-    //}
-
-    //// Mouse
-    //if (input.MouseMotion()) {
-    //    float xoffset = input.GetMouseX() * sensitivity;
-    //    float yoffset = -input.GetMouseY() * sensitivity;
-
-    //    yaw += xoffset;
-    //    pitch += yoffset;
-
-    //    if (pitch > 89.0f) pitch = 89.0f;
-    //    if (pitch < -89.0f) pitch = -89.0f;
-
-    //    glm::vec3 direction;
-    //    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    //    direction.y = sin(glm::radians(pitch));
-    //    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-
-    //    cam.SetCameraFront(glm::normalize(direction));
-    //}
-
-    //cam.SetCameraPos(cpos);
-    //cam.Update();
+    
 }
 
 void MeshViewPanel::Draw()
 {
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
-
     
     // Calculate viewport aspect ratio
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -134,6 +106,43 @@ void MeshViewPanel::Draw()
     ImVec2 rpos = { mpos.x - cspos.x, mpos.y - cspos.y };
     CLAMP(rpos.x, 0.0f, isize.x);
     CLAMP(rpos.y, 0.0f, isize.y);
+
+    glm::vec3 campos = m_Camera.getPosition();
+
+    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
+        campos += m_Camera.getFront() * camSpeed;
+    }
+
+    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
+        campos -= m_Camera.getFront() * camSpeed;
+    }
+
+    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
+        campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
+    }
+
+    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
+        campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
+    }
+
+    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
+        campos -= m_Camera.getUp() * camSpeed;
+    }
+
+    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
+        campos += m_Camera.getUp() * camSpeed;
+    }
+
+    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
+        campos -= m_Camera.getUp() * camSpeed;
+    }
+
+    if (ImGui::IsWindowHovered())
+    {
+        WI_INFO("PUTA");
+    }
+
+    m_Camera.setPosition({ campos.x, campos.y, campos.z });
 
     // Render to frame buffer and imgui viewport
     Wiwa::Application::Get().GetRenderer3D().RenderMeshColor(*m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_MeshColor, &m_FrameBuffer, &m_Camera);

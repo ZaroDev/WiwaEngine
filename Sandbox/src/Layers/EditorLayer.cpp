@@ -68,10 +68,11 @@ void EditorLayer::OnDetach()
 
 void EditorLayer::OnUpdate()
 {
-	if(m_Configuration->active)
-		m_Configuration->Update();
-	if (m_Assets->active)
-		m_Assets->Update();
+	for (auto& p : m_Panels)
+	{
+		if (p->active)
+			p->Update();
+	}
 }
 
 void EditorLayer::OnImGuiRender()
