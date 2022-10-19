@@ -274,12 +274,6 @@ namespace Wiwa {
 	}
 
 
-	Model::Model() :
-		ebo(0), vbo(0), vao(0)
-	{
-		generateBuffers();
-	}
-
 	Model::Model(const char* file)
 		: ebo(0), vbo(0), vao(0)
 	{

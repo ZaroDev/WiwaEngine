@@ -2,8 +2,6 @@
 
 #include <imgui.h>
 
-#include <Wiwa/Application.h>
-
 #include "windows.h"
 #include "psapi.h"
 ConfigurationPanel::ConfigurationPanel()
@@ -34,7 +32,6 @@ void ConfigurationPanel::Draw()
 			Wiwa::Application::Get().GetWindow().SetVSync(m_VSync);
 	}
 	char title[25];
-	char num[64];
 	if (ImGui::CollapsingHeader("Info"))
 	{
 		sprintf_s(title, 25, "Framerate %.1f", m_FPSLog[m_FPSLog.size() - 1]);
@@ -43,8 +40,6 @@ void ConfigurationPanel::Draw()
 		ImGui::PlotHistogram("##frametime", &m_MSLog[0], (int)m_MSLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
 		sprintf_s(title, 25, "Mem used %.1f", m_MemLog[m_MemLog.size() - 1]);
 		ImGui::PlotHistogram("##memory", &m_MemLog[0], (int)m_MemLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
-		sprintf_s(num, 64, "Number of allocations %i", Wiwa::Application::s_AllocCount);
-		ImGui::Text(num);
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{

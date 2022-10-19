@@ -16,10 +16,12 @@
 
 namespace Wiwa
 {
+
 	class EntityManager;
 	class SceneManager;
 	class Renderer2D;
 	class Renderer3D;
+
 	struct SysInfo
 	{
 		SysInfo() = default;
@@ -60,7 +62,7 @@ namespace Wiwa
 		inline ImGuiLayer &GetImGuiLayer() { return *m_ImGuiLayer; }
 		inline SceneManager& GetSceneManager() { return *m_SceneManager; }
 
-		inline float GetTime() { return m_Time; }
+		inline float GetDeltaTime() { return m_Time; }
 		inline ImGuiContext *GetImGuiContext() { return m_ImGuiLayer->GetContext(); }
 
 		inline SysInfo &GetSystemInfo() { return m_SysInfo; }
@@ -86,19 +88,15 @@ namespace Wiwa
 		void OpenDir(const char *url);
 		void Quit();
 
-		static uint32_t s_AllocCount;
 	private:
 		Size2i m_TargetResolution;
 
 		bool OnWindowClose(WindowCloseEvent &e);
-		bool OnLoad(OnLoadEvent& e);
-		bool OnSave(OnSaveEvent& e);
 
 		const char *m_Version = "0.1";
 
 		float m_Time = 0.0f;
 		float m_DeltaTime = 0.0f;
-
 
 		Renderer2D *m_Renderer2D;
 		Renderer3D *m_Renderer3D;

@@ -28,24 +28,18 @@ public:
 	void OnUpdate() override;
 	void OnImGuiRender() override;
 	void OnEvent(Wiwa::Event& e) override;
-
 private:
-	bool OnLoad(Wiwa::OnLoadEvent& e);
-	bool OnSave(Wiwa::OnSaveEvent& e);
 	void MainMenuBar();
-	void CallSave();
-	void CallLoad();
 	void DockSpace();
 
 	void LoadPanelConfig();
 	void SavePanelConfig();
 
 	bool OnKeyPressed(Wiwa::KeyPressedEvent& e);
-	bool OnApplicationClose(Wiwa::WindowCloseEvent& e);
 
 private:
-	bool m_ShowConsole	= false;
-	bool m_ShowDemo		= false;
+	bool m_ShowConsole = false;
+	bool m_ShowDemo = false;
 
 	std::shared_ptr<AboutPanel>			m_About = nullptr;
 	std::shared_ptr<ConfigurationPanel> m_Configuration = nullptr;
@@ -58,11 +52,11 @@ private:
 
 	std::vector<std::shared_ptr<Panel>> m_Panels;
 
-	ImTextureID m_PlayIcon		= NULL;
-	ImTextureID m_PauseIcon		= NULL;
-	ImTextureID m_InfoIcon		= NULL;
-	ImTextureID m_WarningIcon	= NULL;
-	ImTextureID m_ErrorIcon		= NULL;
+	ImTextureID m_PlayIcon;
+	ImTextureID m_PauseIcon;
+	ImTextureID m_InfoIcon;
+	ImTextureID m_WarningIcon;
+	ImTextureID m_ErrorIcon;
 
 	int m_GizmoType = -1;
 };
