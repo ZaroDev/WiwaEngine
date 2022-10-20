@@ -35,6 +35,7 @@ void EditorLayer::OnAttach()
 	m_Assets = std::make_shared<AssetsPanel>();
 	m_Inspector = std::make_shared<InspectorPanel>();
 	m_MeshView = std::make_shared<MeshViewPanel>();
+	m_MaterialEditor = std::make_shared<MaterialPanel>();
 
 	m_Panels.push_back(m_Configuration);
 	m_Panels.push_back(m_Console);
@@ -43,6 +44,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_Assets);
 	m_Panels.push_back(m_Inspector);
 	m_Panels.push_back(m_MeshView);
+	m_Panels.push_back(m_MaterialEditor);
 
 	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
 	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");

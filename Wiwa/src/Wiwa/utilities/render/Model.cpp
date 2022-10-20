@@ -81,13 +81,23 @@ namespace Wiwa {
 					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].x);
 					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].y);
 					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].z);
+					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].x);
+					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].y);
+					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].z);
+					if (scene->mMeshes[i]->mTextureCoords[0])
+					{
+						vbo_data.push_back(scene->mMeshes[i]->mTextureCoords[0][j].x);
+						vbo_data.push_back(scene->mMeshes[i]->mTextureCoords[0][j].y);
+					}
 				}
+
 
 				for (unsigned int j = 0; j < scene->mMeshes[i]->mNumFaces; j++) {
 					for (unsigned int k = 0; k < scene->mMeshes[i]->mFaces[j].mNumIndices; k++) {
 						ebo_data.push_back(scene->mMeshes[i]->mFaces[j].mIndices[k]);
 					}
 				}
+
 			}
 
 			aiReleaseImport(scene);
@@ -266,8 +276,12 @@ namespace Wiwa {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_data.size() * sizeof(int), ebo_data.data(), GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);

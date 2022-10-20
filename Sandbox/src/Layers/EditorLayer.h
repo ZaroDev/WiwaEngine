@@ -13,6 +13,7 @@
 #include "Panels/AssetsPanel.h"
 #include "Panels/InspectorPanel.h"
 #include "Panels/MeshViewPanel.h"
+#include "Panels/MaterialPanel.h"
 
 #include <Wiwa/utilities/Action.h>
 
@@ -58,6 +59,7 @@ private:
 	std::shared_ptr<AssetsPanel>		m_Assets = nullptr;
 	std::shared_ptr<InspectorPanel>		m_Inspector = nullptr;
 	std::shared_ptr<MeshViewPanel>		m_MeshView = nullptr;
+	std::shared_ptr<MaterialPanel>		m_MaterialEditor = nullptr;
 
 	std::vector<std::shared_ptr<Panel>> m_Panels;
 

@@ -41,6 +41,13 @@ namespace Wiwa {
 		m_TextureShaderId = Resources::Load<Shader>("resources/shaders/model_texture");
 		m_TextureShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
 
+		/*m_TextureShader->Use();*/
+
+		/*uint32_t texs_id = glGetUniformLocation(m_TextureShader->getID(), "u_Sampler");
+		int samplers[MAX_INSTANCE_TEXTURES];
+		for (int i = 0; i < MAX_INSTANCE_TEXTURES; i++) samplers[i] = i;
+		glUniform1iv(texs_id, MAX_INSTANCE_TEXTURES, samplers);*/
+
 		m_TSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
 		m_TSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
 		m_TSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
@@ -82,6 +89,11 @@ namespace Wiwa {
 
 	void Renderer3D::RenderMeshMaterial(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Material& material, FrameBuffer* target, Camera* camera)
 	{
+		if (material.getType() == Wiwa::Material::MaterialType::color)
+		{
+			RenderMeshColor(mesh, position, rotation, scale, material.getColor(), target, camera);
+			return;
+		}
 		if (!target) target = &m_FrameBuffer;
 		if (!camera) camera = &m_ActiveCamera;
 
@@ -96,7 +108,8 @@ namespace Wiwa {
 
 		m_TextureShader->Use();
 		glBindVertexArray(mesh.getVAO());
-		glBindTextureUnit(0, material.getTextureId());
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, material.getTextureId());
 
 		m_TextureShader->setUniform(m_TSModelUniformLocation, model);
 		m_TextureShader->setUniform(m_TSViewUniformLocation, camera->getView());
@@ -104,6 +117,7 @@ namespace Wiwa {
 
 		mesh.Render();
 
+		glBindTexture(GL_TEXTURE_2D,0);
 		target->Unbind();
 	}
 

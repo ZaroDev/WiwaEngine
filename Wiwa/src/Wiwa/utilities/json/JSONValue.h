@@ -30,6 +30,11 @@ namespace Wiwa {
 	{
 		return m_Value->Get<T>();
 	}
+	template<>
+	inline const char* JSONValue::get()
+	{
+		return m_Value->GetString();
+	}
 
 	template<class T>
 	inline void JSONValue::operator=(T data)
@@ -42,4 +47,5 @@ namespace Wiwa {
 	{
 		return get<T>();
 	}
+
 }

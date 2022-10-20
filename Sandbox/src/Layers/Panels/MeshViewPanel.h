@@ -5,6 +5,7 @@
 #include <Wiwa/utilities/render/Camera.h>
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Model.h>
+#include <Wiwa/utilities/render/Material.h>
 
 struct ShadingView;
 
@@ -29,6 +30,8 @@ private:
 	Wiwa::Vector3f m_MeshScale;
 
 	Wiwa::Vector4f m_MeshColor;
+
+	Wiwa::Material* m_ActiveMaterial;
 
 	// Camera control
 	double rotSpeed;

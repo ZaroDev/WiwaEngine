@@ -30,7 +30,8 @@ MeshViewPanel::MeshViewPanel()
     m_Camera.SetPerspective(45.0f, ar);
     m_Camera.setPosition({ 0.0f, 1.0f, -5.0f });
 
-    m_ActiveMesh = new Wiwa::Model("resources/meshes/cube.fbx");
+    m_ActiveMesh = new Wiwa::Model("resources/meshes/bakerHouse.fbx");
+    m_ActiveMaterial = new Wiwa::Material({1.0, 0.1, 0.1, 1.0});
 
     m_MeshPosition = { 0.0f, 0.0f, 0.0f };
     m_MeshRotation = {};
@@ -42,7 +43,7 @@ MeshViewPanel::MeshViewPanel()
 
     // Camera control
     rotSpeed = 0.01;
-    camSpeed = 0.1f;
+    camSpeed = 0.05f;
     sensitivity = 0.2f;
 
     yaw = -90.0f;
@@ -99,53 +100,53 @@ void MeshViewPanel::Draw()
     cpos.x = (viewportPanelSize.x - isize.x) / 2;
     ImGui::SetCursorPos(cpos);
     
-    // Update mesh rotation with mouse
-    ImVec2 mpos = ImGui::GetMousePos();
-    ImVec2 cspos = ImGui::GetCursorScreenPos();
-
-    ImVec2 rpos = { mpos.x - cspos.x, mpos.y - cspos.y };
-    CLAMP(rpos.x, 0.0f, isize.x);
-    CLAMP(rpos.y, 0.0f, isize.y);
-
-    glm::vec3 campos = m_Camera.getPosition();
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-        campos += m_Camera.getFront() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
-        campos -= m_Camera.getFront() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
-        campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
-        campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
-        campos -= m_Camera.getUp() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
-        campos += m_Camera.getUp() * camSpeed;
-    }
-
-    if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
-        campos -= m_Camera.getUp() * camSpeed;
-    }
-
     if (ImGui::IsWindowHovered())
     {
-        WI_INFO("PUTA");
+        // Update mesh rotation with mouse
+        ImVec2 mpos = ImGui::GetMousePos();
+        ImVec2 cspos = ImGui::GetCursorScreenPos();
+
+        ImVec2 rpos = { mpos.x - cspos.x, mpos.y - cspos.y };
+        CLAMP(rpos.x, 0.0f, isize.x);
+        CLAMP(rpos.y, 0.0f, isize.y);
+
+        glm::vec3 campos = m_Camera.getPosition();
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
+            campos += m_Camera.getFront() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
+            campos -= m_Camera.getFront() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
+            campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
+            campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
+            campos -= m_Camera.getUp() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
+            campos += m_Camera.getUp() * camSpeed;
+        }
+
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
+            campos -= m_Camera.getUp() * camSpeed;
+        }
+
+
+
+        m_Camera.setPosition({ campos.x, campos.y, campos.z });
     }
 
-    m_Camera.setPosition({ campos.x, campos.y, campos.z });
-
     // Render to frame buffer and imgui viewport
-    Wiwa::Application::Get().GetRenderer3D().RenderMeshColor(*m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_MeshColor, &m_FrameBuffer, &m_Camera);
+    Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(*m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, *m_ActiveMaterial, &m_FrameBuffer, &m_Camera);
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::BeginDragDropTarget())
@@ -161,6 +162,12 @@ void MeshViewPanel::Draw()
                 WI_INFO("Trying to load payload at path {0}", pathS.c_str());
                 //TODO: Load the model
                 m_ActiveMesh = new Wiwa::Model(pathS.c_str());
+            }
+            if (p.extension() == ".wimaterial" || p.extension() == ".FBX")
+            {
+                WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+                
+               //
             }
         }
 

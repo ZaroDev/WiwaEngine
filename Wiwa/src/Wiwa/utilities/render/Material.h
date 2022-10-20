@@ -11,8 +11,8 @@ namespace Wiwa {
 	public:
 		enum MaterialType
 		{
-			textured,
-			color
+			color,
+			textured
 		};
 		Material();
 		Material(Color4f color);
@@ -25,7 +25,8 @@ namespace Wiwa {
 		inline Color4f getColor() { return m_Color; }
 
 		void setTexture(const char* file);
-		inline void setColor(Color4f color) { color = m_Color; }
+		inline void setColor(Color4f color) { m_Color = color; }
+		inline void setType(MaterialType type) { m_Type = type; }
 	private:
 		ResourceId m_ResourceId;
 		uint32_t m_TextureId;

@@ -7,6 +7,7 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
+#include "MaterialPanel.h"
 
 
 
@@ -166,7 +167,7 @@ void AssetsPanel::Draw()
 				matFile.AddMember("colorG", 0.2);
 				matFile.AddMember("colorB", 0.2);
 				matFile.AddMember("colorA", 1.0);
-				//matFile.AddMember("type", (int)Wiwa::Material::MaterialType::color);
+				matFile.AddMember("type", (int)Wiwa::Material::MaterialType::color);
 				matFile.save_file(file.c_str());
 				ImGui::CloseCurrentPopup();
 			}
@@ -207,7 +208,13 @@ void AssetsPanel::Draw()
 				}
 
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-				ImGui::ImageButton((ImTextureID)texID, { thumbnailSize, thumbnailSize });
+				if (ImGui::ImageButton(texID, { thumbnailSize, thumbnailSize }))
+				{
+					if (directoryEntry.path().extension() == ".wimaterial")
+					{
+						MaterialPanel::SetMaterial(directoryEntry.path().string().c_str());
+					}
+				}
 
 				ImGui::PopStyleColor();
 

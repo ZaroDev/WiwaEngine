@@ -1,12 +1,19 @@
 #version 330 core
 
-uniform Sampler2D gSampler;
+// Outputs colors in RGBA
+out vec4 FragColor;
 
 
-in vec2 o_texCoord;
-out vec4 out_color;
+// Inputs the color from the Vertex Shader
+in vec3 color;
+// Inputs the texture coordinates from the Vertex Shader
+in vec2 texCoord;
+
+// Gets the Texture Unit from the main function
+uniform sampler2D tex0;
 
 
-void main() {
-	out_color = texture2D(gSampler, o_texCoord);
+void main()
+{
+	FragColor = texture(tex0, texCoord);
 }

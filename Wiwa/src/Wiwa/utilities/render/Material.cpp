@@ -16,16 +16,21 @@ Wiwa::Material::Material(Color4f color)
 
 Wiwa::Material::Material(const char* file)
 {
-	JSONDocument matFile(file);
+    JSONDocument matFile(file);
 
-	std::string texturePath = matFile["texture"];
-	m_Color = matFile["color"];
-	m_Type = matFile["type"];
-	if (!texturePath.empty())
-	{
-		m_ResourceId = Resources::Load<Image>(texturePath.c_str());
-		m_TextureId = Resources::GetResourceById<Image>(m_ResourceId)->GetTextureId();
-	}
+    std::string texturePath = matFile["texture"].get<const char*>();
+    m_Color = {
+        matFile["colorR"].get<float>(),
+        matFile["colorG"].get<float>(),
+        matFile["colorB"].get<float>(),
+        matFile["colorA"].get<float>()
+    };
+    m_Type = (Wiwa::Material::MaterialType)matFile["type"].get<int>();
+    if (!texturePath.empty())
+    {
+        m_ResourceId = Resources::Load<Image>(texturePath.c_str());
+        m_TextureId = Resources::GetResourceById<Image>(m_ResourceId)->GetTextureId();
+    }
 }
 
 Wiwa::Material::~Material()
