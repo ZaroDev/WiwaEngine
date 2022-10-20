@@ -43,4 +43,15 @@ namespace Wiwa {
 
 		return JSONValue(&jval);
 	}
+
+	template<>
+	inline JSONValue JSONDocument::AddMember<const char*>(const char* mem, const char* value) {
+		rapidjson::Value key(mem, m_Document.GetAllocator());
+		rapidjson::Value v;
+		v.SetString(value, m_Document.GetAllocator());
+
+		rapidjson::Value& jval = m_Document.AddMember(key, v, m_Document.GetAllocator());
+
+		return JSONValue(&jval);
+	}
 }

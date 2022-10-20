@@ -38,6 +38,13 @@ namespace Wiwa {
 		m_CSViewUniformLocation = m_ColorShader->getUniformLocation("u_View");
 		m_CSProjectionUniformLocation = m_ColorShader->getUniformLocation("u_Proj");
 
+		m_TextureShaderId = Resources::Load<Shader>("resources/shaders/model_texture");
+		m_TextureShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
+
+		m_TSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
+		m_TSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
+		m_TSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
+
 		WI_CORE_INFO("Renderer3D initialized");
 		return true;
 	}
@@ -72,6 +79,34 @@ namespace Wiwa {
 
 		target->Unbind();
 	}
+
+	void Renderer3D::RenderMeshMaterial(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Material& material, FrameBuffer* target, Camera* camera)
+	{
+		if (!target) target = &m_FrameBuffer;
+		if (!camera) camera = &m_ActiveCamera;
+
+		glViewport(0, 0, target->getWidth(), target->getHeight());
+
+		target->Bind();
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+		// TODO: ROTATION
+		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
+
+		m_TextureShader->Use();
+		glBindVertexArray(mesh.getVAO());
+		glBindTextureUnit(0, material.getTextureId());
+
+		m_TextureShader->setUniform(m_TSModelUniformLocation, model);
+		m_TextureShader->setUniform(m_TSViewUniformLocation, camera->getView());
+		m_TextureShader->setUniform(m_TSProjectionUniformLocation, camera->getProjection());
+
+		mesh.Render();
+
+		target->Unbind();
+	}
+
 
 	void Renderer3D::SetOption(Options option)
 	{

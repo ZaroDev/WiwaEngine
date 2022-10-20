@@ -7,6 +7,7 @@
 #include <Wiwa/utilities/render/Shader.h>
 #include <Wiwa/utilities/render/Image.h>
 #include <Wiwa/utilities/render/Model.h>
+#include <Wiwa/utilities/render/Material.h>
 
 #include <string>
 #include <vector>
@@ -23,6 +24,7 @@ namespace Wiwa {
 			WRT_AUDIOCLIP,
 			WRT_SHADER,
 			WRT_MODEL,
+			WRT_MATERIAL,
 			WRT_LAST
 		};
 
@@ -148,6 +150,38 @@ namespace Wiwa {
 		}
 
 		return model;
+	}
+	template<>
+	inline ResourceId Resources::Load<Material>(const char* file)
+	{
+		ResourceId position = getResourcePosition(WRT_MATERIAL, file);
+		size_t size = m_Resources[WRT_MATERIAL].size();
+
+		ResourceId resourceId;
+
+		if (position == size) {
+			Material* material = new Material(file);
+
+			PushResource(WRT_MATERIAL, file, material);
+
+			resourceId = size;
+		}
+		else {
+			resourceId = position;
+		}
+
+		return resourceId;
+	}
+	template<>
+	inline Wiwa::Material* Resources::GetResourceById<Wiwa::Material>(ResourceId id)
+	{
+		Wiwa::Material* material = NULL;
+
+		if (id >= 0 && id < m_Resources[WRT_MATERIAL].size()) {
+			material = static_cast<Wiwa::Material*>(m_Resources[WRT_MATERIAL][id]->resource);
+		}
+
+		return material;
 	}
 }
 

@@ -7,10 +7,12 @@
 
 namespace Wiwa {
 	struct WI_API Mesh {
-		ResourceId id;
+		ResourceId meshId;
+		ResourceId materialId;
 	};
 }
 
 REFLECTION_BEGIN(Wiwa::Mesh)
-REFLECT_MEMBER(id)
+REFLECT_MEMBER(meshId)
+REFLECT_MEMBER(materialId)
 REFLECTION_END;

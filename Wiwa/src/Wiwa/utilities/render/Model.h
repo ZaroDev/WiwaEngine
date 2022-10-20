@@ -28,5 +28,7 @@ namespace Wiwa {
 		~Model();
 
 		void Render();
+
+		inline unsigned int getVAO() { return vao; }
 	};
 }

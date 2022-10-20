@@ -5,6 +5,7 @@
 #include <Wiwa/Renderer3D.h>
 
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/utilities/render/Material.h>
 
 namespace Wiwa {
 	MeshRenderer::MeshRenderer()
@@ -30,9 +31,13 @@ namespace Wiwa {
 
 		for (size_t i = 0; i < size; i++)
 		{
-			Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(spr[i]->id);
-			Color4f col = Color::WHITE;
-			r3d.RenderMeshColor(*mod, t3d[i]->position, t3d[i]->rotation, t3d[i]->rotation, col);
+			Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(spr[i]->meshId);
+			Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(spr[i]->materialId);
+			if(mat->getType() == Wiwa::Material::MaterialType::color)
+				r3d.RenderMeshColor(*mod, t3d[i]->position, t3d[i]->rotation, t3d[i]->rotation, mat->getColor());
+
+			if (mat->getType() == Wiwa::Material::MaterialType::textured)
+				r3d.RenderMeshMaterial(*mod, t3d[i]->position, t3d[i]->rotation, t3d[i]->rotation, *mat);
 		}
 	}
 

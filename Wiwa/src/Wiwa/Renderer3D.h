@@ -19,6 +19,7 @@
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
 #include <Wiwa/utilities/render/Model.h>
+#include <Wiwa/utilities/render/Material.h>
 
 namespace Wiwa {
 	class WI_API Renderer3D {
@@ -39,11 +40,18 @@ namespace Wiwa {
 		// Color shader
 		ResourceId m_ColorShaderId;
 		Shader* m_ColorShader;
-
+		
 		uint32_t m_CSColorUniformLocation;
 		uint32_t m_CSModelUniformLocation;
 		uint32_t m_CSViewUniformLocation;
 		uint32_t m_CSProjectionUniformLocation;
+
+		ResourceId m_TextureShaderId;
+		Shader* m_TextureShader;
+
+		uint32_t m_TSModelUniformLocation;
+		uint32_t m_TSViewUniformLocation;
+		uint32_t m_TSProjectionUniformLocation;
 
 		glm::mat4 m_PersProj{ 0.0f };
 		glm::mat4 m_View{ 0.0f };
@@ -60,6 +68,7 @@ namespace Wiwa {
 		void SetOption(Options option);
 		void DisableOption(Options option);
 		void RenderMeshColor(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target=NULL, Camera* camera=NULL);
+		void RenderMeshMaterial(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Material& material, FrameBuffer* target=NULL, Camera* camera=NULL);
 		void Close();
 
 		// Getters

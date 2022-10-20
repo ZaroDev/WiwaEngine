@@ -3,9 +3,12 @@
 
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <direct.h>
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
-#include <direct.h>
+#include <Wiwa/utilities/json/JSONDocument.h>
+
+
 
 static const std::filesystem::path s_AssetsPath = "Assets";
 AssetsPanel::AssetsPanel()
@@ -119,6 +122,11 @@ void AssetsPanel::Draw()
 		{
 			ImGui::OpenPopup("Creating a folder##folder");
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Create a material"))
+		{
+			ImGui::OpenPopup("Creating a material##material");
+		}
 		bool open = true;
 		if (ImGui::BeginPopupModal("Creating a folder##folder", &open))
 		{
@@ -132,6 +140,34 @@ void AssetsPanel::Draw()
 				path /= dir;
 				if (mkdir(path.string().c_str()) == -1)
 					WI_ERROR("Folder can't be created");
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("Close"))
+				ImGui::CloseCurrentPopup();
+			ImGui::EndPopup();
+		}
+		open = true;
+		if (ImGui::BeginPopupModal("Creating a material##material", &open))
+		{
+			static char buffer[64] = { 0 };
+			ImGui::Text("Material name");
+			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
+			if (ImGui::Button("Create"))
+			{
+				std::filesystem::path path = m_CurrentPath;
+				std::filesystem::path dir = buffer;
+				path /= dir;
+				std::string file = path.string() + ".wimaterial";
+				Wiwa::JSONDocument matFile;
+				matFile.AddMember("texture", "");
+				matFile.AddMember("colorR", 0.2);
+				matFile.AddMember("colorG", 0.2);
+				matFile.AddMember("colorB", 0.2);
+				matFile.AddMember("colorA", 1.0);
+				//matFile.AddMember("type", (int)Wiwa::Material::MaterialType::color);
+				matFile.save_file(file.c_str());
 				ImGui::CloseCurrentPopup();
 			}
 
