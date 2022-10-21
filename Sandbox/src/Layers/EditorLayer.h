@@ -32,7 +32,9 @@ public:
 	void OnUpdate() override;
 	void OnImGuiRender() override;
 	void OnEvent(Wiwa::Event& e) override;
-	
+	void OnEditorEvent(Wiwa::Event& e);
+public:
+	inline static EditorLayer &Get() { return *s_Instance; }
 private:
 	void MainMenuBar();
 	void DockSpace();
@@ -72,4 +74,7 @@ private:
 	Action<Wiwa::Event&> m_EventCallback;
 
 	int m_GizmoType = -1;
+
+private: 
+	static EditorLayer* s_Instance;
 };

@@ -13,11 +13,13 @@
 
 #include <Wiwa/Resources.h>
 
+EditorLayer* EditorLayer::s_Instance = nullptr;
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
-
+	WI_ASSERT(!s_Instance, "Editor Layer already exists!");
+	s_Instance = this;
 }
 
 EditorLayer::~EditorLayer()
@@ -107,6 +109,17 @@ void EditorLayer::OnEvent(Wiwa::Event& e)
 	dispatcher.Dispatch<Wiwa::OnLoadEvent>(WI_BIND_EVENT_FN(EditorLayer::OnLoad));
 	dispatcher.Dispatch<Wiwa::OnSaveEvent>(WI_BIND_EVENT_FN(EditorLayer::OnSave));
 	dispatcher.Dispatch<Wiwa::WindowCloseEvent>(WI_BIND_EVENT_FN(EditorLayer::OnWindowClose));
+}
+
+void EditorLayer::OnEditorEvent(Wiwa::Event& e)
+{
+	Wiwa::EventDispatcher dispatcher(e);
+	for (auto it = m_Panels.end(); it != m_Panels.begin();)
+	{
+		(*--it)->OnEvent(e);
+		if (e.Handled)
+			break;
+	}
 }
 
 void EditorLayer::MainMenuBar()

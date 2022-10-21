@@ -32,7 +32,7 @@
 const size_t TYPE_COUNT = __COUNTER__;
 
 namespace Wiwa {
-#define BIND_EVENT_FN(x) std::bind(&Wiwa::Application::x, this, std::placeholders::_1)
+
 
 	Application* Application::s_Instance = nullptr;
 
@@ -44,7 +44,7 @@ namespace Wiwa {
 		m_TargetResolution = { 1920, 1080 };
 		
 		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetEventCallback({ &OnEvent, this });
 
 		int min, major, rev;
 		glfwGetVersion(&min, &major, &rev);
@@ -221,9 +221,9 @@ namespace Wiwa {
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-		dispatcher.Dispatch<OnSaveEvent>(BIND_EVENT_FN(OnSave));
-		dispatcher.Dispatch<OnLoadEvent>(BIND_EVENT_FN(OnLoad));
+		dispatcher.Dispatch<WindowCloseEvent>({ &OnWindowClose, this });
+		dispatcher.Dispatch<OnSaveEvent>((& OnSave, this));
+		dispatcher.Dispatch<OnLoadEvent>(&OnLoad, this);
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

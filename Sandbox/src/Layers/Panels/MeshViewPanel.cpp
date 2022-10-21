@@ -31,7 +31,7 @@ MeshViewPanel::MeshViewPanel()
     m_Camera.setPosition({ 0.0f, 1.0f, 5.0f });
 
     m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
-    m_ActiveMaterial = new Wiwa::Material("assets/textures/test.wimaterial");
+    m_ActiveMaterial = new Wiwa::Material("assets/test.wimaterial");
 
     m_MeshPosition = { 0.0f, 0.0f, 0.0f };
     m_MeshRotation = {};
@@ -42,8 +42,8 @@ MeshViewPanel::MeshViewPanel()
     m_Camera.lookat(m_MeshPosition);
 
     // Camera control
-    camSpeed = 0.005f;
-    sensitivity = 0.5f;
+    camSpeed = 0.01f;
+    sensitivity = 1.5f;
 
     yaw = -90.0f;
     pitch = 0.0f;
@@ -60,7 +60,29 @@ void MeshViewPanel::Update()
 void MeshViewPanel::Draw()
 {
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
-    
+    if (ImGui::BeginMenuBar())
+    {
+
+        if (ImGui::BeginMenu("Render"))
+        {
+            for (auto c : m_Shadings)
+            {
+                if (ImGui::MenuItem(c->name, "", &c->active))
+                {
+                    if (c->active) Wiwa::Application::Get().GetRenderer3D().SetOption(c->glValue);
+                    else Wiwa::Application::Get().GetRenderer3D().DisableOption(c->glValue);
+                }
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Options"))
+        {
+           ImGui::SliderFloat("Cam Speed", &camSpeed, 0.001, 5);
+           ImGui::SliderFloat("Cam sens", &sensitivity, 0.001, 5);
+           ImGui::EndMenu();
+        }
+        ImGui::EndMenuBar();
+    }
     // Calculate viewport aspect ratio
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
@@ -96,9 +118,18 @@ void MeshViewPanel::Draw()
         lastPos = v2f;
 
         // Check if right click was pressed
-        if (Wiwa::Input::IsMouseButtonPressed(1)) {
+        if (Wiwa::Input::IsMouseButtonPressed(1)) 
+        {
+           /* Wiwa::Input::SetCursorVisible(false);
+            if (m_FirstClick)
+            {
+                Wiwa::Input::SetMousePos((cspos.x + isize.x) / 2, (cspos.y + isize.y) / 2);
+                m_FirstClick = false;
+            }*/
+
             // Check if relative motion is not 0
-            if (rel2f != Wiwa::Vector2f::Zero()) {
+            if (rel2f != Wiwa::Vector2f::Zero()) 
+            {
                 float xoffset = -rel2f.x * sensitivity;
                 float yoffset = rel2f.y * sensitivity;
 
@@ -115,6 +146,13 @@ void MeshViewPanel::Draw()
 
                 glm::vec3 front = glm::normalize(direction);
                 m_Camera.setFront({ front.x, front.y, front.z });
+
+                /*Wiwa::Input::SetMousePos((cspos.x + isize.x) / 2, (cspos.y + isize.y) / 2);*/
+            }
+            else
+            {
+                Wiwa::Input::SetCursorVisible(true);
+                m_FirstClick = true;
             }
         }
 
@@ -168,33 +206,24 @@ void MeshViewPanel::Draw()
             {
                 WI_INFO("Trying to load payload at path {0}", pathS.c_str());
                 //TODO: Load the model
-                m_ActiveMesh = new Wiwa::Model(pathS.c_str());
+                ResourceId meshId = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
+                m_ActiveMesh = Wiwa::Resources::GetResourceById<Wiwa::Model>(meshId);
             }
-            if (p.extension() == ".wimaterial" || p.extension() == ".FBX")
+            if (p.extension() == ".wimaterial")
             {
                 WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-                
-               //
+                ResourceId matId = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
+                m_ActiveMaterial = Wiwa::Resources::GetResourceById<Wiwa::Material>(matId);
             }
         }
 
         ImGui::EndDragDropTarget();
     }
-   /* ImGuizmo::SetOrthographic(false);
-    ImGuizmo::SetDrawlist();
-    float windowWidth = (float)ImGui::GetWindowWidth();
-    float windowHeight = (float)ImGui::GetWindowHeight();
-    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-    glm::mat4 cameraView = Wiwa::Application::Get().GetRenderer3D().GetView();
-    const glm::mat4& cameraProjection = Wiwa::Application::Get().GetRenderer3D().GetPersProjection();
-    glm::mat4 transform(1.0f);
-    glm::vec3 pos = { m_MeshPosition.x, m_MeshPosition.y, m_MeshPosition.z };
-    transform = glm::translate(transform, pos);
-
-
-    ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-        ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, glm::value_ptr(transform));
-    */
     ImGui::End();
+}
+
+void MeshViewPanel::OnEvent(Wiwa::Event& e)
+{
+    Wiwa::EventDispatcher dispatcher(e);
+
 }

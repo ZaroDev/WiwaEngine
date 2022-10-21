@@ -23,11 +23,11 @@ public:
 	virtual ~AssetsPanel();
 
 	void Update() override;
-	void UpdateDir(const std::filesystem::directory_entry &p1, Directory *dir);
 	void Draw() override;
 
 private:
 	void DisplayNode(Directory *directoryEntry);
+	void UpdateDir(const std::filesystem::directory_entry &p1, Directory *dir);
 
 private:
 	ImTextureID m_FileIcon;
