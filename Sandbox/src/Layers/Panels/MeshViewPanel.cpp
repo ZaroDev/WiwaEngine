@@ -28,10 +28,10 @@ MeshViewPanel::MeshViewPanel()
     m_FrameBuffer.Init(res.w, res.h);
 
     m_Camera.SetPerspective(45.0f, ar);
-    m_Camera.setPosition({ 0.0f, 1.0f, -5.0f });
+    m_Camera.setPosition({ 0.0f, 1.0f, 5.0f });
 
     m_ActiveMesh = new Wiwa::Model("resources/meshes/bakerHouse.fbx");
-    m_ActiveMaterial = new Wiwa::Material({1.0, 0.1, 0.1, 1.0});
+    m_ActiveMaterial = new Wiwa::Material("assets/textures/test.wimaterial");
 
     m_MeshPosition = { 0.0f, 0.0f, 0.0f };
     m_MeshRotation = {};
@@ -42,9 +42,8 @@ MeshViewPanel::MeshViewPanel()
     m_Camera.lookat(m_MeshPosition);
 
     // Camera control
-    rotSpeed = 0.01;
-    camSpeed = 0.05f;
-    sensitivity = 0.2f;
+    camSpeed = 0.005f;
+    sensitivity = 0.5f;
 
     yaw = -90.0f;
     pitch = 0.0f;
@@ -56,27 +55,6 @@ MeshViewPanel::~MeshViewPanel()
 
 void MeshViewPanel::Update()
 {
-    // Mouse
-    /*if (input.MouseMotion()) {
-        float xoffset = input.GetMouseX() * sensitivity;
-        float yoffset = -input.GetMouseY() * sensitivity;
-
-        yaw += xoffset;
-        pitch += yoffset;
-
-        if (pitch > 89.0f) pitch = 89.0f;
-        if (pitch < -89.0f) pitch = -89.0f;
-
-        glm::vec3 direction;
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-        glm::vec3 front = glm::normalize(direction);
-        m_Camera.setFront({ front.x, front.y, front.z });
-    }*/
-
-    
 }
 
 void MeshViewPanel::Draw()
@@ -99,17 +77,48 @@ void MeshViewPanel::Draw()
     ImVec2 cpos = ImGui::GetCursorPos();
     cpos.x = (viewportPanelSize.x - isize.x) / 2;
     ImGui::SetCursorPos(cpos);
-    
+
     if (ImGui::IsWindowHovered())
     {
-        // Update mesh rotation with mouse
+        // Calculate mouse position in viewport (0 to 1)
         ImVec2 mpos = ImGui::GetMousePos();
         ImVec2 cspos = ImGui::GetCursorScreenPos();
 
         ImVec2 rpos = { mpos.x - cspos.x, mpos.y - cspos.y };
         CLAMP(rpos.x, 0.0f, isize.x);
         CLAMP(rpos.y, 0.0f, isize.y);
+        
+        Wiwa::Vector2f v2f = { rpos.x / (float)isize.x, rpos.y / (float)isize.y };
+        Wiwa::Vector2f rel2f = lastPos - v2f;
+        rel2f.x /= rel2f.x == 0.0f ? 1.0f : abs(rel2f.x);
+        rel2f.y /= rel2f.y == 0.0f ? 1.0f : abs(rel2f.y);
 
+        lastPos = v2f;
+
+        // Check if right click was pressed
+        if (Wiwa::Input::IsMouseButtonPressed(1)) {
+            // Check if relative motion is not 0
+            if (rel2f != Wiwa::Vector2f::Zero()) {
+                float xoffset = -rel2f.x * sensitivity;
+                float yoffset = rel2f.y * sensitivity;
+
+                yaw += xoffset;
+                pitch += yoffset;
+
+                if (pitch > 89.0f) pitch = 89.0f;
+                if (pitch < -89.0f) pitch = -89.0f;
+
+                glm::vec3 direction;
+                direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+                direction.y = sin(glm::radians(pitch));
+                direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+                glm::vec3 front = glm::normalize(direction);
+                m_Camera.setFront({ front.x, front.y, front.z });
+            }
+        }
+
+        // Camera movement
         glm::vec3 campos = m_Camera.getPosition();
 
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
@@ -139,8 +148,6 @@ void MeshViewPanel::Draw()
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
             campos -= m_Camera.getUp() * camSpeed;
         }
-
-
 
         m_Camera.setPosition({ campos.x, campos.y, campos.z });
     }

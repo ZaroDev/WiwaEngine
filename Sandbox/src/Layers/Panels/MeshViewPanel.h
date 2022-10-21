@@ -34,10 +34,11 @@ private:
 	Wiwa::Material* m_ActiveMaterial;
 
 	// Camera control
-	double rotSpeed;
 	float camSpeed;
 	float sensitivity;
 
 	float yaw;
 	float pitch;
+
+	Wiwa::Vector2f lastPos;
 };
