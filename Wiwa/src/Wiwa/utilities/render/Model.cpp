@@ -78,20 +78,27 @@ namespace Wiwa {
 		{
 			for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
 				for (unsigned int j = 0; j < scene->mMeshes[i]->mNumVertices; j++) {
+					// Vertices
 					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].x);
 					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].y);
 					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].z);
+					// Normals
 					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].x);
 					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].y);
 					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].z);
+					// Texture coordinates
 					if (scene->mMeshes[i]->mTextureCoords[0])
 					{
 						vbo_data.push_back(scene->mMeshes[i]->mTextureCoords[0][j].x);
 						vbo_data.push_back(scene->mMeshes[i]->mTextureCoords[0][j].y);
 					}
+					else {
+						vbo_data.push_back(0.0f);
+						vbo_data.push_back(0.0f);
+					}
 				}
 
-
+				// Indices
 				for (unsigned int j = 0; j < scene->mMeshes[i]->mNumFaces; j++) {
 					for (unsigned int k = 0; k < scene->mMeshes[i]->mFaces[j].mNumIndices; k++) {
 						ebo_data.push_back(scene->mMeshes[i]->mFaces[j].mIndices[k]);
