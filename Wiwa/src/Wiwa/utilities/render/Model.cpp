@@ -73,38 +73,20 @@ namespace Wiwa {
 
 	void Model::getMeshFromFile(const char* file)
 	{
-		const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality);
+		const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs);
+
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+			WI_ERROR("Couldn't load mesh file: {0}", file);
+		}
+
+		is_root = true;
+
 		if (scene != nullptr && scene->HasMeshes())
 		{
 			for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
-				for (unsigned int j = 0; j < scene->mMeshes[i]->mNumVertices; j++) {
-					// Vertices
-					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].x);
-					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].y);
-					vbo_data.push_back(scene->mMeshes[i]->mVertices[j].z);
-					// Normals
-					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].x);
-					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].y);
-					vbo_data.push_back(scene->mMeshes[i]->mNormals[j].z);
-					// Texture coordinates
-					if (scene->mMeshes[i]->mTextureCoords[0])
-					{
-						vbo_data.push_back(scene->mMeshes[i]->mTextureCoords[0][j].x);
-						vbo_data.push_back(scene->mMeshes[i]->mTextureCoords[0][j].y);
-					}
-					else {
-						vbo_data.push_back(0.0f);
-						vbo_data.push_back(0.0f);
-					}
-				}
+				Model* model = loadmesh(scene->mMeshes[i]);
 
-				// Indices
-				for (unsigned int j = 0; j < scene->mMeshes[i]->mNumFaces; j++) {
-					for (unsigned int k = 0; k < scene->mMeshes[i]->mFaces[j].mNumIndices; k++) {
-						ebo_data.push_back(scene->mMeshes[i]->mFaces[j].mIndices[k]);
-					}
-				}
-
+				models.push_back(model);
 			}
 
 			aiReleaseImport(scene);
@@ -112,6 +94,44 @@ namespace Wiwa {
 		else {
 			WI_CORE_ERROR("Error loading mesh {0} with error {1}", file, aiGetErrorString());
 		}
+	}
+
+	Model* Model::loadmesh(const aiMesh* mesh)
+	{
+		Model* model = new Model(NULL);
+
+		for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
+			// Vertices
+			model->vbo_data.push_back(mesh->mVertices[j].x);
+			model->vbo_data.push_back(mesh->mVertices[j].y);
+			model->vbo_data.push_back(mesh->mVertices[j].z);
+			// Normals
+			model->vbo_data.push_back(mesh->mNormals[j].x);
+			model->vbo_data.push_back(mesh->mNormals[j].y);
+			model->vbo_data.push_back(mesh->mNormals[j].z);
+			// Texture coordinates
+			if (mesh->mTextureCoords[0])
+			{
+				model->vbo_data.push_back(mesh->mTextureCoords[0][j].x);
+				model->vbo_data.push_back(mesh->mTextureCoords[0][j].y);
+			}
+			else {
+				model->vbo_data.push_back(0.0f);
+				model->vbo_data.push_back(0.0f);
+			}
+		}
+
+		// Indices
+		for (unsigned int j = 0; j < mesh->mNumFaces; j++) {
+			aiFace& face = mesh->mFaces[j];
+			for (unsigned int k = 0; k < face.mNumIndices; k++) {
+				model->ebo_data.push_back(face.mIndices[k]);
+			}
+		}
+
+		model->generateBuffers();
+
+		return model;
 	}
 
 	void Model::CreateCube()
@@ -298,26 +318,33 @@ namespace Wiwa {
 	Model::Model(const char* file)
 		: ebo(0), vbo(0), vao(0)
 	{
-		if (strcmp(file, "cube") == 0)
-		{
-			CreateCube();
+		is_root = true;
+
+		if (file) {
+			if (strcmp(file, "cube") == 0)
+			{
+				CreateCube();
+			}
+			else if (strcmp(file, "plane") == 0)
+			{
+				CreatePlane();
+			}
+			else if (strcmp(file, "pyramid") == 0)
+			{
+				CreatePyramid();
+			}
+			else if (strcmp(file, "sphere") == 0)
+			{
+				CreateSphere();
+			}
+			else
+			{
+				getMeshFromFile(file);
+				generateBuffers();
+			}
 		}
-		else if (strcmp(file, "plane") == 0)
-		{
-			CreatePlane();
-		}
-		else if (strcmp(file, "pyramid") == 0)
-		{
-			CreatePyramid();
-		}
-		else if (strcmp(file, "sphere") == 0)
-		{
-			CreateSphere();
-		}
-		else if (file) 
-		{
-			getMeshFromFile(file);
-			generateBuffers();
+		else {
+			is_root = false;
 		}
 	}
 
@@ -327,7 +354,16 @@ namespace Wiwa {
 
 	void Model::Render()
 	{
-		glBindVertexArray(vao);
-		glDrawElements(GL_TRIANGLES, (GLsizei)ebo_data.size(), GL_UNSIGNED_INT, 0);
+		if(is_root){
+			size_t meshCount = models.size();
+
+			for (size_t i = 0; i < meshCount; i++) {
+				models[i]->Render();
+			}
+		}
+		else {
+			glBindVertexArray(vao);
+			glDrawElements(GL_TRIANGLES, (GLsizei)ebo_data.size(), GL_UNSIGNED_INT, 0);
+		}
 	}
 }
