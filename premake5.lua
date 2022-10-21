@@ -18,6 +18,7 @@ IncludeDirs["GLM"] = "Wiwa/vendor/glm/glm"
 IncludeDirs["PCG"] = "Wiwa/vendor/PCG/include"
 IncludeDirs["JSON"] = "Wiwa/vendor/rapidjson"
 IncludeDirs["XML"] = "Wiwa/vendor/pugixml/src"
+IncludeDirs["SPDLOG"] = "Wiwa/vendor/spdlog/include"
 IncludeDirs["Optick"] = "Wiwa/vendor/Optick/include"
 IncludeDirs["assimp"] = "Wiwa/vendor/assimp/include"
 IncludeDirs["ImGuizmo"] = "Wiwa/vendor/imguizmo"
@@ -52,8 +53,8 @@ project "Wiwa"
 
 	includedirs
 	{
-		"%{prj.name}/vendor/spdlog/include",
 		"Wiwa/src",
+		"%{IncludeDirs.SPDLOG}",
 		"%{IncludeDirs.GLFW}",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.GLM}",
@@ -120,9 +121,10 @@ project "Wiwa"
 		staticruntime "off"
 		runtime "Release"
 		optimize "On"
+		symbols "On"
 		links
 		{
-			"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
+			"Wiwa/vendor/assimp/lib/x64/debug/assimp-vc143-mtd.lib"
 		}
 	filter "configurations:Dist"
 		defines "WI_DIST"

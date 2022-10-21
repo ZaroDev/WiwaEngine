@@ -17,7 +17,7 @@ typedef size_t SystemId;
 typedef unsigned char byte;
 
 namespace Wiwa {
-	class WI_API EntityManager : public Layer
+	class WI_API EntityManager
 	{
 	private:
 		struct componentData {
@@ -53,8 +53,7 @@ namespace Wiwa {
 		// System registration functions
 		//Action<> registrations[10];
 
-		// Module functions
-		void OnUpdate() override;
+		void Update();
 
 		// Create entity
 		EntityId CreateEntity();

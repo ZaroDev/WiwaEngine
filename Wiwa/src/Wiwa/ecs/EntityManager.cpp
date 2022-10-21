@@ -4,6 +4,9 @@
 #include "systems/System.h"
 
 #include <Wiwa/Application.h>
+#include <Wiwa/utilities/render/Model.h>
+#include <Wiwa/utilities/render/Material.h>
+#include <Wiwa/Renderer3D.h>
 
 namespace Wiwa {
 	EntityManager::EntityManager()
@@ -38,7 +41,7 @@ namespace Wiwa {
 		}
 	}
 
-	void EntityManager::OnUpdate()
+	void EntityManager::Update()
 	{
 		size_t size = m_Systems.size();
 

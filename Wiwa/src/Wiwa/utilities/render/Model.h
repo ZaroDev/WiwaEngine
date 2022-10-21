@@ -5,7 +5,7 @@
 #include <vector>
 #include <Wiwa/utilities/math/Math.h>
 
-class aiMesh;
+struct aiMesh;
 
 namespace Wiwa {
 	class WI_API Model

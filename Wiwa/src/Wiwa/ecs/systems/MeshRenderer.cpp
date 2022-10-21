@@ -18,7 +18,7 @@ namespace Wiwa {
 	}
 
 	void MeshRenderer::OnUpdate()
-	{
+	{		
 		std::vector<Transform3D*>* t3dv = GetComponents<Transform3D>();
 		std::vector<Mesh*>* sprv = GetComponents<Mesh>();
 
@@ -34,11 +34,10 @@ namespace Wiwa {
 			Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(spr[i]->meshId);
 			Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(spr[i]->materialId);
 			if(mat->getType() == Wiwa::Material::MaterialType::color)
-				r3d.RenderMeshColor(*mod, t3d[i]->position, t3d[i]->rotation, t3d[i]->rotation, mat->getColor());
+				r3d.RenderMeshColor(mod, t3d[i]->position, t3d[i]->rotation, t3d[i]->scale, mat->getColor());
 
 			if (mat->getType() == Wiwa::Material::MaterialType::textured)
-				r3d.RenderMeshMaterial(*mod, t3d[i]->position, t3d[i]->rotation, t3d[i]->rotation, *mat);
+				r3d.RenderMeshMaterial(mod, t3d[i]->position, t3d[i]->rotation, t3d[i]->scale, mat);
 		}
 	}
-
 }

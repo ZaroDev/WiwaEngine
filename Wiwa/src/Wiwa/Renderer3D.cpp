@@ -27,6 +27,8 @@ namespace Wiwa {
 
 		// Init perspective camera for 3D
 		m_ActiveCamera.SetPerspective(45.0f, resolution.w / (float)resolution.h);
+		m_ActiveCamera.setPosition({ 0.0f, 1.0f, 5.0f });
+		m_ActiveCamera.lookat({0.0f, 0.0f, 0.0f});
 
 		// Color shader
 		m_ColorShaderId = Resources::Load<Shader>("resources/shaders/model_color");
@@ -61,7 +63,7 @@ namespace Wiwa {
 		
 	}
 
-	void Renderer3D::RenderMeshColor(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Color4f& color, FrameBuffer* target, Camera* camera)
+	void Renderer3D::RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Color4f color, FrameBuffer* target, Camera* camera)
 	{
 		if (!target) target = &m_FrameBuffer;
 		if (!camera) camera = &m_ActiveCamera;
@@ -82,20 +84,21 @@ namespace Wiwa {
 		m_ColorShader->setUniform(m_CSViewUniformLocation, camera->getView());
 		m_ColorShader->setUniform(m_CSProjectionUniformLocation, camera->getProjection());
 
-		mesh.Render();
+		mesh->Render();
 
 		target->Unbind();
 	}
 
-	void Renderer3D::RenderMeshMaterial(Model& mesh, Vector3f& position, Vector3f& rotation, Vector3f& scale, Material& material, FrameBuffer* target, Camera* camera)
+	void Renderer3D::RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, FrameBuffer* target, Camera* camera)
 	{
-		if (material.getType() == Wiwa::Material::MaterialType::color)
-		{
-			RenderMeshColor(mesh, position, rotation, scale, material.getColor(), target, camera);
-			return;
-		}
 		if (!target) target = &m_FrameBuffer;
 		if (!camera) camera = &m_ActiveCamera;
+
+		if (material->getType() == Wiwa::Material::MaterialType::color)
+		{
+			RenderMeshColor(mesh, position, rotation, scale, material->getColor(), target, camera);
+			return;
+		}
 
 		glViewport(0, 0, target->getWidth(), target->getHeight());
 
@@ -107,15 +110,15 @@ namespace Wiwa {
 		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
 
 		m_TextureShader->Use();
-		glBindVertexArray(mesh.getVAO());
+		glBindVertexArray(mesh->getVAO());
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, material.getTextureId());
+		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
 
 		m_TextureShader->setUniform(m_TSModelUniformLocation, model);
 		m_TextureShader->setUniform(m_TSViewUniformLocation, camera->getView());
 		m_TextureShader->setUniform(m_TSProjectionUniformLocation, camera->getProjection());
 
-		mesh.Render();
+		mesh->Render();
 
 		glBindTexture(GL_TEXTURE_2D,0);
 		target->Unbind();

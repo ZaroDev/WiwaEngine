@@ -52,6 +52,12 @@ namespace Wiwa {
 
 		SetHwInfo();
 
+		m_Renderer2D = new Renderer2D();
+		m_Renderer2D->Init();
+
+		m_Renderer3D = new Renderer3D();
+		m_Renderer3D->Init();
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
@@ -59,19 +65,26 @@ namespace Wiwa {
 		PushLayer(m_SceneManager);
 
 		m_EntityManager = new EntityManager();
-		PushLayer(m_EntityManager);
-
-		m_Renderer2D = new Renderer2D();
-		m_Renderer2D->Init();
-
-		m_Renderer3D = new Renderer3D();
-		m_Renderer3D->Init();
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
+		Mesh mesh;
+
+		mesh.meshId = Resources::Load<Model>("resources/meshes/BakerHouse.fbx");
+		mesh.materialId = Resources::Load<Material>("assets/textures/test.wimaterial");
+
+		Transform3D t3d;
+		t3d.position = { 0.0f, 0.0f, 0.0f };
+		t3d.rotation = {};
+		t3d.scale = { 1.0f, 1.0f, 1.0f };
+
 		m_EntityManager->RegisterSystem<SpriteRenderer>();
+
 		m_EntityManager->RegisterSystem<MeshRenderer>();
 
+		EntityId eid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(eid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
 	}
 
 	void Application::SetHwInfo()
@@ -104,6 +117,7 @@ namespace Wiwa {
 	{
 
 	}
+
 	void Application::Run()
 	{
 		while (m_Running)
@@ -121,10 +135,11 @@ namespace Wiwa {
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
+			m_EntityManager->Update();
+
 			m_ImGuiLayer->Begin();
 			{
 				//TODO: Optick On ImGuiRender call
-
 				for (Layer* layer : m_LayerStack)
 					layer->OnImGuiRender();
 			}

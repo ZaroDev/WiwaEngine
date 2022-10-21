@@ -25,7 +25,6 @@
 ScenePanel::ScenePanel()
     : Panel("Scene")
 {
-    
     m_Shadings.push_back(new ShadingView("Depth Test", Wiwa::Renderer3D::Options::DEPTH_TEST, false));
     m_Shadings.push_back(new ShadingView("Cull face", Wiwa::Renderer3D::Options::CULL_FACE, false));
     m_Shadings.push_back(new ShadingView("Lighting", Wiwa::Renderer3D::Options::LIGHTING, false));
@@ -33,26 +32,8 @@ ScenePanel::ScenePanel()
     m_Shadings.push_back(new ShadingView("Texture 2D", Wiwa::Renderer3D::Options::TEXTURE_2D, false));
     m_Shadings.push_back(new ShadingView("Wireframe", Wiwa::Renderer3D::Options::WIREFRAME, false));
 
-    m_FrameBuffer = std::make_unique<Wiwa::FrameBuffer>();
-    m_Camera = std::make_unique<Wiwa::Camera>();
-
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
-
-    m_FrameBuffer.get()->Init(res.w, res.h);
-
-    m_Camera.get()->SetPerspective(60.0f, ar);
-    m_Camera.get()->setPosition({ 0.0f, 1.0f, -5.0f });
-
-
-    m_MeshPosition = { 0.0f, 0.0f, 0.0f };
-    m_MeshRotation = {};
-    m_MeshScale = { 1.0f, 1.0f, 1.0f };
-
-    m_MeshColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    m_Camera.get()->lookat(m_MeshPosition);
-
 }
 
 ScenePanel::~ScenePanel()
@@ -103,7 +84,7 @@ void ScenePanel::Draw()
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
 
-    ImTextureID tex = (ImTextureID)(intptr_t)m_FrameBuffer.get()->getColorBufferTexture();
+    ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::BeginDragDropTarget())
