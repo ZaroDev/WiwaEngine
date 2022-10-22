@@ -198,8 +198,9 @@ namespace Wiwa {
 
 	void Application::Quit()
 	{
+		OnSaveEvent event;
+		OnEvent(event);
 		m_Running = false;
-	
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
@@ -212,13 +213,13 @@ namespace Wiwa {
 		JSONDocument config("config/application.json");
 
 		if (config.HasMember("vsync"))
-			m_Window->SetVSync(config["vsync"]);
+			m_Window->SetVSync(config["vsync"].get<bool>());
 
 		if (config.HasMember("fullscreen"))
-			m_Window->SetVSync(config["fullscreen"]);
+			m_Window->SetVSync(config["fullscreen"].get<bool>());
 
 		if (config.HasMember("resizable"))
-			m_Window->SetVSync(config["resizable"]);
+			m_Window->SetVSync(config["resizable"].get<bool>());
 
 		return false;
 	}

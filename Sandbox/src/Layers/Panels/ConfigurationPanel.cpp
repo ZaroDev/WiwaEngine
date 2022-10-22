@@ -7,9 +7,7 @@
 ConfigurationPanel::ConfigurationPanel()
 	: Panel("Configuration"), info()
 {
-	m_Resizable = Wiwa::Application::Get().GetWindow().GetResizable();
-	m_Fullscreen = Wiwa::Application::Get().GetWindow().GetFullScreen();
-	m_VSync = Wiwa::Application::Get().GetWindow().IsVSync();
+	
 }
 
 ConfigurationPanel::~ConfigurationPanel()
@@ -18,6 +16,9 @@ ConfigurationPanel::~ConfigurationPanel()
 
 void ConfigurationPanel::Draw()
 {
+	m_Resizable = Wiwa::Application::Get().GetWindow().GetResizable();
+	m_Fullscreen = Wiwa::Application::Get().GetWindow().GetFullScreen();
+	m_VSync = Wiwa::Application::Get().GetWindow().IsVSync();
 	m_MSLog.push_back(1000.0f / ImGui::GetIO().Framerate);
 	m_FPSLog.push_back(ImGui::GetIO().Framerate);
 	ImGui::Begin(name, &active);
