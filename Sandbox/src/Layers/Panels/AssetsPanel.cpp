@@ -214,10 +214,10 @@ void AssetsPanel::Draw()
 				{
 					if (directoryEntry.path().extension() == ".wimaterial")
 					{
-						Action<Wiwa::Event&> materialCallback = { &EditorLayer::OnEvent, &EditorLayer::Get() };
+						/*Action<Wiwa::Event&> materialCallback = { &EditorLayer::OnEvent, &EditorLayer::Get() };
 						ResourceId matId = Wiwa::Resources::Load<Wiwa::Material>(path.string().c_str());
 						Wiwa::MaterialChange event(matId);
-						materialCallback(event);
+						materialCallback(event);*/
 					}
 				}
 
