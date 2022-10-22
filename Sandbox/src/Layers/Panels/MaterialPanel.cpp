@@ -9,7 +9,6 @@
 
 Wiwa::Material* s_Material = nullptr;
 std::filesystem::path s_Path = "";
-std::string s_TexturePath = "";
 
 MaterialPanel::MaterialPanel()
 	: Panel("Material Editor")
@@ -40,14 +39,13 @@ void MaterialPanel::Draw()
                 if (p.extension() == ".png" && s_Material)
                 {  
                     s_Material->setTexture(pathS.c_str());
-                    s_TexturePath = p.string().c_str();
                 }
 
             }
             ImGui::EndDragDropTarget();
 
         }
-
+        ImGui::Text(s_Material->getTexturePath());
         static glm::vec4 color = { s_Material->getColor().r, s_Material->getColor().g,s_Material->getColor().b , s_Material->getColor().a };
         ImGui::ColorEdit4("Color", glm::value_ptr(color));
         s_Material->setColor({ color.r, color.g, color.b, color.a });
@@ -79,7 +77,7 @@ void MaterialPanel::Draw()
         if (ImGui::Button("Save"))
         {
             Wiwa::JSONDocument matFile;
-            matFile.AddMember("texture", s_TexturePath.c_str());
+            matFile.AddMember("texture", s_Material->getTexturePath());
             matFile.AddMember("colorR", s_Material->getColor().r);
             matFile.AddMember("colorG", s_Material->getColor().g);
             matFile.AddMember("colorB", s_Material->getColor().b);
@@ -105,5 +103,5 @@ void MaterialPanel::SetMaterial(const char* file)
     s_Path = file;
     Wiwa::JSONDocument matFile(file);
     if (matFile.HasMember("texture"))
-        s_TexturePath = matFile["texture"].get<const char*>();
+        s_Material->setTexture(matFile["texture"].get<const char*>());
 }

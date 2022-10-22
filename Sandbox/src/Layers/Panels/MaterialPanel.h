@@ -16,5 +16,4 @@ public:
 private:
 	inline static Wiwa::Material* s_Material;
 	inline static std::filesystem::path s_Path;
-	inline static std::string s_TexturePath;
 };

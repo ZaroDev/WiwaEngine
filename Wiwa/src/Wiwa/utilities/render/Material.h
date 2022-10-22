@@ -23,12 +23,14 @@ namespace Wiwa {
 		inline uint32_t getTextureId() { return m_TextureId; }
 		inline uint32_t getResourceId() { return (uint32_t)m_ResourceId; }
 		inline Color4f getColor() { return m_Color; }
+		inline const char* getTexturePath() { return m_TexturePath.c_str(); }
 
 		void setTexture(const char* file);
 		inline void setColor(Color4f color) { m_Color = color; }
 		inline void setType(MaterialType type) { m_Type = type; }
 	private:
 		ResourceId m_ResourceId;
+		std::string m_TexturePath;
 		uint32_t m_TextureId;
 		Color4f m_Color;
 		MaterialType m_Type;

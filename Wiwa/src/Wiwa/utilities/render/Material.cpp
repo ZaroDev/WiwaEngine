@@ -18,7 +18,7 @@ Wiwa::Material::Material(const char* file)
 {
     JSONDocument matFile(file);
 
-    std::string texturePath = matFile["texture"].get<const char*>();
+    m_TexturePath = matFile["texture"].get<const char*>();
     m_Color = {
         matFile["colorR"].get<float>(),
         matFile["colorG"].get<float>(),
@@ -26,9 +26,9 @@ Wiwa::Material::Material(const char* file)
         matFile["colorA"].get<float>()
     };
     m_Type = (Wiwa::Material::MaterialType)matFile["type"].get<int>();
-    if (!texturePath.empty())
+    if (!m_TexturePath.empty())
     {
-        m_ResourceId = Resources::Load<Image>(texturePath.c_str());
+        m_ResourceId = Resources::Load<Image>(m_TexturePath.c_str());
         m_TextureId = Resources::GetResourceById<Image>(m_ResourceId)->GetTextureId();
     }
 }
@@ -39,6 +39,14 @@ Wiwa::Material::~Material()
 
 void Wiwa::Material::setTexture(const char* file)
 {
+    if (strcmp(file, "checker") == 0)
+    {
+        Image* img = new Image();
+        img->CreateCheckerText();
+        m_TextureId = img->GetTextureId();
+        return;
+    }
+    m_TexturePath = file;
 	m_ResourceId = Resources::Load<Image>(file);
 	m_TextureId = Resources::GetResourceById<Image>(m_ResourceId)->GetTextureId();
 }

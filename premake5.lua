@@ -74,7 +74,8 @@ project "Wiwa"
 		"opengl32.lib",
 		"Wiwa/vendor/Glew/lib/glew32.lib",
 		"Optick",
-		"ImGuizmo"
+		"ImGuizmo",
+		"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
 	}
 
 	filter "files:%{prj.name}/vendor/imguizmo/**.cpp"
@@ -110,29 +111,20 @@ project "Wiwa"
 		}	
 		runtime "Debug"
 		symbols "On"
-		links
-		{
-			"Wiwa/vendor/assimp/lib/x64/debug/assimp-vc143-mtd.lib"
-		}
+
 
 	filter "configurations:Release"
 		defines "WI_RELEASE"
 		runtime "Release"
 		optimize "On"
 		symbols "On"
-		links
-		{
-			"Wiwa/vendor/assimp/lib/x64/debug/assimp-vc143-mtd.lib"
-		}
+
 	filter "configurations:Dist"
 		defines "WI_DIST"
 		runtime "Release"
 		optimize "On"
 		symbols "Off"
-		links
-		{
-			"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
-		}
+
 
 project "Sandbox"
 	location "Sandbox"

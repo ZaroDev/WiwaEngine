@@ -17,6 +17,8 @@ namespace Wiwa {
 
 		bool Init(const char* path);
 
+		bool CreateCheckerText();
+
 		uint32_t GetTextureId() { return m_TextureId; }
 		int GetChannels() { return m_ImageChannels; }
 

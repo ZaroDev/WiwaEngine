@@ -10,6 +10,8 @@ struct aiMesh;
 namespace Wiwa {
 	class WI_API Model
 	{
+	private:
+		std::string m_ModelPath;
 	protected:
 		bool is_root;
 
@@ -17,7 +19,6 @@ namespace Wiwa {
 		std::vector<int> ebo_data;
 
 		std::vector<Model*> models;
-
 		void generateBuffers();
 	private:
 		unsigned int vao, vbo, ebo;
@@ -37,5 +38,7 @@ namespace Wiwa {
 		void Render();
 
 		inline unsigned int getVAO() { return vao; }
+
+		inline const char* getModelPath() { return m_ModelPath.c_str(); }
 	};
 }

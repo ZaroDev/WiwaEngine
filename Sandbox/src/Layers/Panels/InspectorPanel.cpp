@@ -83,12 +83,6 @@ void InspectorPanel::DrawComponent(size_t componentId)
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
 		byte* data = m_EntityManager->GetComponent(m_CurrentID, componentId, cl->size);
-		if (strcmp(name.c_str(), "Mesh") == 0)
-		{
-			/*Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(((ResourceId)data + cl->fields[1].offset));
-			ImGui::Image((ImTextureID)mat->getTextureId(), {64, 64});*/
-			return;
-		}
 
 		for (size_t i = 0; i < cl->fields.size(); i++)
 		{
@@ -130,43 +124,98 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		return;
 	}
 
+
+	//Draw custom fields
+	if (strcmp(field.name, "materialId") == 0) 
+	{
+		ImGui::Text("Material");
+		ImGui::PushID(field.name);
+		int id = *(int*)(data + field.offset);
+		Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
+		ImGui::Image((ImTextureID)mat->getTextureId(), { 64, 64 });
+		ImGui::Text(mat->getTexturePath());
+		static bool checker = false;
+		if(ImGui::Checkbox("Set Checker", &checker))
+		{
+			mat->setTexture("checker");
+			if (!checker)
+			{
+				mat->setTexture(mat->getTexturePath());
+			}
+		}
+
+		const char* type = mat->getType() == 0 ? "Type: Color" : "Type: Texture";
+		ImGui::Text(type);
+		ImGui::PopID();
+		return;
+	}
+	if (strcmp(field.name, "meshId") == 0)
+	{
+		ImGui::Text("Model");
+		ImGui::PushID(field.name);
+		int id = *(int*)(data + field.offset);
+		Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(id);
+		ImGui::Text("Model path: ");
+		ImGui::SameLine();
+		ImGui::Text(mod->getModelPath());
+		ImGui::PopID();
+		return;
+	}
 	// Draw basic fields
-	ImGui::Text(field.name);
-	ImGui::PushID(field.name);
 	if (std::strcmp(field.type->name, "struct Wiwa::Vector2i") == 0)
 	{
+		ImGui::PushID(field.name);
 		DrawInt2Control(field.name, data, field);
+		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "float") == 0)
 	{
+		ImGui::Text(field.name);
+		ImGui::PushID(field.name);
 		ImGui::InputFloat("", (float*)(data + field.offset));
+		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Vector2f") == 0)
 	{
+		ImGui::PushID(field.name);
 		DrawVec2Control(field.name, data, field);
+		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Vector3f") == 0)
 	{
-		DrawVec3Control("", data, field);
+		ImGui::PushID(field.name);
+		DrawVec3Control(field.name, data, field);
+		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "unsigned __int64") == 0)
 	{
+		ImGui::Text(field.name);
+		ImGui::PushID(field.name);
 		ImGui::InputInt("", (int*)(data + field.offset));
+		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "int") == 0) 
 	{
+		ImGui::Text(field.name);
+		ImGui::PushID(field.name);
 		ImGui::InputInt("", (int*)(data + field.offset));
+		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Rect2i") == 0)
 	{
+		ImGui::PushID(field.name);
 		DrawRect2Control(field.name, data, field);
+		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "enum Wiwa::Renderer2D::Pivot") == 0)
 	{
+		ImGui::Text(field.name);
+		ImGui::PushID(field.name);
 		ImGui::InputInt("", (int*)(data + field.offset));
+		ImGui::PopID();
 	}
 
-	ImGui::PopID();
+	
 }
 
 void InspectorPanel::DrawVec3Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
@@ -182,7 +231,7 @@ void InspectorPanel::DrawVec3Control(const char* label, unsigned char* data, con
 	ImGui::NextColumn();
 
 	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 10 });
 
 	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
@@ -256,7 +305,7 @@ void InspectorPanel::DrawVec2Control(const char* label, unsigned char* data, con
 	ImGui::NextColumn();
 
 	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 10 });
 
 	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
@@ -314,7 +363,7 @@ void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, con
 	ImGui::NextColumn();
 
 	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 10 });
 
 	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
@@ -371,7 +420,7 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::NextColumn();
 
 	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 10 });
 
 	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };

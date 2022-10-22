@@ -68,23 +68,39 @@ namespace Wiwa {
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
-		Mesh mesh;
+		m_EntityManager->RegisterSystem<SpriteRenderer>();
+		m_EntityManager->RegisterSystem<MeshRenderer>();
 
+
+		Mesh mesh;
 		mesh.meshId = Resources::Load<Model>("resources/meshes/BakerHouse.fbx");
-		mesh.materialId = Resources::Load<Material>("assets/textures/test.wimaterial");
+		mesh.materialId = Resources::Load<Material>("Assets/bakerhouse_mat.wimaterial");
 
 		Transform3D t3d;
 		t3d.position = { 0.0f, 0.0f, 0.0f };
-		t3d.rotation = {};
+		t3d.rotation = { 0.0f,0.0f, 0.0f };
 		t3d.scale = { 1.0f, 1.0f, 1.0f };
 
-		m_EntityManager->RegisterSystem<SpriteRenderer>();
 
-		m_EntityManager->RegisterSystem<MeshRenderer>();
 
 		EntityId eid = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
+
+
+		/*Mesh mesh2;
+		mesh2.meshId = Resources::Load<Model>("resources/meshes/cube.fbx");
+		mesh2.materialId = Resources::Load<Material>("Assets/textures/test.wimaterial");
+		Transform3D t3d2;
+		t3d2.position = { 2.0f, 0.0f, 0.0f };
+		t3d2.rotation = { 0.0f,0.0f, 0.0f };
+		t3d2.scale = { 1.0f, 1.0f, 1.0f };
+
+		EntityId eid2 = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(eid2, mesh2);
+		m_EntityManager->AddComponent<Transform3D>(eid2, t3d2);*/
+
+
 	}
 
 	void Application::SetHwInfo()
@@ -131,11 +147,11 @@ namespace Wiwa {
 			m_Renderer3D->Update();
 
 			m_Time = (float)glfwGetTime();
+			m_EntityManager->Update();
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
-			m_EntityManager->Update();
 
 			m_ImGuiLayer->Begin();
 			{

@@ -43,12 +43,8 @@ namespace Wiwa {
 		m_TextureShaderId = Resources::Load<Shader>("resources/shaders/model_texture");
 		m_TextureShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
 
-		/*m_TextureShader->Use();*/
-
-		/*uint32_t texs_id = glGetUniformLocation(m_TextureShader->getID(), "u_Sampler");
-		int samplers[MAX_INSTANCE_TEXTURES];
-		for (int i = 0; i < MAX_INSTANCE_TEXTURES; i++) samplers[i] = i;
-		glUniform1iv(texs_id, MAX_INSTANCE_TEXTURES, samplers);*/
+		SetOption(Options::DEPTH_TEST);
+		SetOption(Options::CULL_FACE);
 
 		m_TSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
 		m_TSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
