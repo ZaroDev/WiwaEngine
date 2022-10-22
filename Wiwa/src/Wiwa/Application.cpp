@@ -71,6 +71,8 @@ namespace Wiwa {
 		m_EntityManager->RegisterSystem<SpriteRenderer>();
 		m_EntityManager->RegisterSystem<MeshRenderer>();
 
+		m_EntityManager->ReserveComponent<Mesh>(10);
+		m_EntityManager->ReserveComponent<Transform3D>(10);
 
 		Mesh mesh;
 		mesh.meshId = Resources::Load<Model>("resources/meshes/BakerHouse.fbx");
@@ -81,12 +83,17 @@ namespace Wiwa {
 		t3d.rotation = { 0.0f,0.0f, 0.0f };
 		t3d.scale = { 1.0f, 1.0f, 1.0f };
 
-
-
 		EntityId eid = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
 
+		EntityId oid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(oid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(oid, t3d);
+
+		EntityId aid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(aid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(aid, t3d);
 
 		/*Mesh mesh2;
 		mesh2.meshId = Resources::Load<Model>("resources/meshes/cube.fbx");
@@ -151,7 +158,6 @@ namespace Wiwa {
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
-
 
 			m_ImGuiLayer->Begin();
 			{

@@ -160,6 +160,7 @@ namespace Wiwa {
 
 				m_Components[cid] = block;
 				m_ComponentsSize[cid]++;
+				m_ComponentsReserved[cid]++;
 				ec->insert_or_assign(cid, 0);
 
 				m_ComponentTypes[cid] = GetType<T>();

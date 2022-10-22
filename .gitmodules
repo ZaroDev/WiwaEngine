@@ -1,6 +1,3 @@
-[submodule "Wiwa/vendor/GLFW"]
-	path = Wiwa/vendor/GLFW
-	url = https://github.com/ZaroDev/glfw
 [submodule "Wiwa/vendor/imgui"]
 	path = Wiwa/vendor/imgui
 	url = https://github.com/ZaroDev/imgui/

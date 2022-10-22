@@ -153,7 +153,7 @@ void MeshViewPanel::Draw()
     }
 
     // Render to frame buffer and imgui viewport
-    Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, &m_FrameBuffer, &m_Camera);
+    Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_FrameBuffer, &m_Camera);
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::BeginDragDropTarget())

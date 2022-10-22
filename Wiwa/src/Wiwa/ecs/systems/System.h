@@ -141,7 +141,7 @@ namespace Wiwa {
 		}
 	}
 
-	//-------- Component Functions --------
+	//-------- Component Functions -------- TODO: FIX COMPONENT LOAD TO TAKE POSITION INSTEAD OF COMPONENT POINTER
 	template<class T, class T2, class ...TArgs>
 	inline void System<T, T2, TArgs...>::LoadComponents(size_t index)
 	{

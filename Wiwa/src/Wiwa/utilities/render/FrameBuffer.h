@@ -13,8 +13,10 @@ namespace Wiwa {
 	public:
 		void Init(int width, int height);
 
-		void Bind();
+		void Bind(bool clear=true);
 		void Unbind();
+
+		void Clear();
 
 		int getWidth() { return m_Width; }
 		int getHeight() { return m_Height; }
