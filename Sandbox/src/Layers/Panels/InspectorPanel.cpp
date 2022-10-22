@@ -332,7 +332,7 @@ void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, con
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragInt("##X", (int*)(data + field.offset), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragInt("##X", (int*)(data + field.offset));
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
@@ -348,7 +348,7 @@ void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, con
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragInt("##Y", (int*)(data + field.offset + (sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragInt("##Y", (int*)(data + field.offset + (sizeof(float))));
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
@@ -389,7 +389,7 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragInt("##X", (int*)(data + field.offset), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragInt("##X", (int*)(data + field.offset));
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
@@ -405,7 +405,7 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragInt("##Y", (int*)(data + field.offset + (sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragInt("##Y", (int*)(data + field.offset + (sizeof(float))));
 	ImGui::PopItemWidth();
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
@@ -420,7 +420,7 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragInt("##Width", (int*)(data + field.offset + (sizeof(float) * 2)), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragInt("##Width", (int*)(data + field.offset + (sizeof(float) * 2)));
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
@@ -436,7 +436,7 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragInt("##H", (int*)(data + field.offset + (sizeof(float) * 3)), 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragInt("##H", (int*)(data + field.offset + (sizeof(float) * 3)));
 	ImGui::PopItemWidth();
 
 

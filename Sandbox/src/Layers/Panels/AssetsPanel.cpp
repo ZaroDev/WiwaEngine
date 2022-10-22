@@ -139,7 +139,7 @@ void AssetsPanel::Draw()
 				std::filesystem::path path = m_CurrentPath;
 				std::filesystem::path dir = buffer;
 				path /= dir;
-				if (mkdir(path.string().c_str()) == -1)
+				if (_mkdir(path.string().c_str()) == -1)
 					WI_ERROR("Folder can't be created");
 				ImGui::CloseCurrentPopup();
 			}
@@ -246,7 +246,7 @@ void AssetsPanel::Draw()
 						{
 							std::filesystem::path p = m_CurrentPath;
 							p /= path.filename();
-							if (rmdir(p.string().c_str()) == -1)
+							if (_rmdir(p.string().c_str()) == -1)
 								WI_ERROR("Folder can't be destroyed");
 						}
 					}

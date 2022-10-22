@@ -6,7 +6,7 @@
 Wiwa::Material::Material()
 	: m_Type(MaterialType::color), m_ResourceId(NULL), m_TextureId(NULL)
 {
-	m_Color = { 0.2, 0.2, 0.2, 1.0 };
+	m_Color = { 0.2f, 0.2f, 0.2f, 1.0f};
 }
 
 Wiwa::Material::Material(Color4f color)

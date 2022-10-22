@@ -21,7 +21,7 @@ namespace Wiwa {
 
 		inline MaterialType getType() { return m_Type; }
 		inline uint32_t getTextureId() { return m_TextureId; }
-		inline uint32_t getResourceId() { return m_ResourceId; }
+		inline uint32_t getResourceId() { return (uint32_t)m_ResourceId; }
 		inline Color4f getColor() { return m_Color; }
 
 		void setTexture(const char* file);
