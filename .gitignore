@@ -30,6 +30,7 @@
 *.ini
 /Editor/Sandbox.exe
 /Editor/Assets
+/Editor/Wiwa.dll
 # Temp
 bin
 bin-int
