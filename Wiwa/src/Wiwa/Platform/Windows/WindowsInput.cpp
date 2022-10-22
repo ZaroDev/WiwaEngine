@@ -40,14 +40,4 @@ namespace Wiwa
 		auto [x, y] = GetMousePosition();
 		return y;
 	}
-	void WindowsInput::SetMousePosImpl(float x, float y)
-	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		glfwSetCursorPos(window, x, y);
-	}
-	void WindowsInput::SetCursorVisibleImpl(bool visible)
-	{
-		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		glfwSetInputMode(window, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
-	}
 }

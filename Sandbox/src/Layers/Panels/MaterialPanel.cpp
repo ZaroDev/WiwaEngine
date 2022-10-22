@@ -7,8 +7,6 @@
 
 #include <Wiwa/utilities/json/JSONDocument.h>
 
-#include <Wiwa/utilities/Action.h>
-
 Wiwa::Material* s_Material = nullptr;
 std::filesystem::path s_Path = "";
 std::string s_TexturePath = "";
@@ -31,7 +29,6 @@ void MaterialPanel::Draw()
     {
         ImGui::Image((ImTextureID)(intptr_t)s_Material->getTextureId(), { 64, 64 });
 
-        
         if (ImGui::BeginDragDropTarget())
         {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -51,10 +48,6 @@ void MaterialPanel::Draw()
 
         }
 
-        if (s_TexturePath.empty())
-            ImGui::Text("Drag and drop to set a texture!");
-        else
-            ImGui::Text(s_TexturePath.c_str());
         static glm::vec4 color = { s_Material->getColor().r, s_Material->getColor().g,s_Material->getColor().b , s_Material->getColor().a };
         ImGui::ColorEdit4("Color", glm::value_ptr(color));
         s_Material->setColor({ color.r, color.g, color.b, color.a });
@@ -104,26 +97,13 @@ void MaterialPanel::Draw()
    
 	ImGui::End();
 }
-//
-//void MaterialPanel::SetMaterial(const char* file)
-//{
-//   /* s_Material = Wiwa::Resources::GetResourceById<Wiwa::Material>(matId);
-//    Wiwa::JSONDocument matFile(file);
-//    if (matFile.HasMember("texture"))
-//        s_TexturePath = matFile["texture"].get<const char*>();*/
-//}
 
-void MaterialPanel::OnEvent(Wiwa::Event& e)
+void MaterialPanel::SetMaterial(const char* file)
 {
-    Wiwa::EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<Wiwa::MaterialChange>((&OnMaterialChange, this));
-}
-
-bool MaterialPanel::OnMaterialChange(Wiwa::MaterialChange& e)
-{
-    s_Material = Wiwa::Resources::GetResourceById<Wiwa::Material>(e.GetMatId());
-   /* Wiwa::JSONDocument matFile(file);
+    ResourceId matId = Wiwa::Resources::Load<Wiwa::Material>(file);
+    s_Material = Wiwa::Resources::GetResourceById<Wiwa::Material>(matId);
+    s_Path = file;
+    Wiwa::JSONDocument matFile(file);
     if (matFile.HasMember("texture"))
-        s_TexturePath = matFile["texture"].get<const char*>();*/
-    return true;
+        s_TexturePath = matFile["texture"].get<const char*>();
 }

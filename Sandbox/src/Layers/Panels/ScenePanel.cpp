@@ -34,7 +34,6 @@ ScenePanel::ScenePanel()
 
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
-
 }
 
 ScenePanel::~ScenePanel()
@@ -87,100 +86,6 @@ void ScenePanel::Draw()
 
     ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
-    // Horizontal-align viewport
-    ImVec2 cpos = ImGui::GetCursorPos();
-    cpos.x = (viewportPanelSize.x - isize.x) / 2;
-    ImGui::SetCursorPos(cpos);
-
-    if (ImGui::IsWindowHovered())
-    {
-        // Calculate mouse position in viewport (0 to 1)
-        ImVec2 mpos = ImGui::GetMousePos();
-        ImVec2 cspos = ImGui::GetCursorScreenPos();
-
-        ImVec2 rpos = { mpos.x - cspos.x, mpos.y - cspos.y };
-        CLAMP(rpos.x, 0.0f, isize.x);
-        CLAMP(rpos.y, 0.0f, isize.y);
-
-        Wiwa::Vector2f v2f = { rpos.x / (float)isize.x, rpos.y / (float)isize.y };
-        Wiwa::Vector2f rel2f = lastPos - v2f;
-        rel2f.x /= rel2f.x == 0.0f ? 1.0f : abs(rel2f.x);
-        rel2f.y /= rel2f.y == 0.0f ? 1.0f : abs(rel2f.y);
-
-        lastPos = v2f;
-
-        // Check if right click was pressed
-        if (Wiwa::Input::IsMouseButtonPressed(1))
-        {
-            /* Wiwa::Input::SetCursorVisible(false);
-             if (m_FirstClick)
-             {
-                 Wiwa::Input::SetMousePos((cspos.x + isize.x) / 2, (cspos.y + isize.y) / 2);
-                 m_FirstClick = false;
-             }*/
-
-             // Check if relative motion is not 0
-            if (rel2f != Wiwa::Vector2f::Zero())
-            {
-                float xoffset = -rel2f.x * sensitivity;
-                float yoffset = rel2f.y * sensitivity;
-
-                yaw += xoffset;
-                pitch += yoffset;
-
-                if (pitch > 89.0f) pitch = 89.0f;
-                if (pitch < -89.0f) pitch = -89.0f;
-
-                glm::vec3 direction;
-                direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-                direction.y = sin(glm::radians(pitch));
-                direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-                glm::vec3 front = glm::normalize(direction);
-                m_Camera.setFront({ front.x, front.y, front.z });
-
-                /*Wiwa::Input::SetMousePos((cspos.x + isize.x) / 2, (cspos.y + isize.y) / 2);*/
-            }
-            else
-            {
-                Wiwa::Input::SetCursorVisible(true);
-                m_FirstClick = true;
-            }
-        }
-
-        // Camera movement
-        glm::vec3 campos = m_Camera.getPosition();
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-            campos += m_Camera.getFront() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
-            campos -= m_Camera.getFront() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
-            campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
-            campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
-            campos -= m_Camera.getUp() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
-            campos += m_Camera.getUp() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
-            campos -= m_Camera.getUp() * camSpeed;
-        }
-
-        m_Camera.setPosition({ campos.x, campos.y, campos.z });
-    }
 
     if (ImGui::BeginDragDropTarget())
     {

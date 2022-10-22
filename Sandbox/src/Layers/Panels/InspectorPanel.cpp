@@ -520,7 +520,3 @@ void InspectorPanel::Draw()
 void InspectorPanel::Update()
 {
 }
-
-void InspectorPanel::OnEvent(Wiwa::Event& e)
-{
-}

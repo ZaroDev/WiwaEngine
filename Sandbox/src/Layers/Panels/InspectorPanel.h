@@ -31,8 +31,6 @@ public:
 
 	void Draw() override;
 	void Update() override;
-
-	void OnEvent(Wiwa::Event& e) override;
 public:
 	static inline void SetEntity(uint32_t entityID) { m_CurrentID = entityID; m_EntitySet = true; };
 	static inline bool GetCurrentEntity(uint32_t& entityID) 

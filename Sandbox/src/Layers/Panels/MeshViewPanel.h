@@ -17,8 +17,6 @@ public:
 
 	void Update() override;
 	void Draw() override;
-	
-	void OnEvent(Wiwa::Event& e) override;
 
 private:
 	std::vector<ShadingView *> m_Shadings;
@@ -43,6 +41,4 @@ private:
 	float pitch;
 
 	Wiwa::Vector2f lastPos;
-
-	bool m_FirstClick = false;
 };

@@ -8,8 +8,6 @@
 #include <Wiwa/Resources.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 #include "MaterialPanel.h"
-#include <Wiwa/utilities/Action.h>
-#include "../EditorLayer.h"
 
 
 
@@ -214,10 +212,7 @@ void AssetsPanel::Draw()
 				{
 					if (directoryEntry.path().extension() == ".wimaterial")
 					{
-						/*Action<Wiwa::Event&> materialCallback = { &EditorLayer::OnEvent, &EditorLayer::Get() };
-						ResourceId matId = Wiwa::Resources::Load<Wiwa::Material>(path.string().c_str());
-						Wiwa::MaterialChange event(matId);
-						materialCallback(event);*/
+						MaterialPanel::SetMaterial(directoryEntry.path().string().c_str());
 					}
 				}
 

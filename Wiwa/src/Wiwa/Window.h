@@ -22,7 +22,7 @@ namespace Wiwa {
 	class WI_API Window
 	{
 	public:
-		using EventCallbackFn = Action<void(Event&)>;
+		using EventCallbackFn = std::function<void(Event&)>;
 
 		virtual ~Window() {}
 

@@ -2,7 +2,6 @@
 #include "Panel.h"
 
 #include <Wiwa/utilities/render/Material.h>
-#include <Wiwa/Events/RenderEvents.h>
 
 class MaterialPanel : public Panel
 {
@@ -11,9 +10,9 @@ public:
 	virtual ~MaterialPanel();
 
 	void Draw() override;
-	void OnEvent(Wiwa::Event& e) override;
 
-	bool OnMaterialChange(Wiwa::MaterialChange& e);
+	static void SetMaterial(const char* file);
+
 private:
 	inline static Wiwa::Material* s_Material;
 	inline static std::filesystem::path s_Path;

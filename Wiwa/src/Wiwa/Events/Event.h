@@ -2,7 +2,6 @@
 
 #include "wipch.h"
 #include "Wiwa/Core.h"
-#include "Wiwa/utilities/Action.h"
 
 namespace Wiwa {
 	enum class EventType
@@ -12,7 +11,7 @@ namespace Wiwa {
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
-		OnLoad, OnSave, OnMeshChange, OnMaterialChange
+		OnLoad, OnSave
 	};
 
 	enum EventCategory
@@ -22,8 +21,7 @@ namespace Wiwa {
 		EventCategoryInput			= BIT(1),
 		EventCategoryKeyboard		= BIT(2),
 		EventCategoryMouse			= BIT(3),
-		EventCategoryMouseButton	= BIT(4),
-		EventCategoryEditorEvent	= BIT(5),
+		EventCategoryMouseButton	= BIT(4)
 	};
 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; } \
@@ -53,7 +51,7 @@ namespace Wiwa {
 	class EventDispatcher
 	{
 		template<typename T>
-		using EventFn = Action<T>;
+		using EventFn = std::function<bool(T&)>;
 
 	public:
 		EventDispatcher(Event& event) : m_Event(event)

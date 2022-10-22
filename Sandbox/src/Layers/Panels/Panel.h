@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include <Wiwa/Events/Event.h>
-
 class Panel
 {
 public:
@@ -16,7 +14,6 @@ public:
 	virtual void Draw() = 0;
 	virtual void Update(){}
 	const char* GetName() const { return name; }
-	virtual void OnEvent(Wiwa::Event& e){}
 
 public:
 	bool active = false;
