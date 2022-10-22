@@ -78,7 +78,7 @@ namespace Wiwa {
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			WI_ERROR("Couldn't load mesh file: {0}", file);
 		}
-
+		WI_CORE_INFO("Loading mesh file at: {0} ...", file);
 		is_root = true;
 
 		if (scene != nullptr && scene->HasMeshes())
@@ -121,7 +121,14 @@ namespace Wiwa {
 				model->vbo_data.push_back(0.0f);
 			}
 		}
-
+		if (model->vbo_data.empty())
+		{
+			WI_CORE_ERROR("Error while loading mesh vertex buffer");
+		}
+		else
+		{
+			WI_CORE_INFO("Vertex buffer generated correctly");
+		}
 		// Indices
 		for (unsigned int j = 0; j < mesh->mNumFaces; j++) {
 			aiFace& face = mesh->mFaces[j];
@@ -129,7 +136,14 @@ namespace Wiwa {
 				model->ebo_data.push_back(face.mIndices[k]);
 			}
 		}
-
+		if (model->ebo_data.empty())
+		{
+			WI_CORE_ERROR("Error while loading mesh index buffer");
+		}
+		else
+		{
+			WI_CORE_INFO("Index buffer generated correctly");
+		}
 		model->generateBuffers();
 
 		return model;
@@ -274,17 +288,25 @@ namespace Wiwa {
 
 	void Model::generateBuffers()
 	{
+		WI_CORE_INFO("Generating buffers...");
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &ebo);
 		glGenVertexArrays(1, &vao);
-
+		WI_CORE_INFO("Generating buffers DONE");
+		
+		WI_CORE_INFO("Binding the vertex array ...");
 		glBindVertexArray(vao);
+		WI_CORE_INFO("Binding the vertex array DONE");
 
+		WI_CORE_INFO("Binding the vertex buffer ...");
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vbo_data.size() * sizeof(float), vbo_data.data(), GL_STATIC_DRAW);
+		WI_CORE_INFO("Binding the vertex buffer DONE");
 
+		WI_CORE_INFO("Binding the index buffer ...");
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_data.size() * sizeof(int), ebo_data.data(), GL_STATIC_DRAW);
+		WI_CORE_INFO("Binding the index buffer DONE");
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
