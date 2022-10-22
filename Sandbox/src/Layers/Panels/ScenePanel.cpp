@@ -35,7 +35,9 @@ ScenePanel::ScenePanel()
 
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
-
+    m_Camera.SetPerspective(45.0f, ar);
+    m_Camera.setPosition({ 0.0f, 1.0f, 5.0f });
+    m_Camera.lookat({ 0.0f, 0.0f, 0.0f });
     // Camera control
     camSpeed = 0.005f;
     sensitivity = 0.5f;
@@ -165,6 +167,7 @@ void ScenePanel::Draw()
 
         m_Camera.setPosition({ campos.x, campos.y, campos.z });
     }
+    Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
     ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 

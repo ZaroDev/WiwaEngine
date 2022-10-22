@@ -183,21 +183,6 @@ void MeshViewPanel::Draw()
 
         ImGui::EndDragDropTarget();
     }
-   /* ImGuizmo::SetOrthographic(false);
-    ImGuizmo::SetDrawlist();
-    float windowWidth = (float)ImGui::GetWindowWidth();
-    float windowHeight = (float)ImGui::GetWindowHeight();
-    ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-    glm::mat4 cameraView = Wiwa::Application::Get().GetRenderer3D().GetView();
-    const glm::mat4& cameraProjection = Wiwa::Application::Get().GetRenderer3D().GetPersProjection();
-    glm::mat4 transform(1.0f);
-    glm::vec3 pos = { m_MeshPosition.x, m_MeshPosition.y, m_MeshPosition.z };
-    transform = glm::translate(transform, pos);
-
-
-    ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-        ImGuizmo::OPERATION::SCALE, ImGuizmo::LOCAL, glm::value_ptr(transform));
-    */
     ImGui::End();
 }

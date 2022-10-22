@@ -64,7 +64,7 @@ namespace Wiwa {
 		bool Init();
 		void Update();
 
-		
+		inline void SetActiveCamera(Camera cam) { m_ActiveCamera = cam; }
 		void SetOption(Options option);
 		void DisableOption(Options option);
 		void RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Color4f color, FrameBuffer* target=NULL, Camera* camera=NULL);
