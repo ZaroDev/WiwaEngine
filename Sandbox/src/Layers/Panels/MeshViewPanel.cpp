@@ -34,7 +34,7 @@ MeshViewPanel::MeshViewPanel()
     m_ActiveMaterial = new Wiwa::Material("assets/textures/test.wimaterial");
 
     m_MeshPosition = { 0.0f, 0.0f, 0.0f };
-    m_MeshRotation = {};
+    m_MeshRotation = { 0.0f, 0.0f, 0.0f };
     m_MeshScale = { 1.0f, 1.0f, 1.0f };
     
     m_MeshColor = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -168,13 +168,16 @@ void MeshViewPanel::Draw()
             {
                 WI_INFO("Trying to load payload at path {0}", pathS.c_str());
                 //TODO: Load the model
-                m_ActiveMesh = new Wiwa::Model(pathS.c_str());
+                ResourceId id = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
+                m_ActiveMesh = Wiwa::Resources::GetResourceById<Wiwa::Model>(id);
+                m_Camera.setPosition({ 0.0f, 1.0f, 5.0f });
+                m_Camera.lookat({ 0.0f, 0.0f, 0.0f });
             }
-            if (p.extension() == ".wimaterial" || p.extension() == ".FBX")
+            if (p.extension() == ".wimaterial")
             {
                 WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-                
-               //
+                ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
+                m_ActiveMaterial = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
             }
         }
 
