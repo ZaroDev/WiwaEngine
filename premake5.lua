@@ -77,16 +77,12 @@ project "Wiwa"
 		"ImGuizmo"
 	}
 
-	filter "configurations:Release"
-
-	filter "configurations:Dist"
-
-
 	filter "files:%{prj.name}/vendor/imguizmo/**.cpp"
 		flags {"NoPCH"}
+
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
+		staticruntime "Off"
 		systemversion "latest"
 		defines
 		{
@@ -107,8 +103,11 @@ project "Wiwa"
 	debugdir "$(SolutionDir)/Editor"
 	
 	filter "configurations:Debug"
-		defines "WI_DEBUG"
-		staticruntime "off"
+		defines
+		{ 
+			"WI_DEBUG",
+			"WI_ENABLE_ASSERTS"
+		}	
 		runtime "Debug"
 		symbols "On"
 		links
@@ -118,7 +117,6 @@ project "Wiwa"
 
 	filter "configurations:Release"
 		defines "WI_RELEASE"
-		staticruntime "off"
 		runtime "Release"
 		optimize "On"
 		symbols "On"
@@ -128,9 +126,9 @@ project "Wiwa"
 		}
 	filter "configurations:Dist"
 		defines "WI_DIST"
-		staticruntime "off"
 		runtime "Release"
 		optimize "On"
+		symbols "Off"
 		links
 		{
 			"Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
@@ -172,13 +170,12 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "C++latest"
-		staticruntime "On"
+		staticruntime "Off"
 		systemversion "latest"
 
 		defines
 		{
 			"WI_PLATFORM_WINDOWS"
-
 		}
 		postbuildcommands
 		{
@@ -187,18 +184,17 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "WI_DEBUG"
-		staticruntime "off"
 		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "WI_RELEASE"
-		staticruntime "off"
 		runtime "Release"
+		symbols "On"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "WI_DIST"
-		staticruntime "off"
 		runtime "Release"
+		symbols "Off"
 		optimize "On"

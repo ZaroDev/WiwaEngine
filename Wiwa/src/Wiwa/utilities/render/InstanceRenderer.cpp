@@ -169,9 +169,11 @@ namespace Wiwa {
 
 	int InstanceRenderer::AddTexture(uint32_t texture)
 	{
-		WI_ASSERT(texSize > MAX_INSTANCE_TEXTURES);
-
 		size_t texSize = m_Textures.size();
+
+
+		WI_ASSERT_MSG(texSize > MAX_INSTANCE_TEXTURES)
+
 
 		int index = static_cast<int>(texSize);
 

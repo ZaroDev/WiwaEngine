@@ -1,6 +1,5 @@
 #pragma once
 
-
 #ifdef WI_PLATFORM_WINDOWS
 	#ifdef WI_BUILD_DLL 
 		#define WI_API __declspec(dllexport)
@@ -12,11 +11,15 @@
 #endif
 
 #ifdef WI_ENABLE_ASSERTS
-	#define WI_ASSERT(x, ...) {if(!(x)) { WI_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreack(); } }
-	#define WI_CORE_ASSERT(x, ...) {if(!(x)) { WI_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreack(); } }
+	#define WI_ASSERT(x, ...) {if(!(x)) { WI_ERROR("Assertion Failed: {0}", __VA_ARGS__);  __debugbreak(); } }
+	#define WI_ASSERT_MSG(...) { WI_ERROR("Assertion Failed: {0}", __VA_ARGS__);  __debugbreak(); } 
+	#define WI_CORE_ASSERT(x, ...) {if(!(x)) { WI_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define WI_CORE_ASSERT_MSG(...) { WI_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}
 #else
 	#define WI_ASSERT(x, ...) 
+	#define WI_ASSERT_MSG(...)
 	#define WI_CORE_ASSERT(x, ...)
+	#define WI_CORE_ASSERT_MSG(...)
 #endif
 
 

@@ -66,7 +66,7 @@ namespace Wiwa {
 		WI_CORE_INFO("Renderer: {0}", glGetString(GL_RENDERER));
 		WI_CORE_INFO("OpenGL version supported {0}", glGetString(GL_VERSION));
 		WI_CORE_INFO("GLSL: {0}\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-		WI_CORE_ASSERT(status, "Failed to initialize Glad!");
+		WI_CORE_ASSERT(!status, "Failed to initialize Glew!");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 		SetResizable(true);

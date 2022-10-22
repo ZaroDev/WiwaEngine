@@ -63,6 +63,6 @@ namespace Wiwa {
 	template<class T>
 	inline void Shader::setUniform(unsigned int uniform_id, T value)
 	{
-		WI_CORE_ASSERT("Setting uniform for a non existant specialization.");
+		WI_CORE_ASSERT_MSG("Setting uniform for a non existant specialization.");
 	}
 }

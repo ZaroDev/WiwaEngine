@@ -3,8 +3,13 @@
 #include <imgui.h>
 
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
+#include <Wiwa/scene/Scene.h>
+
 #include <imgui_internal.h>
 #include <Wiwa/Application.h>
+#include <Wiwa/Resources.h>
+#include <Wiwa/utilities/render/Material.h>
 
 uint32_t InspectorPanel::m_CurrentID = 0;
 bool InspectorPanel::m_EntitySet = false;
@@ -78,6 +83,13 @@ void InspectorPanel::DrawComponent(size_t componentId)
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
 		byte* data = m_EntityManager->GetComponent(m_CurrentID, componentId, cl->size);
+		if (strcmp(name.c_str(), "Mesh") == 0)
+		{
+			/*Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(((ResourceId)data + cl->fields[1].offset));
+			ImGui::Image((ImTextureID)mat->getTextureId(), {64, 64});*/
+			return;
+		}
+
 		for (size_t i = 0; i < cl->fields.size(); i++)
 		{
 			DrawField(data, cl->fields[i]);
@@ -141,7 +153,8 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	{
 		ImGui::InputInt("", (int*)(data + field.offset));
 	}
-	else if (std::strcmp(field.type->name, "int") == 0) {
+	else if (std::strcmp(field.type->name, "int") == 0) 
+	{
 		ImGui::InputInt("", (int*)(data + field.offset));
 	}
 	else if (std::strcmp(field.type->name, "struct Wiwa::Rect2i") == 0)
@@ -252,8 +265,10 @@ void InspectorPanel::DrawVec2Control(const char* label, unsigned char* data, con
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("X", buttonSize));
-		//data = resetValue;
+	if (ImGui::Button("X", buttonSize))
+	{
+		*(float*)(data + field.offset) = resetValue;
+	}
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
@@ -266,28 +281,18 @@ void InspectorPanel::DrawVec2Control(const char* label, unsigned char* data, con
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("Y", buttonSize));
-	/*	values.y = resetValue;*/
+	if (ImGui::Button("Y", buttonSize))
+	{
+		*(float*)(data + field.offset + (sizeof(float))) = resetValue;
+	}
+
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
 	ImGui::DragFloat("##Y", (float*)(data + field.offset +(sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
-	///*ImGui::SameLine();*/
 
-	//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-	//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-	//ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-	//ImGui::PushFont(boldFont);
-	///*if (ImGui::Button("Z", buttonSize))
-	//	values.z = resetValue;*/
-	//ImGui::PopFont();
-	//ImGui::PopStyleColor(3);
-
-	//ImGui::SameLine();
-	//ImGui::DragFloat("##Z", (float*)(data + field.offset + (sizeof(float) * 2)), 0.1f, 0.0f, 0.0f, "%.2f");
-	//ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
 
@@ -296,7 +301,7 @@ void InspectorPanel::DrawVec2Control(const char* label, unsigned char* data, con
 	ImGui::PopID();
 }
 
-void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
+void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, const Field field, int resetValue, float columnWidth)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	auto boldFont = io.Fonts->Fonts[0];
@@ -318,8 +323,11 @@ void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, con
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("X", buttonSize));
-	//data = resetValue;
+	if (ImGui::Button("X", buttonSize))
+	{
+		*(int*)(data + field.offset) = resetValue;
+	}
+
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
@@ -332,28 +340,16 @@ void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, con
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("Y", buttonSize));
-	/*	values.y = resetValue;*/
+	if (ImGui::Button("Y", buttonSize))
+	{
+		*(int*)(data + field.offset + (sizeof(float))) = resetValue;
+	}
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
 	ImGui::DragInt("##Y", (int*)(data + field.offset + (sizeof(float))), 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
-	///*ImGui::SameLine();*/
-
-	//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-	//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-	//ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-	//ImGui::PushFont(boldFont);
-	///*if (ImGui::Button("Z", buttonSize))
-	//	values.z = resetValue;*/
-	//ImGui::PopFont();
-	//ImGui::PopStyleColor(3);
-
-	//ImGui::SameLine();
-	//ImGui::DragFloat("##Z", (float*)(data + field.offset + (sizeof(float) * 2)), 0.1f, 0.0f, 0.0f, "%.2f");
-	//ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
 
@@ -362,7 +358,7 @@ void InspectorPanel::DrawInt2Control(const char* label, unsigned char* data, con
 	ImGui::PopID();
 }
 
-void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
+void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, const Field field, int resetValue, float columnWidth)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	auto boldFont = io.Fonts->Fonts[0];
@@ -384,8 +380,11 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("X", buttonSize));
-	//data = resetValue;
+	if (ImGui::Button("X", buttonSize))
+	{
+		*(int*)(data + field.offset) = resetValue;
+	}
+
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
@@ -398,8 +397,10 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("Y", buttonSize));
-	/*	values.y = resetValue;*/
+	if (ImGui::Button("Y", buttonSize))
+	{
+		*(int*)(data + field.offset + (sizeof(float))) = resetValue;
+	}
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
@@ -411,8 +412,10 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("W", buttonSize));
-	//data = resetValue;
+	if (ImGui::Button("W", buttonSize))
+	{
+		*(int*)(data + field.offset + (sizeof(float)) * 2) = resetValue;
+	}
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
@@ -425,8 +428,10 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 	ImGui::PushFont(boldFont);
-	if (ImGui::Button("H", buttonSize));
-	/*	values.y = resetValue;*/
+	if (ImGui::Button("H", buttonSize))
+	{
+		*(int*)(data + field.offset + (sizeof(float)) * 3) = resetValue;
+	}
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 

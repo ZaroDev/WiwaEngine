@@ -1,7 +1,7 @@
 project "ImGuizmo"
 	kind "StaticLib"
 	language "C++"
-    staticruntime "off"
+    staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -27,13 +27,15 @@ project "ImGuizmo"
 
 	filter "configurations:Debug"
 		runtime "Debug"
-		symbols "on"
+		symbols "On"
+		optimize "Off"
 
 	filter "configurations:Release"
 		runtime "Release"
-		optimize "on"
+		optimize "On"
+		symbols "Off"
 
     filter "configurations:Dist"
 		runtime "Release"
-		optimize "on"
-        symbols "off"
+		optimize "On"
+        symbols "Off"

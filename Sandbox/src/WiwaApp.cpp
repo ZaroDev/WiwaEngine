@@ -1,17 +1,6 @@
 #include <Wiwa.h>
 
 #include "Layers/EditorLayer.h"
-
-struct kek {
-	int caca, pipi, moco;
-};
-
-REFLECTION_BEGIN(kek)
-	REFLECT_MEMBER(caca)
-	REFLECT_MEMBER(pipi)
-	REFLECT_MEMBER(moco)
-REFLECTION_END;
-
 const size_t TYPE_COUNT = __COUNTER__;
 
 class WiwaApp : public Wiwa::Application

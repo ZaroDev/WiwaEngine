@@ -33,7 +33,7 @@ namespace Wiwa {
 			std::string msg = "Couldn't open file: ";
 			msg += vertexFile;
 
-			WI_CORE_ASSERT(msg.c_str());
+			WI_CORE_ASSERT_MSG(msg.c_str())
 
 			return;
 		}
@@ -46,7 +46,7 @@ namespace Wiwa {
 			std::string msg = "Couldn't open file: ";
 			msg += fragmentFile;
 
-			WI_CORE_ASSERT(msg.c_str());
+			WI_CORE_ASSERT_MSG(msg.c_str())
 
 			return;
 		}
@@ -68,7 +68,7 @@ namespace Wiwa {
 			std::string msg = "Vertex shader compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ASSERT(msg.c_str());
+			WI_CORE_ASSERT_MSG(msg.c_str())
 
 			return;
 		}
@@ -84,7 +84,7 @@ namespace Wiwa {
 			std::string msg = "Fragment shader compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ASSERT(msg.c_str());
+			WI_CORE_ASSERT_MSG(msg.c_str())
 
 			return;
 		}
@@ -101,7 +101,7 @@ namespace Wiwa {
 			std::string msg = "Shader program compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ASSERT(msg.c_str());
+			WI_CORE_ASSERT_MSG(msg.c_str())
 
 			return;
 		}

@@ -1,7 +1,7 @@
 project "Optick"
 	kind "StaticLib"
 	language "C"
-	staticruntime "off"
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -22,13 +22,15 @@ project "Optick"
 
 	filter "configurations:Debug"
 		runtime "Debug"
-		symbols "on"
+		optimize "Off"
+        symbols "On"
 
 	filter "configurations:Release"
 		runtime "Release"
-		optimize "on"
+		optimize "On"
+        symbols "Off"
 
 	filter "configurations:Dist"
 		runtime "Release"
-		optimize "on"
-        symbols "off"
+		optimize "On"
+        symbols "Off"

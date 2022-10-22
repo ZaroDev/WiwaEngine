@@ -21,8 +21,8 @@ private:
 
 	void DrawVec3Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
 	void DrawVec2Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
-	void DrawInt2Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
-	void DrawRect2Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
+	void DrawInt2Control(const char* label, unsigned char* data, const Field field , int resetValue = 0.0f, float columnWidth = 100.0f);
+	void DrawRect2Control(const char* label, unsigned char* data, const Field field , int resetValue = 0.0f, float columnWidth = 100.0f);
 
 	Wiwa::EntityManager* m_EntityManager;
 public:

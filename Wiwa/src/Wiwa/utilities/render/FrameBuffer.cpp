@@ -32,7 +32,9 @@ namespace Wiwa {
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RBO);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			WI_CORE_ASSERT("Framebuffer not completed");
+		{
+			WI_CORE_ASSERT_MSG("Framebuffer not completed")
+		}
 		else
 			WI_CORE_INFO("Framebuffer completed");
 
