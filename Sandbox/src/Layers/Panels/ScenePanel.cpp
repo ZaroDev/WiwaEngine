@@ -140,48 +140,48 @@ void ScenePanel::Draw()
                 glm::vec3 front = glm::normalize(direction);
                 m_Camera.setFront({ front.x, front.y, front.z });
             }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift))
+                camFastSpeed = camSpeed * 2;
+            else
+                camFastSpeed = camSpeed;
+            float fov = m_Camera.getFOV();
+            if (m_Scroll > 0)
+                fov -= 10;
+            else if (m_Scroll < 0)
+                fov += 10;
+
+            CLAMP(fov, 1, 120);
+            m_Scroll = 0.0f;
+            m_Camera.setFOV(fov);
+            // Camera movement
+            glm::vec3 campos = m_Camera.getPosition();
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
+                campos += m_Camera.getFront() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
+                campos -= m_Camera.getFront() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
+                campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
+                campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
+                campos += m_Camera.getUp() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
+                campos -= m_Camera.getUp() * camFastSpeed;
+            }
+            m_Camera.setPosition({ campos.x, campos.y, campos.z }); 
         }
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift))
-            camFastSpeed = camSpeed * 2;
-        else
-            camFastSpeed = camSpeed;
-        float fov = m_Camera.getFOV();
-        if (m_Scroll > 0)
-            fov -=10;
-        else if (m_Scroll < 0)
-            fov +=10;
-
-        CLAMP(fov, 1, 120);
-        m_Scroll = 0.0f;
-        m_Camera.setFOV(fov);
-        // Camera movement
-        glm::vec3 campos = m_Camera.getPosition();
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-            campos += m_Camera.getFront() * camFastSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
-            campos -= m_Camera.getFront() * camFastSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
-            campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
-            campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
-            campos += m_Camera.getUp() * camFastSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
-            campos -= m_Camera.getUp() * camFastSpeed;
-        }
-
-        m_Camera.setPosition({ campos.x, campos.y, campos.z });
     }
     Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
     ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();

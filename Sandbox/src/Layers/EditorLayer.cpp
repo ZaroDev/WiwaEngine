@@ -331,14 +331,18 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	case Wiwa::Key::N:
 	{
 		if (control)
-			//NewScene();
+		{
+
+		}	//NewScene();
 
 		break;
 	}
 	case Wiwa::Key::O:
 	{
 		if (control)
-			//OpenScene();
+		{
+
+		}	//OpenScene();
 
 		break;
 	}
@@ -359,7 +363,9 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	case Wiwa::Key::D:
 	{
 		if (control)
-			//OnDuplicateEntity();
+		{
+
+		}	//OnDuplicateEntity();
 
 		break;
 	}
@@ -378,6 +384,10 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	}
 	case Wiwa::Key::W:
 	{
+		if (Wiwa::Input::IsMouseButtonPressed(1))
+		{
+			break;
+		}
 		if (!ImGuizmo::IsUsing())
 		{
 			m_Scene->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);

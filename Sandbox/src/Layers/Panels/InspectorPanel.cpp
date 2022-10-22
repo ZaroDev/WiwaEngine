@@ -136,6 +136,24 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::SameLine();
 		ImGui::Text(mat->getMaterialPath());
 		ImGui::Image((ImTextureID)mat->getTextureId(), { 64, 64 });
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				std::wstring ws(path);
+				std::string pathS(ws.begin(), ws.end());
+				std::filesystem::path p = pathS.c_str();
+				if (p.extension() == ".wimaterial")
+				{
+					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
+					mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
 		ImGui::Text(mat->getTexturePath());
 		static bool checker = false;
 		if(ImGui::Checkbox("Set Checker", &checker))
