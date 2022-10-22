@@ -83,7 +83,7 @@ namespace Wiwa {
 	void Camera::SetPerspective(float fov, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
 	{
 		m_CameraType = CameraType::PERSPECTIVE;
-
+		m_FOV = fov;
 		m_Projection = glm::perspective(glm::radians(m_FOV), aspectRatio, nearPlaneDistance, farPlaneDistance);
 
 		m_AspectRatio = aspectRatio;

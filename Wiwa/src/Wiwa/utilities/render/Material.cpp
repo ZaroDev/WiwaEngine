@@ -17,7 +17,7 @@ Wiwa::Material::Material(Color4f color)
 Wiwa::Material::Material(const char* file)
 {
     JSONDocument matFile(file);
-
+    m_MaterialPath = file;
     m_TexturePath = matFile["texture"].get<const char*>();
     m_Color = {
         matFile["colorR"].get<float>(),

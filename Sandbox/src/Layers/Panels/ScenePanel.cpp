@@ -52,6 +52,7 @@ ScenePanel::~ScenePanel()
 
 void ScenePanel::Draw()
 {
+
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
 
     if (ImGui::BeginMenuBar())
@@ -81,6 +82,12 @@ void ScenePanel::Draw()
             ImGui::MenuItem("Show FPS", "", &m_ShowFPS);
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Camera"))
+        {
+            ImGui::SliderFloat("Camera speed", &camSpeed, 0.001, 1);
+            ImGui::SliderFloat("Camera sensitivity", &sensitivity, 0.01, 5);
+            ImGui::EndMenu();
+        }
         ImGui::EndMenuBar();
     }
 
@@ -88,6 +95,7 @@ void ScenePanel::Draw()
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
     Wiwa::Size2i resolution = Wiwa::Application::Get().GetTargetResolution();
+    float ar = resolution.w / (float)resolution.h;
     Wiwa::Size2f scales = { viewportPanelSize.x / (float)resolution.w, viewportPanelSize.y / (float)resolution.h };
 
     float scale = scales.x < scales.y ? scales.x : scales.y;
@@ -133,36 +141,44 @@ void ScenePanel::Draw()
                 m_Camera.setFront({ front.x, front.y, front.z });
             }
         }
+        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift))
+            camFastSpeed = camSpeed * 2;
+        else
+            camFastSpeed = camSpeed;
+        float fov = m_Camera.getFOV();
+        if (m_Scroll > 0)
+            fov -=10;
+        else if (m_Scroll < 0)
+            fov +=10;
 
+        CLAMP(fov, 1, 120);
+        m_Scroll = 0.0f;
+        m_Camera.setFOV(fov);
         // Camera movement
         glm::vec3 campos = m_Camera.getPosition();
 
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-            campos += m_Camera.getFront() * camSpeed;
+            campos += m_Camera.getFront() * camFastSpeed;
         }
 
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
-            campos -= m_Camera.getFront() * camSpeed;
+            campos -= m_Camera.getFront() * camFastSpeed;
         }
 
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
-            campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
+            campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
         }
 
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
-            campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
-            campos -= m_Camera.getUp() * camSpeed;
+            campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
         }
 
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
-            campos += m_Camera.getUp() * camSpeed;
+            campos += m_Camera.getUp() * camFastSpeed;
         }
 
         if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
-            campos -= m_Camera.getUp() * camSpeed;
+            campos -= m_Camera.getUp() * camFastSpeed;
         }
 
         m_Camera.setPosition({ campos.x, campos.y, campos.z });
@@ -274,4 +290,16 @@ void ScenePanel::Draw()
     }
 
     ImGui::End();
+}
+
+void ScenePanel::OnEvent(Wiwa::Event& e)
+{
+    Wiwa::EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<Wiwa::MouseScrolledEvent>(WI_BIND_EVENT_FN(ScenePanel::OnMouseScrollEvent));
+}
+
+bool ScenePanel::OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e)
+{
+    m_Scroll = e.GetYOffset();
+    return false;
 }

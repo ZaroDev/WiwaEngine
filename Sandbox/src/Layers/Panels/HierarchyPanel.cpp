@@ -33,7 +33,7 @@ void HierarchyPanel::Draw()
 			entityManager.CreateEntity("New entity");
 		}
 		//TODO: Remove test
-		if(ImGui::MenuItem("Create 2D tree"))
+		/*if(ImGui::MenuItem("Create 2D tree"))
 		{
 			ResourceId tree = Wiwa::Resources::Load<Wiwa::Image>("resources/images/tree.png");
 			Wiwa::Image* spr = Wiwa::Resources::GetResourceById<Wiwa::Image>(tree);
@@ -41,7 +41,7 @@ void HierarchyPanel::Draw()
 			EntityId EntityMyTree = entityManager.CreateEntity("Arbolsito rechulon");
 			entityManager.AddComponent<Wiwa::Transform2D>(EntityMyTree, { {0,0},0.f,{1.0,1.0} });
 			entityManager.AddComponent<Wiwa::Sprite>(EntityMyTree, { {256,256}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
-		}
+		}*/
 		if (ImGui::BeginMenu("Primitives"))
 		{
 			if (ImGui::MenuItem("Create cube"))

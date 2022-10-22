@@ -132,6 +132,9 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::PushID(field.name);
 		int id = *(int*)(data + field.offset);
 		Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
+		ImGui::Text("Material at: ");
+		ImGui::SameLine();
+		ImGui::Text(mat->getMaterialPath());
 		ImGui::Image((ImTextureID)mat->getTextureId(), { 64, 64 });
 		ImGui::Text(mat->getTexturePath());
 		static bool checker = false;
