@@ -10,7 +10,7 @@
 
 namespace Wiwa {
 	Renderer3D::Renderer3D() {
-		
+
 	}
 
 	Renderer3D::~Renderer3D()
@@ -28,7 +28,7 @@ namespace Wiwa {
 		// Init perspective camera for 3D
 		m_ActiveCamera.SetPerspective(45.0f, resolution.w / (float)resolution.h);
 		m_ActiveCamera.setPosition({ 0.0f, 1.0f, 5.0f });
-		m_ActiveCamera.lookat({0.0f, 0.0f, 0.0f});
+		m_ActiveCamera.lookat({ 0.0f, 0.0f, 0.0f });
 
 		// Color shader
 		m_ColorShaderId = Resources::Load<Shader>("resources/shaders/model_color");
@@ -43,14 +43,20 @@ namespace Wiwa {
 		m_TextureShaderId = Resources::Load<Shader>("resources/shaders/model_texture");
 		m_TextureShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
 
-		SetOption(Options::DEPTH_TEST);
-		SetOption(Options::CULL_FACE);
-
 		m_TSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
 		m_TSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
 		m_TSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
 
+		m_GridShaderId = Resources::Load<Shader>("resources/shaders/grid");
+		m_GridShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
+
+		m_GSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
+		m_GSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
+		m_GSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
+
 		WI_CORE_INFO("Renderer3D initialized");
+		SetOption(Options::DEPTH_TEST);
+		SetOption(Options::CULL_FACE);
 		return true;
 	}
 
@@ -77,7 +83,6 @@ namespace Wiwa {
 
 		m_ColorShader->Use();
 
-		m_ColorShader->setUniform(m_CSColorUniformLocation, glm::vec4(color.r, color.g, color.b, color.a));
 		m_ColorShader->setUniform(m_CSModelUniformLocation, model);
 		m_ColorShader->setUniform(m_CSViewUniformLocation, camera->getView());
 		m_ColorShader->setUniform(m_CSProjectionUniformLocation, camera->getProjection());
@@ -120,7 +125,34 @@ namespace Wiwa {
 
 		mesh->Render();
 
-		glBindTexture(GL_TEXTURE_2D,0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		target->Unbind();
+	}
+
+	void Renderer3D::RenderGrid(FrameBuffer* target, bool clear, Camera* camera)
+	{
+
+		if (!target) target = &m_FrameBuffer;
+		if (!camera) camera = &m_ActiveCamera;
+		glViewport(0, 0, target->getWidth(), target->getHeight());
+
+		target->Bind(clear);
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glLineWidth(1.0f);
+
+		glBegin(GL_LINES);
+
+		float d = 200.0f;
+
+		for (float i = -d; i <= d; i += 1.0f)
+		{
+			glVertex3f(i, 0.0f, -d);
+			glVertex3f(i, 0.0f, d);
+			glVertex3f(-d, 0.0f, i);
+			glVertex3f(d, 0.0f, i);
+		}
+
+		glEnd();
 		target->Unbind();
 	}
 
@@ -150,7 +182,7 @@ namespace Wiwa {
 		default:
 			break;
 		}
-		WI_CORE_INFO("Option: {0} enabled!", option);
+		
 	}
 
 	void Renderer3D::DisableOption(Options option)
@@ -178,13 +210,13 @@ namespace Wiwa {
 		default:
 			break;
 		}
-		WI_CORE_INFO("Option: {0} disabled!", option);
+
 
 
 	}
 
 	void Renderer3D::Close()
 	{
-		
+
 	}
 }

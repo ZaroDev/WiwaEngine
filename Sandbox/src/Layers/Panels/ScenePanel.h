@@ -23,6 +23,8 @@ public:
 	bool OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e);
 	bool OnEntityChange(EntityChangeEvent& e);
 private:
+
+
 	std::vector<ShadingView*> m_Shadings;
 
 	Wiwa::Camera m_Camera = {};

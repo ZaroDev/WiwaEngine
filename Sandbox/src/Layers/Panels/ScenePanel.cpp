@@ -219,6 +219,10 @@ void ScenePanel::Draw()
         }
     }
     Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
+
+    static bool grid = true;
+    Wiwa::Application::Get().GetRenderer3D().RenderGrid();
+
     ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();
     ImVec2 cpos = ImGui::GetCursorPos();
     cpos.x = (viewportPanelSize.x - isize.x) / 2;
@@ -349,3 +353,5 @@ bool ScenePanel::OnEntityChange(EntityChangeEvent& e)
     m_EntSelected = (int)e.GetResourceId();
     return false;
 }
+
+

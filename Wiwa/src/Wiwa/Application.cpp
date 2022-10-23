@@ -85,7 +85,7 @@ namespace Wiwa {
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
 
-		EntityId oid = m_EntityManager->CreateEntity();
+	/*	EntityId oid = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(oid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(oid, t3d);
 
@@ -103,9 +103,14 @@ namespace Wiwa {
 
 		EntityId eid2 = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(eid2, mesh2);
-		m_EntityManager->AddComponent<Transform3D>(eid2, t3d2);
+		m_EntityManager->AddComponent<Transform3D>(eid2, t3d2);*/
 
+		/*mesh.meshId = Resources::Load<Model>("plane");
+		mesh.materialId = Resources::Load<Material>("resources/materials/default_material.wimaterial");
 
+		eid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(eid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(eid, t3d);*/
 	}
 
 	void Application::SetHwInfo()

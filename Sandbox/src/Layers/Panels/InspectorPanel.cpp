@@ -595,7 +595,7 @@ void InspectorPanel::Draw()
 	}
 	else
 	{
-		TextCentered("Select and entity to inspect");
+		TextCentered("Select an entity to inspect");
 	}
 	ImGui::End();
 }
