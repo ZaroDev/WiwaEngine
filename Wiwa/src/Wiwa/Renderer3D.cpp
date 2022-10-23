@@ -59,14 +59,14 @@ namespace Wiwa {
 		m_FrameBuffer.Clear();
 	}
 
-	void Renderer3D::RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Color4f color, FrameBuffer* target, Camera* camera)
+	void Renderer3D::RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Color4f color, bool clear, FrameBuffer* target, Camera* camera)
 	{
 		if (!target) target = &m_FrameBuffer;
 		if (!camera) camera = &m_ActiveCamera;
 
 		glViewport(0, 0, target->getWidth(), target->getHeight());
 
-		target->Bind();
+		target->Bind(clear);
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
@@ -94,7 +94,7 @@ namespace Wiwa {
 
 		if (material->getType() == Wiwa::Material::MaterialType::color)
 		{
-			RenderMeshColor(mesh, position, rotation, scale, material->getColor(), target, camera);
+			RenderMeshColor(mesh, position, rotation, scale, material->getColor(), clear, target, camera);
 			return;
 		}
 
