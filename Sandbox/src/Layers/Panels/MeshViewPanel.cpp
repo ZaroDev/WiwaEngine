@@ -14,13 +14,15 @@
 
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
-#include <Wiwa/utilities/render/Model.h>
+#include <Wiwa/ecs/components/Mesh.h>
 
 #include <Wiwa/Input.h>
 #include <Wiwa/KeyCodes.h>
 
-MeshViewPanel::MeshViewPanel()
-    : Panel("Mesh view")
+#include <Wiwa/ecs/EntityManager.h>
+
+MeshViewPanel::MeshViewPanel(EditorLayer* instance)
+    : Panel("Mesh view", instance)
 {
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
@@ -186,3 +188,21 @@ void MeshViewPanel::Draw()
 
     ImGui::End();
 }
+
+void MeshViewPanel::OnEvent(Wiwa::Event& e)
+{
+    Wiwa::EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<EntityChangeEvent>({ &MeshViewPanel::EntityChange, this });
+}
+
+bool MeshViewPanel::EntityChange(EntityChangeEvent& e)
+{
+    Wiwa::Mesh* mesh = Wiwa::Application::Get().GetEntityManager().GetComponent<Wiwa::Mesh>(e.GetResourceId());
+
+    m_ActiveMaterial = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
+    m_ActiveMesh = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
+
+    return false;
+}
+
+

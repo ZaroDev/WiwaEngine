@@ -11,8 +11,6 @@
 #include <Wiwa/Resources.h>
 #include <Wiwa/utilities/render/Material.h>
 
-uint32_t InspectorPanel::m_CurrentID = 0;
-bool InspectorPanel::m_EntitySet = false;
 
 void RemoveWordFromLine(std::string& line, const std::string& word)
 {
@@ -148,7 +146,13 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 				{
 					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
 					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
-					mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
+					*(int*)(data + field.offset) = id;
+				}
+				if (p.extension() == ".fbx" || p.extension() == ".FBX")
+				{
+					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
+					*(int*)(data + field.offset) = id;
 				}
 			}
 
@@ -176,6 +180,24 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::PushID(field.name);
 		int id = *(int*)(data + field.offset);
 		Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(id);
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				std::wstring ws(path);
+				std::string pathS(ws.begin(), ws.end());
+				std::filesystem::path p = pathS.c_str();
+				if (p.extension() == ".fbx" || p.extension() == ".FBX")
+				{
+					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+					ResourceId id = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
+					*(int*)(data + field.offset) = id;
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
 		ImGui::Text("Model path: ");
 		ImGui::SameLine();
 		ImGui::Text(mod->getModelPath());
@@ -517,8 +539,8 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 	ImGui::PopID();
 }
 
-InspectorPanel::InspectorPanel()
-	: Panel("Inspector")
+InspectorPanel::InspectorPanel(EditorLayer* instance)
+	: Panel("Inspector", instance)
 {
 	m_EntityManager = &Wiwa::Application::Get().GetEntityManager();
 }
@@ -594,4 +616,17 @@ void InspectorPanel::Draw()
 
 void InspectorPanel::Update()
 {
+}
+
+void InspectorPanel::OnEvent(Wiwa::Event&e)
+{
+	Wiwa::EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<EntityChangeEvent>({ &InspectorPanel::OnEntityChangeEvent, this });
+}
+
+bool InspectorPanel::OnEntityChangeEvent(EntityChangeEvent& e)
+{
+	m_CurrentID = e.GetResourceId();
+	m_EntitySet = true;
+	return false;
 }

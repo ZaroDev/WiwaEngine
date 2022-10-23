@@ -26,18 +26,22 @@ private:
 
 	Wiwa::EntityManager* m_EntityManager;
 public:
-	InspectorPanel();
+	InspectorPanel(EditorLayer* instance);
 	virtual ~InspectorPanel();
 
 	void Draw() override;
 	void Update() override;
-public:
-	static inline void SetEntity(uint32_t entityID) { m_CurrentID = entityID; m_EntitySet = true; };
-	static inline bool GetCurrentEntity(uint32_t& entityID) 
+
+	void OnEvent(Wiwa::Event&) override;
+	bool OnEntityChangeEvent(EntityChangeEvent& e);
+
+	inline bool GetCurrentEntity(uint32_t& id)
 	{
-		entityID = m_CurrentID;
-		return m_EntitySet; 
+		id = m_CurrentID;
+		return m_EntitySet;
 	}
-	static uint32_t m_CurrentID;
-	static bool m_EntitySet;
+private:
+	
+	uint32_t m_CurrentID = 0;
+	bool m_EntitySet = false;
 };

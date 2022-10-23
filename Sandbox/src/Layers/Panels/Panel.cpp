@@ -1,6 +1,6 @@
 #include "Panel.h"
 
-Panel::Panel(const char* name) : name(name)
+Panel::Panel(const char* name, EditorLayer* instance_) : name(name), instance(instance_)
 {}
 
 Panel::~Panel()

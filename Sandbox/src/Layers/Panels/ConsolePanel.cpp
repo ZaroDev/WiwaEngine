@@ -5,8 +5,8 @@
 #include "Wiwa/ImGui/ImGuiLog.h"
 #include <imgui.h>
 
-ConsolePanel::ConsolePanel()
-	: Panel("Console")
+ConsolePanel::ConsolePanel(EditorLayer* instance)
+	: Panel("Console", instance)
 {
 }
 

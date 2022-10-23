@@ -23,8 +23,8 @@
 #include <Wiwa/scene/Scene.h>
 #include <Wiwa/scene/SceneManager.h>
 
-ScenePanel::ScenePanel()
-    : Panel("Scene")
+ScenePanel::ScenePanel(EditorLayer* instance)
+    : Panel("Scene", instance)
 {
     m_Shadings.push_back(new ShadingView("Depth Test", Wiwa::Renderer3D::Options::DEPTH_TEST, false));
     m_Shadings.push_back(new ShadingView("Cull face", Wiwa::Renderer3D::Options::CULL_FACE, false));
@@ -35,7 +35,10 @@ ScenePanel::ScenePanel()
 
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
-    m_Camera.SetPerspective(45.0f, ar);
+    nearPlane = 0.1f;
+    farPlane = 1000.0f;
+
+    m_Camera.SetPerspective(45.0f, ar, nearPlane, farPlane);
     m_Camera.setPosition({ 0.0f, 1.0f, 5.0f });
     m_Camera.lookat({ 0.0f, 0.0f, 0.0f });
     // Camera control
@@ -86,6 +89,15 @@ void ScenePanel::Draw()
         {
             ImGui::SliderFloat("Camera speed", &camSpeed, 0.001, 1);
             ImGui::SliderFloat("Camera sensitivity", &sensitivity, 0.01, 5);
+            if (ImGui::InputFloat("Near Plane", &nearPlane, 0.1f, 1.0f))
+            {
+                m_Camera.setPlanes(nearPlane, farPlane);
+            }
+
+            if(ImGui::InputFloat("Far Plane", &farPlane, 0.1f, 1.0f))
+            {
+                m_Camera.setPlanes(nearPlane, farPlane);
+            }
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
@@ -231,8 +243,8 @@ void ScenePanel::Draw()
     }
     //Gizmos
     Wiwa::EntityManager& entityManager = Wiwa::Application::Get().GetEntityManager();
-    uint32_t entId;
-    if (InspectorPanel::GetCurrentEntity(entId))
+
+    if (m_EntSelected != -1)
     {
         ImGuizmo::SetOrthographic(false);
         ImGuizmo::SetDrawlist();
@@ -246,7 +258,7 @@ void ScenePanel::Draw()
         //TODO: Change to get the transform of the entity
         
         Wiwa::EntityManager& entMan = Wiwa::Application::Get().GetEntityManager();
-        Wiwa::Transform3D* transformCmp = entMan.GetComponent<Wiwa::Transform3D>(entId);
+        Wiwa::Transform3D* transformCmp = entMan.GetComponent<Wiwa::Transform3D>(m_EntSelected);
         if (transformCmp)
         {
             glm::mat4 transform(1.0f);
@@ -295,11 +307,18 @@ void ScenePanel::Draw()
 void ScenePanel::OnEvent(Wiwa::Event& e)
 {
     Wiwa::EventDispatcher dispatcher(e);
-    dispatcher.Dispatch<Wiwa::MouseScrolledEvent>(WI_BIND_EVENT_FN(ScenePanel::OnMouseScrollEvent));
+    dispatcher.Dispatch<Wiwa::MouseScrolledEvent>({ &ScenePanel::OnMouseScrollEvent, this });
+    dispatcher.Dispatch<EntityChangeEvent>({ &ScenePanel::OnEntityChange, this });
 }
 
 bool ScenePanel::OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e)
 {
     m_Scroll = e.GetYOffset();
+    return false;
+}
+
+bool ScenePanel::OnEntityChange(EntityChangeEvent& e)
+{
+    m_EntSelected = e.GetResourceId();
     return false;
 }

@@ -5,7 +5,7 @@
 class HierarchyPanel : public Panel
 {
 public:
-	HierarchyPanel();
+	HierarchyPanel(EditorLayer* instance);
 	virtual ~HierarchyPanel();
 
 	void Draw() override;

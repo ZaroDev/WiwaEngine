@@ -12,9 +12,10 @@
 #include <Wiwa/ecs/systems/SpriteRenderer.h>
 
 #include "ScenePanel.h"
+#include "../EditorLayer.h"
 
-HierarchyPanel::HierarchyPanel()
-	: Panel("Hierarchy")
+HierarchyPanel::HierarchyPanel(EditorLayer* instance)
+	: Panel("Hierarchy", instance)
 {
 }
 
@@ -77,7 +78,9 @@ void HierarchyPanel::Draw()
 		ImGui::PushID(id++);
 		if (ImGui::Button(entName, ImVec2(width, 20)))
 		{
-			InspectorPanel::SetEntity((uint32_t)i);
+			EntityChangeEvent event((uint32_t)i);
+			Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance};
+			act(event);
 		}
 		ImGui::PopID();
 	}

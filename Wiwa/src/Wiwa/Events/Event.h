@@ -11,7 +11,7 @@ namespace Wiwa {
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
-		OnLoad, OnSave
+		OnLoad, OnSave, OnMaterialChange, OnEntityChange
 	};
 
 	enum EventCategory
@@ -21,11 +21,12 @@ namespace Wiwa {
 		EventCategoryInput			= BIT(1),
 		EventCategoryKeyboard		= BIT(2),
 		EventCategoryMouse			= BIT(3),
-		EventCategoryMouseButton	= BIT(4)
+		EventCategoryMouseButton	= BIT(4),
+		EventCategoryEditor			= BIT(5)
 	};
 
-#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; } \
-								virtual EventType GetEventType() const override { return GetStaticType(); } \
+#define EVENT_CLASS_TYPE(type) static Wiwa::EventType GetStaticType() { return  Wiwa::EventType::##type; } \
+								virtual  Wiwa::EventType GetEventType() const override { return GetStaticType(); } \
 								virtual const char* GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
@@ -51,7 +52,7 @@ namespace Wiwa {
 	class EventDispatcher
 	{
 		template<typename T>
-		using EventFn = std::function<bool(T&)>;
+		using EventFn = Fn::Function<bool,T&>;
 
 	public:
 		EventDispatcher(Event& event) : m_Event(event)

@@ -8,7 +8,7 @@
 class ConfigurationPanel : public Panel
 {
 public:
-	ConfigurationPanel();
+	ConfigurationPanel(EditorLayer* instance);
 	virtual ~ConfigurationPanel();
 
 	void Draw() override;

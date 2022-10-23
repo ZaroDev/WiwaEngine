@@ -4,7 +4,7 @@
 
 #include <Wiwa/Application.h>
 
-AboutPanel::AboutPanel() : Panel("About")
+AboutPanel::AboutPanel(EditorLayer* instance) : Panel("About", instance)
 {
 }
 

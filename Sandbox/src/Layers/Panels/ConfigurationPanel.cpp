@@ -4,8 +4,8 @@
 
 #include "windows.h"
 #include "psapi.h"
-ConfigurationPanel::ConfigurationPanel()
-	: Panel("Configuration"), info()
+ConfigurationPanel::ConfigurationPanel(EditorLayer* instance)
+	: Panel("Configuration", instance), info()
 {
 	
 }

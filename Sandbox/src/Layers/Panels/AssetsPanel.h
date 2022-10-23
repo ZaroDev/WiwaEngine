@@ -19,7 +19,7 @@ struct Directory
 class AssetsPanel : public Panel
 {
 public:
-	AssetsPanel();
+	AssetsPanel(EditorLayer* instance);
 	virtual ~AssetsPanel();
 
 	void Update() override;

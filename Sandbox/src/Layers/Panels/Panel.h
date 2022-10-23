@@ -2,10 +2,14 @@
 
 #include <string>
 #include <Wiwa/Events/Event.h>
+#include "../../Events/PanelEvents.h"
+
+class EditorLayer;
+
 class Panel
 {
 public:
-	Panel(const char* name);
+	Panel(const char* name, EditorLayer* instance);
 	virtual ~Panel();
 
 	void SetActive(bool enabled);
@@ -19,4 +23,5 @@ public:
 	bool active = false;
 protected:
 	const char* name;
+	EditorLayer* instance;
 };

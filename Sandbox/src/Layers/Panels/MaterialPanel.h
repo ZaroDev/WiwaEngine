@@ -6,14 +6,14 @@
 class MaterialPanel : public Panel
 {
 public:
-	MaterialPanel();
+	MaterialPanel(EditorLayer* instance);
 	virtual ~MaterialPanel();
 
 	void Draw() override;
 
-	static void SetMaterial(const char* file);
-
+	void OnEvent(Wiwa::Event& e) override;
+	bool OnMaterialChange(MaterialChangeEvent& e);
 private:
-	inline static Wiwa::Material* s_Material;
-	inline static std::filesystem::path s_Path;
+	Wiwa::Material* m_Material = nullptr;
+	std::filesystem::path s_Path;
 };

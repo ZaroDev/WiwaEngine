@@ -7,16 +7,21 @@
 #include <Wiwa/utilities/render/Model.h>
 #include <Wiwa/utilities/render/Material.h>
 
+#include "../../Events/PanelEvents.h"
+
 struct ShadingView;
 
 class MeshViewPanel : public Panel
 {
 public:
-	MeshViewPanel();
+	MeshViewPanel(EditorLayer* instance);
 	virtual ~MeshViewPanel();
 
 	void Update() override;
 	void Draw() override;
+
+	void OnEvent(Wiwa::Event& e);
+	bool EntityChange(EntityChangeEvent& e);
 
 private:
 	std::vector<ShadingView *> m_Shadings;

@@ -35,6 +35,7 @@ namespace Wiwa {
 		Camera();
 		~Camera();
 
+		void setPlanes(float nearPlane, float farPlane);
 		void setAspectRatio(float aspectRatio);
 		float getAspectRatio() { return m_AspectRatio; }
 

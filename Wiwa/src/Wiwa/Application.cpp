@@ -32,8 +32,6 @@
 const size_t TYPE_COUNT = __COUNTER__;
 
 namespace Wiwa {
-#define BIND_EVENT_FN(x) std::bind(&Wiwa::Application::x, this, std::placeholders::_1)
-
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()
@@ -44,7 +42,7 @@ namespace Wiwa {
 		m_TargetResolution = { 1920, 1080 };
 		
 		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetEventCallback({ &Application::OnEvent, this });
 
 		int min, major, rev;
 		glfwGetVersion(&min, &major, &rev);
@@ -76,7 +74,7 @@ namespace Wiwa {
 
 		Mesh mesh;
 		mesh.meshId = Resources::Load<Model>("resources/meshes/BakerHouse.fbx");
-		mesh.materialId = Resources::Load<Material>("Assets/bakerhouse_mat.wimaterial");
+		mesh.materialId = Resources::Load<Material>("resources/materials/bakerhouse_material.wimaterial");
 
 		Transform3D t3d;
 		t3d.position = { 0.0f, 0.0f, 0.0f };
@@ -95,7 +93,7 @@ namespace Wiwa {
 		m_EntityManager->AddComponent<Mesh>(aid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(aid, t3d);
 
-		/*Mesh mesh2;
+		Mesh mesh2;
 		mesh2.meshId = Resources::Load<Model>("resources/meshes/cube.fbx");
 		mesh2.materialId = Resources::Load<Material>("Assets/textures/test.wimaterial");
 		Transform3D t3d2;
@@ -105,7 +103,7 @@ namespace Wiwa {
 
 		EntityId eid2 = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(eid2, mesh2);
-		m_EntityManager->AddComponent<Transform3D>(eid2, t3d2);*/
+		m_EntityManager->AddComponent<Transform3D>(eid2, t3d2);
 
 
 	}
@@ -244,9 +242,9 @@ namespace Wiwa {
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-		dispatcher.Dispatch<OnSaveEvent>(BIND_EVENT_FN(OnSave));
-		dispatcher.Dispatch<OnLoadEvent>(BIND_EVENT_FN(OnLoad));
+		dispatcher.Dispatch<WindowCloseEvent>({ &Application::OnWindowClose, this });
+		dispatcher.Dispatch<OnSaveEvent>({ &Application::OnSave, this });
+		dispatcher.Dispatch<OnLoadEvent>({ &Application::OnLoad, this });
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{

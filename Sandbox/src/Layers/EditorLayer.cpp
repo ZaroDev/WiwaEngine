@@ -27,15 +27,15 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
-	m_About = std::make_shared<AboutPanel>();
-	m_Configuration = std::make_shared<ConfigurationPanel>();
-	m_Console = std::make_shared<ConsolePanel>();
-	m_Scene = std::make_shared<ScenePanel>();
-	m_Hierarchy = std::make_shared<HierarchyPanel>();
-	m_Assets = std::make_shared<AssetsPanel>();
-	m_Inspector = std::make_shared<InspectorPanel>();
-	m_MeshView = std::make_shared<MeshViewPanel>();
-	m_MaterialEditor = std::make_shared<MaterialPanel>();
+	m_About = new AboutPanel(this);
+	m_Configuration = new ConfigurationPanel(this);
+	m_Console = new ConsolePanel(this);
+	m_Scene = new ScenePanel(this);
+	m_Hierarchy = new HierarchyPanel(this);
+	m_Assets = new AssetsPanel(this);
+	m_Inspector = new InspectorPanel(this);
+	m_MeshView = new MeshViewPanel(this);
+	m_MaterialEditor = new MaterialPanel(this);
 
 	m_Panels.push_back(m_Configuration);
 	m_Panels.push_back(m_Console);
@@ -103,10 +103,10 @@ void EditorLayer::OnImGuiRender()
 void EditorLayer::OnEvent(Wiwa::Event& e)
 {
 	Wiwa::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Wiwa::KeyPressedEvent>(WI_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
-	dispatcher.Dispatch<Wiwa::OnLoadEvent>(WI_BIND_EVENT_FN(EditorLayer::OnLoad));
-	dispatcher.Dispatch<Wiwa::OnSaveEvent>(WI_BIND_EVENT_FN(EditorLayer::OnSave));
-	dispatcher.Dispatch<Wiwa::WindowCloseEvent>(WI_BIND_EVENT_FN(EditorLayer::OnWindowClose));
+	dispatcher.Dispatch<Wiwa::KeyPressedEvent>({ &EditorLayer::OnKeyPressed, this });
+	dispatcher.Dispatch<Wiwa::OnLoadEvent>({ &EditorLayer::EditorLayer::OnLoad, this });
+	dispatcher.Dispatch<Wiwa::OnSaveEvent>({ &EditorLayer::EditorLayer::OnSave, this });
+	dispatcher.Dispatch<Wiwa::WindowCloseEvent>({ &EditorLayer::EditorLayer::OnWindowClose, this });
 
 	for (auto it = m_Panels.end(); it != m_Panels.begin();)
 	{

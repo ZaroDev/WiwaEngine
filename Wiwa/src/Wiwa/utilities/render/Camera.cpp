@@ -13,7 +13,7 @@ namespace Wiwa {
 
 		// Initialize camera distance planes
 		m_NearPlaneDist = 0.1f;
-		m_FarPlaneDist = 100.0f;
+		m_FarPlaneDist = 1000.0f;
 
 		// Initialize camera view
 		//m_View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
@@ -31,6 +31,14 @@ namespace Wiwa {
 	void Camera::updateView()
 	{
 		m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
+	}
+
+	void Camera::setPlanes(float nearPlane, float farPlane)
+	{
+		m_NearPlaneDist = nearPlane;
+		m_FarPlaneDist = farPlane;
+		if (m_CameraType == CameraType::PERSPECTIVE)
+			m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, nearPlane, farPlane);
 	}
 
 	void Camera::setAspectRatio(float aspectRatio)

@@ -5,7 +5,7 @@
 class AboutPanel : public Panel
 {
 public:
-	AboutPanel();
+	AboutPanel(EditorLayer* instance);
 	virtual ~AboutPanel();
 
 	void Draw() override;

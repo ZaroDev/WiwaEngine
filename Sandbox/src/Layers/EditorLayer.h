@@ -32,7 +32,6 @@ public:
 	void OnUpdate() override;
 	void OnImGuiRender() override;
 	void OnEvent(Wiwa::Event& e) override;
-	
 private:
 	void MainMenuBar();
 	void DockSpace();
@@ -51,17 +50,17 @@ private:
 	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
 
-	std::shared_ptr<AboutPanel>			m_About = nullptr;
-	std::shared_ptr<ConfigurationPanel> m_Configuration = nullptr;
-	std::shared_ptr<ConsolePanel>		m_Console = nullptr;
-	std::shared_ptr<ScenePanel>			m_Scene = nullptr;
-	std::shared_ptr<HierarchyPanel>		m_Hierarchy = nullptr;
-	std::shared_ptr<AssetsPanel>		m_Assets = nullptr;
-	std::shared_ptr<InspectorPanel>		m_Inspector = nullptr;
-	std::shared_ptr<MeshViewPanel>		m_MeshView = nullptr;
-	std::shared_ptr<MaterialPanel>		m_MaterialEditor = nullptr;
+	AboutPanel*			m_About = nullptr;
+	ConfigurationPanel* m_Configuration = nullptr;
+	ConsolePanel*		m_Console = nullptr;
+	ScenePanel*			m_Scene = nullptr;
+	HierarchyPanel*		m_Hierarchy = nullptr;
+	AssetsPanel*		m_Assets = nullptr;
+	InspectorPanel*		m_Inspector = nullptr;
+	MeshViewPanel*		m_MeshView = nullptr;
+	MaterialPanel*		m_MaterialEditor = nullptr;
 
-	std::vector<std::shared_ptr<Panel>> m_Panels;
+	std::vector<Panel*> m_Panels;
 
 	ImTextureID m_PlayIcon;
 	ImTextureID m_PauseIcon;

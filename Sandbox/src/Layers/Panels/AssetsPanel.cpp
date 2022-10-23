@@ -8,12 +8,12 @@
 #include <Wiwa/Resources.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 #include "MaterialPanel.h"
-
+#include "../EditorLayer.h"
 
 
 static const std::filesystem::path s_AssetsPath = "Assets";
-AssetsPanel::AssetsPanel()
-	: Panel("Assets"), m_CurrentPath("Assets")
+AssetsPanel::AssetsPanel(EditorLayer* instance)
+	: Panel("Assets", instance), m_CurrentPath("Assets")
 {
 	m_Directory.path = "Assets";
 
@@ -212,7 +212,10 @@ void AssetsPanel::Draw()
 				{
 					if (directoryEntry.path().extension() == ".wimaterial")
 					{
-						MaterialPanel::SetMaterial(directoryEntry.path().string().c_str());
+						ResourceId matId = Wiwa::Resources::Load<Wiwa::Material>(path.string().c_str());
+						MaterialChangeEvent event(matId);
+						Action<Wiwa::Event&> action = { &EditorLayer::OnEvent, instance };
+						action(event);
 					}
 				}
 

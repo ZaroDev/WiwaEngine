@@ -4,7 +4,7 @@
 class ConsolePanel : public Panel
 {
 public:
-	ConsolePanel();
+	ConsolePanel(EditorLayer* instance);
 	virtual ~ConsolePanel();
 
 	void Draw() override;
