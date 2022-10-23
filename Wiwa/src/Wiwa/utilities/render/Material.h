@@ -2,6 +2,7 @@
 
 #include <Wiwa/Core.h>
 #include <Wiwa/utilities/math/Vector4f.h>
+#include <Wiwa/utilities/math/Vector2i.h>
 
 namespace Wiwa {
 	typedef size_t ResourceId;
@@ -29,11 +30,13 @@ namespace Wiwa {
 		void setTexture(const char* file);
 		inline void setColor(Color4f color) { m_Color = color; }
 		inline void setType(MaterialType type) { m_Type = type; }
+		inline Size2i GetTextureSize() { return m_TextureSize; }
 	private:
 		ResourceId m_ResourceId;
 		std::string m_TexturePath;
 		std::string m_MaterialPath;
 		uint32_t m_TextureId;
+		Size2i m_TextureSize;
 		Color4f m_Color;
 		MaterialType m_Type;
 	};

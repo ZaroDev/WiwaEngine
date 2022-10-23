@@ -1,7 +1,5 @@
 #include "InspectorPanel.h"
 
-#include <imgui.h>
-
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/scene/Scene.h>
@@ -10,30 +8,8 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/Resources.h>
 #include <Wiwa/utilities/render/Material.h>
-
-
-void RemoveWordFromLine(std::string& line, const std::string& word)
-{
-	auto n = line.find(word);
-	if (n != std::string::npos)
-	{
-		line.erase(n, word.length());
-	}
-}
-
-bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
-{
-	ImGuiStyle& style = ImGui::GetStyle();
-
-	float size = ImGui::CalcTextSize(label).x + style.FramePadding.x * 2.0f;
-	float avail = ImGui::GetContentRegionAvail().x;
-
-	float off = (avail - size) * alignment;
-	if (off > 0.0f)
-		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
-
-	return ImGui::Button(label);
-}
+#include <Wiwa/utilities/math/Vector2i.h>
+#include "../../Utils/ImGuiWidgets.h"
 
 void InspectorPanel::ClearComponentName(std::string& cname)
 {
@@ -134,6 +110,12 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::SameLine();
 		ImGui::Text(mat->getMaterialPath());
 		ImGui::Image((ImTextureID)(intptr_t)mat->getTextureId(), { 64, 64 });
+		ImGui::Text("Texture size: ");
+		ImGui::SameLine();
+		ImGui::Text("%i", mat->GetTextureSize().x);
+		ImGui::SameLine();
+		ImGui::Text("x %i", mat->GetTextureSize().y);
+		ImGui::Text("Texture path: %s", mat->getTexturePath());
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -610,6 +592,10 @@ void InspectorPanel::Draw()
 			ImGui::EndChild();
 			ImGui::EndPopup();
 		}
+	}
+	else
+	{
+		TextCentered("Select and entity to inspect");
 	}
 	ImGui::End();
 }

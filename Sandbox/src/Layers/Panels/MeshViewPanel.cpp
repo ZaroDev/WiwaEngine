@@ -110,12 +110,74 @@ void MeshViewPanel::Draw()
 
                 float radius = 7.0f;
                 glm::vec3 direction = {};
-                direction.x = radius * cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-                direction.y = radius * sin(glm::radians(pitch)) * sin(glm::radians(yaw));
-                direction.z = radius * cos(glm::radians(yaw));
+                direction.x = radius * cos(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_MeshPosition.x;
+                direction.y = radius * sin(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_MeshPosition.y;
+                direction.z = radius * cos(glm::radians(yaw)) + m_MeshPosition.z;
                 m_Camera.setPosition({ direction.x, direction.y, direction.z });
                 m_Camera.lookat(m_MeshPosition);
             }
+        }
+        if (Wiwa::Input::IsMouseButtonPressed(1)) {
+            // Check if relative motion is not 0
+            if (rel2f != Wiwa::Vector2f::Zero()) {
+                float xoffset = -rel2f.x * sensitivity;
+                float yoffset = rel2f.y * sensitivity;
+
+                yaw += xoffset;
+                pitch += yoffset;
+
+                /*if (pitch > 89.0f) pitch = 89.0f;
+                if (pitch < -89.0f) pitch = -89.0f;*/
+
+                glm::vec3 direction;
+                direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+                direction.y = sin(glm::radians(pitch));
+                direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+                glm::vec3 front = glm::normalize(direction);
+                m_Camera.setFront({ front.x, front.y, front.z });
+
+            }
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift))
+                camFastSpeed = camSpeed * 2;
+            else
+                camFastSpeed = camSpeed;
+            float fov = m_Camera.getFOV();
+            if (m_Scroll > 0)
+                fov -= 10;
+            else if (m_Scroll < 0)
+                fov += 10;
+
+            CLAMP(fov, 1, 120);
+            m_Scroll = 0.0f;
+            m_Camera.setFOV(fov);
+            // Camera movement
+            glm::vec3 campos = m_Camera.getPosition();
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
+                campos += m_Camera.getFront() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
+                campos -= m_Camera.getFront() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
+                campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
+                campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
+                campos += m_Camera.getUp() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
+                campos -= m_Camera.getUp() * camFastSpeed;
+            }
+            m_Camera.setPosition({ campos.x, campos.y, campos.z });
         }
         //FOV
         float fov = m_Camera.getFOV();
@@ -146,8 +208,8 @@ void MeshViewPanel::Draw()
         rectSize,
         IM_COL32(255, 255, 255, 30)
     );
-    float y = 70.0f;
-    float x = 25.0f;
+    float y = cpos.y + 5.0f;
+    float x = cpos.x + 5.0f;
     ImGui::SetCursorPos(ImVec2(x, y));
     ImGui::TextColored(ImColor(255, 255, 255, 128), "Camera Pos");
     ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
@@ -157,9 +219,9 @@ void MeshViewPanel::Draw()
     ImGui::SameLine();
     ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f z", m_Camera.getPosition().z);
 
-    ImGui::SetCursorPos(ImVec2(x, y + 40.0f));
+    ImGui::SetCursorPos(ImVec2(x, y + 30.0f));
     ImGui::TextColored(ImColor(255, 255, 255, 128), "Angles");
-    ImGui::SetCursorPos(ImVec2(x, y + 60.0f));
+    ImGui::SetCursorPos(ImVec2(x, y + 50.0f));
     ImGui::TextColored(ImColor(255, 255, 255, 128), "Pitch: %.3f ", pitch);
     ImGui::SameLine();
     ImGui::TextColored(ImColor(255, 255, 255, 128), "Yaw: %.3f ", yaw);
@@ -206,6 +268,8 @@ void MeshViewPanel::OnEvent(Wiwa::Event& e)
 bool MeshViewPanel::EntityChange(EntityChangeEvent& e)
 {
     Wiwa::Mesh* mesh = Wiwa::Application::Get().GetEntityManager().GetComponent<Wiwa::Mesh>(e.GetResourceId());
+    if (!mesh)
+        return false;
 
     m_ActiveMaterial = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
     m_ActiveMesh = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);

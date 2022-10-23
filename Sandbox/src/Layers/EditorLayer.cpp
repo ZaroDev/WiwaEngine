@@ -329,7 +329,8 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	bool control = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl) || Wiwa::Input::IsKeyPressed(Wiwa::Key::RightControl);
 	bool shift = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift) || Wiwa::Input::IsKeyPressed(Wiwa::Key::RightShift);
 	bool alt = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftAlt) || Wiwa::Input::IsKeyPressed(Wiwa::Key::RightAlt);
-
+	if (Wiwa::Input::IsMouseButtonPressed(1) || Wiwa::Input::IsMouseButtonPressed(0))
+		return false;
 	switch (e.GetKeyCode())
 	{
 	case Wiwa::Key::N:

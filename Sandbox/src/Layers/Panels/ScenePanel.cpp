@@ -220,6 +220,9 @@ void ScenePanel::Draw()
     }
     Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
     ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();
+    ImVec2 cpos = ImGui::GetCursorPos();
+    cpos.x = (viewportPanelSize.x - isize.x) / 2;
+    ImGui::SetCursorPos(cpos);
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::BeginDragDropTarget())
@@ -252,8 +255,8 @@ void ScenePanel::Draw()
             rectSize,
             IM_COL32(255, 255, 255, 30)
         );
-        float y = 70.0f;
-        float x = 25.0f;
+        float y = cpos.y + 5.0f;
+        float x = cpos.x + 5.0f;
         ImGui::SetCursorPos(ImVec2(x, y));
         ImGui::TextColored(ImColor(255, 255, 255, 128), "FPS");
         ImGui::SetCursorPos(ImVec2(x + 60.0f, y));
@@ -275,10 +278,10 @@ void ScenePanel::Draw()
         ImVec2 winPos = ImGui::GetWindowPos();
         ImVec2 cursorPos = ImGui::GetCursorPos();
         ImGuizmo::SetDrawlist();
-        ImGuizmo::SetRect(winPos.x, winPos.y, isize.x, isize.y);
+        ImGuizmo::SetRect(rectPos.x, rectPos.y, isize.x, isize.y);
 
         glm::mat4 cameraView = Wiwa::Application::Get().GetRenderer3D().GetView();
-        const glm::mat4& cameraProjection = Wiwa::Application::Get().GetRenderer3D().GetPersProjection();
+        const glm::mat4& cameraProjection = m_Camera.getProjection();
         //TODO: Change to get the transform of the entity
         
         Wiwa::EntityManager& entMan = Wiwa::Application::Get().GetEntityManager();

@@ -43,7 +43,7 @@ private:
 	// Camera control
 	float camSpeed;
 	float sensitivity;
-
+	float camFastSpeed;
 	float yaw;
 	float pitch;
 
