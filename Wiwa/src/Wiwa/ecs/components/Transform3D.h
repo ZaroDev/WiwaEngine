@@ -1,5 +1,6 @@
 #pragma once
 #pragma warning(disable : 4311)
+#pragma warning(disable : 4302)
 #include <Wiwa/Core.h>
 #include <Wiwa/utilities/math/Vector3f.h>
 #include <Wiwa/Reflection.h>

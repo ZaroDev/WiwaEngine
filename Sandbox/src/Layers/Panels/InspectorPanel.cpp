@@ -133,7 +133,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::Text("Material at: ");
 		ImGui::SameLine();
 		ImGui::Text(mat->getMaterialPath());
-		ImGui::Image((ImTextureID)mat->getTextureId(), { 64, 64 });
+		ImGui::Image((ImTextureID)(intptr_t)mat->getTextureId(), { 64, 64 });
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -146,13 +146,13 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 				{
 					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
 					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
-					*(int*)(data + field.offset) = id;
+					*(ResourceId*)(data + field.offset) = id;
 				}
 				if (p.extension() == ".fbx" || p.extension() == ".FBX")
 				{
 					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
 					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
-					*(int*)(data + field.offset) = id;
+					*(ResourceId*)(data + field.offset) = id;
 				}
 			}
 
@@ -192,7 +192,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 				{
 					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
 					ResourceId id = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
-					*(int*)(data + field.offset) = id;
+					*(ResourceId*)(data + field.offset) = id;
 				}
 			}
 

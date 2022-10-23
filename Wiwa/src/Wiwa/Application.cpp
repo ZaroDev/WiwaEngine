@@ -150,7 +150,7 @@ namespace Wiwa {
 
 			m_Renderer2D->Update();
 			m_Renderer3D->Update();
-
+			m_DeltaTime = m_Time - (float)glfwGetTime();
 			m_Time = (float)glfwGetTime();
 			m_EntityManager->Update();
 

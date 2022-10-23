@@ -33,7 +33,7 @@ namespace Wiwa {
 		m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
 	}
 
-	void Camera::setPlanes(float nearPlane, float farPlane)
+	void Camera::setPlanes(const float nearPlane, const float farPlane)
 	{
 		m_NearPlaneDist = nearPlane;
 		m_FarPlaneDist = farPlane;
@@ -41,7 +41,7 @@ namespace Wiwa {
 			m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, nearPlane, farPlane);
 	}
 
-	void Camera::setAspectRatio(float aspectRatio)
+	void Camera::setAspectRatio(const float aspectRatio)
 	{
 		m_AspectRatio = aspectRatio;
 
@@ -49,7 +49,7 @@ namespace Wiwa {
 			m_Projection = glm::perspective(glm::radians(m_FOV), aspectRatio, m_NearPlaneDist, m_FarPlaneDist);
 	}
 
-	void Camera::setResolution(int width, int height)
+	void Camera::setResolution(const int width, const int height)
 	{
 		m_AspectRatio = width / (float)height;
 
@@ -59,7 +59,7 @@ namespace Wiwa {
 			m_Projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
 	}
 
-	void Camera::setFOV(float fov)
+	void Camera::setFOV(const float fov)
 	{
 		m_FOV = fov;
 
@@ -67,28 +67,37 @@ namespace Wiwa {
 			m_Projection = glm::perspective(glm::radians(fov), m_AspectRatio, m_NearPlaneDist, m_FarPlaneDist);
 	}
 
-	void Camera::setPosition(Vector3f position)
+	void Camera::setPosition(const Vector3f position)
 	{
 		m_CameraPos = glm::vec3(position.x, position.y, position.z);
 
 		updateView();
 	}
 
-	void Camera::setFront(Vector3f front)
+	void Camera::setFront(const Vector3f front)
 	{
 		m_CameraFront = glm::vec3(front.x, front.y, front.z);
 
 		updateView();
 	}
 
-	void Camera::lookat(Vector3f position)
+	void Camera::lookat(const Vector3f position)
 	{
 		glm::vec3 pos = { position.x, position.y, position.z };
 		m_View = glm::lookAt(m_CameraPos, pos, m_CameraUp);
 		m_CameraFront = pos - m_CameraPos;
 	}
 
-	void Camera::SetPerspective(float fov, float aspectRatio, float nearPlaneDistance, float farPlaneDistance)
+	void Camera::lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp)
+	{
+		glm::vec3 pos = { position.x, position.y, position.z };
+		glm::vec3 camPos = { cameraPos.x, cameraPos.y, cameraPos.z };
+		glm::vec3 cameraUp = { camUp.x, camUp.y, camUp.z };
+		m_View = glm::lookAt(camPos + pos, pos, cameraUp);
+		m_CameraFront = pos - camPos;
+	}
+
+	void Camera::SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance, const float farPlaneDistance)
 	{
 		m_CameraType = CameraType::PERSPECTIVE;
 		m_FOV = fov;
@@ -99,7 +108,7 @@ namespace Wiwa {
 		m_FarPlaneDist = farPlaneDistance;
 	}
 
-	void Camera::SetOrthographic(int width, int height, float nearPlaneDistance, float farPlaneDistance)
+	void Camera::SetOrthographic(const int width, const int height, const float nearPlaneDistance, const float farPlaneDistance)
 	{
 		m_CameraType = CameraType::ORTHOGRAPHIC;
 

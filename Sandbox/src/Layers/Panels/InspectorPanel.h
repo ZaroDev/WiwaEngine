@@ -35,13 +35,13 @@ public:
 	void OnEvent(Wiwa::Event&) override;
 	bool OnEntityChangeEvent(EntityChangeEvent& e);
 
-	inline bool GetCurrentEntity(uint32_t& id)
+	inline bool GetCurrentEntity(size_t& id)
 	{
 		id = m_CurrentID;
 		return m_EntitySet;
 	}
 private:
 	
-	uint32_t m_CurrentID = 0;
+	size_t m_CurrentID = 0;
 	bool m_EntitySet = false;
 };

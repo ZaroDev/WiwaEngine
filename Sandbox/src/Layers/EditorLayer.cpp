@@ -14,6 +14,9 @@
 #include <Wiwa/Resources.h>
 
 
+
+
+
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -27,24 +30,24 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
-	m_About = new AboutPanel(this);
-	m_Configuration = new ConfigurationPanel(this);
-	m_Console = new ConsolePanel(this);
-	m_Scene = new ScenePanel(this);
-	m_Hierarchy = new HierarchyPanel(this);
-	m_Assets = new AssetsPanel(this);
-	m_Inspector = new InspectorPanel(this);
-	m_MeshView = new MeshViewPanel(this);
-	m_MaterialEditor = new MaterialPanel(this);
+	m_About = std::make_unique<AboutPanel>(this);
+	m_Configuration = std::make_unique<ConfigurationPanel>(this);
+	m_Console = std::make_unique<ConsolePanel>(this);
+	m_Scene = std::make_unique<ScenePanel>(this);
+	m_Hierarchy = std::make_unique<HierarchyPanel>(this);
+	m_Assets = std::make_unique<AssetsPanel>(this);
+	m_Inspector = std::make_unique<InspectorPanel>(this);
+	m_MeshView = std::make_unique<MeshViewPanel>(this);
+	m_MaterialEditor = std::make_unique<MaterialPanel>(this);
 
-	m_Panels.push_back(m_Configuration);
-	m_Panels.push_back(m_Console);
-	m_Panels.push_back(m_Scene);
-	m_Panels.push_back(m_Hierarchy);
-	m_Panels.push_back(m_Assets);
-	m_Panels.push_back(m_Inspector);
-	m_Panels.push_back(m_MeshView);
-	m_Panels.push_back(m_MaterialEditor);
+	m_Panels.push_back(m_Configuration.get());
+	m_Panels.push_back(m_Console.get());
+	m_Panels.push_back(m_Scene.get());
+	m_Panels.push_back(m_Hierarchy.get());
+	m_Panels.push_back(m_Assets.get());
+	m_Panels.push_back(m_Inspector.get());
+	m_Panels.push_back(m_MeshView.get());
+	m_Panels.push_back(m_MaterialEditor.get());
 
 	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
 	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");
@@ -69,6 +72,7 @@ void EditorLayer::OnAttach()
 void EditorLayer::OnDetach()
 {
 	m_Panels.clear();
+
 }
 
 void EditorLayer::OnUpdate()
@@ -179,16 +183,16 @@ void EditorLayer::MainMenuBar()
 		if (ImGui::BeginMenuBar()) 
 		{
 			if(ImGui::Button("All"))
-				m_Scene->SetGizmoType(-1);
+				m_GizmoType = -1;
 
 			if (ImGui::Button("Trns"))
-				m_Scene->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
+				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
 
 			if (ImGui::Button("Rot"))
-				m_Scene->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
+				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
 
 			if (ImGui::Button("Scl"))
-				m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE);
+				m_GizmoType = ImGuizmo::OPERATION::SCALE;
 
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
@@ -205,7 +209,7 @@ void EditorLayer::MainMenuBar()
 		if (ImGui::BeginMenuBar()) 
 		{
 			float iconSize = 16.0f;
-			auto log = Wiwa::Application::Get().GetImGuiLayer().GetConsole();
+			ImGuiLog log = Wiwa::Application::Get().GetImGuiLayer().GetConsole();
 
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0.0, 0, 0,0 });
 			ImGui::AlignTextToFramePadding();
@@ -377,7 +381,6 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 			Wiwa::Application::Get().Quit();
 		if (!ImGuizmo::IsUsing())
 		{
-			m_Scene->SetGizmoType(-1); 
 			m_GizmoType = -1;
 		}
 		break;
@@ -390,7 +393,6 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		}
 		if (!ImGuizmo::IsUsing())
 		{
-			m_Scene->SetGizmoType(ImGuizmo::OPERATION::TRANSLATE);
 			m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
 		}
 		break;
@@ -399,7 +401,6 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	{
 		if (!ImGuizmo::IsUsing())
 		{
-			m_Scene->SetGizmoType(ImGuizmo::OPERATION::ROTATE);
 			m_GizmoType = ImGuizmo::OPERATION::ROTATE;
 		}
 		break;
@@ -408,12 +409,12 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	{
 		if (!ImGuizmo::IsUsing())
 		{
-			m_Scene->SetGizmoType(ImGuizmo::OPERATION::SCALE); 
 			m_GizmoType = ImGuizmo::OPERATION::SCALE;
 		}
 		break;
 	}
 	}
+	return false;
 }
 
 bool EditorLayer::OnLoad(Wiwa::OnLoadEvent& e)

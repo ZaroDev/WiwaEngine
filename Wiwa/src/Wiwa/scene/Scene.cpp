@@ -20,7 +20,7 @@ namespace Wiwa {
 		switch (m_CurrentState)
 		{
 		case Scene::SCENE_ENTERING:
-			m_TransitionTimer += Application::Get().getDeltaTime();
+			m_TransitionTimer += (size_t)Application::Get().getDeltaTime();
 			if (m_TransitionTimer >= mMaxTimeEntering) m_CurrentState = SCENE_LOOP;
 			UpdateEnter();
 			RenderEnter();
@@ -31,7 +31,7 @@ namespace Wiwa {
 			RenderLoop();
 			break;
 		case Scene::SCENE_LEAVING:
-			m_TransitionTimer += Application::Get().getDeltaTime();
+			m_TransitionTimer += (size_t)Application::Get().getDeltaTime();
 			if (m_TransitionTimer >= mMaxTimeLeaving) Application::Get().GetSceneManager().ChangeScene(m_SceneToChange);
 			UpdateLeave();
 			RenderLeave();
