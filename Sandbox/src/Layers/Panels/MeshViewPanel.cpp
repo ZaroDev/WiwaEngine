@@ -204,5 +204,3 @@ bool MeshViewPanel::EntityChange(EntityChangeEvent& e)
 
     return false;
 }
-
-

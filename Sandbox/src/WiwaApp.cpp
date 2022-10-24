@@ -1,6 +1,7 @@
 #include <Wiwa.h>
 
 #include "Layers/EditorLayer.h"
+
 const size_t TYPE_COUNT = __COUNTER__;
 
 class WiwaApp : public Wiwa::Application

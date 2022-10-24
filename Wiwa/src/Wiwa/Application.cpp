@@ -29,6 +29,8 @@
 
 #include "utilities/json/JSONDocument.h"
 
+#include <Wiwa/utilities/AllocationMetrics.h>
+
 const size_t TYPE_COUNT = __COUNTER__;
 
 namespace Wiwa {
