@@ -14,6 +14,8 @@ namespace Wiwa {
 
 // Allocation overloads
 void* operator new(size_t size) {
+	//size > 0 ? return 0 : 1;
+
 	Wiwa::AllocationMetrics::allocation_count++;
 	Wiwa::AllocationMetrics::bytes_allocated += size;
 

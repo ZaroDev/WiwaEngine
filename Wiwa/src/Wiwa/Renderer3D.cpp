@@ -47,8 +47,8 @@ namespace Wiwa {
 		m_TSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
 		m_TSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
 
-		m_GridShaderId = Resources::Load<Shader>("resources/shaders/grid");
-		m_GridShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
+		/*m_GridShaderId = Resources::Load<Shader>("resources/shaders/grid");
+		m_GridShader = Resources::GetResourceById<Shader>(m_GridShaderId);*/
 
 		m_GSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
 		m_GSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
