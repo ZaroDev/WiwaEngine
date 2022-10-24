@@ -34,7 +34,7 @@ MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     m_Camera.setPosition({ 0.0f, 0.0f, 7.0f });
 
     m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
-    m_ActiveMaterial = new Wiwa::Material("assets/textures/test.wimaterial");
+    m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");
 
     m_MeshPosition = { 0.0f, -1.0f, 0.0f };
     m_MeshRotation = { 0.0f, 0.0f, 0.0f };
