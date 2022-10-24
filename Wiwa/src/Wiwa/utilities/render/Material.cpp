@@ -48,5 +48,7 @@ void Wiwa::Material::setTexture(const char* file)
     }
     m_TexturePath = file;
 	m_ResourceId = Resources::Load<Image>(file);
-	m_TextureId = Resources::GetResourceById<Image>(m_ResourceId)->GetTextureId();
+	Image* img = Resources::GetResourceById<Image>(m_ResourceId);
+    m_TextureId = img->GetTextureId();
+    m_TextureSize = img->GetSize();
 }

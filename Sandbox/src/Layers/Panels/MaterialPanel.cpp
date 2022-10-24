@@ -3,9 +3,10 @@
 
 #include <Wiwa/Resources.h>
 
-#include <imgui.h>
-
 #include <Wiwa/utilities/json/JSONDocument.h>
+
+#include "../../Utils/ImGuiWidgets.h"
+
 
 MaterialPanel::MaterialPanel(EditorLayer* instance)
 	: Panel("Material Editor", instance)
@@ -42,7 +43,12 @@ void MaterialPanel::Draw()
             ImGui::EndDragDropTarget();
 
         }
-        ImGui::Text(m_Material->getTexturePath());
+        ImGui::Text("Texture size: ");
+        ImGui::SameLine();
+        ImGui::Text("%i", m_Material->GetTextureSize().x);
+        ImGui::SameLine();
+        ImGui::Text("x %i", m_Material->GetTextureSize().y);
+        ImGui::Text("Texture path: %s", m_Material->getTexturePath());
         static glm::vec4 color = { m_Material->getColor().r, m_Material->getColor().g,m_Material->getColor().b , m_Material->getColor().a };
         ImGui::ColorEdit4("Color", glm::value_ptr(color));
         m_Material->setColor({ color.r, color.g, color.b, color.a });
@@ -86,7 +92,7 @@ void MaterialPanel::Draw()
     }
     else
     {
-        ImGui::Text("Drag a material to begin editing");
+       TextCentered("Select a material to begin editing");
     }
 
    

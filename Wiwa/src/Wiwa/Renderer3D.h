@@ -53,6 +53,13 @@ namespace Wiwa {
 		uint32_t m_TSViewUniformLocation;
 		uint32_t m_TSProjectionUniformLocation;
 
+		ResourceId m_GridShaderId;
+		Shader* m_GridShader;
+
+		uint32_t m_GSModelUniformLocation;
+		uint32_t m_GSViewUniformLocation;
+		uint32_t m_GSProjectionUniformLocation;
+
 		glm::mat4 m_PersProj{ 0.0f };
 		glm::mat4 m_View{ 0.0f };
 		Camera m_ActiveCamera;
@@ -69,7 +76,9 @@ namespace Wiwa {
 		void DisableOption(Options option);
 		void RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Color4f color, bool clear=false, FrameBuffer* target=NULL, Camera* camera=NULL);
 		void RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, FrameBuffer* target=NULL, Camera* camera=NULL);
+		void RenderGrid(FrameBuffer* target = NULL, bool clear = false, Camera* camera = NULL);
 		void Close();
+
 
 		// Getters
 		uint32_t getColorBufferTexture() { return m_FrameBuffer.getColorBufferTexture(); }

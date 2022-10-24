@@ -20,6 +20,7 @@
 #include <Wiwa/KeyCodes.h>
 
 #include <Wiwa/ecs/EntityManager.h>
+#include <gtc/quaternion.hpp>
 
 MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     : Panel("Mesh view", instance)
@@ -30,12 +31,12 @@ MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     m_FrameBuffer.Init(res.w, res.h);
 
     m_Camera.SetPerspective(45.0f, ar);
-    m_Camera.setPosition({ 0.0f, 1.0f, 5.0f });
+    m_Camera.setPosition({ 0.0f, 0.0f, 7.0f });
 
     m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
-    m_ActiveMaterial = new Wiwa::Material("assets/textures/test.wimaterial");
+    m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");
 
-    m_MeshPosition = { 0.0f, 0.0f, 0.0f };
+    m_MeshPosition = { 0.0f, -1.0f, 0.0f };
     m_MeshRotation = { 0.0f, 0.0f, 0.0f };
     m_MeshScale = { 1.0f, 1.0f, 1.0f };
     
@@ -47,7 +48,7 @@ MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     camSpeed = 0.005f;
     sensitivity = 0.5f;
 
-    yaw = -90.0f;
+    yaw = 0.0f;
     pitch = 0.0f;
 }
 
@@ -98,6 +99,24 @@ void MeshViewPanel::Draw()
         lastPos = v2f;
 
         // Check if right click was pressed
+        if (Wiwa::Input::IsMouseButtonPressed(0))
+        {
+            // Check if relative motion is not 0
+            if (rel2f != Wiwa::Vector2f::Zero()) {
+                float xoffset = -rel2f.x * sensitivity;
+                float yoffset = rel2f.y * sensitivity;
+                pitch += yoffset;
+                yaw += xoffset;
+
+                float radius = 7.0f;
+                glm::vec3 direction = {};
+                direction.x = radius * cos(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_MeshPosition.x;
+                direction.y = radius * sin(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_MeshPosition.y;
+                direction.z = radius * cos(glm::radians(yaw)) + m_MeshPosition.z;
+                m_Camera.setPosition({ direction.x, direction.y, direction.z });
+                m_Camera.lookat(m_MeshPosition);
+            }
+        }
         if (Wiwa::Input::IsMouseButtonPressed(1)) {
             // Check if relative motion is not 0
             if (rel2f != Wiwa::Vector2f::Zero()) {
@@ -107,8 +126,8 @@ void MeshViewPanel::Draw()
                 yaw += xoffset;
                 pitch += yoffset;
 
-                if (pitch > 89.0f) pitch = 89.0f;
-                if (pitch < -89.0f) pitch = -89.0f;
+                /*if (pitch > 89.0f) pitch = 89.0f;
+                if (pitch < -89.0f) pitch = -89.0f;*/
 
                 glm::vec3 direction;
                 direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
@@ -117,47 +136,97 @@ void MeshViewPanel::Draw()
 
                 glm::vec3 front = glm::normalize(direction);
                 m_Camera.setFront({ front.x, front.y, front.z });
+
             }
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift))
+                camFastSpeed = camSpeed * 2;
+            else
+                camFastSpeed = camSpeed;
+            float fov = m_Camera.getFOV();
+            if (m_Scroll > 0)
+                fov -= 10;
+            else if (m_Scroll < 0)
+                fov += 10;
+
+            CLAMP(fov, 1, 120);
+            m_Scroll = 0.0f;
+            m_Camera.setFOV(fov);
+            // Camera movement
+            glm::vec3 campos = m_Camera.getPosition();
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
+                campos += m_Camera.getFront() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
+                campos -= m_Camera.getFront() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
+                campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
+                campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
+                campos += m_Camera.getUp() * camFastSpeed;
+            }
+
+            if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
+                campos -= m_Camera.getUp() * camFastSpeed;
+            }
+            m_Camera.setPosition({ campos.x, campos.y, campos.z });
         }
+        //FOV
+        float fov = m_Camera.getFOV();
+        if (m_Scroll > 0)
+            fov -= 10;
+        else if (m_Scroll < 0)
+            fov += 10;
 
-        // Camera movement
-        glm::vec3 campos = m_Camera.getPosition();
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-            campos += m_Camera.getFront() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
-            campos -= m_Camera.getFront() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
-            campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
-            campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftShift)) {
-            campos -= m_Camera.getUp() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
-            campos += m_Camera.getUp() * camSpeed;
-        }
-
-        if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
-            campos -= m_Camera.getUp() * camSpeed;
-        }
-
-        m_Camera.setPosition({ campos.x, campos.y, campos.z });
+        CLAMP(fov, 1, 120);
+        m_Scroll = 0.0f;
+        m_Camera.setFOV(fov);
     }
 
     // Render to frame buffer and imgui viewport
     Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_FrameBuffer, &m_Camera);
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
+    ImVec2 rectPos = ImGui::GetItemRectMin();
+    ImVec2 rectSize(rectPos.x + 150.0f, rectPos.y + 50.0f);
+    ImGui::GetWindowDrawList()->AddRectFilled(
+        ImVec2(rectPos.x, rectPos.y),
+        rectSize,
+        IM_COL32(30, 30, 30, 128)
+    );
+
+    ImGui::GetWindowDrawList()->AddRect(
+        ImVec2(rectPos.x, rectPos.y),
+        rectSize,
+        IM_COL32(255, 255, 255, 30)
+    );
+    float y = cpos.y + 5.0f;
+    float x = cpos.x + 5.0f;
+    ImGui::SetCursorPos(ImVec2(x, y));
+    ImGui::TextColored(ImColor(255, 255, 255, 128), "Camera Pos");
+    ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
+    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f x", m_Camera.getPosition().x);
+    ImGui::SameLine();
+    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f y", m_Camera.getPosition().y);
+    ImGui::SameLine();
+    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f z", m_Camera.getPosition().z);
+
+    ImGui::SetCursorPos(ImVec2(x, y + 30.0f));
+    ImGui::TextColored(ImColor(255, 255, 255, 128), "Angles");
+    ImGui::SetCursorPos(ImVec2(x, y + 50.0f));
+    ImGui::TextColored(ImColor(255, 255, 255, 128), "Pitch: %.3f ", pitch);
+    ImGui::SameLine();
+    ImGui::TextColored(ImColor(255, 255, 255, 128), "Yaw: %.3f ", yaw);
+
+    //Drag and drop
     if (ImGui::BeginDragDropTarget())
     {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -193,14 +262,23 @@ void MeshViewPanel::OnEvent(Wiwa::Event& e)
 {
     Wiwa::EventDispatcher dispatcher(e);
     dispatcher.Dispatch<EntityChangeEvent>({ &MeshViewPanel::EntityChange, this });
+    dispatcher.Dispatch<Wiwa::MouseScrolledEvent>({ &MeshViewPanel::OnMouseScrollEvent, this });
 }
 
 bool MeshViewPanel::EntityChange(EntityChangeEvent& e)
 {
     Wiwa::Mesh* mesh = Wiwa::Application::Get().GetEntityManager().GetComponent<Wiwa::Mesh>(e.GetResourceId());
+    if (!mesh)
+        return false;
 
     m_ActiveMaterial = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
     m_ActiveMesh = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
 
+    return false;
+}
+
+bool MeshViewPanel::OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e)
+{
+    m_Scroll = e.GetYOffset();
     return false;
 }

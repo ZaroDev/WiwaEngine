@@ -6,6 +6,7 @@
 #include <Wiwa/utilities/render/Camera.h>
 #include <glm.hpp>
 #include <Wiwa/Events/MouseEvent.h>
+#include <Wiwa/ecs/components/Transform3D.h> 
 
 
 struct ShadingView;
@@ -18,22 +19,19 @@ public:
 
 	void Draw() override;
 
-	inline void SetGizmoType(int type) { m_GizmoType = type; }
-
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e);
 	bool OnEntityChange(EntityChangeEvent& e);
 private:
+
+
 	std::vector<ShadingView*> m_Shadings;
 
-	Wiwa::Vector3f m_MeshPosition;
-	Wiwa::Vector3f m_MeshRotation;
-	Wiwa::Vector3f m_MeshScale;
-	Wiwa::Camera m_Camera;
+	Wiwa::Camera m_Camera = {};
 
 	bool m_ShowFPS = true;
 
-	Wiwa::Vector4f m_MeshColor;
+	Wiwa::Vector4f m_MeshColor = {};
 
 	int m_GizmoType = -1;
 
@@ -48,7 +46,9 @@ private:
 
 	float m_Scroll = 0.0f;
 
-	Wiwa::Vector2f lastPos;
+	Wiwa::Vector2f lastPos = {};
+	
+	Wiwa::Transform3D* m_SelectedTransform;
 
 	int m_EntSelected = -1;
 };

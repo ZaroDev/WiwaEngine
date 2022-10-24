@@ -35,13 +35,13 @@ namespace Wiwa {
 		Camera();
 		~Camera();
 
-		void setPlanes(float nearPlane, float farPlane);
-		void setAspectRatio(float aspectRatio);
+		void setPlanes(const float nearPlane, const float farPlane);
+		void setAspectRatio(const float aspectRatio);
 		float getAspectRatio() { return m_AspectRatio; }
 
-		void setResolution(int width, int height);
+		void setResolution(const int width, const int height);
 
-		void setFOV(float fov);
+		void setFOV(const float fov);
 		float getFOV() { return m_FOV; }
 
 		void setPosition(Vector3f position);
@@ -51,10 +51,11 @@ namespace Wiwa {
 		glm::vec3 getFront() { return m_CameraFront; }
 		glm::vec3 getUp() { return m_CameraUp; }
 
-		void lookat(Vector3f position);
+		void lookat(const Vector3f position);
+		void lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp);
 
-		void SetPerspective(float fov, float aspectRatio, float nearPlaneDistance=0.1f, float farPlaneDistance=100.0f);
-		void SetOrthographic(int width, int height, float nearPlaneDistance=0.1f, float farPlaneDistance=100.0f);
+		void SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
+		void SetOrthographic(const int width, const int height, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
 
 		CameraType GetCameraType() { return m_CameraType; }
 

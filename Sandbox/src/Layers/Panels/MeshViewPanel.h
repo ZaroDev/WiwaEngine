@@ -8,6 +8,7 @@
 #include <Wiwa/utilities/render/Material.h>
 
 #include "../../Events/PanelEvents.h"
+#include <Wiwa/Events/MouseEvent.h>
 
 struct ShadingView;
 
@@ -22,6 +23,7 @@ public:
 
 	void OnEvent(Wiwa::Event& e);
 	bool EntityChange(EntityChangeEvent& e);
+	bool OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e);
 
 private:
 	std::vector<ShadingView *> m_Shadings;
@@ -41,9 +43,11 @@ private:
 	// Camera control
 	float camSpeed;
 	float sensitivity;
-
+	float camFastSpeed;
 	float yaw;
 	float pitch;
+
+	float m_Scroll = 0.0f;
 
 	Wiwa::Vector2f lastPos;
 };

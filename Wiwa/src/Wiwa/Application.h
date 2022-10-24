@@ -62,7 +62,7 @@ namespace Wiwa
 		inline ImGuiLayer &GetImGuiLayer() { return *m_ImGuiLayer; }
 		inline SceneManager& GetSceneManager() { return *m_SceneManager; }
 
-		inline float GetDeltaTime() { return m_Time; }
+		inline float GetTime() { return m_Time; }
 		inline ImGuiContext *GetImGuiContext() { return m_ImGuiLayer->GetContext(); }
 
 		inline SysInfo &GetSystemInfo() { return m_SysInfo; }

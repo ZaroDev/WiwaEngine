@@ -4,7 +4,9 @@
 #include <Wiwa/utilities/containers/List.h>
 
 #include "Panels/Panel.h"
-
+#include <Wiwa/utilities/Action.h>
+#include <Wiwa/Events/Event.h>
+#include "../Events/PanelEvents.h"
 #include "Panels/AboutPanel.h"
 #include "Panels/ConfigurationPanel.h"
 #include "Panels/ConsolePanel.h"
@@ -14,8 +16,7 @@
 #include "Panels/InspectorPanel.h"
 #include "Panels/MeshViewPanel.h"
 #include "Panels/MaterialPanel.h"
-
-#include <Wiwa/utilities/Action.h>
+#include <memory>
 
 typedef void* ImTextureID;
 
@@ -32,6 +33,8 @@ public:
 	void OnUpdate() override;
 	void OnImGuiRender() override;
 	void OnEvent(Wiwa::Event& e) override;
+
+	inline int GetGizmo() { return m_GizmoType; }
 private:
 	void MainMenuBar();
 	void DockSpace();
@@ -50,23 +53,23 @@ private:
 	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
 
-	AboutPanel*			m_About = nullptr;
-	ConfigurationPanel* m_Configuration = nullptr;
-	ConsolePanel*		m_Console = nullptr;
-	ScenePanel*			m_Scene = nullptr;
-	HierarchyPanel*		m_Hierarchy = nullptr;
-	AssetsPanel*		m_Assets = nullptr;
-	InspectorPanel*		m_Inspector = nullptr;
-	MeshViewPanel*		m_MeshView = nullptr;
-	MaterialPanel*		m_MaterialEditor = nullptr;
+	std::unique_ptr<Panel>	m_About;
+	std::unique_ptr<Panel>	m_Configuration;
+	std::unique_ptr<Panel>	m_Console;
+	std::unique_ptr<Panel>	m_Scene;
+	std::unique_ptr<Panel>	m_Hierarchy;
+	std::unique_ptr<Panel>	m_Assets;
+	std::unique_ptr<Panel>	m_Inspector ;
+	std::unique_ptr<Panel>	m_MeshView;
+	std::unique_ptr<Panel>	m_MaterialEditor;
 
 	std::vector<Panel*> m_Panels;
 
-	ImTextureID m_PlayIcon;
-	ImTextureID m_PauseIcon;
-	ImTextureID m_InfoIcon;
-	ImTextureID m_WarningIcon;
-	ImTextureID m_ErrorIcon;
+	ImTextureID m_PlayIcon = 0;
+	ImTextureID m_PauseIcon = 0;
+	ImTextureID m_InfoIcon = 0;
+	ImTextureID m_WarningIcon = 0;
+	ImTextureID m_ErrorIcon = 0;
 
 	Action<Wiwa::Event&> m_EventCallback;
 

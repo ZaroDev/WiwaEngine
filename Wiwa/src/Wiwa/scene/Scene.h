@@ -33,10 +33,10 @@ namespace Wiwa {
 		virtual void RenderLoop() {}
 		virtual void RenderLeave() {}
 
-		size_t mMaxTimeEntering, mMaxTimeLeaving;
+		size_t mMaxTimeEntering, mMaxTimeLeaving = 0;
 	private:
-		State m_CurrentState;
-		size_t m_TransitionTimer;
-		size_t m_SceneToChange;
+		State m_CurrentState = SCENE_ENTERING;
+		size_t m_TransitionTimer = 0;
+		size_t m_SceneToChange = 0;
 	};
 }
