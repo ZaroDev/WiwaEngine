@@ -68,24 +68,29 @@ namespace Wiwa {
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
-		m_EntityManager->RegisterSystem<SpriteRenderer>();
 		m_EntityManager->RegisterSystem<MeshRenderer>();
-
-		m_EntityManager->ReserveComponent<Mesh>(10);
-		m_EntityManager->ReserveComponent<Transform3D>(10);
+		m_EntityManager->RegisterSystem<SpriteRenderer>();
 
 		Mesh mesh;
 		mesh.meshId = Resources::Load<Model>("resources/meshes/BakerHouse.fbx");
 		mesh.materialId = Resources::Load<Material>("resources/materials/bakerhouse_material.wimaterial");
 
 		Transform3D t3d;
-		t3d.position = { 0.0f, 0.0f, 0.0f };
+		t3d.position = { -5.0f, 0.0f, 0.0f };
 		t3d.rotation = { 0.0f,0.0f, 0.0f };
 		t3d.scale = { 1.0f, 1.0f, 1.0f };
 
 		EntityId eid = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
+
+		t3d.position.x = 5.0f;		
+
+		m_EntityManager->DestroyEntity(eid);
+
+		EntityId oid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(oid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(oid, t3d);
 
 	/*	EntityId oid = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(oid, mesh);

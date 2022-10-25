@@ -18,9 +18,9 @@ struct Type {
 	bool is_enum;
 	bool is_array;
 
-	bool operator==(const Type* other) { return Equals(other); }
+	bool operator==(const Type* other) const { return Equals(other); }
 
-	bool Equals(const Type* other) { return hash == other->hash; }
+	bool Equals(const Type* other) const { return hash == other->hash; }
 };
 
 struct Field {

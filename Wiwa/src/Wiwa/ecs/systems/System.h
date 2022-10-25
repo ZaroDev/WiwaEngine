@@ -7,14 +7,19 @@ typedef size_t EntityId;
 typedef size_t ComponentId;
 typedef size_t SystemId;
 
+typedef unsigned char byte;
+
 namespace Wiwa {
 	template<class T, class T2, class... TArgs>
 	class System {
 	private:
-		std::vector<size_t> m_RemovedIndex;
+		//std::vector<size_t> m_RemovedIndex;
 		std::vector<EntityId> m_RegisteredEntities;
+		
+		std::vector<size_t> m_EntityComponentIndexes[sizeof...(TArgs) + 2];
 
-		std::vector<void*> m_Components[sizeof...(TArgs) + 2];
+		std::vector<byte*>* m_ECSComponents;
+		//byte** m_SystemComponents[sizeof...(TArgs) + 2];
 
 		ComponentId m_ComponentIds[sizeof...(TArgs) + 2];
 		size_t m_ComponentSize[sizeof...(TArgs) + 2];
@@ -27,9 +32,15 @@ namespace Wiwa {
 		size_t m_ComponentCount;
 		size_t m_ComponentIdCount;
 
+		// Take component ids
 		template<class C> void GetComponentECSIds();
 		template<class C, class C2, class ...CArgs> void GetComponentECSIds();
 
+		// Take component lists for this system
+		/*template<class C> void GetSystemComponents();
+		template<class C, class C2, class ...CArgs> void GetSystemComponents();*/
+
+		
 		void LoadComponents(size_t index);
 		template<class C> void InsertComponents(size_t index);
 		template<class C, class C2, class ...CArgs> void InsertComponents(size_t index);
@@ -39,7 +50,9 @@ namespace Wiwa {
 		virtual void OnEntityAdded(EntityId entityID) {}
 		virtual void OnEntityRemoved() {}
 
-		template<class C> std::vector<C*>* GetComponents();
+		template<class C> C* GetComponents();
+		template<class C> size_t* GetComponentIndexes();
+		size_t GetRegisteredSize() { return m_RegisteredEntities.size(); }
 	public:
 		System();
 		virtual ~System(); // Virtual destructor, so that child destructor is called
@@ -62,7 +75,12 @@ namespace Wiwa {
 	{
 		m_ComponentCount = sizeof...(TArgs) + 2;
 
+		Application& app = Application::Get();
+		app.GetEntityManager().RegisterComponents<T, T2, TArgs...>();
+		m_ECSComponents = app.GetEntityManager().GetComponentsList();
+
 		GetComponentECSIds<T, T2, TArgs...>();
+		//GetSystemComponents<T, T2, TArgs...>();
 	}
 
 	//-------- DESTRUCTOR --------
@@ -90,25 +108,12 @@ namespace Wiwa {
 	template<class T, class T2, class ...TArgs>
 	inline void System<T, T2, TArgs...>::AddEntity(EntityId entity)
 	{
-		size_t removedCount = m_RemovedIndex.size();
+		size_t index = m_RegisteredEntities.size();
 
-		size_t index = 0;
+		m_RegisteredEntities.emplace_back(entity);
 
-		if (removedCount > 0) {
-			index = m_RemovedIndex[removedCount - 1];
-
-			m_RemovedIndex.erase(m_RemovedIndex.begin() + removedCount - 1);
-
-			m_RegisteredEntities[index] = entity;
-		}
-		else {
-			index = m_RegisteredEntities.size();
-
-			m_RegisteredEntities.emplace_back(entity);
-
-			for (size_t i = 0; i < m_ComponentCount; i++) {
-				m_Components[i].push_back(NULL);
-			}
+		for (size_t i = 0; i < m_ComponentCount; i++) {
+			m_EntityComponentIndexes[i].emplace_back();
 		}
 
 		LoadComponents(index);
@@ -120,11 +125,10 @@ namespace Wiwa {
 	template<class T, class T2, class ...TArgs>
 	inline void System<T, T2, TArgs...>::RemoveEntity(size_t index)
 	{
+		m_RegisteredEntities.erase(m_RegisteredEntities.begin() + index);
 		for (size_t i = 0; i < m_ComponentCount; i++) {
-			m_Components[i][index] = NULL;
+			m_EntityComponentIndexes[i].erase(m_EntityComponentIndexes[i].begin() + index);
 		}
-
-		m_RemovedIndex.push_back(index);
 
 		// Callback for child system
 		OnEntityRemoved();
@@ -141,14 +145,14 @@ namespace Wiwa {
 		}
 	}
 
-	//-------- Component Functions -------- TODO: FIX COMPONENT LOAD TO TAKE POSITION INSTEAD OF COMPONENT POINTER
+	//-------- Component Functions --------
 	template<class T, class T2, class ...TArgs>
 	inline void System<T, T2, TArgs...>::LoadComponents(size_t index)
 	{
 		Application& app = Application::Get();
 
 		for (size_t i = 0; i < m_ComponentCount; i++) {
-			m_Components[i][index] = app.GetEntityManager().GetComponent(m_RegisteredEntities[index], m_ComponentIds[i], m_ComponentSize[i]);
+			m_EntityComponentIndexes[i][index] = app.GetEntityManager().GetComponentIndex(m_RegisteredEntities[index], m_ComponentIds[i], m_ComponentSize[i]);
 		}
 	}
 
@@ -158,7 +162,7 @@ namespace Wiwa {
 		m_RegisteredEntities.reserve(amount);
 
 		for (size_t i = 0; i < m_ComponentCount; i++) {
-			m_Components[i].reserve(amount);
+			m_EntityComponentIndexes[i].reserve(amount);
 		}
 	}
 
@@ -196,6 +200,27 @@ namespace Wiwa {
 		GetComponentECSIds<C2, CArgs...>();
 	}
 
+	/*template<class T, class T2, class ...TArgs>
+	template<class C>
+	inline void System<T, T2, TArgs...>::GetSystemComponents()
+	{
+		Application& app = Application::Get();
+
+		size_t c_id = app.GetEntityManager().GetComponentId<C>();
+
+		size_t c_i = GetComponentIndex<C>();
+
+		m_SystemComponents[c_i] = app.GetEntityManager().GetComponentsPtr(c_id);
+	}
+
+	template<class T, class T2, class ...TArgs>
+	template<class C, class C2, class ...CArgs>
+	inline void System<T, T2, TArgs...>::GetSystemComponents()
+	{
+		GetSystemComponents<C>();
+		GetSystemComponents<C2, CArgs...>();
+	}*/
+
 	template<class T, class T2, class ...TArgs>
 	template<class C>
 	inline void System<T, T2, TArgs...>::InsertComponents(size_t index)
@@ -204,7 +229,7 @@ namespace Wiwa {
 
 		Application& app = Application::Get();
 
-		m_Components[cid][index] = app.GetEntityManager().GetComponent(m_RegisteredEntities[index], m_ComponentIds[cid], m_ComponentSize[cid]);
+		m_EntityComponentIndexes[cid][index] = app.GetEntityManager().GetComponentIndex(m_RegisteredEntities[index], m_ComponentIds[cid], m_ComponentSize[cid]);
 	}
 
 	template<class T, class T2, class ...TArgs>
@@ -223,19 +248,35 @@ namespace Wiwa {
 
 		return c_id;
 	}
+
 	template<class T, class T2, class ...TArgs>
 	template<class C>
-	inline std::vector<C*>* System<T, T2, TArgs...>::GetComponents()
+	inline C* System<T, T2, TArgs...>::GetComponents()
 	{
 		size_t c_id = GetComponentIndex<C>();
 
-		std::vector<C*>* c_list = NULL;
+		C* c_list = NULL;
 
 		if (c_id < m_ComponentCount) {
-			c_list = (std::vector<C*>*) & m_Components[c_id];
+			c_list = (C*)m_ECSComponents->at(m_ComponentIds[c_id]);
 		}
 
 		return c_list;
+	}
+
+	template<class T, class T2, class ...TArgs>
+	template<class C>
+	inline size_t* System<T, T2, TArgs...>::GetComponentIndexes()
+	{
+		size_t c_id = GetComponentIndex<C>();
+
+		size_t* i_list = NULL;
+
+		if (c_id < m_ComponentCount) {
+			i_list = m_EntityComponentIndexes[c_id].data();
+		}
+
+		return i_list;
 	}
 
 	//-------- Sub-system functions --------

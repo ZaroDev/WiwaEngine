@@ -26,6 +26,39 @@ namespace Wiwa {
 		}
 	}
 
+	void EntityManager::RemoveEntity(EntityId eid)
+	{
+		m_EntitiesRemoved.push_back(eid);
+
+		// Remove entity from alive entities vector
+		size_t ealive = m_EntitiesAlive.size();
+
+		for (size_t i = 0; i < ealive; i++) {
+			if (m_EntitiesAlive[i] == eid) {
+				m_EntitiesAlive.erase(m_EntitiesAlive.begin() + i);
+				break;
+			}
+		}
+
+		// Callback for systems
+		size_t systems = m_EntitySystems[eid].size();
+
+		for (size_t i = 0; i < systems; i++) {
+			System<void, void>* s = (System<void, void>*)m_Systems[i];
+
+			s->OnEntityRemoved(eid);
+		}
+
+		m_EntitySystems[eid].clear();
+
+		// Add component indexes (no need to remove as data is still reserved)
+		std::map<ComponentId, size_t>::iterator c_it;
+
+		for (c_it = m_EntityComponents[eid].begin(); c_it != m_EntityComponents[eid].end(); c_it++) {
+			m_ComponentsRemoved[c_it->first].push_back(c_it->second);
+		}
+	}
+
 	void EntityManager::OnEntityComponentAdded(EntityId eid)
 	{
 		size_t size = m_Systems.size();
@@ -43,9 +76,19 @@ namespace Wiwa {
 
 	void EntityManager::Update()
 	{
-		size_t size = m_Systems.size();
+		// Remove entities in pool
+		size_t rsize = m_EntitiesToDestroy.size();
 
-		for (size_t i = 0; i < size; i++) {
+		for (size_t i = 0; i < rsize; i++) {
+			RemoveEntity(m_EntitiesToDestroy[i]);
+		}
+
+		m_EntitiesToDestroy.clear();
+
+		// Update systems
+		size_t sysize = m_Systems.size();
+
+		for (size_t i = 0; i < sysize; i++) {
 			System<void, void>* s = (System<void, void>*)m_Systems[i];
 
 			s->Update();
@@ -54,27 +97,36 @@ namespace Wiwa {
 
 	EntityId EntityManager::CreateEntity()
 	{
-		m_EntityComponents.emplace_back();
-		m_EntitySystems.emplace_back();
-		m_EntityNames.emplace_back("New entity");
-		return m_EntityComponents.size() - 1;
+		return CreateEntity("New entity");
 	}
 
 	EntityId EntityManager::CreateEntity(const char* name)
 	{
-		m_EntityNames.emplace_back(name);
 		m_EntityComponents.emplace_back();
 		m_EntitySystems.emplace_back();
-		return m_EntityComponents.size() - 1;
+		m_EntityNames.emplace_back(name);
+
+		EntityId eid = m_EntityComponents.size() - 1;
+
+		m_EntitiesAlive.push_back(eid);
+
+		return eid;
+	}
+
+	void EntityManager::DestroyEntity(EntityId entity)
+	{
+		m_EntitiesToDestroy.push_back(entity);
 	}
 
 	void EntityManager::ReserveEntities(size_t amount)
 	{
 		m_EntityComponents.reserve(amount);
 		m_EntitySystems.reserve(amount);
+		m_EntitiesAlive.reserve(amount);
+		m_EntitiesRemoved.reserve(amount);
 	}
 
-	void EntityManager::AddComponent(EntityId entityId, ComponentHash hash) {
+	byte* EntityManager::AddComponent(EntityId entityId, ComponentHash hash, byte* value) {
 		// Get component ID
 		ComponentId cid = GetComponentId(hash);
 
@@ -83,6 +135,7 @@ namespace Wiwa {
 
 		const Type* ctype = Application::Get().getCoreTypeH(hash);
 		if (!ctype) ctype = Application::Get().getAppTypeH(hash);
+		
 		byte* component = NULL;
 
 		// Look if the entity has this component
@@ -97,6 +150,7 @@ namespace Wiwa {
 				m_ComponentsSize.resize(cid + 1, 0);
 				m_ComponentsReserved.resize(cid + 1, 0);
 				m_ComponentTypes.resize(cid + 1, NULL);
+				m_ComponentsRemoved.resize(cid + 1);
 			}
 
 			// If it's the first component, create new block MARTA WAS HERE
@@ -105,47 +159,79 @@ namespace Wiwa {
 
 				component = new(block) byte[t_size]{ 0 };
 
+				if (value) memcpy(component, value, t_size);
+
 				m_Components[cid] = block;
 				m_ComponentsSize[cid]++;
+				m_ComponentsReserved[cid]++;
 				ec->insert_or_assign(cid, 0);
 
 				m_ComponentTypes[cid] = ctype;
 			}
 			else {
-				// If more components reserved, just construct me TOO MEEEEEEEEEEEEE :) :3 "^0^" ÙwÚ
-				if (m_ComponentsSize[cid] < m_ComponentsReserved[cid]) {
+				// Check if component index available
+				size_t c_rsize = m_ComponentsRemoved[cid].size();
+
+				// If index is available, construct
+				if (c_rsize > 0) {
+					size_t c_index = m_ComponentsRemoved[cid][c_rsize - 1];
+
 					byte* components = m_Components[cid];
 
-					size_t last = m_ComponentsSize[cid] * t_size;
+					size_t ind = c_index * t_size;
 
-					component = new(&components[last]) byte[t_size]{ 0 };
+					component = new(&components[ind]) byte[t_size]{ 0 };
+
+					if (value) memcpy(component, value, t_size);
+
+					m_ComponentsRemoved[cid].pop_back();
+
+					ec->insert_or_assign(cid, c_index);
 				}
-				// If not, expand the block and construct
+				// If not, proceed normally
 				else {
-					byte* oldBlock = m_Components[cid];
-					size_t oldSize = m_ComponentsSize[cid] * t_size;
-					size_t newSize = oldSize + t_size;
+					// If more components reserved, just construct me TOO MEEEEEEEEEEEEE :) :3 "^0^" ÙwÚ
+					if (m_ComponentsSize[cid] < m_ComponentsReserved[cid]) {
+						byte* components = m_Components[cid];
 
-					byte* newBlock = new byte[newSize];
+						size_t last = m_ComponentsSize[cid] * t_size;
 
-					memcpy(newBlock, oldBlock, oldSize);
+						component = new(&components[last]) byte[t_size]{ 0 };
 
-					delete[] oldBlock;
+						if (value) memcpy(component, value, t_size);
+					}
+					// If not, expand the block and construct
+					else {
+						byte* oldBlock = m_Components[cid];
+						size_t oldSize = m_ComponentsSize[cid] * t_size;
+						size_t newSize = oldSize + t_size;
 
-					component = new(&newBlock[oldSize]) byte[t_size]{ 0 };
+						byte* newBlock = new byte[newSize];
 
-					m_Components[cid] = newBlock;
+						memcpy(newBlock, oldBlock, oldSize);
+
+						delete[] oldBlock;
+
+						component = new(&newBlock[oldSize]) byte[t_size]{ 0 };
+
+						if (value) memcpy(component, value, t_size);
+
+						m_Components[cid] = newBlock;
+
+						m_ComponentsReserved[cid]++;
+					}
+
+					// Update entity-component map and components size/reserved
+					ec->insert_or_assign(cid, m_ComponentsSize[cid]);
+					m_ComponentsSize[cid]++;
 				}
-
-				// Update entity-component map and components size/reserved
-				ec->insert_or_assign(cid, m_ComponentsSize[cid]);
-				m_ComponentsSize[cid]++;
-				m_ComponentsReserved[cid]++;
 			}
 		}
 
 		// Callbacks for systems
 		OnEntityComponentAdded(entityId);
+
+		return component;
 	}
 
 	byte* EntityManager::GetComponent(EntityId entityId, ComponentId componentId, size_t componentSize)
@@ -161,6 +247,21 @@ namespace Wiwa {
 		}
 
 		return c;
+	}
+
+	size_t EntityManager::GetComponentIndex(EntityId entityId, ComponentId componentId, size_t componentSize)
+	{
+		size_t index = -1;
+
+		if (entityId < m_EntityComponents.size()) {
+			std::map<ComponentId, size_t>::iterator it = m_EntityComponents[entityId].find(componentId);
+
+			if (it != m_EntityComponents[entityId].end()) {
+				index = it->second;
+			}
+		}
+
+		return index;
 	}
 
 	ComponentId EntityManager::GetComponentId(ComponentHash hash) {

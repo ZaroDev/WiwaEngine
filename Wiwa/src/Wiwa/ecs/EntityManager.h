@@ -25,18 +25,24 @@ namespace Wiwa {
 			ComponentId cid;
 		};
 
-		// Component variables
-		size_t m_ComponentIdCount;
+		// Entity management
+		std::vector<std::string> m_EntityNames;
+		std::vector<std::map<ComponentId, size_t>> m_EntityComponents;
+		std::vector<std::vector<SystemId>> m_EntitySystems;
 
+		std::vector<EntityId> m_EntitiesRemoved;
+		std::vector<EntityId> m_EntitiesAlive;
+		std::vector<EntityId> m_EntitiesToDestroy;
+
+		// Component management
+		size_t m_ComponentIdCount;
+		std::vector<std::vector<size_t>> m_ComponentsRemoved;
 		std::vector<byte*> m_Components;
 		std::vector<const Type*> m_ComponentTypes;
 		std::unordered_map<ComponentHash, componentData> m_ComponentIds;
 		std::vector<size_t> m_ComponentsSize;
 		std::vector<size_t> m_ComponentsReserved;
-		std::vector<std::map<ComponentId, size_t>> m_EntityComponents;
-		std::vector<std::vector<SystemId>> m_EntitySystems;
-		std::vector<std::string> m_EntityNames;
-
+		
 		template<class T> bool HasComponents(EntityId entityId);
 
 		// System variables
@@ -44,6 +50,8 @@ namespace Wiwa {
 		size_t m_SystemIdCount;
 
 		std::vector<void*> m_Systems;
+
+		void RemoveEntity(EntityId eid);
 
 		void OnEntityComponentAdded(EntityId eid);
 	public:
@@ -59,27 +67,52 @@ namespace Wiwa {
 		EntityId CreateEntity();
 		EntityId CreateEntity(const char* name);
 
+		// Remove entity
+		void DestroyEntity(EntityId entity);
+
+		// Entity functions
 		inline const char* GetEntityName(EntityId id) { return m_EntityNames[id].c_str(); }
 
+		inline std::vector<EntityId>* GetEntitiesAlive() { return &m_EntitiesAlive; }
+		inline size_t GetEntityCount() { return m_EntitiesAlive.size(); }
+
 		inline std::map<ComponentId, size_t>& GetEntityComponents(EntityId id) { return m_EntityComponents[id]; }
-		inline size_t GetEntityCount() { return m_EntityComponents.size(); }
+		
 		inline const Type* GetComponentType(ComponentId id) { return m_ComponentTypes[id]; }
-		// Component functions
-		void AddComponent(EntityId entity, ComponentHash hash);
+
+		size_t GetComponentIndex(EntityId entityId, ComponentId componentId, size_t componentSize);
+
+		// Component add functions
+		byte* AddComponent(EntityId entity, ComponentHash hash, byte* value=NULL);
 		template<class T> T* AddComponent(EntityId entity, T value = {});
-		template<class T> T* GetComponents(size_t* size);
-		inline byte* GetComponents(ComponentId id) { return m_Components[id]; }
 
 		template<class T> void AddComponents(EntityId entity, T arg = {});
 		template<class T, class T2, class... TArgs> void AddComponents(EntityId entity, T arg1, T2 arg2, TArgs... args);
 		template<class T, class T2, class... TArgs> void AddComponents(EntityId entity);
 
-		void ReserveEntities(size_t amount);
-		template<class T> void ReserveComponent(size_t amount);
-
+		// Component get functions
 		byte* GetComponent(EntityId entityId, ComponentId componentId, size_t componentSize);
 		template<class T> T* GetComponent(EntityId entityId);
 
+		inline byte** GetComponentsPtr(ComponentId id) { return &m_Components[id]; }
+		inline byte* GetComponents(ComponentId id) { return m_Components[id]; }
+		template<class T> T* GetComponents(size_t* size);
+
+		inline std::vector<byte*>* GetComponentsList() { return &m_Components; }
+
+		// Register components (called on system register)
+		template<class T> void RegisterComponent();
+
+		template<class T> void RegisterComponents();
+		template<class T, class T2, class ...TArgs> void RegisterComponents();
+
+		template<class T> byte* GetComponents();
+
+		// Reserve functions
+		void ReserveEntities(size_t amount);
+		template<class T> void ReserveComponent(size_t amount);		
+
+		// Component utilities
 		template<class T> bool HasComponent(EntityId entityId);
 
 		bool HasComponents(EntityId entityId, ComponentId* componentIds, size_t size);
@@ -93,6 +126,7 @@ namespace Wiwa {
 
 		template<class T> SystemId GetSystemId();
 
+		// Register systems
 		template<class T> void RegisterSystem();
 		template<class T> void ReserveSystem(size_t amount);
 	};
@@ -130,80 +164,11 @@ namespace Wiwa {
 	template<class T>
 	inline T* EntityManager::AddComponent(EntityId entity, T value)
 	{
-		// Get component ID
-		ComponentId cid = GetComponentId<T>();
+		const Type* type = GetType<T>();
 
-		// Take components map of the entity
-		std::map<ComponentId, size_t>* ec = &m_EntityComponents[entity];
+		byte* data = (byte*)&value;
 
-		T* component = NULL;
-
-		// Look if the entity has this component
-		std::map<ComponentId, size_t>::iterator iterator = ec->find(cid);
-
-		// If it doesn't have the component, add it
-		if (iterator == ec->end()) {
-			size_t t_size = sizeof(T);
-			// Check if the component list exists
-			if (cid >= m_Components.size()) {
-				m_Components.resize(cid + 1, NULL);
-				m_ComponentsSize.resize(cid + 1, 0);
-				m_ComponentsReserved.resize(cid + 1, 0);
-				m_ComponentTypes.resize(cid + 1, NULL);
-			}
-
-			// If it's the first component, create new block MARTA WAS HERE
-			if (!m_Components[cid]) {
-				byte* block = new byte[t_size];
-
-				component = new(block) T(value);
-
-				m_Components[cid] = block;
-				m_ComponentsSize[cid]++;
-				m_ComponentsReserved[cid]++;
-				ec->insert_or_assign(cid, 0);
-
-				m_ComponentTypes[cid] = GetType<T>();
-			}
-			else {
-				// If more components reserved, just construct me TOO MEEEEEEEEEEEEE :) :3 "^0^" ÙwÚ
-				if (m_ComponentsSize[cid] < m_ComponentsReserved[cid]) {
-					byte* components = m_Components[cid];
-
-					size_t last = m_ComponentsSize[cid] * t_size;
-
-					component = new(&components[last]) T(value);
-				}
-				// If not, expand the block and construct
-				else {
-					byte* oldBlock = m_Components[cid];
-					size_t oldSize = m_ComponentsSize[cid] * t_size;
-					size_t newSize = oldSize + t_size;
-
-					byte* newBlock = new byte[newSize];
-
-					memcpy(newBlock, oldBlock, oldSize);
-
-					delete[] oldBlock;
-
-					component = new(&newBlock[oldSize]) T(value);
-
-					m_Components[cid] = newBlock;
-				}
-
-				// Update entity-component map and components size/reserved
-				ec->insert_or_assign(cid, m_ComponentsSize[cid]);
-				m_ComponentsSize[cid]++;
-				m_ComponentsReserved[cid]++;
-			}
-		}
-		// If it does have the component, return it
-		else {
-			component = (T*)&m_Components[cid][iterator->second * sizeof(T)];
-		}
-
-		// Callbacks for systems
-		OnEntityComponentAdded(entity);
+		T* component = (T*)AddComponent(entity, type->hash, data);
 
 		return component;
 	}
@@ -223,6 +188,47 @@ namespace Wiwa {
 		}
 
 		return (T*)(void*)components;
+	}
+
+	template<class T>
+	inline void EntityManager::RegisterComponent()
+	{
+		ComponentId cid = GetComponentId<T>();
+
+		if (cid >= m_Components.size()) {
+			m_Components.resize(cid + 1, NULL);
+			m_ComponentsSize.resize(cid + 1, 0);
+			m_ComponentsReserved.resize(cid + 1, 0);
+			m_ComponentTypes.resize(cid + 1, NULL);
+			m_ComponentsRemoved.resize(cid + 1);
+		}
+	}
+
+	template<class T>
+	inline void EntityManager::RegisterComponents()
+	{
+		RegisterComponent<T>();
+	}
+
+	template<class T, class T2, class ...TArgs>
+	inline void EntityManager::RegisterComponents()
+	{
+		RegisterComponents<T>();
+		RegisterComponents<T2, TArgs...>();
+	}
+
+	template<class T>
+	inline byte* EntityManager::GetComponents()
+	{
+		ComponentId cid = GetComponentId<T>();
+
+		byte* components = NULL;
+
+		if (cid < m_Components.size()) {
+			components = m_Components[cid];
+		}
+
+		return components;;
 	}
 
 	template<class T>
@@ -256,6 +262,7 @@ namespace Wiwa {
 			m_ComponentsSize.resize(cid + 1, 0);
 			m_ComponentsReserved.resize(cid + 1, 0);
 			m_ComponentTypes.resize(cid + 1, NULL);
+			m_ComponentsRemoved.resize(cid + 1);
 		}
 
 		if (m_Components[cid]) {

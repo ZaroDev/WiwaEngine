@@ -18,7 +18,7 @@ namespace Wiwa {
 
 	void SpriteRenderer::OnUpdate()
 	{
-		std::vector<Transform2D*>* t2dv = GetComponents<Transform2D>();
+		/*std::vector<Transform2D*>* t2dv = GetComponents<Transform2D>();
 		std::vector<Sprite*>* sprv = GetComponents<Sprite>();
 
 		size_t size = t2dv->size();
@@ -30,7 +30,7 @@ namespace Wiwa {
 
 		for (size_t i = 0; i < size; i++) {
 			r2d.UpdateInstancedQuadTex(i, t2d[i]->position, spr[i]->pivot);
-		}
+		}*/
 	}
 
 	void SpriteRenderer::OnEntityAdded(EntityId entityID)

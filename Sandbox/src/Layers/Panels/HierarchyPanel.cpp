@@ -65,20 +65,27 @@ void HierarchyPanel::Draw()
 		}
 		ImGui::EndPopup();
 	}
+
 	if(ImGui::Button("+"))
 	{
 		Wiwa::Application::Get().GetEntityManager().CreateEntity();
 	}
+
 	float width = ImGui::GetWindowContentRegionWidth();
 	int id = 0;
-	for (size_t i = 0; i < Wiwa::Application::Get().GetEntityManager().GetEntityCount(); i++)
+	
+	std::vector<EntityId>* entities = entityManager.GetEntitiesAlive();
+	size_t count = entities->size();
+
+	for (size_t i = 0; i < count; i++)
 	{
-		const char* entName = entityManager.GetEntityName(i);
+		EntityId eid = entities->at(i);
+		const char* entName = entityManager.GetEntityName(eid);
 		
 		ImGui::PushID(id++);
 		if (ImGui::Button(entName, ImVec2(width, 20)))
 		{
-			EntityChangeEvent event((uint32_t)i);
+			EntityChangeEvent event((uint32_t)eid);
 			Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance};
 			act(event);
 		}
