@@ -30,7 +30,7 @@ public:
 		return type;
 	}
 
-	WiwaApp() 
+	WiwaApp(int argc, char** argv) : Wiwa::Application(argc, argv)
 	{
 		PushOverlay(new EditorLayer());
 	}
@@ -41,7 +41,7 @@ public:
 	}
 };
 
-Wiwa::Application* Wiwa::CreateApplication()
+Wiwa::Application* Wiwa::CreateApplication(int argc, char** argv)
 {
-	return new WiwaApp();
+	return new WiwaApp(argc, argv);
 }

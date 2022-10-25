@@ -3,14 +3,14 @@
 #include <Wiwa/Reflection.h>
 
 #ifdef WI_PLATFORM_WINDOWS
-extern Wiwa::Application* Wiwa::CreateApplication();
+extern Wiwa::Application* Wiwa::CreateApplication(int argc, char** argv);
 
 int main(int argc, char** argv)
 {
 	Wiwa::Log::Init();
 	WI_CORE_WARN("Initialized Log!");
 
-	auto app = Wiwa::CreateApplication();
+	auto app = Wiwa::CreateApplication(argc, argv);
 	app->Run();
 
 	delete app;

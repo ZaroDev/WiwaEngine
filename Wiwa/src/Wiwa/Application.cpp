@@ -36,9 +36,16 @@ const size_t TYPE_COUNT = __COUNTER__;
 namespace Wiwa {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(int argc, char** argv)
 	{
 		WI_CORE_ASSERT(!s_Instance, "Application already exists!");
+
+		m_ArgC = argc;
+
+		for (int i = 0; i < argc; i++) {
+			m_Argv.push_back(argv[i]);
+		}
+
 		s_Instance = this;
 
 		m_TargetResolution = { 1920, 1080 };

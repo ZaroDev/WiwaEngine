@@ -11,7 +11,6 @@ Wiwa::Material::Material()
     {
         glm::vec3{0.1f, 0.1f, 0.1f},
         glm::vec3{0.1f, 0.1f, 0.1f},
-        glm::vec3{0.1f, 0.1f, 0.1f},
         0.1f
     };
 }
@@ -21,7 +20,6 @@ Wiwa::Material::Material(Color4f color)
 {
     m_Settings =
     {
-        glm::vec3{0.1f, 0.1f, 0.1f},
         glm::vec3{0.1f, 0.1f, 0.1f},
         glm::vec3{0.1f, 0.1f, 0.1f},
         0.1f
@@ -53,7 +51,6 @@ Wiwa::Material::Material(const char* file)
     }
     m_Settings =
     {
-        glm::vec3{0.1f, 0.1f, 0.1f},
         glm::vec3{0.1f, 0.1f, 0.1f},
         glm::vec3{0.1f, 0.1f, 0.1f},
         0.1f

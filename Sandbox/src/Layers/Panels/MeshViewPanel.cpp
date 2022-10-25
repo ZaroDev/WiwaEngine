@@ -28,10 +28,7 @@ MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
 
-    m_FrameBuffer.Init(res.w, res.h);
-
-    m_Camera.SetPerspective(45.0f, ar);
-    m_Camera.setPosition({ 0.0f, 0.0f, 7.0f });
+    m_FrameBuffer.Init(res.w, res.h);    
 
     m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
     m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");
@@ -42,13 +39,15 @@ MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     
     m_MeshColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+    m_Camera.SetPerspective(45.0f, ar);
+    m_Camera.setPosition({ 0.0f, 0.0f, 7.0f });
     m_Camera.lookat(m_MeshPosition);
 
     // Camera control
     camSpeed = 0.005f;
     sensitivity = 0.5f;
 
-    yaw = 0.0f;
+    yaw = -90.0f;
     pitch = 0.0f;
 }
 

@@ -41,7 +41,7 @@ namespace Wiwa
 	class WI_API Application
 	{
 	public:
-		Application();
+		Application(int argc, char** argv);
 		virtual ~Application();
 
 		void Run();
@@ -54,6 +54,9 @@ namespace Wiwa
 		void SetHwInfo();
 
 		inline static Application &Get() { return *s_Instance; }
+
+		inline int GetArgC() { return m_ArgC; }
+		inline const char* GetArgv(int index) { return m_Argv[index].c_str(); }
 
 		inline Window &GetWindow() { return *m_Window; }
 		inline Renderer2D &GetRenderer2D() { return *m_Renderer2D; }
@@ -89,6 +92,9 @@ namespace Wiwa
 		void Quit();
 
 	private:
+		int m_ArgC;
+		std::vector<std::string> m_Argv;
+
 		Size2i m_TargetResolution;
 
 		bool OnWindowClose(WindowCloseEvent &e);
@@ -119,5 +125,5 @@ namespace Wiwa
 	};
 
 	// To be defined in a client
-	Application *CreateApplication();
+	Application *CreateApplication(int argc, char** argv);
 }
