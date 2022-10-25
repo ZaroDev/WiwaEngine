@@ -125,7 +125,6 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::ColorEdit4("Color", glm::value_ptr(color));
 
 		Wiwa::Material::MaterialSettings& settings = mat->getSettings();
-		ImGui::ColorEdit3("Ambient", glm::value_ptr(settings.ambient));
 		ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
 		ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
 		ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
