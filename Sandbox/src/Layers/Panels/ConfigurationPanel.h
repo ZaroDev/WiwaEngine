@@ -18,6 +18,8 @@ private:
 	Wiwa::List<float> m_FPSLog;
 	Wiwa::List<float> m_MSLog;
 	Wiwa::List<float> m_MemLog;
+	Wiwa::List<float> m_AllocLog;
+	Wiwa::List<float> m_ByteLog;
 
 	bool m_Fullscreen = false;
 	bool m_Resizable = false;

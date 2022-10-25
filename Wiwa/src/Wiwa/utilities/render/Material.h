@@ -2,7 +2,10 @@
 
 #include <Wiwa/Core.h>
 #include <Wiwa/utilities/math/Vector4f.h>
+#include <Wiwa/utilities/math/Vector3f.h>
 #include <Wiwa/utilities/math/Vector2i.h>
+
+#include <glm.hpp>
 
 namespace Wiwa {
 	typedef size_t ResourceId;
@@ -15,6 +18,14 @@ namespace Wiwa {
 			color,
 			textured
 		};
+		struct MaterialSettings
+		{
+			glm::vec3 ambient;
+			glm::vec3 diffuse;
+			glm::vec3 specular;
+			float shininess;
+		};
+
 		Material();
 		Material(Color4f color);
 		Material(const char* file);
@@ -30,14 +41,19 @@ namespace Wiwa {
 		void setTexture(const char* file);
 		inline void setColor(Color4f color) { m_Color = color; }
 		inline void setType(MaterialType type) { m_Type = type; }
-		inline Size2i GetTextureSize() { return m_TextureSize; }
+		inline void setSettings(const MaterialSettings& settings) { m_Settings = settings; }
+		inline Size2i &getTextureSize() { return m_TextureSize; }
+		inline MaterialSettings& getSettings() { return m_Settings; }
 	private:
 		ResourceId m_ResourceId;
 		std::string m_TexturePath;
 		std::string m_MaterialPath;
+		
 		uint32_t m_TextureId;
-		Size2i m_TextureSize;
-		Color4f m_Color;
+		Size2i m_TextureSize = { 0,0 };
+		
+		MaterialSettings m_Settings;
 		MaterialType m_Type;
+		Color4f m_Color;
 	};
 }

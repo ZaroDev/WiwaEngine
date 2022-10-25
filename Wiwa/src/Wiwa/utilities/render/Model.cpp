@@ -186,45 +186,41 @@ namespace Wiwa {
 			16,17,18,16,18,19,
 			20,21,22,20,22,23
 		};
-
+		is_root = false;
 		generateBuffers();
 	}
 
 	void Model::CreatePlane()
 	{
 		vbo_data = {
-			-1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0, 0.0f,
-			-1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-			1.0f, 0.0f, -1.0f, 0.0, 1.0f, 0.0f, 0.0f, 1.0f
+			-0.50,-0.50,0.00,0.00,0.00,1.00,0.00,1.00
+			,0.50,-0.50,0.00,0.00,0.00,1.00,1.00,1.00,
+			0.50,0.50,0.00,0.00,0.00,1.00,1.00,0.00,
+			-0.50,0.50,0.00,0.00,0.00,1.00,0.00,
+			- 0.50,-0.50,0.00,0.00,0.00,1.00,0.00,
+			1.00,0.50,-0.50,0.00,0.00,0.00,1.00,1.00
+			,1.00,0.50,0.50,0.00,0.00,0.00,1.00,1.00,
+			0.00,-0.50,0.50,0.00,0.00,0.00,1.00,0.00,0.00
 		};
 
 		ebo_data = {
-			0, 1, 3, 1, 2, 3
+			0,1,2,0,2,3
 		};
 
+		is_root = false;
 		generateBuffers();
 	}
 
 	void Model::CreatePyramid()
 	{
 		vbo_data = {
-			-0.25,0.00,-0.25,
-			0.25,0.00,-0.25,
-			-0.25,0.00,0.25,
-			0.25,0.00,0.25,
-			0.00,0.50,0.00
+			0.00,1.00,-1.00,0.67,0.67,0.33,0.25,0.51,0.00,0.00,1.00,0.67,0.67,0.33,0.25,0.75,1.00,-0.00,-1.00,0.67,0.67,0.33,0.49,0.75,1.00,-0.00,-1.00,0.67,-0.67,0.33,0.49,0.75,0.00,0.00,1.00,0.67,-0.67,0.33,0.25,0.75,-0.00,-1.00,-1.00,0.67,-0.67,0.33,0.25,0.99,0.00,1.00,-1.00,0.00,0.00,-1.00,0.75,0.51,1.00,-0.00,-1.00,0.00,0.00,-1.00,0.99,0.75,-0.00,-1.00,-1.00,0.00,0.00,-1.00,0.75,0.99,-1.00,0.00,-1.00,0.00,0.00,-1.00,0.51,0.75,-0.00,-1.00,-1.00,-0.67,-0.67,0.33,0.25,0.99,0.00,0.00,1.00,-0.67,-0.67,0.33,0.25,0.75,-1.00,0.00,-1.00,-0.67,-0.67,0.33,0.01,0.75,-1.00,0.00,-1.00,-0.67,0.67,0.33,0.01,0.75,0.00,0.00,1.00,-0.67,0.67,0.33,0.25,0.75,0.00,1.00,-1.00,-0.67,0.67,0.33,0.25,0.51
 		};
 
 		ebo_data = {
-			0,2,3,
-			0,1,3,
-			0,1,4,
-			1,3,4,
-			3,2,4,
-			2,0,4
+			0,1,2,3,4,5,6,7,8,6,8,9,10,11,12,13,14,15
 		};
-
+		is_root = false;
 		generateBuffers();
 	}
 
@@ -282,31 +278,95 @@ namespace Wiwa {
 				}
 			}
 		}
-
+		models.push_back(this);
 		generateBuffers();
+	}
+
+	void Model::CreateGrid()
+	{
+		int slices = 64;
+		for (int j = 0; j <= slices; ++j) {
+			for (int i = 0; i <= slices; ++i) {
+				float x = (float)i / (float)slices;
+				float y = 0;
+				float z = (float)j / (float)slices;
+				vbo_data.push_back(x);
+				vbo_data.push_back(y);
+				vbo_data.push_back(z);
+			}
+		}
+
+		for (int j = 0; j < slices; ++j) {
+			for (int i = 0; i < slices; ++i) {
+
+				int row1 = j * (slices + 1);
+				int row2 = (j + 1) * (slices + 1);
+
+				ebo_data.push_back(row1 + i);
+				ebo_data.push_back( row1 + i + 1);
+				ebo_data.push_back( row1 + i + 1);
+				ebo_data.push_back( row2 + i + 1);
+				ebo_data.push_back(row2 + i + 1);
+				ebo_data.push_back(row2 + i);
+				ebo_data.push_back(row2 + i);
+				ebo_data.push_back(row1 + i);
+
+			}
+		}
+		generateGridBuffers();
 	}
 
 	void Model::generateBuffers()
 	{
+
+#if 0
+		printf("Vertices\n");
+		for (float vert : vbo_data)
+			printf("%.2f,", vert);
+		printf("\nIndicies\n");
+		for (int ind : ebo_data)
+			printf("%i,", ind);
+#endif
 		WI_CORE_INFO("Generating buffers...");
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &ebo);
 		glGenVertexArrays(1, &vao);
 		WI_CORE_INFO("Generating buffers DONE");
 		
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+
 		WI_CORE_INFO("Binding the vertex array ...");
 		glBindVertexArray(vao);
 		WI_CORE_INFO("Binding the vertex array DONE");
+
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
 
 		WI_CORE_INFO("Binding the vertex buffer ...");
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vbo_data.size() * sizeof(float), vbo_data.data(), GL_STATIC_DRAW);
 		WI_CORE_INFO("Binding the vertex buffer DONE");
 
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+
 		WI_CORE_INFO("Binding the index buffer ...");
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_data.size() * sizeof(int), ebo_data.data(), GL_STATIC_DRAW);
 		WI_CORE_INFO("Binding the index buffer DONE");
+
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
@@ -315,8 +375,43 @@ namespace Wiwa {
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(2);
 
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+
+
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+	}
+
+	void Model::generateGridBuffers()
+	{
+
+
+
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+
+		glGenBuffers(1, &vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, vbo_data.size() * sizeof(float), vbo_data.data(), GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_data.size() * sizeof(int), ebo_data.data(), GL_STATIC_DRAW);
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	}
 
 
@@ -341,6 +436,10 @@ namespace Wiwa {
 			else if (strcmp(file, "sphere") == 0)
 			{
 				CreateSphere();
+			}
+			else if(strcmp(file, "grid") == 0)
+			{
+				CreateGrid();
 			}
 			else
 			{

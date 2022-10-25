@@ -221,12 +221,12 @@ void ScenePanel::Draw()
     Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
 
     static bool grid = true;
-    Wiwa::Application::Get().GetRenderer3D().RenderGrid();
 
     ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();
     ImVec2 cpos = ImGui::GetCursorPos();
     cpos.x = (viewportPanelSize.x - isize.x) / 2;
     ImGui::SetCursorPos(cpos);
+    //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
     if (ImGui::BeginDragDropTarget())

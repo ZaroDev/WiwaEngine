@@ -38,7 +38,7 @@ namespace Wiwa {
 			Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
 			Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
 			if(mat->getType() == Wiwa::Material::MaterialType::color)
-				r3d.RenderMeshColor(mod, t3d->position, t3d->rotation, t3d->scale, mat->getColor());
+				r3d.RenderMeshColor(mod, t3d->position, t3d->rotation, t3d->scale, mat);
 
 			if (mat->getType() == Wiwa::Material::MaterialType::textured)
 				r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat);

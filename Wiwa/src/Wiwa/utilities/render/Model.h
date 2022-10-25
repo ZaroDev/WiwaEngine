@@ -13,13 +13,14 @@ namespace Wiwa {
 	private:
 		std::string m_ModelPath;
 	protected:
-		bool is_root;
+		bool is_root = false;
 
 		std::vector<float> vbo_data;
 		std::vector<int> ebo_data;
 
 		std::vector<Model*> models;
 		void generateBuffers();
+		void generateGridBuffers();
 	private:
 		unsigned int vao, vbo, ebo;
 
@@ -31,6 +32,7 @@ namespace Wiwa {
 		void CreatePlane();
 		void CreatePyramid();
 		void CreateSphere();
+		void CreateGrid();
 	public:
 		Model(const char* file);
 		~Model();
