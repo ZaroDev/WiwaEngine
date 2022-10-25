@@ -51,12 +51,14 @@ namespace Wiwa {
 
 		m_EntitySystems[eid].clear();
 
-		// Add component indexes (no need to remove as data is still reserved)
+		// Add to removed component indexes
 		std::map<ComponentId, size_t>::iterator c_it;
 
 		for (c_it = m_EntityComponents[eid].begin(); c_it != m_EntityComponents[eid].end(); c_it++) {
 			m_ComponentsRemoved[c_it->first].push_back(c_it->second);
 		}
+
+		m_EntityComponents[eid].clear();
 	}
 
 	void EntityManager::OnEntityComponentAdded(EntityId eid)
@@ -157,9 +159,10 @@ namespace Wiwa {
 			if (!m_Components[cid]) {
 				byte* block = new byte[t_size];
 
-				component = new(block) byte[t_size]{ 0 };
+				component = block;//new(block) byte[t_size]{ 0 };
 
 				if (value) memcpy(component, value, t_size);
+				else memset(component, 0, t_size);
 
 				m_Components[cid] = block;
 				m_ComponentsSize[cid]++;
@@ -180,9 +183,10 @@ namespace Wiwa {
 
 					size_t ind = c_index * t_size;
 
-					component = new(&components[ind]) byte[t_size]{ 0 };
+					component = components + ind;//new(&components[ind]) byte[t_size]{ 0 };
 
 					if (value) memcpy(component, value, t_size);
+					else memset(component, 0, t_size);
 
 					m_ComponentsRemoved[cid].pop_back();
 
@@ -196,9 +200,10 @@ namespace Wiwa {
 
 						size_t last = m_ComponentsSize[cid] * t_size;
 
-						component = new(&components[last]) byte[t_size]{ 0 };
+						component = components + last;//new(&components[last]) byte[t_size]{ 0 };
 
 						if (value) memcpy(component, value, t_size);
+						else memset(component, 0, t_size);
 					}
 					// If not, expand the block and construct
 					else {
@@ -212,9 +217,10 @@ namespace Wiwa {
 
 						delete[] oldBlock;
 
-						component = new(&newBlock[oldSize]) byte[t_size]{ 0 };
+						component = newBlock + oldSize;//new(&newBlock[oldSize]) byte[t_size]{ 0 };
 
 						if (value) memcpy(component, value, t_size);
+						else memset(component, 0, t_size);
 
 						m_Components[cid] = newBlock;
 

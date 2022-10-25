@@ -581,13 +581,7 @@ void InspectorPanel::Draw()
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{
-						const Type* tt = GetType<Wiwa::Transform3D>();
-						byte* data = NULL;
-						if (type->Equals(tt)) {
-							data = (byte*)new Wiwa::Transform3D({0,0,0,0,0,0,1,1,1});
-						}
-						entityManager.AddComponent(m_CurrentID, type->hash, data);
-						if (data) delete[] data;
+						entityManager.AddComponent(m_CurrentID, type->hash);
 						ImGui::CloseCurrentPopup();
 					}
 				}
