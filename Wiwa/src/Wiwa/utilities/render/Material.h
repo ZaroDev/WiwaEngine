@@ -36,7 +36,7 @@ namespace Wiwa {
 		std::string m_TexturePath;
 		std::string m_MaterialPath;
 		uint32_t m_TextureId;
-		Size2i m_TextureSize;
+		Size2i m_TextureSize = { 0,0 };
 		Color4f m_Color;
 		MaterialType m_Type;
 	};

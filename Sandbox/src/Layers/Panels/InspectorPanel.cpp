@@ -115,7 +115,14 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::Text("%i", mat->GetTextureSize().x);
 		ImGui::SameLine();
 		ImGui::Text("x %i", mat->GetTextureSize().y);
+		const char* types[] = { "Color", "Textured" };
+		const char* currentItem = mat->getType() == Wiwa::Material::MaterialType::color ? types[0] : types[1];
 		ImGui::Text("Texture path: %s", mat->getTexturePath());
+		ImGui::Text("Type");
+		ImGui::SameLine();
+		ImGui::Text(currentItem);
+		static glm::vec4 color = { mat->getColor().r, mat->getColor().g,mat->getColor().b , mat->getColor().a };
+		ImGui::ColorEdit4("Color", glm::value_ptr(color));
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))

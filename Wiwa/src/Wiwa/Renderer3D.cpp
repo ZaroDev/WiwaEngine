@@ -47,9 +47,6 @@ namespace Wiwa {
 		m_TSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
 		m_TSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
 
-		/*m_GridShaderId = Resources::Load<Shader>("resources/shaders/grid");
-		m_GridShader = Resources::GetResourceById<Shader>(m_GridShaderId);*/
-
 		m_GSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
 		m_GSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
 		m_GSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
@@ -81,13 +78,28 @@ namespace Wiwa {
 		model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));
 		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
 
-		m_ColorShader->Use();
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
 
+		m_ColorShader->Use();
+		m_ColorShader->setUniform(m_CSColorUniformLocation, glm::vec4{ color.r, color.g, color.b, color.a });
 		m_ColorShader->setUniform(m_CSModelUniformLocation, model);
 		m_ColorShader->setUniform(m_CSViewUniformLocation, camera->getView());
 		m_ColorShader->setUniform(m_CSProjectionUniformLocation, camera->getProjection());
 
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+
 		mesh->Render();
+
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
 
 		target->Unbind();
 	}
@@ -119,41 +131,42 @@ namespace Wiwa {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
 
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+
 		m_TextureShader->setUniform(m_TSModelUniformLocation, model);
 		m_TextureShader->setUniform(m_TSViewUniformLocation, camera->getView());
 		m_TextureShader->setUniform(m_TSProjectionUniformLocation, camera->getProjection());
 
+		if (glGetError() != 0)
+		{
+			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
+		}
+
 		mesh->Render();
+
+
+
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		target->Unbind();
 	}
 
-	void Renderer3D::RenderGrid(FrameBuffer* target, bool clear, Camera* camera)
+	void Renderer3D::RenderGrid(Model* grid, FrameBuffer* target, bool clear, Camera* camera)
 	{
-
 		if (!target) target = &m_FrameBuffer;
 		if (!camera) camera = &m_ActiveCamera;
-		glViewport(0, 0, target->getWidth(), target->getHeight());
+		/*glViewport(0, 0, target->getWidth(), target->getHeight());
 
 		target->Bind(clear);
-		glColor3f(1.0f, 1.0f, 1.0f);
-		glLineWidth(1.0f);
+		glBindVertexArray(grid->getVAO());
 
-		glBegin(GL_LINES);
+		glDrawElements(GL_LINES, grid., GL_UNSIGNED_INT, NULL);
 
-		float d = 200.0f;
-
-		for (float i = -d; i <= d; i += 1.0f)
-		{
-			glVertex3f(i, 0.0f, -d);
-			glVertex3f(i, 0.0f, d);
-			glVertex3f(-d, 0.0f, i);
-			glVertex3f(d, 0.0f, i);
-		}
-
-		glEnd();
-		target->Unbind();
+		glBindVertexArray(0);
+		target->Unbind();*/
 	}
 
 

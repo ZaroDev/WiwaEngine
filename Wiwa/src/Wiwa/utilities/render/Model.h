@@ -20,6 +20,7 @@ namespace Wiwa {
 
 		std::vector<Model*> models;
 		void generateBuffers();
+		void generateGridBuffers();
 	private:
 		unsigned int vao, vbo, ebo;
 
@@ -31,6 +32,7 @@ namespace Wiwa {
 		void CreatePlane();
 		void CreatePyramid();
 		void CreateSphere();
+		void CreateGrid();
 	public:
 		Model(const char* file);
 		~Model();

@@ -45,7 +45,6 @@ namespace Wiwa {
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 		if(clear) glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//glViewport(0, 0, video->getScreenWidth(), video->getScreenHeight());
 	}
 
 	void FrameBuffer::Unbind()
