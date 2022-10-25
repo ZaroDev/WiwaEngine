@@ -13,7 +13,7 @@ namespace Wiwa {
 	private:
 		std::string m_ModelPath;
 	protected:
-		bool is_root;
+		bool is_root = false;
 
 		std::vector<float> vbo_data;
 		std::vector<int> ebo_data;

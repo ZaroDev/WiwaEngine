@@ -7,11 +7,25 @@ Wiwa::Material::Material()
 	: m_Type(MaterialType::color), m_ResourceId(NULL), m_TextureId(NULL)
 {
 	m_Color = { 0.2f, 0.2f, 0.2f, 1.0f};
+    m_Settings = 
+    {
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        0.1f
+    };
 }
 
 Wiwa::Material::Material(Color4f color)
 	: m_Type(MaterialType::color), m_Color(color), m_ResourceId(NULL), m_TextureId(NULL)
 {
+    m_Settings =
+    {
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        0.1f
+    };
 }
 
 Wiwa::Material::Material(const char* file)
@@ -26,11 +40,24 @@ Wiwa::Material::Material(const char* file)
         matFile["colorA"].get<float>()
     };
     m_Type = (Wiwa::Material::MaterialType)matFile["type"].get<int>();
+   /* m_Settings = {
+       matFile["ambient"].get<glm::vec3>(),
+       matFile["diffuse"].get<glm::vec3>(),
+       matFile["specular"].get<glm::vec3>(),
+       matFile["shininess"].get<float>()
+    };*/
     if (!m_TexturePath.empty())
     {
         m_ResourceId = Resources::Load<Image>(m_TexturePath.c_str());
         m_TextureId = Resources::GetResourceById<Image>(m_ResourceId)->GetTextureId();
     }
+    m_Settings =
+    {
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        glm::vec3{0.1f, 0.1f, 0.1f},
+        0.1f
+    };
 }
 
 Wiwa::Material::~Material()

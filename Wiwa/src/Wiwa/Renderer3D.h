@@ -34,31 +34,44 @@ namespace Wiwa {
 			WIREFRAME
 		};
 	private:
+		struct DefaultUnlitUniforms
+		{
+			uint32_t Projection;
+			uint32_t View;
+			uint32_t Model;
+		};
+		struct DefaultLitUniforms
+		{
+			uint32_t MatAmbient;
+			uint32_t MatDiffuse;
+			uint32_t MatSpecular;
+
+			uint32_t Shininess;
+
+			uint32_t ViewPos;
+
+			uint32_t LigPos;
+			uint32_t LigAmbient;
+			uint32_t LigDiffuse;
+			uint32_t LigSpecular;
+			
+			uint32_t Projection;
+			uint32_t View;
+			uint32_t Model;
+		};
 		// Default FrameBuffer
 		FrameBuffer m_FrameBuffer;
 
 		// Color shader
 		ResourceId m_ColorShaderId;
 		Shader* m_ColorShader;
-		
 		uint32_t m_CSColorUniformLocation;
-		uint32_t m_CSModelUniformLocation;
-		uint32_t m_CSViewUniformLocation;
-		uint32_t m_CSProjectionUniformLocation;
+		DefaultLitUniforms m_CSUniforms;
 
 		ResourceId m_TextureShaderId;
 		Shader* m_TextureShader;
+		DefaultLitUniforms m_TSUniforms;
 
-		uint32_t m_TSModelUniformLocation;
-		uint32_t m_TSViewUniformLocation;
-		uint32_t m_TSProjectionUniformLocation;
-
-		ResourceId m_GridShaderId;
-		Shader* m_GridShader;
-
-		uint32_t m_GSModelUniformLocation;
-		uint32_t m_GSViewUniformLocation;
-		uint32_t m_GSProjectionUniformLocation;
 
 		glm::mat4 m_PersProj{ 0.0f };
 		glm::mat4 m_View{ 0.0f };
@@ -74,14 +87,17 @@ namespace Wiwa {
 		inline void SetActiveCamera(Camera cam) { m_ActiveCamera = cam; }
 		void SetOption(Options option);
 		void DisableOption(Options option);
-		void RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Color4f color, bool clear=false, FrameBuffer* target=NULL, Camera* camera=NULL);
+		void RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, FrameBuffer* target=NULL, Camera* camera=NULL);
 		void RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, FrameBuffer* target=NULL, Camera* camera=NULL);
 		void RenderGrid(Model* grid, FrameBuffer* target = NULL, bool clear = false, Camera* camera = NULL);
 		void Close();
-
+		
+		inline void SetLight(const Light& light) { m_FrameBuffer.setLight(light); }
 
 		// Getters
 		uint32_t getColorBufferTexture() { return m_FrameBuffer.getColorBufferTexture(); }
+
+		inline FrameBuffer& getFrameBuffer() { return m_FrameBuffer; }
 
 		glm::mat4 GetPersProjection() { return m_ActiveCamera.getProjection(); }
 		glm::mat4 GetView() { return m_ActiveCamera.getView(); }

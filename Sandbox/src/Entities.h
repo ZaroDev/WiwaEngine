@@ -38,7 +38,7 @@ void CreateSphere()
 	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Sphere");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("sphere");
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("resources/meshes/sphere.fbx");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
 	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, mesh);
 }

@@ -10,7 +10,13 @@
 
 namespace Wiwa {
 	Renderer3D::Renderer3D() {
-
+		Light light = { 
+			glm::vec3{0.0f, 10.0f, 0.0f},	//Position
+			glm::vec3{1.0f, 1.0f, 1.0f},		//Ambient
+			glm::vec3{1.0f, 1.0f, 1.0f},		//Diffuse
+			glm::vec3{1.0f, 1.0f, 1.0f}		//Specular
+		};
+		m_FrameBuffer.setLight(light);
 	}
 
 	Renderer3D::~Renderer3D()
@@ -31,26 +37,43 @@ namespace Wiwa {
 		m_ActiveCamera.lookat({ 0.0f, 0.0f, 0.0f });
 
 		// Color shader
-		m_ColorShaderId = Resources::Load<Shader>("resources/shaders/model_color");
+		m_ColorShaderId = Resources::Load<Shader>("resources/shaders/lit_model_color");
 		m_ColorShader = Resources::GetResourceById<Shader>(m_ColorShaderId);
 
 		m_CSColorUniformLocation = m_ColorShader->getUniformLocation("u_Color");
 
-		m_CSModelUniformLocation = m_ColorShader->getUniformLocation("u_Model");
-		m_CSViewUniformLocation = m_ColorShader->getUniformLocation("u_View");
-		m_CSProjectionUniformLocation = m_ColorShader->getUniformLocation("u_Proj");
+		m_CSUniforms.MatAmbient = m_ColorShader->getUniformLocation("u_Material.ambient");
+		m_CSUniforms.MatDiffuse = m_ColorShader->getUniformLocation("u_Material.diffuse");
+		m_CSUniforms.MatSpecular = m_ColorShader->getUniformLocation("u_Material.specular");
+		m_CSUniforms.Shininess = m_ColorShader->getUniformLocation("u_Material.shininess");
 
-		m_TextureShaderId = Resources::Load<Shader>("resources/shaders/model_texture");
+		m_CSUniforms.ViewPos = m_ColorShader->getUniformLocation("u_ViewPos");
+
+		m_CSUniforms.Model = m_ColorShader->getUniformLocation("u_Model");
+		m_CSUniforms.View = m_ColorShader->getUniformLocation("u_View");
+		m_CSUniforms.Projection = m_ColorShader->getUniformLocation("u_Proj");
+
+		m_TextureShaderId = Resources::Load<Shader>("resources/shaders/lit_model_texture");
 		m_TextureShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
 
-		m_TSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
-		m_TSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
-		m_TSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
+		m_TSUniforms.LigPos = m_TextureShader->getUniformLocation("u_Light.position");
+		m_TSUniforms.LigAmbient = m_TextureShader->getUniformLocation("u_Light.ambient");
+		m_TSUniforms.LigDiffuse = m_TextureShader->getUniformLocation("u_Light.diffuse");
+		m_TSUniforms.LigSpecular = m_TextureShader->getUniformLocation("u_Light.specular");
 
-		m_GSModelUniformLocation = m_TextureShader->getUniformLocation("u_Model");
-		m_GSViewUniformLocation = m_TextureShader->getUniformLocation("u_View");
-		m_GSProjectionUniformLocation = m_TextureShader->getUniformLocation("u_Proj");
+		m_TSUniforms.MatAmbient = m_TextureShader->getUniformLocation("u_Material.ambient");
+		m_TSUniforms.MatDiffuse = m_TextureShader->getUniformLocation("u_Material.diffuse");
+		m_TSUniforms.MatSpecular = m_TextureShader->getUniformLocation("u_Material.specular");
+		m_TSUniforms.Shininess = m_TextureShader->getUniformLocation("u_Material.shininess");
 
+		m_TSUniforms.ViewPos = m_TextureShader->getUniformLocation("u_ViewPos");
+
+
+		m_TSUniforms.Model = m_TextureShader->getUniformLocation("u_Model");
+		m_TSUniforms.View = m_TextureShader->getUniformLocation("u_View");
+		m_TSUniforms.Projection = m_TextureShader->getUniformLocation("u_Proj");
+
+		
 		WI_CORE_INFO("Renderer3D initialized");
 		SetOption(Options::DEPTH_TEST);
 		SetOption(Options::CULL_FACE);
@@ -62,7 +85,7 @@ namespace Wiwa {
 		m_FrameBuffer.Clear();
 	}
 
-	void Renderer3D::RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Color4f color, bool clear, FrameBuffer* target, Camera* camera)
+	void Renderer3D::RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear, FrameBuffer* target, Camera* camera)
 	{
 		if (!target) target = &m_FrameBuffer;
 		if (!camera) camera = &m_ActiveCamera;
@@ -78,28 +101,34 @@ namespace Wiwa {
 		model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));
 		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
 
-		if (glGetError() != 0)
-		{
-			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
-		}
-
+		glm::vec3 postitionLight = { target->getLight().Position.x, target->getLight().Position.y , target->getLight().Position.z };
+		glm::vec3 ambientLight = { target->getLight().Ambient.r, target->getLight().Ambient.g , target->getLight().Ambient.b };
+		glm::vec3 diffuseLight = { target->getLight().Diffuse.r, target->getLight().Diffuse.g , target->getLight().Diffuse.b };
+		glm::vec3 specularLight = { target->getLight().Specular.r, target->getLight().Specular.g , target->getLight().Specular.b };
+		
 		m_ColorShader->Use();
-		m_ColorShader->setUniform(m_CSColorUniformLocation, glm::vec4{ color.r, color.g, color.b, color.a });
-		m_ColorShader->setUniform(m_CSModelUniformLocation, model);
-		m_ColorShader->setUniform(m_CSViewUniformLocation, camera->getView());
-		m_ColorShader->setUniform(m_CSProjectionUniformLocation, camera->getProjection());
 
-		if (glGetError() != 0)
-		{
-			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
-		}
+		m_ColorShader->setUniform(m_CSUniforms.LigPos, postitionLight);
+		m_ColorShader->setUniform(m_CSUniforms.LigAmbient, ambientLight);
+		m_ColorShader->setUniform(m_CSUniforms.LigDiffuse, diffuseLight);
+		m_ColorShader->setUniform(m_CSUniforms.LigSpecular, specularLight);
+
+		m_ColorShader->setUniform(m_TSUniforms.MatAmbient, material->getSettings().ambient);
+		m_ColorShader->setUniform(m_TSUniforms.MatDiffuse, material->getSettings().diffuse);
+		m_ColorShader->setUniform(m_TSUniforms.MatSpecular, material->getSettings().specular);
+		m_ColorShader->setUniform(m_TSUniforms.Shininess, material->getSettings().shininess);
+
+		m_ColorShader->setUniform(m_CSUniforms.ViewPos, camera->getPosition());
+
+		glm::vec4 color = { material->getColor().r, material->getColor().g, material->getColor().b, material->getColor().a };
+
+		m_ColorShader->setUniform(m_CSColorUniformLocation, color);
+		
+		m_ColorShader->setUniform(m_CSUniforms.Model, model);
+		m_ColorShader->setUniform(m_CSUniforms.View, camera->getView());
+		m_ColorShader->setUniform(m_CSUniforms.Projection, camera->getProjection());
 
 		mesh->Render();
-
-		if (glGetError() != 0)
-		{
-			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
-		}
 
 		target->Unbind();
 	}
@@ -111,7 +140,7 @@ namespace Wiwa {
 
 		if (material->getType() == Wiwa::Material::MaterialType::color)
 		{
-			RenderMeshColor(mesh, position, rotation, scale, material->getColor(), clear, target, camera);
+			RenderMeshColor(mesh, position, rotation, scale, material, clear, target, camera);
 			return;
 		}
 
@@ -131,24 +160,31 @@ namespace Wiwa {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
 
-		if (glGetError() != 0)
-		{
-			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
-		}
+		glm::vec3 postitionLight = { target->getLight().Position.x, target->getLight().Position.y , target->getLight().Position.z };
+		glm::vec3 ambientLight = { target->getLight().Ambient.r, target->getLight().Ambient.g , target->getLight().Ambient.b };
+		glm::vec3 diffuseLight = { target->getLight().Diffuse.r, target->getLight().Diffuse.g , target->getLight().Diffuse.b };
+		glm::vec3 specularLight = { target->getLight().Specular.r, target->getLight().Specular.g , target->getLight().Specular.b };
 
-		m_TextureShader->setUniform(m_TSModelUniformLocation, model);
-		m_TextureShader->setUniform(m_TSViewUniformLocation, camera->getView());
-		m_TextureShader->setUniform(m_TSProjectionUniformLocation, camera->getProjection());
 
-		if (glGetError() != 0)
-		{
-			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
-		}
+
+		m_TextureShader->setUniform(m_TSUniforms.LigPos, postitionLight);
+		m_TextureShader->setUniform(m_TSUniforms.LigAmbient, ambientLight);
+		m_TextureShader->setUniform(m_TSUniforms.LigDiffuse, diffuseLight);
+		m_TextureShader->setUniform(m_TSUniforms.LigSpecular, specularLight);
+
+		m_TextureShader->setUniform(m_TSUniforms.MatAmbient, material->getSettings().ambient);
+		m_TextureShader->setUniform(m_TSUniforms.MatDiffuse, material->getSettings().diffuse);
+		m_TextureShader->setUniform(m_TSUniforms.MatSpecular, material->getSettings().specular);
+		m_TextureShader->setUniform(m_TSUniforms.Shininess, material->getSettings().shininess);
+
+		m_TextureShader->setUniform(m_TSUniforms.ViewPos, camera->getPosition());
+
+		m_TextureShader->setUniform(m_TSUniforms.Model, model);
+		m_TextureShader->setUniform(m_TSUniforms.View, camera->getView());
+		m_TextureShader->setUniform(m_TSUniforms.Projection, camera->getProjection());
+
 
 		mesh->Render();
-
-
-
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		target->Unbind();
