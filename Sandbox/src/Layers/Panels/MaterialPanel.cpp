@@ -59,7 +59,6 @@ void MaterialPanel::Draw()
         static const char* currentItem = m_Material->getType() == Wiwa::Material::MaterialType::color ? types[0] : types[1];
         
         Wiwa::Material::MaterialSettings& settings = m_Material->getSettings();
-        ImGui::ColorEdit3("Ambient", glm::value_ptr(settings.ambient));
         ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
         ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
         ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);

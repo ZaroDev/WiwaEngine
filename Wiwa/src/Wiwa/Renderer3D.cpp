@@ -42,7 +42,7 @@ namespace Wiwa {
 
 		m_CSColorUniformLocation = m_ColorShader->getUniformLocation("u_Color");
 
-		m_CSUniforms.MatAmbient = m_ColorShader->getUniformLocation("u_Material.ambient");
+		
 		m_CSUniforms.MatDiffuse = m_ColorShader->getUniformLocation("u_Material.diffuse");
 		m_CSUniforms.MatSpecular = m_ColorShader->getUniformLocation("u_Material.specular");
 		m_CSUniforms.Shininess = m_ColorShader->getUniformLocation("u_Material.shininess");
@@ -61,7 +61,6 @@ namespace Wiwa {
 		m_TSUniforms.LigDiffuse = m_TextureShader->getUniformLocation("u_Light.diffuse");
 		m_TSUniforms.LigSpecular = m_TextureShader->getUniformLocation("u_Light.specular");
 
-		m_TSUniforms.MatAmbient = m_TextureShader->getUniformLocation("u_Material.ambient");
 		m_TSUniforms.MatDiffuse = m_TextureShader->getUniformLocation("u_Material.diffuse");
 		m_TSUniforms.MatSpecular = m_TextureShader->getUniformLocation("u_Material.specular");
 		m_TSUniforms.Shininess = m_TextureShader->getUniformLocation("u_Material.shininess");
@@ -113,7 +112,6 @@ namespace Wiwa {
 		m_ColorShader->setUniform(m_CSUniforms.LigDiffuse, diffuseLight);
 		m_ColorShader->setUniform(m_CSUniforms.LigSpecular, specularLight);
 
-		m_ColorShader->setUniform(m_TSUniforms.MatAmbient, material->getSettings().ambient);
 		m_ColorShader->setUniform(m_TSUniforms.MatDiffuse, material->getSettings().diffuse);
 		m_ColorShader->setUniform(m_TSUniforms.MatSpecular, material->getSettings().specular);
 		m_ColorShader->setUniform(m_TSUniforms.Shininess, material->getSettings().shininess);
@@ -156,9 +154,7 @@ namespace Wiwa {
 		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
 
 		m_TextureShader->Use();
-		glBindVertexArray(mesh->getVAO());
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
+
 
 		glm::vec3 postitionLight = { target->getLight().Position.x, target->getLight().Position.y , target->getLight().Position.z };
 		glm::vec3 ambientLight = { target->getLight().Ambient.r, target->getLight().Ambient.g , target->getLight().Ambient.b };
@@ -172,8 +168,7 @@ namespace Wiwa {
 		m_TextureShader->setUniform(m_TSUniforms.LigDiffuse, diffuseLight);
 		m_TextureShader->setUniform(m_TSUniforms.LigSpecular, specularLight);
 
-		m_TextureShader->setUniform(m_TSUniforms.MatAmbient, material->getSettings().ambient);
-		m_TextureShader->setUniform(m_TSUniforms.MatDiffuse, material->getSettings().diffuse);
+		m_TextureShader->setUniform(m_TSUniforms.MatDiffuse, mesh->getVAO());
 		m_TextureShader->setUniform(m_TSUniforms.MatSpecular, material->getSettings().specular);
 		m_TextureShader->setUniform(m_TSUniforms.Shininess, material->getSettings().shininess);
 
@@ -183,6 +178,8 @@ namespace Wiwa {
 		m_TextureShader->setUniform(m_TSUniforms.View, camera->getView());
 		m_TextureShader->setUniform(m_TSUniforms.Projection, camera->getProjection());
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
 
 		mesh->Render();
 

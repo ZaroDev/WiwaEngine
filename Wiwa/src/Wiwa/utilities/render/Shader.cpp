@@ -130,6 +130,12 @@ namespace Wiwa {
 		return glGetUniformLocation(m_IDprogram, uniform_name);
 	}
 
+	void Shader::setUniformUInt(unsigned int uniform_id, unsigned int value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform1i(uniform_id, value);
+	}
+
 	void Shader::setUniformMat4(unsigned int uniform_id, glm::mat4 value)
 	{
 		glUseProgram(m_IDprogram);

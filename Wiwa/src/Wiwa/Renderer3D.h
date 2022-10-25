@@ -42,7 +42,6 @@ namespace Wiwa {
 		};
 		struct DefaultLitUniforms
 		{
-			uint32_t MatAmbient;
 			uint32_t MatDiffuse;
 			uint32_t MatSpecular;
 

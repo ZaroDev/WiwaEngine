@@ -30,6 +30,7 @@ namespace Wiwa {
 
 		template<class T> void setUniform(unsigned int uniform_id, T value);
 
+		void setUniformUInt(unsigned int uniform_id, unsigned int value);
 		void setUniformMat4(unsigned int uniform_id, glm::mat4 value);
 		void setUniformFloat(unsigned int uniform_id, float value);
 		void setUniformVec3(unsigned int uniform_id, glm::vec3 value);
@@ -39,7 +40,10 @@ namespace Wiwa {
 		uint32_t m_IDprogram;
 		bool m_AllOk;
 	};
-
+	template<>
+	inline void Shader::setUniform<unsigned int>(unsigned int uniform_id, unsigned int value){
+	
+	}
 	template<>
 	inline void Shader::setUniform<glm::mat4>(unsigned int uniform_id, glm::mat4 value) {
 		setUniformMat4(uniform_id, value);
