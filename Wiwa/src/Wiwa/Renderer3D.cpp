@@ -169,7 +169,7 @@ namespace Wiwa {
 		m_TextureShader->setUniform(m_TSUniforms.LigSpecular, specularLight);
 
 		m_TextureShader->setUniform(m_TSUniforms.MatDiffuse, mesh->getVAO());
-		m_TextureShader->setUniform(m_TSUniforms.MatSpecular, material->getSettings().specular);
+		m_TextureShader->setUniform(m_TSUniforms.MatSpecular, mesh->getVAO());
 		m_TextureShader->setUniform(m_TSUniforms.Shininess, material->getSettings().shininess);
 
 		m_TextureShader->setUniform(m_TSUniforms.ViewPos, camera->getPosition());
@@ -180,6 +180,8 @@ namespace Wiwa {
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, material->getSpecularId());
 
 		mesh->Render();
 

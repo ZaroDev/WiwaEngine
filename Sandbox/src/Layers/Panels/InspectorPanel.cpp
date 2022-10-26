@@ -127,7 +127,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		Wiwa::Material::MaterialSettings& settings = mat->getSettings();
 		ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
 		ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
-		ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
+		ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 512);
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
