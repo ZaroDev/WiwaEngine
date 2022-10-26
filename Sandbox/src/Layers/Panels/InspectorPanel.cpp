@@ -195,6 +195,9 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::Text("Model path: ");
 		ImGui::SameLine();
 		ImGui::Text(mod->getModelPath());
+		static bool showNormals = false;
+		if (ImGui::Checkbox("Show normals", &showNormals))
+			mod->showNormals = showNormals;
 		ImGui::PopID();
 		return;
 	}

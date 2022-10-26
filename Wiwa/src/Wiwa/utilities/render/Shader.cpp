@@ -27,6 +27,9 @@ namespace Wiwa {
 		std::string fragmentFile = filename;
 		fragmentFile += ".fs";
 
+		std::string geometryFile = filename;
+		geometryFile += ".gs";
+
 		std::string* vertexShaderSourceStr = getFileData(vertexFile.c_str());
 
 		if (!vertexShaderSourceStr) {
@@ -52,6 +55,12 @@ namespace Wiwa {
 		}
 
 		const char* fragmentShaderSource = fragmentShaderSourceStr->c_str();
+
+		std::string* geometryShaderSourceStr = getFileData(geometryFile.c_str());
+		bool hasGS = geometryShaderSourceStr;
+
+		
+
 
 		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -92,6 +101,30 @@ namespace Wiwa {
 		m_IDprogram = glCreateProgram();
 		glAttachShader(m_IDprogram, vertexShader);
 		glAttachShader(m_IDprogram, fragmentShader);
+
+
+		unsigned int geometryShader;
+		if (hasGS)
+		{
+			const char* geometryShaderSource = geometryShaderSourceStr->c_str();
+			geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+			glShaderSource(geometryShader, 1, &geometryShaderSource, NULL);
+			glCompileShader(geometryShader);
+
+			glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &success);
+
+			if (!success) {
+				glGetShaderInfoLog(geometryShader, 512, NULL, infoLog);
+				std::string msg = "Geometry shader compile error: ";
+				msg += infoLog;
+
+				WI_CORE_ASSERT_MSG(msg.c_str())
+
+					return;
+			}
+			glAttachShader(m_IDprogram, geometryShader);
+		}
+
 		glLinkProgram(m_IDprogram);
 
 		glGetShaderiv(m_IDprogram, GL_COMPILE_STATUS, &success);
@@ -108,9 +141,12 @@ namespace Wiwa {
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+		if(hasGS)
+			glDeleteShader(geometryShader);
 
 		delete vertexShaderSourceStr;
 		delete fragmentShaderSourceStr;
+		delete geometryShaderSourceStr;
 
 		m_AllOk = true;
 	}

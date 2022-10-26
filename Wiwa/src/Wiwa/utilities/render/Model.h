@@ -42,5 +42,7 @@ namespace Wiwa {
 		inline unsigned int getVAO() { return vao; }
 
 		inline const char* getModelPath() { return m_ModelPath.c_str(); }
+	public:
+		bool showNormals = false;
 	};
 }

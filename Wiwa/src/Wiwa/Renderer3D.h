@@ -71,6 +71,9 @@ namespace Wiwa {
 		Shader* m_TextureShader;
 		DefaultLitUniforms m_TSUniforms;
 
+		ResourceId m_NormalDisplayShaderId;
+		Shader* m_NormalDisplayShader;
+		DefaultUnlitUniforms m_NDSUniforms;
 
 		glm::mat4 m_PersProj{ 0.0f };
 		glm::mat4 m_View{ 0.0f };
