@@ -53,6 +53,7 @@ namespace Wiwa {
 		m_CSUniforms.View = m_ColorShader->getUniformLocation("u_View");
 		m_CSUniforms.Projection = m_ColorShader->getUniformLocation("u_Proj");
 
+		//Texture shader
 		m_TextureShaderId = Resources::Load<Shader>("resources/shaders/lit_model_texture");
 		m_TextureShader = Resources::GetResourceById<Shader>(m_TextureShaderId);
 
@@ -72,6 +73,13 @@ namespace Wiwa {
 		m_TSUniforms.View = m_TextureShader->getUniformLocation("u_View");
 		m_TSUniforms.Projection = m_TextureShader->getUniformLocation("u_Proj");
 
+		//Normal Display Shader
+		m_NormalDisplayShaderId = Resources::Load<Shader>("resources/shaders/normal_display");
+		m_NormalDisplayShader = Resources::GetResourceById<Shader>(m_NormalDisplayShaderId);
+
+		m_NDSUniforms.Model = m_NormalDisplayShader->getUniformLocation("u_Model");
+		m_NDSUniforms.View = m_NormalDisplayShader->getUniformLocation("u_View");
+		m_NDSUniforms.Projection = m_NormalDisplayShader->getUniformLocation("u_Projection");
 		
 		WI_CORE_INFO("Renderer3D initialized");
 		SetOption(Options::DEPTH_TEST);
@@ -127,7 +135,15 @@ namespace Wiwa {
 		m_ColorShader->setUniform(m_CSUniforms.Projection, camera->getProjection());
 
 		mesh->Render();
+		if (mesh->showNormals)
+		{
+			m_NormalDisplayShader->Use();
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
 
+			mesh->Render();
+		}
 		target->Unbind();
 	}
 
@@ -184,8 +200,17 @@ namespace Wiwa {
 		glBindTexture(GL_TEXTURE_2D, material->getSpecularId());
 
 		mesh->Render();
+		if (mesh->showNormals)
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+			m_NormalDisplayShader->Use();
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
+
+			mesh->Render();
+		}
 		target->Unbind();
 	}
 
