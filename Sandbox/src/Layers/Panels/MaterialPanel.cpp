@@ -52,25 +52,6 @@ void MaterialPanel::Draw()
         ImGui::SameLine();
         ImGui::Text("x %i", m_Material->getTextureSize().y);
         ImGui::Text("Texture path: %s", m_Material->getTexturePath());
-        ImGui::Image((ImTextureID)(intptr_t)m_Material->getSpecularId(), { 64, 64 });
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-            {
-                const wchar_t* path = (const wchar_t*)payload->Data;
-                std::wstring ws(path);
-                std::string pathS(ws.begin(), ws.end());
-                std::filesystem::path p = pathS;
-                if (p.extension() == ".png" && m_Material)
-                {
-                    m_Material->setSpecular(pathS.c_str());
-                }
-
-            }
-            ImGui::EndDragDropTarget();
-
-        }
-
         glm::vec4 color = { m_Material->getColor().r, m_Material->getColor().g,m_Material->getColor().b , m_Material->getColor().a };
         ImGui::ColorEdit4("Color", glm::value_ptr(color));
         m_Material->setColor({ color.r, color.g, color.b, color.a });
@@ -80,7 +61,7 @@ void MaterialPanel::Draw()
         Wiwa::Material::MaterialSettings& settings = m_Material->getSettings();
         ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
         ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
-        ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 512);
+        ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
         m_Material->setSettings(settings);
         if (ImGui::BeginCombo("Material Type", currentItem))
         {
@@ -126,12 +107,41 @@ void MaterialPanel::Draw()
    
 	ImGui::End();
     ImGui::Begin("Light Debbuger");
-    Wiwa::Light& settings = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getLight();
-    ImGui::DragFloat3("Position", glm::value_ptr(settings.Position));
-    ImGui::ColorEdit3("Ambient", glm::value_ptr(settings.Ambient));
-    ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.Diffuse));
-    ImGui::ColorEdit3("Specular", glm::value_ptr(settings.Specular));
-    Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().setLight(settings);
+    Wiwa::DirectionalLight& directionalLight = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getDirectionalLight();
+    ImGui::DragFloat3("Direction", glm::value_ptr(directionalLight.Direction));
+    ImGui::ColorEdit3("Ambient", glm::value_ptr(directionalLight.Ambient));
+    ImGui::ColorEdit3("Diffuse", glm::value_ptr(directionalLight.Diffuse));
+    ImGui::ColorEdit3("Specular", glm::value_ptr(directionalLight.Specular));
+    Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().setLight(directionalLight);
+
+    Wiwa::List<Wiwa::PointLight>* pLights = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getPointLights();
+    if (ImGui::Button("+"))
+    {
+        Wiwa::PointLight light{
+            glm::vec3{0.0f},
+            glm::vec3{1.0f},
+            glm::vec3{1.0f},
+            glm::vec3{1.0f},
+            1.0f,
+            0.09f,
+            0.032f
+        };
+        Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().addPointLight(light);
+    }
+    for (int i = 0; i < pLights->size(); i++)
+    {
+        ImGui::PushID(i);
+        ImGui::DragFloat3("Position", glm::value_ptr(pLights->at(i).Position));
+        ImGui::ColorEdit3("Ambient", glm::value_ptr(pLights->at(i).Ambient));
+        ImGui::ColorEdit3("Diffuse", glm::value_ptr(pLights->at(i).Diffuse));
+        ImGui::ColorEdit3("Specular", glm::value_ptr(pLights->at(i).Specular));
+        ImGui::DragFloat("Constant", &pLights->at(i).Constant);
+        ImGui::DragFloat("Linear", &pLights->at(i).Linear);
+        ImGui::DragFloat("Quadratic", &pLights->at(i).Quadratic);
+        ImGui::PopID();
+    }
+
+
     ImGui::End();
 }
 
