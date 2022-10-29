@@ -5,15 +5,20 @@
 <img src="images/editor.png">
 <h2>About the project</h2>
 Wiwa engine is a 3D Game Engine developed during the Game Engines subject. Our goal is to fulfill an Engine that can be used to develop all kinds of games. The engine is based on a full ECS system, and it's meant to have modern features as PBR and C# scripting.
+
+<a href="https://github.com/ZaroDev/WiwaEngine">Github</a>
+<a href="https://github.com/ZaroDev/WiwaEngine/releases">Latest release</a>
+
 <h2>Info</h2>
 For now the engine has the following features.
 
 - Reflection
-- Create entites
-- Add components
-- Asign materials
+- Entites
+- Components
 - WIP material system
 - WIP basic lighting
+- FBX model loading
+- PNG texture loading
 
 <h2>Authors</h2>
 Currently we are two students working on the project
@@ -23,21 +28,28 @@ Currently we are two students working on the project
 
 <h2>Installing</h2>
 
-Dependencies:
-
-- Visual Studio 2019 or more
-
 In order to install the project you can
 
 ```
 git clone https://github.com/ZaroDev/WiwaEngine
 ```
 
+<h2>Compiling</h2>
+Dependencies:
+
+- Visual Studio 2019 or more
+
 Open the ``Scripts`` folder and then select your Visual Studio version at ``GenerateProjectsX.bat``
+Create a ``Assets`` folder at the ``Editor`` folder
 
 Advise: the project only supports Windows
 <h2>How to use</h2>
-<h3>Camera:</h3>
+
+<h3>Entities</h3>
+
+To create an entity left click on the Hierarchy window and select an option. You can create either a blank entity or a primitive. (Disclaimer: empty entities do not include any component and they must be added as desired)
+
+<h3>Camera</h3>
 
 - Hold right click to look  
 - Right click + WASD to move
