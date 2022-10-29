@@ -32,6 +32,9 @@ void AboutPanel::Draw()
 	ImGui::BulletText("RapiJson v1.1.0");
 	ImGui::BulletText("Spdlog v1.10.0");
 	ImGui::BulletText("Optick v1.4.0");
+	ImGui::BulletText("Assimp v5.2.5");
+	ImGui::BulletText("ImGuizmo v1.89");
+	ImGui::BulletText("Stb Image v2.27");
 	ImGui::Separator();
 	ImGui::Text("MIT License\n");
 	ImGui::Text("Copyright (c) 2022 Xymaru & ZaroDev");

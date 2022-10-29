@@ -11,7 +11,7 @@
 #include <glew.h>
 #include <gl/gl.h>
 
-#include "../vendor/stb/stb_image.h"
+#include "../stb/stb_image.h"
 
 
 
@@ -156,6 +156,17 @@ namespace Wiwa {
 			MouseMovedEvent event((float)xPos, (float)yPos);
 			data.EventCallback(event);
 		});
+
+		int w, h, ch;
+
+		unsigned char* image = stbi_load("resources/icons/wiwa_icon.png", &w, &h, &ch, STBI_rgb_alpha);
+
+		GLFWimage images[1];
+		images[0].height = h;
+		images[0].width = w;
+		images[0].pixels = image;
+
+		glfwSetWindowIcon(m_Window, 1, images);
 	}
 	void WindowsWindow::ShutDown()
 	{

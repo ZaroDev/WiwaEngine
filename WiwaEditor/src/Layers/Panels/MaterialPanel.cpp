@@ -106,7 +106,7 @@ void MaterialPanel::Draw()
 
    
 	ImGui::End();
-    ImGui::Begin("Light Debbuger");
+    ImGui::Begin("Light Debugger");
     Wiwa::DirectionalLight& directionalLight = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getDirectionalLight();
     ImGui::DragFloat3("Direction", glm::value_ptr(directionalLight.Direction));
     ImGui::ColorEdit3("Ambient", glm::value_ptr(directionalLight.Ambient));
@@ -114,8 +114,8 @@ void MaterialPanel::Draw()
     ImGui::ColorEdit3("Specular", glm::value_ptr(directionalLight.Specular));
     Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().setLight(directionalLight);
 
-    Wiwa::List<Wiwa::PointLight>* pLights = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getPointLights();
-    if (ImGui::Button("+"))
+    //Wiwa::List<Wiwa::PointLight>* pLights = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getPointLights();
+    /*if (ImGui::Button("+"))
     {
         Wiwa::PointLight light{
             glm::vec3{0.0f},
@@ -139,7 +139,7 @@ void MaterialPanel::Draw()
         ImGui::DragFloat("Linear", &pLights->at(i).Linear);
         ImGui::DragFloat("Quadratic", &pLights->at(i).Quadratic);
         ImGui::PopID();
-    }
+    }*/
 
 
     ImGui::End();

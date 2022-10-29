@@ -1,6 +1,6 @@
 workspace "Wiwa"
 	architecture "x64"
-	startproject "Sandbox"
+	startproject "WiwaEditor"
 	configurations
 	{
 		"Debug",
@@ -126,8 +126,8 @@ project "Wiwa"
 		symbols "Off"
 
 
-project "Sandbox"
-	location "Sandbox"
+project "WiwaEditor"
+	location "WiwaEditor"
 	kind "ConsoleApp"
 	language "C++"
 

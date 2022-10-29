@@ -178,7 +178,7 @@ namespace Wiwa {
 
 		m_TextureShader->setUniform(m_TSPLUniforms.Position, (unsigned int)target->getPointLights()->size());
 
-		for (int i = 0; i < target->getPointLights()->size(); i++)
+		/*for (int i = 0; i < target->getPointLights()->size(); i++)
 		{
 			std::string num = std::to_string(i);
 			m_TextureShader->setUniform(glGetUniformLocation(m_TextureShader->getID(), ("u_PointLight[" + num + "].position").c_str()), target->getPointLights()->at(i).Position);
@@ -188,7 +188,7 @@ namespace Wiwa {
 			m_TextureShader->setUniform(glGetUniformLocation(m_TextureShader->getID(), ("u_PointLight[" + num + "].ambient").c_str()), target->getPointLights()->at(i).Ambient);
 			m_TextureShader->setUniform(glGetUniformLocation(m_TextureShader->getID(), ("u_PointLight[" + num + "].diffuse").c_str()), target->getPointLights()->at(i).Diffuse);
 			m_TextureShader->setUniform(glGetUniformLocation(m_TextureShader->getID(), ("u_PointLight[" + num + "].specular").c_str()), target->getPointLights()->at(i).Specular);
-		}
+		}*/
 
 		m_TextureShader->setUniform(m_TSDLUniforms.Direction, postitionLight);
 		m_TextureShader->setUniform(m_TSDLUniforms.Ambient, ambientLight);

@@ -28,8 +28,8 @@
 ScenePanel::ScenePanel(EditorLayer* instance)
     : Panel("Scene", instance)
 {
-    m_Shadings.push_back(new ShadingView("Depth Test", Wiwa::Renderer3D::Options::DEPTH_TEST, false));
-    m_Shadings.push_back(new ShadingView("Cull face", Wiwa::Renderer3D::Options::CULL_FACE, false));
+    m_Shadings.push_back(new ShadingView("Depth Test", Wiwa::Renderer3D::Options::DEPTH_TEST, true));
+    m_Shadings.push_back(new ShadingView("Cull face", Wiwa::Renderer3D::Options::CULL_FACE, true));
     m_Shadings.push_back(new ShadingView("Lighting", Wiwa::Renderer3D::Options::LIGHTING, false));
     m_Shadings.push_back(new ShadingView("Color material", Wiwa::Renderer3D::Options::COLOR_MATERIAL, false));
     m_Shadings.push_back(new ShadingView("Texture 2D", Wiwa::Renderer3D::Options::TEXTURE_2D, false));
@@ -276,6 +276,8 @@ void ScenePanel::Draw()
 
     if (m_EntSelected != -1)
     {
+        Wiwa::EntityManager& entMan = Wiwa::Application::Get().GetEntityManager();
+        m_SelectedTransform = entMan.GetComponent<Wiwa::Transform3D>(m_EntSelected);
         m_GizmoType = instance->GetGizmo();
         if (m_GizmoType != -1)
         {
@@ -290,8 +292,6 @@ void ScenePanel::Draw()
             const glm::mat4& cameraProjection = m_Camera.getProjection();
             //TODO: Change to get the transform of the entity
 
-            Wiwa::EntityManager& entMan = Wiwa::Application::Get().GetEntityManager();
-            m_SelectedTransform = entMan.GetComponent<Wiwa::Transform3D>(m_EntSelected);
             if (m_SelectedTransform)
             {
                 glm::mat4 transform(1.0f);
