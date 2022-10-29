@@ -21,6 +21,8 @@
 #include <Wiwa/utilities/render/Model.h>
 #include <Wiwa/utilities/render/Material.h>
 
+#include <Wiwa/utilities/render/Uniforms.h>
+
 namespace Wiwa {
 	class WI_API Renderer3D {
 	public:
@@ -34,30 +36,7 @@ namespace Wiwa {
 			WIREFRAME
 		};
 	private:
-		struct DefaultUnlitUniforms
-		{
-			uint32_t Projection;
-			uint32_t View;
-			uint32_t Model;
-		};
-		struct DefaultLitUniforms
-		{
-			uint32_t MatDiffuse;
-			uint32_t MatSpecular;
-
-			uint32_t Shininess;
-
-			uint32_t ViewPos;
-
-			uint32_t LigPos;
-			uint32_t LigAmbient;
-			uint32_t LigDiffuse;
-			uint32_t LigSpecular;
-			
-			uint32_t Projection;
-			uint32_t View;
-			uint32_t Model;
-		};
+		
 		// Default FrameBuffer
 		FrameBuffer m_FrameBuffer;
 
@@ -66,10 +45,13 @@ namespace Wiwa {
 		Shader* m_ColorShader;
 		uint32_t m_CSColorUniformLocation;
 		DefaultLitUniforms m_CSUniforms;
+		DirLightUniforms m_CSDLUniforms;
 
 		ResourceId m_TextureShaderId;
 		Shader* m_TextureShader;
 		DefaultLitUniforms m_TSUniforms;
+		DirLightUniforms m_TSDLUniforms;
+		PointLightUniforms m_TSPLUniforms;
 
 		ResourceId m_NormalDisplayShaderId;
 		Shader* m_NormalDisplayShader;
@@ -94,7 +76,7 @@ namespace Wiwa {
 		void RenderGrid(Model* grid, FrameBuffer* target = NULL, bool clear = false, Camera* camera = NULL);
 		void Close();
 		
-		inline void SetLight(const Light& light) { m_FrameBuffer.setLight(light); }
+		inline void SetLight(const DirectionalLight& light) { m_FrameBuffer.setLight(light); }
 
 		// Getters
 		uint32_t getColorBufferTexture() { return m_FrameBuffer.getColorBufferTexture(); }
