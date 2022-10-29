@@ -34,7 +34,10 @@ namespace Wiwa {
 		m_ColorShader = Resources::GetResourceById<Shader>(m_ColorShaderId);
 
 		m_CSColorUniformLocation = m_ColorShader->getUniformLocation("u_Color");
-
+		m_CSDLUniforms.Direction = m_ColorShader->getUniformLocation("u_DirLight.direction");
+		m_CSDLUniforms.Ambient = m_ColorShader->getUniformLocation("u_DirLight.ambient");
+		m_CSDLUniforms.Diffuse = m_ColorShader->getUniformLocation("u_DirLight.diffuse");
+		m_CSDLUniforms.Specular = m_ColorShader->getUniformLocation("u_DirLight.specular");
 		
 		m_CSUniforms.Diffuse = m_ColorShader->getUniformLocation("u_Material.diffuse");
 		m_CSUniforms.Specular = m_ColorShader->getUniformLocation("u_Material.specular");
@@ -130,6 +133,7 @@ namespace Wiwa {
 		m_ColorShader->setUniform(m_CSUniforms.Projection, camera->getProjection());
 
 		mesh->Render();
+
 		if (mesh->showNormals)
 		{
 			m_NormalDisplayShader->Use();
