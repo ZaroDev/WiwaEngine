@@ -28,7 +28,7 @@
 *.vcxproj.filters
 *.vcxproj.user
 *.ini
-/Editor/Sandbox.exe
+/Editor/WiwaEditor.exe
 /Editor/Assets
 /Editor/Wiwa.dll
 # Temp
