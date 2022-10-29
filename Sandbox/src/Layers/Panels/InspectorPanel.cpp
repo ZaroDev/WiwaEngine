@@ -98,6 +98,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		return;
 	}
 
+
 	//Draw custom fields
 	if (strcmp(field.name, "materialId") == 0) 
 	{
@@ -223,11 +224,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	else if (std::strcmp(field.type->name, "struct Wiwa::Vector3f") == 0)
 	{
 		ImGui::PushID(field.name);
-		if (std::strcmp(field.name, "scale") == 0)
-			DrawVec3Control(field.name, data, field, 1.0);
-		else
-			DrawVec3Control(field.name, data, field,0.0f);
-
+		DrawVec3Control(field.name, data, field);
 		ImGui::PopID();
 	}
 	else if (std::strcmp(field.type->name, "unsigned __int64") == 0)

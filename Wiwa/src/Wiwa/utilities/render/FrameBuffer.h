@@ -3,28 +3,15 @@
 #include <Wiwa/Core.h>
 #include <stdint.h>
 #include <Wiwa/utilities/math/Vector3f.h>
-#include <Wiwa/utilities/containers/List.h>
 #include <glm.hpp>
 
 namespace Wiwa {
-	struct DirectionalLight
-	{
-		glm::vec3 Direction;
-		glm::vec3 Ambient;
-		glm::vec3 Diffuse;
-		glm::vec3 Specular;
-	};
-	struct PointLight
+	struct Light
 	{
 		glm::vec3 Position;
-
 		glm::vec3 Ambient;
 		glm::vec3 Diffuse;
 		glm::vec3 Specular;
-
-		float Constant;
-		float Linear;
-		float Quadratic;
 	};
 	class WI_API FrameBuffer {
 	private:
@@ -32,8 +19,8 @@ namespace Wiwa {
 		uint32_t m_ColorBufferTexture;
 		uint32_t m_RBO;
 		int m_Width, m_Height;
-		DirectionalLight m_Light;
-		List<PointLight> m_PointLights;
+		Light m_Light;
+
 	public:
 		void Init(int width, int height);
 
@@ -47,10 +34,8 @@ namespace Wiwa {
 
 		inline uint32_t getColorBufferTexture() { return m_ColorBufferTexture; }
 
-		inline void setLight(const DirectionalLight& light) { m_Light = light; }
-		inline void addPointLight(const PointLight& light) { m_PointLights.emplace_back(light); }
+		inline void setLight(const Light& light) { m_Light = light; }
 
-		inline DirectionalLight& getDirectionalLight() { return m_Light; }
-		inline List<PointLight>* getPointLights() { return &m_PointLights; }
+		inline Light& getLight() { return m_Light; }
 	};
 }

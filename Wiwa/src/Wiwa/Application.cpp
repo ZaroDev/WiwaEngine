@@ -83,13 +83,48 @@ namespace Wiwa {
 		mesh.materialId = Resources::Load<Material>("resources/materials/bakerhouse_material.wimaterial");
 
 		Transform3D t3d;
-		t3d.position = { 0.0f, 0.0f, 0.0f };
+		t3d.position = { -5.0f, 0.0f, 0.0f };
 		t3d.rotation = { 0.0f,0.0f, 0.0f };
 		t3d.scale = { 1.0f, 1.0f, 1.0f };
 
-		EntityId eid = m_EntityManager->CreateEntity("Baker house");
+		EntityId eid = m_EntityManager->CreateEntity();
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
+
+		t3d.position.x = 5.0f;		
+
+		m_EntityManager->DestroyEntity(eid);
+
+		EntityId oid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(oid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(oid, t3d);
+
+	/*	EntityId oid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(oid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(oid, t3d);
+
+		EntityId aid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(aid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(aid, t3d);
+
+		Mesh mesh2;
+		mesh2.meshId = Resources::Load<Model>("resources/meshes/cube.fbx");
+		mesh2.materialId = Resources::Load<Material>("Assets/textures/test.wimaterial");
+		Transform3D t3d2;
+		t3d2.position = { 2.0f, 0.0f, 0.0f };
+		t3d2.rotation = { 0.0f,0.0f, 0.0f };
+		t3d2.scale = { 1.0f, 1.0f, 1.0f };
+
+		EntityId eid2 = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(eid2, mesh2);
+		m_EntityManager->AddComponent<Transform3D>(eid2, t3d2);*/
+
+		/*mesh.meshId = Resources::Load<Model>("plane");
+		mesh.materialId = Resources::Load<Material>("resources/materials/default_material.wimaterial");
+
+		eid = m_EntityManager->CreateEntity();
+		m_EntityManager->AddComponent<Mesh>(eid, mesh);
+		m_EntityManager->AddComponent<Transform3D>(eid, t3d);*/
 	}
 
 	void Application::SetHwInfo()

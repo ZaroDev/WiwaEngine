@@ -107,41 +107,12 @@ void MaterialPanel::Draw()
    
 	ImGui::End();
     ImGui::Begin("Light Debbuger");
-    Wiwa::DirectionalLight& directionalLight = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getDirectionalLight();
-    ImGui::DragFloat3("Direction", glm::value_ptr(directionalLight.Direction));
-    ImGui::ColorEdit3("Ambient", glm::value_ptr(directionalLight.Ambient));
-    ImGui::ColorEdit3("Diffuse", glm::value_ptr(directionalLight.Diffuse));
-    ImGui::ColorEdit3("Specular", glm::value_ptr(directionalLight.Specular));
-    Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().setLight(directionalLight);
-
-    Wiwa::List<Wiwa::PointLight>* pLights = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getPointLights();
-    if (ImGui::Button("+"))
-    {
-        Wiwa::PointLight light{
-            glm::vec3{0.0f},
-            glm::vec3{1.0f},
-            glm::vec3{1.0f},
-            glm::vec3{1.0f},
-            1.0f,
-            0.09f,
-            0.032f
-        };
-        Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().addPointLight(light);
-    }
-    for (int i = 0; i < pLights->size(); i++)
-    {
-        ImGui::PushID(i);
-        ImGui::DragFloat3("Position", glm::value_ptr(pLights->at(i).Position));
-        ImGui::ColorEdit3("Ambient", glm::value_ptr(pLights->at(i).Ambient));
-        ImGui::ColorEdit3("Diffuse", glm::value_ptr(pLights->at(i).Diffuse));
-        ImGui::ColorEdit3("Specular", glm::value_ptr(pLights->at(i).Specular));
-        ImGui::DragFloat("Constant", &pLights->at(i).Constant);
-        ImGui::DragFloat("Linear", &pLights->at(i).Linear);
-        ImGui::DragFloat("Quadratic", &pLights->at(i).Quadratic);
-        ImGui::PopID();
-    }
-
-
+    Wiwa::Light& settings = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getLight();
+    ImGui::InputFloat3("Position", glm::value_ptr(settings.Position));
+    ImGui::ColorEdit3("Ambient", glm::value_ptr(settings.Ambient));
+    ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.Diffuse));
+    ImGui::ColorEdit3("Specular", glm::value_ptr(settings.Specular));
+    Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().setLight(settings);
     ImGui::End();
 }
 

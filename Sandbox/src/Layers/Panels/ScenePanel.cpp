@@ -277,61 +277,59 @@ void ScenePanel::Draw()
     if (m_EntSelected != -1)
     {
         m_GizmoType = instance->GetGizmo();
-        if (m_GizmoType != -1)
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+        ImVec2 winPos = ImGui::GetWindowPos();
+        ImVec2 cursorPos = ImGui::GetCursorPos();
+        ImGuizmo::SetDrawlist();
+        ImGuizmo::SetRect(rectPos.x, rectPos.y, isize.x, isize.y);
+
+        glm::mat4 cameraView = Wiwa::Application::Get().GetRenderer3D().GetView();
+        const glm::mat4& cameraProjection = m_Camera.getProjection();
+        //TODO: Change to get the transform of the entity
+        
+        Wiwa::EntityManager& entMan = Wiwa::Application::Get().GetEntityManager();
+        m_SelectedTransform = entMan.GetComponent<Wiwa::Transform3D>(m_EntSelected);
+        if (m_SelectedTransform)
         {
-            ImGuizmo::SetOrthographic(false);
-            ImGuizmo::SetDrawlist();
-            ImVec2 winPos = ImGui::GetWindowPos();
-            ImVec2 cursorPos = ImGui::GetCursorPos();
-            ImGuizmo::SetDrawlist();
-            ImGuizmo::SetRect(rectPos.x, rectPos.y, isize.x, isize.y);
+            glm::mat4 transform(1.0f);
 
-            glm::mat4 cameraView = Wiwa::Application::Get().GetRenderer3D().GetView();
-            const glm::mat4& cameraProjection = m_Camera.getProjection();
-            //TODO: Change to get the transform of the entity
+            transform = glm::translate(transform, glm::vec3(m_SelectedTransform->position.x, m_SelectedTransform->position.y, m_SelectedTransform->position.z));
+            transform = glm::rotate(transform, m_SelectedTransform->rotation.x, { 1,0,0 });
+            transform = glm::rotate(transform, m_SelectedTransform->rotation.y, { 0,1,0 });
+            transform = glm::rotate(transform, m_SelectedTransform->rotation.z, { 0,0,1 });
+            transform = glm::scale(transform, glm::vec3(m_SelectedTransform->scale.x, m_SelectedTransform->scale.y, m_SelectedTransform->scale.z));
 
-            Wiwa::EntityManager& entMan = Wiwa::Application::Get().GetEntityManager();
-            m_SelectedTransform = entMan.GetComponent<Wiwa::Transform3D>(m_EntSelected);
-            if (m_SelectedTransform)
+            //Snaping
+            bool snap = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl);
+            float snapValue = 0.5f; //Snap to 0.5m for translation/scale
+
+            if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+                snapValue = 45.0f;
+
+            float snapValues[3] = { snapValue, snapValue, snapValue };
+
+            ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+                (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+                nullptr, snap ? snapValues : nullptr);
+
+            if (ImGuizmo::IsUsing())
             {
-                glm::mat4 transform(1.0f);
+                ////TODO: Change the transform matrix!
+                float translation[3], rotation[3], scale[3];
 
-                transform = glm::translate(transform, glm::vec3(m_SelectedTransform->position.x, m_SelectedTransform->position.y, m_SelectedTransform->position.z));
-                transform = glm::rotate(transform, m_SelectedTransform->rotation.x, { 1,0,0 });
-                transform = glm::rotate(transform, m_SelectedTransform->rotation.y, { 0,1,0 });
-                transform = glm::rotate(transform, m_SelectedTransform->rotation.z, { 0,0,1 });
-                transform = glm::scale(transform, glm::vec3(m_SelectedTransform->scale.x, m_SelectedTransform->scale.y, m_SelectedTransform->scale.z));
+                ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), translation, rotation, scale);
 
-                //Snaping
-                bool snap = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl);
-                float snapValue = 0.5f; //Snap to 0.5m for translation/scale
+                Wiwa::Vector3f newTranslation = { translation[0], translation[1], translation[2]};
+                Wiwa::Vector3f newRotation = { rotation[0], rotation[1], rotation[2]};
+                Wiwa::Vector3f newScale = { scale[0], scale[1], scale[2]};
 
-                if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-                    snapValue = 45.0f;
-
-                float snapValues[3] = { snapValue, snapValue, snapValue };
-
-                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                    (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
-                    nullptr, snap ? snapValues : nullptr);
-
-                if (ImGuizmo::IsUsing())
-                {
-                    ////TODO: Change the transform matrix!
-                    float translation[3], rotation[3], scale[3];
-
-                    ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), translation, rotation, scale);
-
-                    Wiwa::Vector3f newTranslation = { translation[0], translation[1], translation[2] };
-                    Wiwa::Vector3f newRotation = { rotation[0], rotation[1], rotation[2] };
-                    Wiwa::Vector3f newScale = { scale[0], scale[1], scale[2] };
-
-                    m_SelectedTransform->position = newTranslation;
-                    m_SelectedTransform->rotation = newRotation;
-                    m_SelectedTransform->scale = newScale;
-                }
+                m_SelectedTransform->position = newTranslation;
+                m_SelectedTransform->rotation = newRotation;
+                m_SelectedTransform->scale = newScale;
             }
         }
+
     }
 
     ImGui::End();
