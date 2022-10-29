@@ -3,7 +3,7 @@
 
 struct TexMaterial {
 	sampler2D diffuse;
-    vec3 specular;
+    sampler2D specular;
     float shininess;
 };
 struct DirLight {
