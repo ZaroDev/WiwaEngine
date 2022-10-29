@@ -102,6 +102,24 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	if (strcmp(field.name, "materialId") == 0) 
 	{
 		ImGui::Text("Material");
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				std::wstring ws(path);
+				std::string pathS(ws.begin(), ws.end());
+				std::filesystem::path p = pathS.c_str();
+				if (p.extension() == ".wimaterial")
+				{
+					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
+					*(ResourceId*)(data + field.offset) = id;
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
 		ImGui::PushID(field.name);
 		int id = *(int*)(data + field.offset);
 		Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
@@ -118,6 +136,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		const char* currentItem = mat->getType() == Wiwa::Material::MaterialType::color ? types[0] : types[1];
 		ImGui::Text("Texture path: %s", mat->getTexturePath());
 		ImGui::Text("Type");
+		
 		ImGui::SameLine();
 		ImGui::Text(currentItem);
 		static glm::vec4 color = { mat->getColor().r, mat->getColor().g,mat->getColor().b , mat->getColor().a };
@@ -127,30 +146,6 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
 		ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
 		ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-			{
-				const wchar_t* path = (const wchar_t*)payload->Data;
-				std::wstring ws(path);
-				std::string pathS(ws.begin(), ws.end());
-				std::filesystem::path p = pathS.c_str();
-				if (p.extension() == ".wimaterial")
-				{
-					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
-					*(ResourceId*)(data + field.offset) = id;
-				}
-				if (p.extension() == ".fbx" || p.extension() == ".FBX")
-				{
-					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
-					*(ResourceId*)(data + field.offset) = id;
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
 		ImGui::Text(mat->getTexturePath());
 		static bool checker = false;
 		if(ImGui::Checkbox("Set Checker", &checker))
