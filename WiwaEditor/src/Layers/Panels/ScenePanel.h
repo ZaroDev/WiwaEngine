@@ -44,6 +44,7 @@ private:
 	float yaw;
 	float pitch;
 
+	float m_ScrollSpeed;
 	float m_Scroll = 0.0f;
 
 	Wiwa::Vector2f lastPos = {};

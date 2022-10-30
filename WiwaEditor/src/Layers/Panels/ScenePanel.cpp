@@ -47,6 +47,8 @@ ScenePanel::ScenePanel(EditorLayer* instance)
     camSpeed = 0.005f;
     sensitivity = 0.5f;
 
+    m_ScrollSpeed = 10.0f;
+
     yaw = -90.0f;
     pitch = 0.0f;
 }
@@ -142,6 +144,15 @@ void ScenePanel::Draw()
             m_Camera.setPosition({ direction.x, direction.y, direction.z });
             m_Camera.lookat(m_SelectedTransform->position);
         }
+
+        // Scene zoom
+        if (m_Scroll != 0.0f) {
+            float fov = m_Camera.getFOV();
+            fov += m_Scroll * m_ScrollSpeed;
+            CLAMP(fov, 1, 120);
+            m_Camera.setFOV(fov);
+        }
+
         // Check if right click was pressed
         if (Wiwa::Input::IsMouseButtonPressed(1)) {
             // Check if relative motion is not 0
@@ -180,15 +191,7 @@ void ScenePanel::Draw()
                 camFastSpeed = camSpeed * 2;
             else
                 camFastSpeed = camSpeed;
-            float fov = m_Camera.getFOV();
-            if (m_Scroll > 0)
-                fov -= 10;
-            else if (m_Scroll < 0)
-                fov += 10;
-
-            CLAMP(fov, 1, 120);
-            m_Scroll = 0.0f;
-            m_Camera.setFOV(fov);
+            
             // Camera movement
             glm::vec3 campos = m_Camera.getPosition();
 
@@ -218,6 +221,9 @@ void ScenePanel::Draw()
             m_Camera.setPosition({ campos.x, campos.y, campos.z }); 
         }
     }
+    
+    m_Scroll = 0.0f;
+
     Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
 
     static bool grid = true;
@@ -347,6 +353,7 @@ void ScenePanel::OnEvent(Wiwa::Event& e)
 bool ScenePanel::OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e)
 {
     m_Scroll = e.GetYOffset();
+
     return false;
 }
 

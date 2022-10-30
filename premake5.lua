@@ -171,7 +171,7 @@ project "WiwaEditor"
 		}
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../Editor")
+			("{COPY} %{cfg.buildtarget.relpath} ../Editor/Wiwa.exe")
 		}
 
 	filter "configurations:Debug"
