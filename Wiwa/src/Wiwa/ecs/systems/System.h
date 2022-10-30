@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Wiwa/Core.h>
 #include <Wiwa/Application.h>
+#include <Wiwa/ecs/EntityManager.h>
 
 typedef size_t EntityId;
 typedef size_t ComponentId;
@@ -53,6 +53,9 @@ namespace Wiwa {
 		template<class C> C* GetComponents();
 		template<class C> size_t* GetComponentIndexes();
 		size_t GetRegisteredSize() { return m_RegisteredEntities.size(); }
+
+		virtual void OnInit() {}
+		virtual void OnUpdate() {}
 	public:
 		System();
 		virtual ~System(); // Virtual destructor, so that child destructor is called
@@ -64,9 +67,6 @@ namespace Wiwa {
 
 		void Init();
 		void Update();
-
-		virtual void OnInit(){}
-		virtual void OnUpdate(){}
 	};
 
 	//-------- CONSTRUCTOR --------
