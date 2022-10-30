@@ -50,16 +50,19 @@ struct Enum : public Type {
 	size_t member_count;
 };
 
+#define BASE_TYPE_BODY(T) \
+	type.name = typeid(T).name(); \
+	type.size = sizeof(T); \
+	type.hash = std::hash<std::string>{}(type.name); \
+	type.is_class = false; \
+	type.is_enum = false; \
+	type.is_array = false;
+
 // FUNCTIONS
 template<class T> inline const Type* GetType_impl() {
 	static Type type;
 
-	type.name = typeid(T).name();
-	type.size = sizeof(T);
-	type.hash = std::hash<std::string>{}(type.name);
-
-	type.is_class = false;
-	type.is_enum = false;
+	BASE_TYPE_BODY(T);
 
 	return &type;
 }
@@ -92,12 +95,8 @@ const Type* GetCompileType() {
 #define REFLECTION_BEGIN(rtype) REGISTER_TYPE(rtype); \
 template<> inline const Type* GetType_impl<rtype>(){ \
 	static Class type; \
-	type.name = typeid(rtype).name(); \
-	type.size = sizeof(rtype); \
-	type.hash = std::hash<std::string>{}(type.name); \
+	BASE_TYPE_BODY(rtype); \
 	type.is_class = true; \
-	type.is_enum = false; \
-	type.is_array = false; \
 	type.field_count = 0; \
 	rtype temp;
 
@@ -113,12 +112,8 @@ template<> inline const Type* GetType_impl<rtype>(){ \
 #define ENUM_REFLECTION_BEGIN(rtype) \
 template<> inline const Type* GetType_impl<rtype>(){ \
 	static Enum type; \
-	type.name = typeid(rtype).name(); \
-	type.size = sizeof(rtype); \
-	type.hash = std::hash<std::string>{}(type.name); \
-	type.is_class = false; \
+	BASE_TYPE_BODY(rtype); \
 	type.is_enum = true; \
-	type.is_array = false; \
 	type.member_count = 0; \
 	rtype temp;
 

@@ -4,6 +4,8 @@
 #include "../components/Transform3D.h"
 #include "../components/Mesh.h"
 
+#include <Wiwa/Reflection.h>
+
 namespace Wiwa {
 	class WI_API MeshRenderer : public System<Transform3D, Mesh> {
 	private:
@@ -15,3 +17,5 @@ namespace Wiwa {
 		void OnUpdate() override;
 	};
 }
+
+//REGISTER_TYPE(Wiwa::MeshRenderer);

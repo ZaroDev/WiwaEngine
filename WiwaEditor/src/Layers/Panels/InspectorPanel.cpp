@@ -49,18 +49,21 @@ void InspectorPanel::ClearComponentName(std::string& cname)
 void InspectorPanel::DrawComponent(size_t componentId)
 {
 	const Type* type = m_EntityManager->GetComponentType(componentId);
-	const Class* cl = (const Class*)type;
 
-	std::string name = cl->name;
+	std::string name = type->name;
 	ClearComponentName(name);
 
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		byte* data = m_EntityManager->GetComponent(m_CurrentID, componentId, cl->size);
+		byte* data = m_EntityManager->GetComponent(m_CurrentID, componentId, type->size);
 
-		for (size_t i = 0; i < cl->fields.size(); i++)
-		{
-			DrawField(data, cl->fields[i]);
+		if (type->is_class) {
+			const Class* cl = (const Class*)type;
+
+			for (size_t i = 0; i < cl->fields.size(); i++)
+			{
+				DrawField(data, cl->fields[i]);
+			}
 		}
 	}
 }

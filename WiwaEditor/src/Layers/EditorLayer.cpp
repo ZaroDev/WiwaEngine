@@ -13,10 +13,6 @@
 
 #include <Wiwa/Resources.h>
 
-
-
-
-
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
