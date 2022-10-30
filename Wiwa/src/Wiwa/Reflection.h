@@ -18,6 +18,8 @@ struct Type {
 	bool is_enum;
 	bool is_array;
 
+	void* (*New)();
+
 	bool operator==(const Type* other) const { return Equals(other); }
 
 	bool Equals(const Type* other) const { return hash == other->hash; }
@@ -56,7 +58,8 @@ struct Enum : public Type {
 	type.hash = std::hash<std::string>{}(type.name); \
 	type.is_class = false; \
 	type.is_enum = false; \
-	type.is_array = false;
+	type.is_array = false; \
+	type.New = []() -> void* { return new T(); };
 
 // FUNCTIONS
 template<class T> inline const Type* GetType_impl() {
