@@ -162,6 +162,10 @@ void ScenePanel::Draw()
 
                 yaw += xoffset;
                 pitch += yoffset;
+
+                if (pitch > 89.0f) pitch = 89.0f;
+                if (pitch < -89.0f) pitch = -89.0f;
+
                 if (Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftAlt) && m_EntSelected != -1)
                 {
                     float radius = 7.0f;
@@ -174,9 +178,6 @@ void ScenePanel::Draw()
                 }
                 else
                 {
-                    if (pitch > 89.0f) pitch = 89.0f;
-                    if (pitch < -89.0f) pitch = -89.0f;
-
                     glm::vec3 direction;
                     direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
                     direction.y = sin(glm::radians(pitch));
