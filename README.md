@@ -1,15 +1,17 @@
-<h1>
-    <img style="vertical-align:middle" src="Editor/resources/icons/wiwa_icon.png" width="30">
-    Wiwa Engine
-</h1>
-<img src="images/editor.png">
-<h2>About the project</h2>
+
+# <img style="vertical-align:middle" src="Editor/resources/icons/wiwa_icon.png" width="30"> Wiwa Engine
+
+![editor.png](images/editor.png)
+
+## About the project
+
 Wiwa engine is a 3D Game Engine developed during the Game Engines subject. Our goal is to fulfill an Engine that can be used to develop all kinds of games. The engine is based on a full ECS system, and it's meant to have modern features as PBR and C# scripting.
 
-<a href="https://github.com/ZaroDev/WiwaEngine">Github</a>
-<a href="https://github.com/ZaroDev/WiwaEngine/releases">Latest release</a>
+[Github](https://github.com/ZaroDev/WiwaEngine)
+[Latest Release](https://github.com/ZaroDev/WiwaEngine/releases)
 
-<h2>Info</h2>
+## Info
+
 For now the engine has the following features.
 
 - Reflection
@@ -20,36 +22,37 @@ For now the engine has the following features.
 - FBX model loading
 - PNG texture loading
 
-<h2>Authors</h2>
+## Authors
+
 Currently we are two students working on the project
 
-- Víctor Falcón <a href="https://github.com/ZaroDev">@ZaroDev</a>
-- Pablo Llorente <a href="https://github.com/Xymaru">@Xymaru</a>
+- Víctor Falcón [@ZaroDev](https://github.com/ZaroDev)
+- Pablo Llorente [@Xymaru](https://github.com/Xymaru)
 
-<h2>Installing</h2>
+## Installing
 
 In order to install the project you can
 
-```
-git clone https://github.com/ZaroDev/WiwaEngine
-```
+```git clone https://github.com/ZaroDev/WiwaEngine```
 
-<h2>Compiling</h2>
+## Compiling
+
 Dependencies:
 
 - Visual Studio 2019 or more
 
-Open the ``Scripts`` folder and then select your Visual Studio version at ``GenerateProjectsX.bat``
-Create a ``Assets`` folder at the ``Editor`` folder
+Open the **``Scripts``** folder and then select your Visual Studio version at **``GenerateProjectsX.bat``**
+Create a **``Assets``** folder at the **``Editor``** folder
 
 Advise: the project only supports Windows
-<h2>How to use</h2>
 
-<h3>Entities</h3>
+## How to use
+
+### Entities
 
 To create an entity left click on the Hierarchy window and select an option. You can create either a blank entity or a primitive. (Disclaimer: empty entities do not include any component and they must be added as desired)
 
-<h3>Camera</h3>
+### Camera
 
 - Hold right click to look  
 - Right click + WASD to move
@@ -61,18 +64,20 @@ To create an entity left click on the Hierarchy window and select an option. You
 - E to rotate an object (WIP)
 - R to scale
 
-<h3>Materials</h3>
+### Materials
+
 To create a material click the button Create Material at the Assets window.
-<img src="images/creatematerial.png">
+![Create material](images/creatematerial.png)
 
 Assing a name to the material and click create.
 
-<img src="images/creatematerialwindow.png">
+![Create matWindow](images/creatematerialwindow.png)
 
 Open the material editor window and select a material you want to edit.
-<img src="images/materialwindow.png">
+![Material window](images/materialwindow.png)
 
-<h2>MIT License</h2>
+## MIT License
+
 Copyright (c) 2022 Xymaru & ZaroDev
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
