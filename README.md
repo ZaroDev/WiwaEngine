@@ -15,8 +15,7 @@ Wiwa engine is a 3D Game Engine developed during the Game Engines subject. Our g
 For now the engine has the following features.
 
 - Reflection
-- Entites
-- Components
+- Data oriented ECS (Entity-Component-System)
 - WIP material system
 - WIP basic lighting
 - FBX model loading
