@@ -557,14 +557,13 @@ void InspectorPanel::Draw()
 		std::string edit = entName;
 		
 		ImGui::InputText("Name", (char*)edit.c_str(), 64);
-		ImGui::SameLine();
-		if (ImGui::Button("Delete"))
-		{
-			m_EntitySet = false;
-			entityManager.DestroyEntity(m_CurrentID);
-			ImGui::End();
-			return;
-		}
+		//if (ImGui::Button("Delete"))
+		//{
+		//	m_EntitySet = false;
+		//	entityManager.DestroyEntity(m_CurrentID);
+		//	ImGui::End();
+		//	return;
+		//}
 		if (strcmp(edit.c_str(), entName) != 0)
 			entityManager.SetEntityName(m_CurrentID, edit.c_str());
 		

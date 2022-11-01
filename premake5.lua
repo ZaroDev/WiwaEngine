@@ -96,7 +96,6 @@ project "Wiwa"
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox"),
 			("{COPY} %{cfg.buildtarget.relpath} ../Editor")
 		}
 
@@ -171,7 +170,7 @@ project "WiwaEditor"
 		}
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../Editor/Wiwa.exe")
+			("{COPY} %{cfg.buildtarget.relpath} ../Editor")
 		}
 
 	filter "configurations:Debug"
@@ -182,6 +181,7 @@ project "WiwaEditor"
 	filter "configurations:Release"
 		defines "WI_RELEASE"
 		runtime "Release"
+
 		symbols "On"
 		optimize "On"
 
