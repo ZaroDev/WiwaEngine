@@ -554,7 +554,20 @@ void InspectorPanel::Draw()
 	if (m_EntitySet)
 	{
 		const char* entName = entityManager.GetEntityName(m_CurrentID);
-		ImGui::Text(entName);
+		std::string edit = entName;
+		
+		ImGui::InputText("Name", (char*)edit.c_str(), 64);
+		ImGui::SameLine();
+		if (ImGui::Button("Delete"))
+		{
+			m_EntitySet = false;
+			entityManager.DestroyEntity(m_CurrentID);
+			ImGui::End();
+			return;
+		}
+		if (strcmp(edit.c_str(), entName) != 0)
+			entityManager.SetEntityName(m_CurrentID, edit.c_str());
+		
 		std::map<ComponentId, size_t>& map = entityManager.GetEntityComponents(m_CurrentID);
 		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
 		{

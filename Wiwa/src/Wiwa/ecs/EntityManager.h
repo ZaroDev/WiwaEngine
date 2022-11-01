@@ -72,7 +72,7 @@ namespace Wiwa {
 
 		// Entity functions
 		inline const char* GetEntityName(EntityId id) { return m_EntityNames[id].c_str(); }
-
+		inline void SetEntityName(EntityId id, const char* name) { m_EntityNames[id] = name; }
 		inline std::vector<EntityId>* GetEntitiesAlive() { return &m_EntitiesAlive; }
 		inline size_t GetEntityCount() { return m_EntitiesAlive.size(); }
 

@@ -90,6 +90,7 @@ namespace Wiwa {
 		EntityId eid = m_EntityManager->CreateEntity("Baker house");
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
+
 	}
 
 	void Application::SetHwInfo()
