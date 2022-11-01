@@ -84,17 +84,21 @@ namespace Wiwa {
 	void Camera::lookat(const Vector3f position)
 	{
 		glm::vec3 pos = { position.x, position.y, position.z };
-		m_View = glm::lookAt(m_CameraPos, pos, m_CameraUp);
+
 		m_CameraFront = pos - m_CameraPos;
+
+		m_View = glm::lookAt(m_CameraPos, pos, m_CameraUp);
 	}
 
 	void Camera::lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp)
 	{
 		glm::vec3 pos = { position.x, position.y, position.z };
-		glm::vec3 camPos = { cameraPos.x, cameraPos.y, cameraPos.z };
-		glm::vec3 cameraUp = { camUp.x, camUp.y, camUp.z };
-		m_View = glm::lookAt(camPos + pos, pos, cameraUp);
-		m_CameraFront = pos - camPos;
+
+		m_CameraPos = { cameraPos.x, cameraPos.y, cameraPos.z };
+		m_CameraUp = { camUp.x, camUp.y, camUp.z };
+		m_CameraFront = pos - m_CameraPos;
+
+		m_View = glm::lookAt(m_CameraPos, pos, m_CameraUp);
 	}
 
 	void Camera::SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance, const float farPlaneDistance)
