@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <Wiwa/utilities/math/Math.h>
+#include <Wiwa/utilities/math/AABB.h>
 
 struct aiMesh;
 
@@ -33,6 +34,7 @@ namespace Wiwa {
 		void CreatePyramid();
 		void CreateSphere();
 		void CreateGrid();
+
 	public:
 		Model(const char* file);
 		~Model();
@@ -44,5 +46,6 @@ namespace Wiwa {
 		inline const char* getModelPath() { return m_ModelPath.c_str(); }
 	public:
 		bool showNormals = false;
+		AABB boundingBox;
 	};
 }

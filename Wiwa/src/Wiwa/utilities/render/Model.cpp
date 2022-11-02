@@ -13,64 +13,6 @@
 #include <glm.hpp>
 
 namespace Wiwa {
-	//void Mesh::getMeshFromFile(const char * file)
-	//{
-	//	std::ifstream mesh_file(file, std::ios::in);
-	//
-	//	if (mesh_file.is_open()) {
-	//		std::string line, substrValue;
-	//
-	//		int dtype, fpos;
-	//
-	//		while (!mesh_file.eof()) {
-	//			std::getline(mesh_file, line);
-	//
-	//			if (line[0] != '#') {
-	//				if (line == "VBO") {
-	//					dtype = 0;
-	//				}
-	//				else if (line == "EBO") {
-	//					dtype = 1;
-	//				}
-	//				else {
-	//					if (dtype == 0) {
-	//						do {
-	//							fpos = line.find(',');
-	//
-	//							if (fpos != line.npos) {
-	//								substrValue = line.substr(0, fpos);
-	//
-	//								vbo_data.push_back(std::stof(substrValue));
-	//
-	//								line = line.substr(fpos + 1, line.size());
-	//							}
-	//						} while (fpos != line.npos);
-	//
-	//						vbo_data.push_back(std::stof(line));
-	//					}
-	//					else if (dtype == 1) {
-	//						do {
-	//							fpos = line.find(',');
-	//
-	//							if (fpos != line.npos) {
-	//								substrValue = line.substr(0, fpos);
-	//
-	//								ebo_data.push_back(std::stoi(substrValue));
-	//
-	//								line = line.substr(fpos + 1, line.size());
-	//							}
-	//						} while (fpos != line.npos);
-	//
-	//						ebo_data.push_back(std::stoi(line));
-	//					}
-	//				}
-	//			}
-	//		}
-	//
-	//		mesh_file.close();
-	//	}
-	//}
-
 	void Model::getMeshFromFile(const char* file)
 	{
 		const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -145,7 +87,6 @@ namespace Wiwa {
 			WI_CORE_INFO("Index buffer generated correctly");
 		}
 		model->generateBuffers();
-
 		return model;
 	}
 
@@ -388,13 +329,16 @@ namespace Wiwa {
 		{
 			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
 		}
+
+		for (int i = 0; i < vbo_data.size(); i += 8)
+		{
+			glm::vec3 vec = { vbo_data[i], vbo_data[i + 1], vbo_data[i + 2] };
+			boundingBox.extend(vec);
+		}
 	}
 
 	void Model::generateGridBuffers()
 	{
-
-
-
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 
@@ -450,6 +394,12 @@ namespace Wiwa {
 		else {
 			is_root = false;
 		}
+		size_t meshCount = models.size();
+		for (size_t i = 0; i < meshCount; i++) 
+		{
+			boundingBox.extend(models[i]->boundingBox);
+		}
+
 	}
 
 	Model::~Model()
@@ -466,6 +416,41 @@ namespace Wiwa {
 			}
 		}
 		else {
+			
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z);
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z);
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z);
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z);
+			glEnd();
+
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMax().z);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z);
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z);
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMax().z);
+			glEnd();
+			glBegin(GL_LINES);
+			glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMax().z);
+			glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMax().z);
+			glEnd();
+
 			glBindVertexArray(vao);
 			glDrawElements(GL_TRIANGLES, (GLsizei)ebo_data.size(), GL_UNSIGNED_INT, 0);
 		}
