@@ -93,8 +93,6 @@ namespace Wiwa {
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
 
-
-		m_Time = new Time();
 	}
 
 	void Application::SetHwInfo()
@@ -139,7 +137,7 @@ namespace Wiwa {
 
 			m_Renderer2D->Update();
 			m_Renderer3D->Update();
-			m_Time->Update();
+			Time::Update();
 			m_EntityManager->Update();
 
 			for (Layer* layer : m_LayerStack)

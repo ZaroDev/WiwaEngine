@@ -6,6 +6,7 @@
 #include "psapi.h"
 
 #include <Wiwa/utilities/AllocationMetrics.h>
+#include <bezier_curve.hpp>
 
 ConfigurationPanel::ConfigurationPanel(EditorLayer* instance)
 	: Panel("Configuration", instance), info()
@@ -22,8 +23,8 @@ void ConfigurationPanel::Draw()
 	m_Resizable = Wiwa::Application::Get().GetWindow().GetResizable();
 	m_Fullscreen = Wiwa::Application::Get().GetWindow().GetFullScreen();
 	m_VSync = Wiwa::Application::Get().GetWindow().IsVSync();
-	m_MSLog.push_back(Wiwa::Time::Time::Get().GetRealDeltaTime());
-	m_FPSLog.push_back(1000.0f / Wiwa::Time::Time::Get().GetRealDeltaTime());
+	m_MSLog.push_back(Wiwa::Time::GetRealDeltaTime());
+	m_FPSLog.push_back(1000.0f / Wiwa::Time::GetRealDeltaTime());
 	m_AllocLog.push_back((float)Wiwa::AllocationMetrics::allocation_count);
 	m_ByteLog.push_back((float)Wiwa::AllocationMetrics::bytes_allocated);
 
@@ -55,19 +56,21 @@ void ConfigurationPanel::Draw()
 	}
 	if (ImGui::CollapsingHeader("Time"))
 	{
-		ImGui::Text("Time since startup %.2fs", Wiwa::Time::Get().GetRealTimeSinceStartup());
-		ImGui::Text("Real time delta time %.3fms", Wiwa::Time::Get().GetRealDeltaTime());
-		ImGui::Text("Frame count %i", Wiwa::Time::Get().GetFrameCount());
-		if (Wiwa::Time::Get().IsPlaying())
+		ImGui::Text("Time since startup %.2fs", Wiwa::Time::GetRealTimeSinceStartup());
+		ImGui::Text("Real time delta time %.3fms", Wiwa::Time::GetRealDeltaTime());
+		ImGui::Text("Frame count %i", Wiwa::Time::GetFrameCount());
+		if (Wiwa::Time::IsPlaying())
 		{
-			ImGui::Text("Game time since startup %.2fs", Wiwa::Time::Get().GetTime());
-			ImGui::Text("Game delta time %.2fms", Wiwa::Time::Get().GetDeltaTime());
-			int timeScale = Wiwa::Time::Get().GetTimeScale();
+			ImGui::Text("Game time since startup %.2fs", Wiwa::Time::GetTime());
+			ImGui::Text("Game delta time %.2fms", Wiwa::Time::GetDeltaTime());
+			int timeScale = Wiwa::Time::GetTimeScale();
 			if (ImGui::DragInt("Time scale", &timeScale, 0.1f))
 			{
-				Wiwa::Time::Get().SetTimeScale(timeScale);
+				Wiwa::Time::SetTimeScale(timeScale);
 			}
 		}
+		static ImVec2 curves[64];
+		ImGui::Editor("Chuchawiwa", ImVec2{ 64, 64 }, 64, curves);
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{

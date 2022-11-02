@@ -12,6 +12,7 @@
 #include <imgui_internal.h>
 
 #include <Wiwa/Resources.h>
+#include <bezier_curve.hpp>
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
@@ -192,13 +193,13 @@ void EditorLayer::MainMenuBar()
 
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
-			ImTextureID play = Wiwa::Time::Get().IsPlaying() ? m_PauseIcon : m_PlayIcon;
+			ImTextureID play = Wiwa::Time::IsPlaying() ? m_PauseIcon : m_PlayIcon;
 			if (ImGui::ImageButton(play, { 15, 15 }))
 			{
-				if (!Wiwa::Time::Get().IsPlaying())
-					Wiwa::Time::Get().Play();
+				if (!Wiwa::Time::IsPlaying())
+					Wiwa::Time::Play();
 				else
-					Wiwa::Time::Get().Stop();
+					Wiwa::Time::Stop();
 			}
 			/*if (ImGui::ImageButton(m_PauseIcon, { 15, 15 }))
 			{

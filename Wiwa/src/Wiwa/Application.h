@@ -114,9 +114,6 @@ namespace Wiwa
 		ImGuiLayer *m_ImGuiLayer;
 		EntityManager *m_EntityManager;
 		SceneManager* m_SceneManager;
-
-		Time* m_Time;
-
 	private:
 		static Application *s_Instance;
 	};

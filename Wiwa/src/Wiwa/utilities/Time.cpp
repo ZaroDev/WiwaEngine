@@ -4,16 +4,17 @@
 namespace Wiwa
 {
 
-	Time* Time::s_Instance = nullptr;
-	Time::Time()
-	{
-		WI_CORE_ASSERT(!s_Instance, "Time already exists!");
-		s_Instance = this;
-		m_RealTimeClock = std::chrono::high_resolution_clock::now();
-	}
-	Time::~Time()
-	{
-	}
+	std::chrono::time_point<std::chrono::steady_clock> Time::m_RealTimeClock = std::chrono::high_resolution_clock::now();
+	uint32_t Time::m_FrameCount = 0;
+	int Time::m_TimeScale = 1;
+	bool Time::m_IsPlaying = false;
+	std::chrono::time_point<std::chrono::steady_clock> Time::m_GameClock;
+	std::chrono::duration<float>  Time::m_Time;
+	std::chrono::duration<float>  Time::m_DeltaTime;
+	std::chrono::time_point<std::chrono::steady_clock>  Time::m_RealLastTime;
+	std::chrono::time_point<std::chrono::steady_clock>  Time::m_LastTime;
+	std::chrono::duration<float>  Time::m_RealTimeSinceStartup;
+	std::chrono::duration<float>  Time::m_RealTimeDeltaTime;
 	void Time::Play()
 	{
 		m_IsPlaying = true;
@@ -26,6 +27,7 @@ namespace Wiwa
 		m_RealTimeDeltaTime = std::chrono::high_resolution_clock::now() - m_RealLastTime;
 		m_RealLastTime = std::chrono::high_resolution_clock::now();
 		m_RealTimeSinceStartup = std::chrono::high_resolution_clock::now() - m_RealTimeClock;
+
 		if (m_IsPlaying)
 		{
 			m_DeltaTime = (std::chrono::high_resolution_clock::now() - m_LastTime) * m_TimeScale;
