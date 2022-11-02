@@ -22,8 +22,8 @@ void ConfigurationPanel::Draw()
 	m_Resizable = Wiwa::Application::Get().GetWindow().GetResizable();
 	m_Fullscreen = Wiwa::Application::Get().GetWindow().GetFullScreen();
 	m_VSync = Wiwa::Application::Get().GetWindow().IsVSync();
-	m_MSLog.push_back(1000.0f / ImGui::GetIO().Framerate);
-	m_FPSLog.push_back(ImGui::GetIO().Framerate);
+	m_MSLog.push_back(Wiwa::Time::Time::Get().GetRealDeltaTime());
+	m_FPSLog.push_back(1000.0f / Wiwa::Time::Time::Get().GetRealDeltaTime());
 	m_AllocLog.push_back((float)Wiwa::AllocationMetrics::allocation_count);
 	m_ByteLog.push_back((float)Wiwa::AllocationMetrics::bytes_allocated);
 
@@ -51,6 +51,23 @@ void ConfigurationPanel::Draw()
 		ImGui::PlotHistogram("##memory", &m_AllocLog[0], (int)m_AllocLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
 		sprintf_s(title, 25, "Bytes allocated %.0f", m_ByteLog[m_ByteLog.size() - 1]);
 		ImGui::PlotHistogram("##memory", &m_ByteLog[0], (int)m_ByteLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+	
+	}
+	if (ImGui::CollapsingHeader("Time"))
+	{
+		ImGui::Text("Time since startup %.2fs", Wiwa::Time::Get().GetRealTimeSinceStartup());
+		ImGui::Text("Real time delta time %.3fms", Wiwa::Time::Get().GetRealDeltaTime());
+		ImGui::Text("Frame count %i", Wiwa::Time::Get().GetFrameCount());
+		if (Wiwa::Time::Get().IsPlaying())
+		{
+			ImGui::Text("Game time since startup %.2fs", Wiwa::Time::Get().GetTime());
+			ImGui::Text("Game delta time %.2fms", Wiwa::Time::Get().GetDeltaTime());
+			int timeScale = Wiwa::Time::Get().GetTimeScale();
+			if (ImGui::DragInt("Time scale", &timeScale, 0.1f))
+			{
+				Wiwa::Time::Get().SetTimeScale(timeScale);
+			}
+		}
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{

@@ -7,14 +7,16 @@
 #include <iostream>
 
 namespace Wiwa {
-	class WI_API Timer
+	namespace Time
 	{
-		std::chrono::time_point<std::chrono::steady_clock> start, end;
+		class WI_API Timer
+		{
+			std::chrono::time_point<std::chrono::steady_clock> start, end;
 
-		std::chrono::duration<float> duration;
-
-	public:
-		Timer();
-		~Timer();
-	};
+			std::chrono::duration<float> duration;
+		public:
+			Timer();
+			~Timer();
+		};
+	}
 }

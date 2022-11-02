@@ -2,20 +2,22 @@
 #include "Timer.h"
 
 namespace Wiwa {
-
-	Timer::Timer()
+	namespace Time
 	{
-		start = std::chrono::high_resolution_clock::now();
-	}
+		Timer::Timer()
+		{
+			start = std::chrono::high_resolution_clock::now();
+		}
 
-	Timer::~Timer()
-	{
-		end = std::chrono::high_resolution_clock::now();
+		Timer::~Timer()
+		{
+			end = std::chrono::high_resolution_clock::now();
 
-		duration = end - start;
+			duration = end - start;
 
-		float ms = duration.count() * 1000.0f;
+			float ms = duration.count() * 1000.0f;
 
-		std::cout << "Timer took " << ms << " ms." << std::endl;
+			std::cout << "Timer took " << ms << " ms." << std::endl;
+		}
 	}
 }

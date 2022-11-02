@@ -82,7 +82,7 @@ namespace ImSequencer
       int controlHeight = sequenceCount * ItemHeight;
       for (int i = 0; i < sequenceCount; i++)
          controlHeight += int(sequence->GetCustomHeight(i));
-      int frameCount = ImMax(sequence->GetFrameMax() - sequence->GetFrameMin(), 1);
+      int m_FrameCount = ImMax(sequence->GetFrameMax() - sequence->GetFrameMin(), 1);
 
       static bool MovingScrollBar = false;
       static bool MovingCurrentFrame = false;
@@ -98,7 +98,7 @@ namespace ImSequencer
       ImVector<CustomDraw> compactCustomDraws;
       // zoom in/out
       const int visibleFrameCount = (int)floorf((canvas_size.x - legendWidth) / framePixelWidth);
-      const float barWidthRatio = ImMin(visibleFrameCount / (float)frameCount, 1.f);
+      const float barWidthRatio = ImMin(visibleFrameCount / (float)m_FrameCount, 1.f);
       const float barWidthInPixels = barWidthRatio * (canvas_size.x - legendWidth);
 
       ImRect regionRect(canvas_pos, canvas_pos + canvas_size);
@@ -125,8 +125,8 @@ namespace ImSequencer
 
       framePixelWidth = ImLerp(framePixelWidth, framePixelWidthTarget, 0.33f);
 
-      frameCount = sequence->GetFrameMax() - sequence->GetFrameMin();
-      if (visibleFrameCount >= frameCount && firstFrame)
+      m_FrameCount = sequence->GetFrameMax() - sequence->GetFrameMin();
+      if (visibleFrameCount >= m_FrameCount && firstFrame)
          *firstFrame = sequence->GetFrameMin();
 
 
@@ -136,7 +136,7 @@ namespace ImSequencer
          ImGui::InvisibleButton("canvas", ImVec2(canvas_size.x - canvas_pos.x, (float)ItemHeight));
          draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_size.x + canvas_pos.x, canvas_pos.y + ItemHeight), 0xFF3D3837, 0);
          char tmps[512];
-         ImFormatString(tmps, IM_ARRAYSIZE(tmps), sequence->GetCollapseFmt(), frameCount, sequenceCount);
+         ImFormatString(tmps, IM_ARRAYSIZE(tmps), sequence->GetCollapseFmt(), m_FrameCount, sequenceCount);
          draw_list->AddText(ImVec2(canvas_pos.x + 26, canvas_pos.y + 2), 0xFFFFFFFF, tmps);
       }
       else
@@ -177,7 +177,7 @@ namespace ImSequencer
          }
          if (MovingCurrentFrame)
          {
-            if (frameCount)
+            if (m_FrameCount)
             {
                *currentFrame = (int)((io.MousePos.x - topRect.Min.x) / framePixelWidth) + firstFrameUsed;
                if (*currentFrame < sequence->GetFrameMin())
@@ -521,7 +521,7 @@ namespace ImSequencer
 
             // ratio = number of frames visible in control / number to total frames
 
-            float startFrameOffset = ((float)(firstFrameUsed - sequence->GetFrameMin()) / (float)frameCount) * (canvas_size.x - legendWidth);
+            float startFrameOffset = ((float)(firstFrameUsed - sequence->GetFrameMin()) / (float)m_FrameCount) * (canvas_size.x - legendWidth);
             ImVec2 scrollBarA(scrollBarMin.x + legendWidth, scrollBarMin.y - 2);
             ImVec2 scrollBarB(scrollBarMin.x + canvas_size.x, scrollBarMax.y - 1);
             draw_list->AddRectFilled(scrollBarA, scrollBarB, 0xFF222222, 0);

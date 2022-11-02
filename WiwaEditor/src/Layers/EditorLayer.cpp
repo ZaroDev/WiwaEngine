@@ -192,8 +192,18 @@ void EditorLayer::MainMenuBar()
 
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
-			ImGui::ImageButton(m_PlayIcon, { 15, 15 });
-			ImGui::ImageButton(m_PauseIcon, { 15, 15 });
+			ImTextureID play = Wiwa::Time::Get().IsPlaying() ? m_PauseIcon : m_PlayIcon;
+			if (ImGui::ImageButton(play, { 15, 15 }))
+			{
+				if (!Wiwa::Time::Get().IsPlaying())
+					Wiwa::Time::Get().Play();
+				else
+					Wiwa::Time::Get().Stop();
+			}
+			/*if (ImGui::ImageButton(m_PauseIcon, { 15, 15 }))
+			{
+				Wiwa::Time::Get().Stop();
+			}*/
 			ImGui::PopStyleColor();
 			
 			ImGui::EndMenuBar();

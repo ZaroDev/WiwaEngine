@@ -13,6 +13,7 @@
 #include <Wiwa/ecs/components/Transform3D.h>
 #include <Wiwa/Reflection.h>
 #include <Wiwa/utilities/math/Vector4f.h>
+#include <Wiwa/utilities/Time.h>
 
 namespace Wiwa
 {
@@ -65,7 +66,6 @@ namespace Wiwa
 		inline ImGuiLayer &GetImGuiLayer() { return *m_ImGuiLayer; }
 		inline SceneManager& GetSceneManager() { return *m_SceneManager; }
 
-		inline float GetTime() { return m_Time; }
 		inline ImGuiContext *GetImGuiContext() { return m_ImGuiLayer->GetContext(); }
 
 		inline SysInfo &GetSystemInfo() { return m_SysInfo; }
@@ -86,8 +86,6 @@ namespace Wiwa
 		inline void SetRenderColor(Vector4f color) { m_RenderColor = color; }
 		inline Vector4f GetRenderColor() { return m_RenderColor; }
 
-		inline float getDeltaTime() { return m_DeltaTime; }
-
 		void OpenDir(const char *url);
 		void Quit();
 
@@ -103,9 +101,6 @@ namespace Wiwa
 
 		const char *m_Version = "0.1";
 
-		float m_Time = 0.0f;
-		float m_DeltaTime = 0.0f;
-
 		Renderer2D *m_Renderer2D;
 		Renderer3D *m_Renderer3D;
 		Vector4f m_RenderColor;
@@ -119,6 +114,8 @@ namespace Wiwa
 		ImGuiLayer *m_ImGuiLayer;
 		EntityManager *m_EntityManager;
 		SceneManager* m_SceneManager;
+
+		Time* m_Time;
 
 	private:
 		static Application *s_Instance;

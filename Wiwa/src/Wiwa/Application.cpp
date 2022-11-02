@@ -31,6 +31,8 @@
 
 #include <Wiwa/utilities/AllocationMetrics.h>
 
+
+
 const size_t TYPE_COUNT = __COUNTER__;
 
 namespace Wiwa {
@@ -91,6 +93,8 @@ namespace Wiwa {
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
 
+
+		m_Time = new Time();
 	}
 
 	void Application::SetHwInfo()
@@ -135,8 +139,7 @@ namespace Wiwa {
 
 			m_Renderer2D->Update();
 			m_Renderer3D->Update();
-			m_DeltaTime = m_Time - (float)glfwGetTime();
-			m_Time = (float)glfwGetTime();
+			m_Time->Update();
 			m_EntityManager->Update();
 
 			for (Layer* layer : m_LayerStack)
