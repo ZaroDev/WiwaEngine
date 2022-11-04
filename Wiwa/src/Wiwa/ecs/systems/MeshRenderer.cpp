@@ -28,7 +28,6 @@ namespace Wiwa {
 		size_t rcount = GetRegisteredSize();
 
 		Renderer3D& r3d = Application::Get().GetRenderer3D();
-		Size2i& res = Application::Get().GetTargetResolution();
 
 		for (size_t i = 0; i < rcount; i++)
 		{
@@ -43,5 +42,18 @@ namespace Wiwa {
 			if (mat->getType() == Wiwa::Material::MaterialType::textured)
 				r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat);
 		}
+	}
+
+	void MeshRenderer::OnUpdateComponents(Transform3D* t3d, Mesh* mesh)
+	{
+		Renderer3D& r3d = Application::Get().GetRenderer3D();
+
+		Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
+		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
+		if (mat->getType() == Wiwa::Material::MaterialType::color)
+			r3d.RenderMeshColor(mod, t3d->position, t3d->rotation, t3d->scale, mat);
+
+		if (mat->getType() == Wiwa::Material::MaterialType::textured)
+			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat);
 	}
 }

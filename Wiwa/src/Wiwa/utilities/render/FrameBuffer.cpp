@@ -5,16 +5,30 @@
 #include <Wiwa/Log.h>
 
 namespace Wiwa {
+	FrameBuffer::FrameBuffer()
+	{
+		m_Init = false;
+	}
+
+	FrameBuffer::~FrameBuffer()
+	{
+		if (m_Init) {
+			glDeleteTextures(1, &m_ColorBufferTexture);
+			glDeleteRenderbuffers(1, &m_RBO);
+			glDeleteFramebuffers(1, &m_FBO);
+		}
+	}
+
 	void FrameBuffer::Init(int width, int height)
 	{
+		m_Init = true;
+
 		m_Light = {
 			glm::vec3{0.0f, 0.0f, 0.0f},	//Direction
 			glm::vec3{1.0f, 1.0f, 1.0f},		//Ambient
 			glm::vec3{1.0f, 1.0f, 1.0f},		//Diffuse
 			glm::vec3{1.0f, 1.0f, 1.0f}		//Specular
 		};
-
-
 
 		m_Width = width;
 		m_Height = height;

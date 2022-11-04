@@ -262,12 +262,7 @@ struct ImVec2
     IM_VEC2_CLASS_EXTRA     // Define additional constructors and implicit cast operators in imconfig.h to convert back and forth between your math types and ImVec2.
 #endif
 };
-ImVec2 operator+ (ImVec2 a, ImVec2 b) {
-    return ImVec2(a.x + b.x, a.y + b.y);
-}
-ImVec2 operator- (ImVec2 a, ImVec2 b) {
-    return ImVec2(a.x - b.x, a.y - b.y);
-}
+
 // ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]
 struct ImVec4
 {

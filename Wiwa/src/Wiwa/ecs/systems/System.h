@@ -3,12 +3,6 @@
 #include <Wiwa/Application.h>
 #include <Wiwa/ecs/EntityManager.h>
 
-typedef size_t EntityId;
-typedef size_t ComponentId;
-typedef size_t SystemId;
-
-typedef unsigned char byte;
-
 namespace Wiwa {
 	template<class T, class T2, class... TArgs>
 	class System {
@@ -45,17 +39,25 @@ namespace Wiwa {
 		template<class C> void InsertComponents(size_t index);
 		template<class C, class C2, class ...CArgs> void InsertComponents(size_t index);
 		template<class C> size_t GetComponentIndex();
+
+		// Component tuples
+		template<class C> std::tuple<C*> GetComponentsTuple(size_t eindex, size_t cindex);
+		template<class C, class C2, class ...CArgs> std::tuple<C*, C2*, CArgs*...> GetComponentsTuple(size_t eindex, size_t cindex);
 	protected:
 		// Callbacks for sub-systems
 		virtual void OnEntityAdded(EntityId entityID) {}
 		virtual void OnEntityRemoved() {}
 
+		byte* GetComponents(size_t index);
 		template<class C> C* GetComponents();
+		size_t* GetComponentIndexes(size_t index);
 		template<class C> size_t* GetComponentIndexes();
 		size_t GetRegisteredSize() { return m_RegisteredEntities.size(); }
 
 		virtual void OnInit() {}
 		virtual void OnUpdate() {}
+
+		virtual void OnUpdateComponents(T* arg1, T2* arg2, TArgs*... args) = 0;
 	public:
 		System();
 		virtual ~System(); // Virtual destructor, so that child destructor is called
@@ -157,6 +159,30 @@ namespace Wiwa {
 	}
 
 	template<class T, class T2, class ...TArgs>
+	inline byte* System<T, T2, TArgs...>::GetComponents(size_t index)
+	{
+		byte* c_list = NULL;
+
+		if (index < m_ComponentCount) {
+			c_list = m_ECSComponents->at(m_ComponentIds[index]);
+		}
+
+		return c_list;
+	}
+
+	template<class T, class T2, class ...TArgs>
+	inline size_t* System<T, T2, TArgs...>::GetComponentIndexes(size_t index)
+	{
+		size_t* i_list = NULL;
+
+		if (index < m_ComponentCount) {
+			i_list = m_EntityComponentIndexes[index].data();
+		}
+
+		return i_list;
+	}
+
+	template<class T, class T2, class ...TArgs>
 	inline void System<T, T2, TArgs...>::Reserve(size_t amount)
 	{
 		m_RegisteredEntities.reserve(amount);
@@ -251,6 +277,23 @@ namespace Wiwa {
 
 	template<class T, class T2, class ...TArgs>
 	template<class C>
+	inline std::tuple<C*> System<T, T2, TArgs...>::GetComponentsTuple(size_t eindex, size_t cindex)
+	{
+		byte* cs = m_ECSComponents->at(m_ComponentIds[cindex]);
+		size_t offset = m_EntityComponentIndexes[cindex][eindex];
+
+		return std::make_tuple((C*)(cs + offset));
+	}
+
+	template<class T, class T2, class ...TArgs>
+	template<class C, class C2, class ...CArgs>
+	inline std::tuple<C*, C2*, CArgs*...> System<T, T2, TArgs...>::GetComponentsTuple(size_t eindex, size_t cindex)
+	{
+		return std::tuple_cat(GetComponentsTuple<C>(eindex, cindex), GetComponentsTuple<C2, CArgs...>(eindex, cindex + 1));
+	}
+
+	template<class T, class T2, class ...TArgs>
+	template<class C>
 	inline C* System<T, T2, TArgs...>::GetComponents()
 	{
 		size_t c_id = GetComponentIndex<C>();
@@ -289,6 +332,13 @@ namespace Wiwa {
 	template<class T, class T2, class ...TArgs>
 	inline void System<T, T2, TArgs...>::Update()
 	{
-		OnUpdate();
+		//OnUpdate();
+
+		size_t size = GetRegisteredSize();
+
+		for (size_t i = 0; i < size; i++) {
+			std::tuple<T*, T2*, TArgs*...> tuple = GetComponentsTuple<T, T2, TArgs...>(i, 0);
+			std::apply(&System<T, T2, TArgs...>::OnUpdateComponents, std::tuple_cat(std::make_tuple(this), tuple));
+		}
 	}
 }

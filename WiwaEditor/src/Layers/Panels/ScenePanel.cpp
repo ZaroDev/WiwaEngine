@@ -229,7 +229,8 @@ void ScenePanel::Draw()
 
     static bool grid = true;
 
-    ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getColorBufferTexture();
+    ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getColorBufferTexture();
+    
     ImVec2 cpos = ImGui::GetCursorPos();
     cpos.x = (viewportPanelSize.x - isize.x) / 2;
     ImGui::SetCursorPos(cpos);

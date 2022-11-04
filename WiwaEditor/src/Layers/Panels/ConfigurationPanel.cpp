@@ -6,7 +6,6 @@
 #include "psapi.h"
 
 #include <Wiwa/utilities/AllocationMetrics.h>
-#include <bezier_curve.hpp>
 
 ConfigurationPanel::ConfigurationPanel(EditorLayer* instance)
 	: Panel("Configuration", instance), info()
@@ -69,8 +68,8 @@ void ConfigurationPanel::Draw()
 				Wiwa::Time::SetTimeScale(timeScale);
 			}
 		}
-		static ImVec2 curves[64];
-		ImGui::Editor("Chuchawiwa", ImVec2{ 64, 64 }, 64, curves);
+		//static ImVec2 curves[64];
+		//ImGui::Editor("Chuchawiwa", ImVec2{ 64, 64 }, 64, curves);
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{

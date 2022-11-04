@@ -32,9 +32,15 @@ namespace Wiwa {
 		uint32_t m_ColorBufferTexture;
 		uint32_t m_RBO;
 		int m_Width, m_Height;
+
+		bool m_Init;
+
 		DirectionalLight m_Light;
 		List<PointLight> m_PointLights;
 	public:
+		FrameBuffer();
+		~FrameBuffer();
+
 		void Init(int width, int height);
 
 		void Bind(bool clear=true);
@@ -46,6 +52,7 @@ namespace Wiwa {
 		inline int getHeight() { return m_Height; }
 
 		inline uint32_t getColorBufferTexture() { return m_ColorBufferTexture; }
+		inline uint32_t getDepthBufferTexture() { return m_RBO; }
 
 		inline void setLight(const DirectionalLight& light) { m_Light = light; }
 		inline void addPointLight(const PointLight& light) { m_PointLights.emplace_back(light); }

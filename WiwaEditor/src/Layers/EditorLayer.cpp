@@ -12,7 +12,6 @@
 #include <imgui_internal.h>
 
 #include <Wiwa/Resources.h>
-#include <bezier_curve.hpp>
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")

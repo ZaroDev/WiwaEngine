@@ -14,6 +14,7 @@ typedef size_t EntityId;
 typedef size_t ComponentId;
 typedef size_t ComponentHash;
 typedef size_t SystemId;
+
 typedef unsigned char byte;
 
 namespace Wiwa {

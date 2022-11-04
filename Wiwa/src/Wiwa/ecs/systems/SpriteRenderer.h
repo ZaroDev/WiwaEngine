@@ -14,6 +14,8 @@ namespace Wiwa {
 
 		void OnUpdate() override;
 
+		void OnUpdateComponents(Transform2D* t2d, Sprite* spr){}
+
 	protected:
 		void OnEntityAdded(EntityId entityID) override;
 	};

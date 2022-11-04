@@ -15,6 +15,8 @@ namespace Wiwa {
 		~MeshRenderer();
 
 		void OnUpdate() override;
+
+		void OnUpdateComponents(Transform3D* t3d, Mesh* mesh) override;
 	};
 }
 
