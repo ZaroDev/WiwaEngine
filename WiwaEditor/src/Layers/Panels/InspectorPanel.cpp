@@ -567,6 +567,7 @@ void InspectorPanel::Draw()
 		if (strcmp(edit.c_str(), entName) != 0)
 			entityManager.SetEntityName(m_CurrentID, edit.c_str());
 		
+
 		std::map<ComponentId, size_t>& map = entityManager.GetEntityComponents(m_CurrentID);
 		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
 		{

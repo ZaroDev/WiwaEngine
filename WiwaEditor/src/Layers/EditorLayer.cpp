@@ -26,7 +26,6 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
-	m_About = std::make_unique<AboutPanel>(this);
 	m_Configuration = std::make_unique<ConfigurationPanel>(this);
 	m_Console = std::make_unique<ConsolePanel>(this);
 	m_Scene = std::make_unique<ScenePanel>(this);
@@ -36,6 +35,10 @@ void EditorLayer::OnAttach()
 	m_MeshView = std::make_unique<MeshViewPanel>(this);
 	m_MaterialEditor = std::make_unique<MaterialPanel>(this);
 
+
+	m_ProjectPanel = std::make_unique<ProjectPanel>(this);
+	m_About = std::make_unique<AboutPanel>(this);
+
 	m_Panels.push_back(m_Configuration.get());
 	m_Panels.push_back(m_Console.get());
 	m_Panels.push_back(m_Scene.get());
@@ -44,6 +47,9 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_Inspector.get());
 	m_Panels.push_back(m_MeshView.get());
 	m_Panels.push_back(m_MaterialEditor.get());
+
+	m_Settings.push_back(m_ProjectPanel.get());
+	m_Settings.push_back(m_About.get());
 
 	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
 	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");
@@ -78,6 +84,11 @@ void EditorLayer::OnUpdate()
 		if (p->active)
 			p->Update();
 	}
+	for (auto& p : m_Settings)
+	{
+		if (p->active)
+			p->Update();
+	}
 }
 
 void EditorLayer::OnImGuiRender()
@@ -92,12 +103,13 @@ void EditorLayer::OnImGuiRender()
 		if (p->active)
 			p->Draw();
 	}
-	if (m_About->active)
-		m_About->Draw();
+	for (auto& p : m_Settings)
+	{
+		if (p->active)
+			p->Draw();
+	}
 	if (m_ShowDemo)
 		ImGui::ShowDemoWindow(&m_ShowDemo);
-
-
 }
 
 void EditorLayer::OnEvent(Wiwa::Event& e)
@@ -137,6 +149,14 @@ void EditorLayer::MainMenuBar()
 			if (ImGui::MenuItem("Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
 			
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Project settings"))
+			{
+				m_ProjectPanel.get()->SwitchActive();
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("View"))

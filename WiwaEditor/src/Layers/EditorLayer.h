@@ -6,7 +6,9 @@
 #include "Panels/Panel.h"
 #include <Wiwa/utilities/Action.h>
 #include <Wiwa/Events/Event.h>
+
 #include "../Events/PanelEvents.h"
+
 #include "Panels/AboutPanel.h"
 #include "Panels/ConfigurationPanel.h"
 #include "Panels/ConsolePanel.h"
@@ -16,6 +18,8 @@
 #include "Panels/InspectorPanel.h"
 #include "Panels/MeshViewPanel.h"
 #include "Panels/MaterialPanel.h"
+#include "Panels/ProjectPanel.h"
+
 #include <memory>
 
 typedef void* ImTextureID;
@@ -62,8 +66,10 @@ private:
 	std::unique_ptr<Panel>	m_Inspector ;
 	std::unique_ptr<Panel>	m_MeshView;
 	std::unique_ptr<Panel>	m_MaterialEditor;
+	std::unique_ptr<Panel>	m_ProjectPanel;
 
 	std::vector<Panel*> m_Panels;
+	std::vector<Panel*> m_Settings;
 
 	ImTextureID m_PlayIcon = 0;
 	ImTextureID m_PauseIcon = 0;

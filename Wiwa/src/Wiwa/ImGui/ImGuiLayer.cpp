@@ -164,19 +164,19 @@ namespace Wiwa {
 		colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 
-		ImGuiStyle* style = &ImGui::GetStyle();
+		//ImGuiStyle* style = &ImGui::GetStyle();
 
-		style->WindowPadding = ImVec2(15, 15);
-		style->WindowRounding = 5.0f;
-		style->FramePadding = ImVec2(5, 5);
-		style->FrameRounding = 4.0f;
-		style->ItemSpacing = ImVec2(12, 8);
-		style->ItemInnerSpacing = ImVec2(8, 6);
-		style->IndentSpacing = 25.0f;
-		style->ScrollbarSize = 15.0f;
-		style->ScrollbarRounding = 9.0f;
-		style->GrabMinSize = 5.0f;
-		style->GrabRounding = 3.0f;
+		//style->WindowPadding = ImVec2(15, 15);
+		//style->WindowRounding = 5.0f;
+		//style->FramePadding = ImVec2(5, 5);
+		//style->FrameRounding = 4.0f;
+		//style->ItemSpacing = ImVec2(12, 8);
+		//style->ItemInnerSpacing = ImVec2(8, 6);
+		//style->IndentSpacing = 25.0f;
+		//style->ScrollbarSize = 15.0f;
+		//style->ScrollbarRounding = 9.0f;
+		//style->GrabMinSize = 5.0f;
+		//style->GrabRounding = 3.0f;
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 15);

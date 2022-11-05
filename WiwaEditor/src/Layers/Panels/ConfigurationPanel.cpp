@@ -42,15 +42,15 @@ void ConfigurationPanel::Draw()
 	if (ImGui::CollapsingHeader("Info"))
 	{
 		sprintf_s(title, 25, "Framerate %.1f", m_FPSLog[m_FPSLog.size() - 1]);
-		ImGui::PlotHistogram("##framerate", &m_FPSLog[0], (int)m_FPSLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotLines("##framerate", &m_FPSLog[0], (int)m_FPSLog.size(), 0, title, 0.0f, 1000.0f, ImVec2(200, 100));
 		sprintf_s(title, 25, "Frametime %.1f", m_MSLog[m_MSLog.size() - 1]);
-		ImGui::PlotHistogram("##frametime", &m_MSLog[0], (int)m_MSLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotLines("##frametime", &m_MSLog[0], (int)m_MSLog.size(), 0, title, 0.0f, m_MSLog[0] + 20, ImVec2(200, 100));
 		sprintf_s(title, 25, "Mem used %.1f", m_MemLog[m_MemLog.size() - 1]);
-		ImGui::PlotHistogram("##memory", &m_MemLog[0], (int)m_MemLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotHistogram("##memory", &m_MemLog[0], (int)m_MemLog.size(), 0, title, 0.0f, 10000.0f, ImVec2(200, 100));
 		sprintf_s(title, 25, "Current Allocations %.0f", m_AllocLog[m_AllocLog.size() - 1]);
-		ImGui::PlotHistogram("##memory", &m_AllocLog[0], (int)m_AllocLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotHistogram("##memory", &m_AllocLog[0], (int)m_AllocLog.size(), 0, title, 0.0f, 10000.0f, ImVec2(200, 100));
 		sprintf_s(title, 25, "Bytes allocated %.0f", m_ByteLog[m_ByteLog.size() - 1]);
-		ImGui::PlotHistogram("##memory", &m_ByteLog[0], (int)m_ByteLog.size(), 0, title, 0.0f, 100.0f, ImVec2(200, 100));
+		ImGui::PlotHistogram("##memory", &m_ByteLog[0], (int)m_ByteLog.size(), 0, title, 0.0f, 90000.0f, ImVec2(200, 100));
 	
 	}
 	if (ImGui::CollapsingHeader("Time"))

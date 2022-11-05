@@ -276,6 +276,7 @@ void AssetsPanel::DisplayNode(Directory *directoryEntry)
 	// ImGui::Text("%s", path.string().c_str());
 	// auto relativePath = std::filesystem::relative(directoryEntry.path(), s_EditorPath);
 	std::string filenameString = path.filename().string();
+	static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	bool isDir = std::filesystem::is_directory(path);
 	if (isDir)
 	{
@@ -284,13 +285,8 @@ void AssetsPanel::DisplayNode(Directory *directoryEntry)
 		ImGui::AlignTextToFramePadding();
 		if (!directoryEntry->directories.empty())
 		{
-			char str[25];
-			sprintf_s(str, 25, "##%s", filenameString.c_str());
-			bool open = ImGui::TreeNodeEx(str);
-			ImGui::SameLine();
-			ImGui::Image(m_FolderIcon, ImVec2(16, 16));
-			ImGui::SameLine();
-			if (ImGui::Button(filenameString.c_str()))
+			bool open = ImGui::TreeNodeEx(filenameString.c_str(), base_flags);
+			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 			{
 				m_CurrentPath = path;
 			}
@@ -305,12 +301,12 @@ void AssetsPanel::DisplayNode(Directory *directoryEntry)
 		}
 		else
 		{
-			ImGui::Image(m_FolderIcon, ImVec2(16, 16));
-			ImGui::SameLine();
-			if (ImGui::Button(filenameString.c_str()))
+			bool open = ImGui::TreeNodeEx(filenameString.c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 			{
 				m_CurrentPath = path;
 			}
+
 		}
 		ImGui::PopStyleColor();
 		ImGui::PopStyleColor();

@@ -52,7 +52,13 @@ namespace Wiwa {
 
 		m_TargetResolution = { 1920, 1080 };
 		
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		JSONDocument project("config/project.json");
+		m_ProjectName = project["name"].get<const char*>();
+		m_ProjectVersion = project["version"].get<const char*>();
+		m_ProjectCompany = project["company"].get<const char*>();
+		m_ProjectTarget = (ProjectTarget)project["target"].get<int>();
+
+		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps("Wiwa Engine: " + m_ProjectName)));
 		m_Window->SetEventCallback({ &Application::OnEvent, this });
 
 		int min, major, rev;
@@ -222,6 +228,15 @@ namespace Wiwa {
 		config.AddMember("resizable", m_Window->GetResizable());
 
 		config.save_file("config/application.json");
+
+		JSONDocument project;
+		project.AddMember("name", m_ProjectName.c_str());
+		project.AddMember("version", m_ProjectVersion.c_str());
+		project.AddMember("company", m_ProjectCompany.c_str());
+		project.AddMember("scenes", 0);
+		project.AddMember("target", (int)m_ProjectTarget);
+
+		project.save_file("config/project.json");
 
 		return false;
 	}
