@@ -332,13 +332,13 @@ namespace Wiwa {
 	template<class T, class T2, class ...TArgs>
 	inline void System<T, T2, TArgs...>::Update()
 	{
-		//OnUpdate();
+		OnUpdate();
 
-		size_t size = GetRegisteredSize();
+		/*size_t size = GetRegisteredSize();
 
 		for (size_t i = 0; i < size; i++) {
 			std::tuple<T*, T2*, TArgs*...> tuple = GetComponentsTuple<T, T2, TArgs...>(i, 0);
 			std::apply(&System<T, T2, TArgs...>::OnUpdateComponents, std::tuple_cat(std::make_tuple(this), tuple));
-		}
+		}*/
 	}
 }
