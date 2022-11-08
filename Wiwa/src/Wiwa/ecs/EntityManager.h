@@ -30,10 +30,16 @@ namespace Wiwa {
 		std::vector<std::string> m_EntityNames;
 		std::vector<std::map<ComponentId, size_t>> m_EntityComponents;
 		std::vector<std::vector<SystemId>> m_EntitySystems;
+		std::vector<EntityId> m_EntityParent;
+		std::vector<std::vector<EntityId>> m_EntityChildren;
 
 		std::vector<EntityId> m_EntitiesRemoved;
 		std::vector<EntityId> m_EntitiesAlive;
+		std::vector<EntityId> m_ParentEntitiesAlive;
 		std::vector<EntityId> m_EntitiesToDestroy;
+
+		// Create an entity and return its ID
+		EntityId CreateEntity_impl();
 
 		// Component management
 		size_t m_ComponentIdCount;
@@ -76,8 +82,12 @@ namespace Wiwa {
 		// Entity functions
 		inline const char* GetEntityName(EntityId id) { return m_EntityNames[id].c_str(); }
 		inline void SetEntityName(EntityId id, const char* name) { m_EntityNames[id] = name; }
+
 		inline std::vector<EntityId>* GetEntitiesAlive() { return &m_EntitiesAlive; }
+		inline std::vector<EntityId>* GetParentEntitiesAlive() { return &m_ParentEntitiesAlive; }
+
 		inline size_t GetEntityCount() { return m_EntitiesAlive.size(); }
+		inline std::vector<EntityId>* GetEntityChildren(EntityId eid) { return &m_EntityChildren[eid]; }
 
 		inline std::map<ComponentId, size_t>& GetEntityComponents(EntityId id) { return m_EntityComponents[id]; }
 		

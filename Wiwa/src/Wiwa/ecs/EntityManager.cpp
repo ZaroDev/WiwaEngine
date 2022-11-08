@@ -39,6 +39,18 @@ namespace Wiwa {
 				break;
 			}
 		}
+		
+		// Remove entity from parent alive entities vector
+		if (m_EntityParent[eid] == eid) {
+			size_t pealive = m_ParentEntitiesAlive.size();
+
+			for (size_t i = 0; i < pealive; i++) {
+				if (m_ParentEntitiesAlive[i] == eid) {
+					m_ParentEntitiesAlive.erase(m_ParentEntitiesAlive.begin() + i);
+					break;
+				}
+			}
+		}
 
 		// Callback for systems
 		size_t systems = m_EntitySystems[eid].size();
@@ -59,6 +71,15 @@ namespace Wiwa {
 		}
 
 		m_EntityComponents[eid].clear();
+
+		// Remove children entities
+		size_t chsize = m_EntityChildren[eid].size();
+
+		for (size_t i = 0; i < chsize; i++) {
+			RemoveEntity(m_EntityChildren[eid][i]);
+		}
+
+		m_EntityChildren[eid].clear();
 	}
 
 	void EntityManager::OnEntityComponentAdded(EntityId eid)
@@ -97,6 +118,32 @@ namespace Wiwa {
 		}
 	}
 
+	EntityId EntityManager::CreateEntity_impl()
+	{
+		size_t rsize = m_EntitiesRemoved.size();
+
+		EntityId eid = 0;
+
+		if (rsize > 0) {
+			eid = m_EntitiesRemoved[rsize - 1];
+
+			m_EntitiesRemoved.pop_back();
+		}
+		else {
+			eid = m_EntityComponents.size();
+
+			m_EntityComponents.emplace_back();
+			m_EntitySystems.emplace_back();
+			m_EntityNames.emplace_back();
+			m_EntityParent.emplace_back();
+			m_EntityChildren.emplace_back();
+		}
+
+		m_EntitiesAlive.push_back(eid);
+
+		return eid;
+	}
+
 	EntityId EntityManager::CreateEntity()
 	{
 		return CreateEntity("New entity");
@@ -104,13 +151,28 @@ namespace Wiwa {
 
 	EntityId EntityManager::CreateEntity(const char* name)
 	{
-		m_EntityComponents.emplace_back();
-		m_EntitySystems.emplace_back();
-		m_EntityNames.emplace_back(name);
+		EntityId eid = CreateEntity_impl();
 
-		EntityId eid = m_EntityComponents.size() - 1;
+		m_EntityNames[eid] = name;
+		m_EntityParent[eid] = eid;
 
-		m_EntitiesAlive.push_back(eid);
+		m_ParentEntitiesAlive.emplace_back(eid);
+
+		return eid;
+	}
+
+	EntityId EntityManager::CreateEntity(EntityId parent)
+	{
+		return CreateEntity("New entity", parent);
+	}
+
+	EntityId EntityManager::CreateEntity(const char* name, EntityId parent)
+	{
+		EntityId eid = CreateEntity_impl();
+
+		m_EntityNames[eid] = name;
+		m_EntityParent[eid] = parent;
+		m_EntityChildren[parent].push_back(eid);
 
 		return eid;
 	}
@@ -124,8 +186,11 @@ namespace Wiwa {
 	{
 		m_EntityComponents.reserve(amount);
 		m_EntitySystems.reserve(amount);
+		m_EntityParent.reserve(amount);
+		m_EntityChildren.reserve(amount);
 		m_EntitiesAlive.reserve(amount);
 		m_EntitiesRemoved.reserve(amount);
+		m_ParentEntitiesAlive.reserve(amount);
 	}
 
 	byte* EntityManager::AddComponent(EntityId entityId, ComponentHash hash, byte* value) {

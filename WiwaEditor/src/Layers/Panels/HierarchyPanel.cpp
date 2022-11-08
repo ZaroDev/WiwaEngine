@@ -76,11 +76,9 @@ void HierarchyPanel::Draw()
 	}
 	ImGui::PopStyleColor();
 
-
-
-
 	ImGui::SameLine();
-	std::vector<EntityId>* entities = entityManager.GetEntitiesAlive();
+	
+	std::vector<EntityId>* entities = entityManager.GetParentEntitiesAlive();
 	size_t count = entities->size();
 	static ImGuiTextFilter filter;
 	filter.Draw("##searchbar", 200.f);
