@@ -13,5 +13,4 @@ public:
 
 private:
 	int m_CurrentID = -1;
-	ImTextureID m_AddIcon;
 };

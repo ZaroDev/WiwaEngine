@@ -19,8 +19,7 @@
 HierarchyPanel::HierarchyPanel(EditorLayer* instance)
 	: Panel("Hierarchy", instance)
 {
-	ResourceId addID = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/add_icon.png");
-	m_AddIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(addID);
+	
 }
 
 HierarchyPanel::~HierarchyPanel()
@@ -70,40 +69,47 @@ void HierarchyPanel::Draw()
 		}
 		ImGui::EndPopup();
 	}
-
-	if (ImGui::ImageButton(m_AddIcon, {20, 20}))
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+	if (ImGui::Button("+"))
 	{
 		Wiwa::Application::Get().GetEntityManager().CreateEntity();
 	}
+	ImGui::PopStyleColor();
 
-	float width = ImGui::GetWindowContentRegionWidth();
-	int id = 0;
-	
+
+
+
+	ImGui::SameLine();
 	std::vector<EntityId>* entities = entityManager.GetEntitiesAlive();
 	size_t count = entities->size();
-
-	for (size_t i = 0; i < count; i++)
-	{
+	static ImGuiTextFilter filter;
+	filter.Draw("##searchbar", 200.f);
+	ImGui::BeginChild("listbox child");
+	ImGui::Separator();
+	for (size_t i = 0; i < count; i++) {
 		EntityId eid = entities->at(i);
 		const char* entName = entityManager.GetEntityName(eid);
-		
-		ImGui::PushID(id++);
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 		if (eid == m_CurrentID)
 		{
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
-		ImGui::TreeNodeEx(entName, flags);
-		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+		if (filter.PassFilter(entName))
 		{
-			EntityChangeEvent event((uint32_t)eid);
-			Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance};
-			act(event);
-			m_CurrentID = eid;
+			std::string label = entName;
+			
+			label += "##" + std::to_string(i);
+			ImGui::TreeNodeEx(label.c_str(), flags);
+			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+			{
+				EntityChangeEvent event((uint32_t)eid);
+				Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
+				act(event);
+				m_CurrentID = eid;
+			}
 		}
-		
-		ImGui::PopID();
 	}
+	ImGui::EndChild();
 	
 	ImGui::End();
 }
