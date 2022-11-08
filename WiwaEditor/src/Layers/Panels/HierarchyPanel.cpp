@@ -84,28 +84,32 @@ void HierarchyPanel::Draw()
 	filter.Draw("##searchbar", 200.f);
 	ImGui::BeginChild("listbox child");
 	ImGui::Separator();
-	for (size_t i = 0; i < count; i++) {
-		EntityId eid = entities->at(i);
-		const char* entName = entityManager.GetEntityName(eid);
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-		if (eid == m_CurrentID)
-		{
-			flags |= ImGuiTreeNodeFlags_Selected;
-		}
-		if (filter.PassFilter(entName))
-		{
-			std::string label = entName;
-			
-			label += "##" + std::to_string(i);
-			ImGui::TreeNodeEx(label.c_str(), flags);
-			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+	if(ImGui::TreeNodeEx("Scene name", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		for (size_t i = 0; i < count; i++) {
+			EntityId eid = entities->at(i);
+			const char* entName = entityManager.GetEntityName(eid);
+			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+			if (eid == m_CurrentID)
 			{
-				EntityChangeEvent event((uint32_t)eid);
-				Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
-				act(event);
-				m_CurrentID = eid;
+				flags |= ImGuiTreeNodeFlags_Selected;
+			}
+			if (filter.PassFilter(entName))
+			{
+				std::string label = entName;
+
+				label += "##" + std::to_string(i);
+				ImGui::TreeNodeEx(label.c_str(), flags);
+				if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+				{
+					EntityChangeEvent event((uint32_t)eid);
+					Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
+					act(event);
+					m_CurrentID = eid;
+				}
 			}
 		}
+		ImGui::TreePop();
 	}
 	ImGui::EndChild();
 	
