@@ -14,9 +14,13 @@
 #include "ScenePanel.h"
 #include "../EditorLayer.h"
 
+#include "../../Utils/ImGuiWidgets.h"
+
 HierarchyPanel::HierarchyPanel(EditorLayer* instance)
 	: Panel("Hierarchy", instance)
 {
+	ResourceId addID = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/add_icon.png");
+	m_AddIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(addID);
 }
 
 HierarchyPanel::~HierarchyPanel()
@@ -33,16 +37,7 @@ void HierarchyPanel::Draw()
 		{
 			entityManager.CreateEntity("New entity");
 		}
-		//TODO: Remove test
-		/*if(ImGui::MenuItem("Create 2D tree"))
-		{
-			ResourceId tree = Wiwa::Resources::Load<Wiwa::Image>("resources/images/tree.png");
-			Wiwa::Image* spr = Wiwa::Resources::GetResourceById<Wiwa::Image>(tree);
-			Wiwa::Size2i size = spr->GetSize();
-			EntityId EntityMyTree = entityManager.CreateEntity("Arbolsito rechulon");
-			entityManager.AddComponent<Wiwa::Transform2D>(EntityMyTree, { {0,0},0.f,{1.0,1.0} });
-			entityManager.AddComponent<Wiwa::Sprite>(EntityMyTree, { {256,256}, tree,{size.w / 4, size.h / 4, size.w / 2, size.h / 2} });
-		}*/
+		ImGui::Separator();
 		if (ImGui::BeginMenu("Primitives"))
 		{
 			if (ImGui::MenuItem("Create cube"))
@@ -63,10 +58,20 @@ void HierarchyPanel::Draw()
 			}
 			ImGui::EndMenu();
 		}
+		if (m_CurrentID >= 0)
+		{
+			ImGui::Separator();
+			ImGui::Text(entityManager.GetEntityName(m_CurrentID));
+			if (ImGui::MenuItem("Delete"))
+			{
+				entityManager.DestroyEntity(m_CurrentID);
+				m_CurrentID = -1;
+			}
+		}
 		ImGui::EndPopup();
 	}
 
-	if(ImGui::Button("+"))
+	if (ImGui::ImageButton(m_AddIcon, {20, 20}))
 	{
 		Wiwa::Application::Get().GetEntityManager().CreateEntity();
 	}
@@ -83,14 +88,22 @@ void HierarchyPanel::Draw()
 		const char* entName = entityManager.GetEntityName(eid);
 		
 		ImGui::PushID(id++);
-		if (ImGui::Button(entName, ImVec2(width, 20)))
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		if (eid == m_CurrentID)
+		{
+			flags |= ImGuiTreeNodeFlags_Selected;
+		}
+		ImGui::TreeNodeEx(entName, flags);
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
 		{
 			EntityChangeEvent event((uint32_t)eid);
 			Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance};
 			act(event);
+			m_CurrentID = eid;
 		}
+		
 		ImGui::PopID();
 	}
-
+	
 	ImGui::End();
 }
