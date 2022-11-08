@@ -87,6 +87,7 @@ namespace Wiwa {
 		inline std::vector<EntityId>* GetParentEntitiesAlive() { return &m_ParentEntitiesAlive; }
 
 		inline size_t GetEntityCount() { return m_EntitiesAlive.size(); }
+		inline EntityId GetEntityParent(EntityId eid) { return m_EntityParent[eid]; }
 		inline std::vector<EntityId>* GetEntityChildren(EntityId eid) { return &m_EntityChildren[eid]; }
 
 		inline std::map<ComponentId, size_t>& GetEntityComponents(EntityId id) { return m_EntityComponents[id]; }
