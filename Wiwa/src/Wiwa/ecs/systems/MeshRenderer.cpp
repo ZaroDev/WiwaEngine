@@ -18,7 +18,7 @@ namespace Wiwa {
 	}
 
 	void MeshRenderer::OnUpdate()
-	{		
+	{
 		Transform3D* t3dv = GetComponents<Transform3D>();
 		size_t* t3din = GetComponentIndexes<Transform3D>();
 
@@ -42,18 +42,5 @@ namespace Wiwa {
 			if (mat->getType() == Wiwa::Material::MaterialType::textured)
 				r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat);
 		}
-	}
-
-	void MeshRenderer::OnUpdateComponents(Transform3D* t3d, Mesh* mesh)
-	{
-		Renderer3D& r3d = Application::Get().GetRenderer3D();
-
-		Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
-		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
-		if (mat->getType() == Wiwa::Material::MaterialType::color)
-			r3d.RenderMeshColor(mod, t3d->position, t3d->rotation, t3d->scale, mat);
-
-		if (mat->getType() == Wiwa::Material::MaterialType::textured)
-			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat);
 	}
 }

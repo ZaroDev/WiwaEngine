@@ -10,13 +10,13 @@ namespace Wiwa {
 		//std::vector<size_t> m_RemovedIndex;
 		std::vector<EntityId> m_RegisteredEntities;
 		
-		std::vector<size_t> m_EntityComponentIndexes[sizeof...(TArgs) + 2];
+		std::vector<std::vector<size_t>> m_EntityComponentIndexes;
 
 		std::vector<byte*>* m_ECSComponents;
 		//byte** m_SystemComponents[sizeof...(TArgs) + 2];
 
-		ComponentId m_ComponentIds[sizeof...(TArgs) + 2];
-		size_t m_ComponentSize[sizeof...(TArgs) + 2];
+		std::vector<ComponentId> m_ComponentIds;
+		std::vector<size_t> m_ComponentSize;
 
 		size_t getEntityPos(EntityId eid);
 
@@ -41,8 +41,8 @@ namespace Wiwa {
 		template<class C> size_t GetComponentIndex();
 
 		// Component tuples
-		template<class C> std::tuple<C*> GetComponentsTuple(size_t eindex, size_t cindex);
-		template<class C, class C2, class ...CArgs> std::tuple<C*, C2*, CArgs*...> GetComponentsTuple(size_t eindex, size_t cindex);
+		/*template<class C> std::tuple<C*> GetComponentsTuple(size_t eindex, size_t cindex);
+		template<class C, class C2, class ...CArgs> std::tuple<C*, C2*, CArgs*...> GetComponentsTuple(size_t eindex, size_t cindex);*/
 	protected:
 		// Callbacks for sub-systems
 		virtual void OnEntityAdded(EntityId entityID) {}
@@ -57,7 +57,7 @@ namespace Wiwa {
 		virtual void OnInit() {}
 		virtual void OnUpdate() {}
 
-		virtual void OnUpdateComponents(T* arg1, T2* arg2, TArgs*... args) = 0;
+		//virtual void OnUpdateComponents(T* arg1, T2* arg2, TArgs*... args) = 0;
 	public:
 		System();
 		virtual ~System(); // Virtual destructor, so that child destructor is called
@@ -77,6 +77,12 @@ namespace Wiwa {
 	{
 		m_ComponentCount = sizeof...(TArgs) + 2;
 
+		// Resize component info vectors
+		m_EntityComponentIndexes.resize(m_ComponentCount);
+		m_ComponentIds.resize(m_ComponentCount);
+		m_ComponentSize.resize(m_ComponentCount);
+
+		// Register components in entity manager
 		Application& app = Application::Get();
 		app.GetEntityManager().RegisterComponents<T, T2, TArgs...>();
 		m_ECSComponents = app.GetEntityManager().GetComponentsList();
@@ -197,7 +203,7 @@ namespace Wiwa {
 	{
 		Application& app = Application::Get();
 
-		bool valid = app.GetEntityManager().HasComponents(entity, m_ComponentIds, m_ComponentCount);
+		bool valid = app.GetEntityManager().HasComponents(entity, m_ComponentIds.data(), m_ComponentCount);
 
 		if (valid) {
 			AddEntity(entity);
@@ -275,7 +281,7 @@ namespace Wiwa {
 		return c_id;
 	}
 
-	template<class T, class T2, class ...TArgs>
+	/*template<class T, class T2, class ...TArgs>
 	template<class C>
 	inline std::tuple<C*> System<T, T2, TArgs...>::GetComponentsTuple(size_t eindex, size_t cindex)
 	{
@@ -290,7 +296,7 @@ namespace Wiwa {
 	inline std::tuple<C*, C2*, CArgs*...> System<T, T2, TArgs...>::GetComponentsTuple(size_t eindex, size_t cindex)
 	{
 		return std::tuple_cat(GetComponentsTuple<C>(eindex, cindex), GetComponentsTuple<C2, CArgs...>(eindex, cindex + 1));
-	}
+	}*/
 
 	template<class T, class T2, class ...TArgs>
 	template<class C>
