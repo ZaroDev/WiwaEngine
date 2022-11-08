@@ -129,15 +129,20 @@ namespace Wiwa {
 	}
 
 	byte* EntityManager::AddComponent(EntityId entityId, ComponentHash hash, byte* value) {
-		// Get component ID
-		ComponentId cid = GetComponentId(hash);
-
-		// Take components map of the entity
-		std::map<ComponentId, size_t>* ec = &m_EntityComponents[entityId];
-
 		const Type* ctype = Application::Get().getCoreTypeH(hash);
 		if (!ctype) ctype = Application::Get().getAppTypeH(hash);
-		
+
+		return AddComponent(entityId, ctype, value);
+	}
+
+	byte* EntityManager::AddComponent(EntityId entity, const Type* type, byte* value)
+	{
+		// Get component ID
+		ComponentId cid = GetComponentId(type);
+
+		// Take components map of the entity
+		std::map<ComponentId, size_t>* ec = &m_EntityComponents[entity];
+
 		byte* component = NULL;
 
 		// Look if the entity has this component
@@ -145,7 +150,7 @@ namespace Wiwa {
 
 		// If it doesn't have the component, add it
 		if (iterator == ec->end()) {
-			size_t t_size = ctype->size;
+			size_t t_size = type->size;
 			// Check if the component list exists
 			if (cid >= m_Components.size()) {
 				m_Components.resize(cid + 1, NULL);
@@ -169,7 +174,7 @@ namespace Wiwa {
 				m_ComponentsReserved[cid]++;
 				ec->insert_or_assign(cid, 0);
 
-				m_ComponentTypes[cid] = ctype;
+				m_ComponentTypes[cid] = type;
 			}
 			else {
 				// Check if component index available
@@ -235,7 +240,7 @@ namespace Wiwa {
 		}
 
 		// Callbacks for systems
-		OnEntityComponentAdded(entityId);
+		OnEntityComponentAdded(entity);
 
 		return component;
 	}
@@ -270,24 +275,30 @@ namespace Wiwa {
 		return index;
 	}
 
-	ComponentId EntityManager::GetComponentId(ComponentHash hash) {
+	ComponentId EntityManager::GetComponentId(const Type* type)
+	{
 		size_t component_id = 0;
 
-		std::unordered_map<size_t, componentData>::iterator cid = m_ComponentIds.find(hash);
+		std::unordered_map<size_t, componentData>::iterator cid = m_ComponentIds.find(type->hash);
 
 		if (cid == m_ComponentIds.end()) {
 			component_id = m_ComponentIdCount++;
 
-			const Type* ctype = Application::Get().getCoreTypeH(hash);
-			if (!ctype) ctype = Application::Get().getAppTypeH(hash);
 
-			m_ComponentIds[hash] = { ctype, component_id};
+			m_ComponentIds[type->hash] = { type, component_id };
 		}
 		else {
 			component_id = cid->second.cid;
 		}
 
 		return component_id;
+	}
+
+	ComponentId EntityManager::GetComponentId(ComponentHash hash) {
+		const Type* ctype = Application::Get().getCoreTypeH(hash);
+		if (!ctype) ctype = Application::Get().getAppTypeH(hash);
+
+		return GetComponentId(ctype);
 	}
 
 	bool EntityManager::HasComponents(EntityId entityId, ComponentId* componentIds, size_t size)

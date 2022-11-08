@@ -67,6 +67,8 @@ namespace Wiwa {
 		// Create entity
 		EntityId CreateEntity();
 		EntityId CreateEntity(const char* name);
+		EntityId CreateEntity(EntityId parent);
+		EntityId CreateEntity(const char* name, EntityId parent);
 
 		// Remove entity
 		void DestroyEntity(EntityId entity);
@@ -85,6 +87,7 @@ namespace Wiwa {
 
 		// Component add functions
 		byte* AddComponent(EntityId entity, ComponentHash hash, byte* value=NULL);
+		byte* AddComponent(EntityId entity, const Type* type, byte* value = NULL);
 		template<class T> T* AddComponent(EntityId entity, T value = {});
 
 		template<class T> void AddComponents(EntityId entity, T arg = {});
@@ -119,6 +122,7 @@ namespace Wiwa {
 		bool HasComponents(EntityId entityId, ComponentId* componentIds, size_t size);
 		template<class T, class T2, class... TArgs> bool HasComponents(EntityId entityId);
 		
+		ComponentId GetComponentId(const Type* type);
 		ComponentId GetComponentId(ComponentHash hash);
 		template<class T> ComponentId GetComponentId();
 
@@ -159,7 +163,7 @@ namespace Wiwa {
 	{
 		const Type* ctype = GetType<T>();
 
-		return GetComponentId(ctype->hash);
+		return GetComponentId(ctype);
 	}
 
 	template<class T>
@@ -169,7 +173,7 @@ namespace Wiwa {
 
 		byte* data = (byte*)&value;
 
-		T* component = (T*)AddComponent(entity, type->hash, data);
+		T* component = (T*)AddComponent(entity, type, data);
 
 		return component;
 	}

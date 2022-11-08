@@ -597,7 +597,7 @@ void InspectorPanel::Draw()
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{
-						entityManager.AddComponent(m_CurrentID, type->hash);
+						entityManager.AddComponent(m_CurrentID, type);
 						ImGui::CloseCurrentPopup();
 					}
 				}
@@ -613,7 +613,7 @@ void InspectorPanel::Draw()
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{
-						entityManager.AddComponent(m_CurrentID, type->hash);
+						entityManager.AddComponent(m_CurrentID, type);
 						ImGui::CloseCurrentPopup();
 					}
 				}
