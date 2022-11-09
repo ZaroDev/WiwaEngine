@@ -13,6 +13,9 @@
 
 #include <Wiwa/Resources.h>
 
+#include "../Utils/ProjectManager.h"
+#include <Wiwa/Platform/Windows/WindowsPlatformUtils.h>
+
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -134,17 +137,40 @@ void EditorLayer::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
+			if (ImGui::MenuItem("New"))
+			{
+				std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
+				if (!filePath.empty())
+				{
+					Utils::ProjectManager::CreateProject(filePath.c_str());
+					WI_INFO("Succesfully created project at path {0}", filePath.c_str());
+				}
+			}
 			if (ImGui::MenuItem("Open", ""))
 			{
-
+				std::string filePath = Wiwa::FileDialogs::OpenFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
+				if (!filePath.empty())
+				{
+					Utils::ProjectManager::OpenProject(filePath.c_str());
+					WI_INFO("Succesfully opened project at path {0}", filePath.c_str());
+				}
 			}
 			if (ImGui::MenuItem("Load File", ""))
 			{
-
+				
 			}
-			if (ImGui::MenuItem("Save project"))
+			if (ImGui::MenuItem("Save project", "Ctrl+S"))
 			{
-
+				Utils::ProjectManager::SaveProject();
+			}
+			if (ImGui::MenuItem("Save project as...", "Ctrl+Shift+S"))
+			{
+				std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
+				if (!filePath.empty())
+				{
+					Utils::ProjectManager::SaveProject();
+					WI_INFO("Succesfully saved project at path {0}", filePath.c_str());
+				}
 			}
 			if (ImGui::MenuItem("Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();

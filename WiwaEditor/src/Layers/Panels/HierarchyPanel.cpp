@@ -156,7 +156,6 @@ void HierarchyPanel::CreateNode(const EntityId& eid, const char* entName, ImGuiT
 			act(event);
 			m_CurrentID = eid;
 		}
-		ImGui::TreePop();
 	}
 
 }
