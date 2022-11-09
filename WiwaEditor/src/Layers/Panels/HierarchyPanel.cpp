@@ -61,6 +61,12 @@ void HierarchyPanel::Draw()
 		{
 			ImGui::Separator();
 			ImGui::Text(entityManager.GetEntityName(m_CurrentID));
+			if (ImGui::MenuItem("Create child"))
+			{
+				EntityId id = entityManager.CreateEntity("New entity", m_CurrentID);
+				
+			}
+
 			if (ImGui::MenuItem("Delete"))
 			{
 				entityManager.DestroyEntity(m_CurrentID);
@@ -69,6 +75,7 @@ void HierarchyPanel::Draw()
 		}
 		ImGui::EndPopup();
 	}
+
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 	if (ImGui::Button("+"))
 	{
@@ -78,40 +85,78 @@ void HierarchyPanel::Draw()
 
 	ImGui::SameLine();
 	
-	std::vector<EntityId>* entities = entityManager.GetParentEntitiesAlive();
-	size_t count = entities->size();
 	static ImGuiTextFilter filter;
 	filter.Draw("##searchbar", 200.f);
-	ImGui::BeginChild("listbox child");
 	ImGui::Separator();
-	if(ImGui::TreeNodeEx("Scene name", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		for (size_t i = 0; i < count; i++) {
-			EntityId eid = entities->at(i);
-			const char* entName = entityManager.GetEntityName(eid);
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-			if (eid == m_CurrentID)
-			{
-				flags |= ImGuiTreeNodeFlags_Selected;
-			}
-			if (filter.PassFilter(entName))
-			{
-				std::string label = entName;
 
-				label += "##" + std::to_string(i);
-				ImGui::TreeNodeEx(label.c_str(), flags);
-				if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+	std::vector<EntityId>* entities = entityManager.GetParentEntitiesAlive();
+	size_t count = entities->size();
+	int id = 0;
+	for (size_t i = 0; i < count; i++) {
+		ImGui::PushID(id++);
+		EntityId eid = entities->at(i);
+		const char* entName = entityManager.GetEntityName(eid);
+		if (filter.PassFilter(entName))
+		{
+			CreateNode(eid, entName, filter,entityManager);
+		}
+		ImGui::PopID();
+	}
+
+	ImGui::End();
+}
+
+void HierarchyPanel::CreateNode(const EntityId& eid, const char* entName, ImGuiTextFilter& filter, Wiwa::EntityManager& entityManager)
+{
+	std::vector<EntityId>* childs = entityManager.GetEntityChildren(eid);
+	if (!childs->empty())
+	{
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+		if (eid == m_CurrentID)
+		{
+			flags |= ImGuiTreeNodeFlags_Selected;
+		}
+		bool open = ImGui::TreeNodeEx(entName, flags);
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+		{
+			EntityChangeEvent event((uint32_t)eid);
+			Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
+			act(event);
+			m_CurrentID = eid;
+		}
+		if (open)
+		{
+			int i = 0;
+			for (EntityId id : *childs)
+			{
+				const char* name = entityManager.GetEntityName(id);
+				std::string label = name;
+				label += "##" + std::to_string(i++);
+				if (filter.PassFilter(label.c_str()))
 				{
-					EntityChangeEvent event((uint32_t)eid);
-					Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
-					act(event);
-					m_CurrentID = eid;
+					CreateNode(id, label.c_str(), filter, entityManager);
 				}
 			}
+			ImGui::TreePop();
+		}
+
+	}
+	else
+	{
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		if (eid == m_CurrentID)
+		{
+			flags |= ImGuiTreeNodeFlags_Selected;
+		}
+		bool open = ImGui::TreeNodeEx(entName, flags);
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+		{
+			EntityChangeEvent event((uint32_t)eid);
+			Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
+			act(event);
+			m_CurrentID = eid;
 		}
 		ImGui::TreePop();
 	}
-	ImGui::EndChild();
-	
-	ImGui::End();
+
 }
