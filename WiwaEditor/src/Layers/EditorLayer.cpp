@@ -137,27 +137,13 @@ void EditorLayer::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("New"))
+			if (ImGui::MenuItem("New project", "Ctrl+N"))
 			{
-				std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
-				if (!filePath.empty())
-				{
-					Utils::ProjectManager::CreateProject(filePath.c_str());
-					WI_INFO("Succesfully created project at path {0}", filePath.c_str());
-				}
+				NewProject();
 			}
-			if (ImGui::MenuItem("Open", ""))
+			if (ImGui::MenuItem("Open project", "Ctrl+O"))
 			{
-				std::string filePath = Wiwa::FileDialogs::OpenFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
-				if (!filePath.empty())
-				{
-					Utils::ProjectManager::OpenProject(filePath.c_str());
-					WI_INFO("Succesfully opened project at path {0}", filePath.c_str());
-				}
-			}
-			if (ImGui::MenuItem("Load File", ""))
-			{
-				
+				OpenProject();
 			}
 			if (ImGui::MenuItem("Save project", "Ctrl+S"))
 			{
@@ -165,12 +151,24 @@ void EditorLayer::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Save project as...", "Ctrl+Shift+S"))
 			{
-				std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
-				if (!filePath.empty())
-				{
-					Utils::ProjectManager::SaveProject();
-					WI_INFO("Succesfully saved project at path {0}", filePath.c_str());
-				}
+				SaveProjectAs();
+			}
+			ImGui::Separator();
+			if (ImGui::MenuItem("New scene", ""))
+			{
+				
+			}
+			if (ImGui::MenuItem("Open scene", ""))
+			{
+
+			}
+			if (ImGui::MenuItem("Save scene"))
+			{
+
+			}
+			if (ImGui::MenuItem("Save scene as..."))
+			{
+
 			}
 			if (ImGui::MenuItem("Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
@@ -300,6 +298,36 @@ void EditorLayer::MainMenuBar()
 	
 }
 
+void EditorLayer::SaveProjectAs()
+{
+	std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
+	if (!filePath.empty())
+	{
+		Utils::ProjectManager::SaveProjectAs(filePath.c_str());
+		WI_INFO("Succesfully saved project at path {0}", filePath.c_str());
+	}
+}
+
+void EditorLayer::OpenProject()
+{
+	std::string filePath = Wiwa::FileDialogs::OpenFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
+	if (!filePath.empty())
+	{
+		Utils::ProjectManager::OpenProject(filePath.c_str());
+		WI_INFO("Succesfully opened project at path {0}", filePath.c_str());
+	}
+}
+
+void EditorLayer::NewProject()
+{
+	std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Project (*.wiproject)\0*.wiproject\0");
+	if (!filePath.empty())
+	{
+		Utils::ProjectManager::CreateProject(filePath.c_str());
+		WI_INFO("Succesfully created project at path {0}", filePath.c_str());
+	}
+}
+
 void EditorLayer::DockSpace()
 {
 	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode;
@@ -389,7 +417,7 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	{
 		if (control)
 		{
-
+			NewProject();
 		}	//NewScene();
 
 		break;
@@ -398,7 +426,7 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	{
 		if (control)
 		{
-
+			OpenProject();
 		}	//OpenScene();
 
 		break;
@@ -407,10 +435,10 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	{
 		if (control)
 		{
-			//if (shift)
-			//	//SaveSceneAs();
-			//else
-			//	//SaveScene();
+			if (shift)
+				SaveProjectAs();
+			else
+				Utils::ProjectManager::SaveProject();
 		}
 
 		break;

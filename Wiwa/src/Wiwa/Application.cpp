@@ -86,6 +86,8 @@ namespace Wiwa {
 		m_EntityManager->RegisterSystem<MeshRenderer>();
 		m_EntityManager->RegisterSystem<SpriteRenderer>();
 
+		Resources::Load<Material>("resources/materials/default_material.wimaterial");
+
 		Mesh mesh;
 		mesh.meshId = Resources::Load<Model>("resources/meshes/BakerHouse.fbx");
 		mesh.materialId = Resources::Load<Material>("resources/materials/bakerhouse_material.wimaterial");

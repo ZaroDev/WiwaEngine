@@ -38,23 +38,16 @@ Wiwa::Material::Material(const char* file)
         matFile["colorA"].get<float>()
     };
     m_Type = (Wiwa::Material::MaterialType)matFile["type"].get<int>();
-   /* m_Settings = {
-       matFile["ambient"].get<glm::vec3>(),
-       matFile["diffuse"].get<glm::vec3>(),
-       matFile["specular"].get<glm::vec3>(),
-       matFile["shininess"].get<float>()
-    };*/
+    m_Settings = {
+        { matFile["diffuseR"].get<float>(),  matFile["diffuseG"].get<float>(),  matFile["diffuseB"].get<float>()},
+        { matFile["specularR"].get<float>(),  matFile["specularG"].get<float>(),  matFile["specularB"].get<float>()},
+        matFile["shininess"].get<float>()
+    };
     if (!m_TexturePath.empty())
     {
         m_ResourceId = Resources::Load<Image>(m_TexturePath.c_str());
         m_TextureId = Resources::GetResourceById<Image>(m_ResourceId)->GetTextureId();
     }
-    m_Settings =
-    {
-        glm::vec3{0.1f, 0.1f, 0.1f},
-        glm::vec3{0.1f, 0.1f, 0.1f},
-        0.1f
-    };
 }
 
 Wiwa::Material::~Material()

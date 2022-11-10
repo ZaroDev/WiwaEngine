@@ -11,6 +11,7 @@ namespace Utils
 		static void CreateProject(const char* file);
 		static void OpenProject(const char* file);
 		static void SaveProject();
+		static void SaveProjectAs(const char* file);
 		static void SaveScene(const char* file);
 		static void LoadScene();
 	private:
