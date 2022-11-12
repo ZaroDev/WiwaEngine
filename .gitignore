@@ -26,6 +26,7 @@
 *.sln
 *.vcxproj
 *.vcxproj.filters
+*.vcxproj.user
 *.csproj
 
 *.ini
