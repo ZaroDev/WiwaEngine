@@ -20,9 +20,7 @@ namespace Wiwa {
 		size_t size = m_Systems.size();
 
 		for (size_t i = 0; i < size; i++) {
-			System<void, void>* s = (System<void, void>*)m_Systems[i];
-
-			delete s;
+			delete m_Systems[i];
 		}
 	}
 
@@ -56,9 +54,7 @@ namespace Wiwa {
 		size_t systems = m_EntitySystems[eid].size();
 
 		for (size_t i = 0; i < systems; i++) {
-			System<void, void>* s = (System<void, void>*)m_Systems[i];
-
-			s->OnEntityRemoved(eid);
+			m_Systems[i]->RemoveEntity(eid);
 		}
 
 		m_EntitySystems[eid].clear();
@@ -82,21 +78,6 @@ namespace Wiwa {
 		m_EntityChildren[eid].clear();
 	}
 
-	void EntityManager::OnEntityComponentAdded(EntityId eid)
-	{
-		size_t size = m_Systems.size();
-
-		for (size_t i = 0; i < size; i++) {
-			if (!HasSystem(eid, i)) {
-				System<void, void>* s = (System<void, void>*)m_Systems[i];
-
-				if (s->OnEntityComponentAdded(eid)) {
-					m_EntitySystems[eid].push_back(i);
-				}
-			}
-		}
-	}
-
 	void EntityManager::Update()
 	{
 		// Remove entities in pool
@@ -112,9 +93,7 @@ namespace Wiwa {
 		size_t sysize = m_Systems.size();
 
 		for (size_t i = 0; i < sysize; i++) {
-			System<void, void>* s = (System<void, void>*)m_Systems[i];
-
-			s->Update();
+			m_Systems[i]->Update();
 		}
 	}
 
@@ -303,9 +282,6 @@ namespace Wiwa {
 				}
 			}
 		}
-
-		// Callbacks for systems
-		OnEntityComponentAdded(entity);
 
 		return component;
 	}

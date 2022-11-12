@@ -24,6 +24,7 @@ namespace Wiwa
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void NativeLogVector(ref Vector3 param, out Vector3 result);
     }
+
     public class Entity
     {
         public Entity()

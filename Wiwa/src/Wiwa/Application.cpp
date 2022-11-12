@@ -86,7 +86,7 @@ namespace Wiwa {
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
 		m_EntityManager->RegisterSystem<MeshRenderer>();
-		m_EntityManager->RegisterSystem<SpriteRenderer>();
+		//m_EntityManager->RegisterSystem<SpriteRenderer>();
 
 		Resources::Load<Material>("resources/materials/default_material.wimaterial");
 
@@ -102,7 +102,7 @@ namespace Wiwa {
 		EntityId eid = m_EntityManager->CreateEntity("Baker house");
 		m_EntityManager->AddComponent<Mesh>(eid, mesh);
 		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
-
+		m_EntityManager->ApplySystem<MeshRenderer>(eid);
 	}
 
 	void Application::SetHwInfo()

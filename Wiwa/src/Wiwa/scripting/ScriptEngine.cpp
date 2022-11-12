@@ -143,7 +143,6 @@ namespace Wiwa {
 		//PrintAssemblyTypes(s_Data->CoreAssembly);
 		
 	}
-
 	
 	void ScriptEngine::InitMono()
 	{

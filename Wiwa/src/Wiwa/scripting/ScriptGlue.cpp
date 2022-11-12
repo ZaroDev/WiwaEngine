@@ -3,6 +3,7 @@
 
 #include <mono/metadata/object.h>
 #include <glm.hpp>
+#include <Wiwa/ecs/systems/System.h>
 
 namespace Wiwa {
 

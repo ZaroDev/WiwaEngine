@@ -7,14 +7,14 @@
 #include <Wiwa/Reflection.h>
 
 namespace Wiwa {
-	class WI_API MeshRenderer : public System<Transform3D, Mesh> {
+	class WI_API MeshRenderer : public System {
 	private:
 
 	public:
 		MeshRenderer();
 		~MeshRenderer();
 
-		void OnUpdate() override;
+		void OnUpdate(EntityId eid) override;
 	};
 }
 
