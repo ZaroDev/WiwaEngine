@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <optick.h>
+#include <fstream>
 
 #include <filesystem>
 

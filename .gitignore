@@ -26,7 +26,8 @@
 *.sln
 *.vcxproj
 *.vcxproj.filters
-*.vcxproj.user
+*.csproj
+
 *.ini
 /Editor/WiwaEditor.exe
 /Editor/Assets
@@ -35,3 +36,4 @@
 bin
 bin-int
 /.vs
+Intermediates/

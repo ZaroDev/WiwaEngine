@@ -31,7 +31,7 @@
 
 #include <Wiwa/utilities/AllocationMetrics.h>
 
-
+#include "scripting/ScriptEngine.h"
 
 const size_t TYPE_COUNT = __COUNTER__;
 
@@ -66,6 +66,8 @@ namespace Wiwa {
 		sprintf_s(m_SysInfo.glfwVer, 32, "%i.%i.%i", min, major, rev);
 
 		SetHwInfo();
+
+		ScriptEngine::Init();
 
 		m_Renderer2D = new Renderer2D();
 		m_Renderer2D->Init();
@@ -129,7 +131,7 @@ namespace Wiwa {
 
 	Application::~Application()
 	{
-
+		ScriptEngine::ShutDown();
 	}
 
 	void Application::Run()
