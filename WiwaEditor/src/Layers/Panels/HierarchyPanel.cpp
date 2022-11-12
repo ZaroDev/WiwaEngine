@@ -60,7 +60,7 @@ void HierarchyPanel::Draw()
 		if (m_CurrentID >= 0)
 		{
 			ImGui::Separator();
-			ImGui::Text(entityManager.GetEntityName(m_CurrentID));
+			ImGui::TextDisabled(entityManager.GetEntityName(m_CurrentID));
 			if (ImGui::MenuItem("Create child"))
 			{
 				EntityId id = entityManager.CreateEntity("New entity", m_CurrentID);

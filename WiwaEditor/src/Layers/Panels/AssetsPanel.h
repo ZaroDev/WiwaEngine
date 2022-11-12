@@ -33,6 +33,7 @@ private:
 	ImTextureID m_FileIcon;
 	ImTextureID m_FolderIcon;
 	ImTextureID m_BackIcon;
+	ImTextureID m_MaterialIcon;
 	Directory m_Directory;
 	std::filesystem::path m_CurrentPath;
 	std::filesystem::file_time_type lastWriteTime;

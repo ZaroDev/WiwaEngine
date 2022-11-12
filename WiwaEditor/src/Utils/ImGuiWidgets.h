@@ -34,3 +34,7 @@ inline bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 	return ImGui::Button(label);
 }
 
+inline bool AssetContainer(const char* label)
+{
+
+}

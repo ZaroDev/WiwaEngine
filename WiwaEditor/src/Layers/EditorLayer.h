@@ -41,6 +41,9 @@ public:
 	inline int GetGizmo() { return m_GizmoType; }
 private:
 	void MainMenuBar();
+	void SaveProjectAs();
+	void OpenProject();
+	void NewProject();
 	void DockSpace();
 
 	void LoadPanelConfig();

@@ -94,6 +94,13 @@ void MaterialPanel::Draw()
             matFile.AddMember("colorG", m_Material->getColor().g);
             matFile.AddMember("colorB", m_Material->getColor().b);
             matFile.AddMember("colorA", m_Material->getColor().a);
+            matFile.AddMember("diffuseR", m_Material->getSettings().diffuse.r);
+            matFile.AddMember("diffuseG", m_Material->getSettings().diffuse.g);
+            matFile.AddMember("diffuseB", m_Material->getSettings().diffuse.b);
+            matFile.AddMember("specularR", m_Material->getSettings().specular.r);
+            matFile.AddMember("specularG", m_Material->getSettings().specular.g);
+            matFile.AddMember("specularB", m_Material->getSettings().specular.b);
+            matFile.AddMember("shininess", m_Material->getSettings().shininess);
             matFile.AddMember("type", (int)m_Material->getType());
             matFile.save_file(s_Path.string().c_str());
         }
@@ -160,6 +167,6 @@ bool MaterialPanel::OnMaterialChange(MaterialChangeEvent& e)
     Wiwa::JSONDocument matFile(m_Material->getMaterialPath());
     if (matFile.HasMember("texture"))
         m_Material->setTexture(matFile["texture"].get<const char*>());
-
+    s_Path = m_Material->getMaterialPath();
     return true;
 }
