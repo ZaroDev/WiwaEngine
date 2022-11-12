@@ -67,7 +67,7 @@ project "Wiwa"
 
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} %{wks.location}/Editor")
+			("{COPY} \"%{cfg.buildtarget.relpath}\" \"%{wks.location}Editor\"")
 		}
 		links
 		{
