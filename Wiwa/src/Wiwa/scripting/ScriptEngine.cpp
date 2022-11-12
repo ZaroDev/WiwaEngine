@@ -7,6 +7,7 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/object.h>
+#include <Wiwa/FileSystem.h>
 
 namespace Wiwa {
 	namespace Utils {
@@ -70,7 +71,7 @@ namespace Wiwa {
 
 			if (klass == nullptr)
 			{
-				WI_CORE_ERROR("Mono can't get the class {0} from the assembly image {1}", className);
+				WI_CORE_ERROR("Mono can't get the class {0}.{1} from the assembly image ", namespaceName, className);
 				return nullptr;
 			}
 
@@ -85,6 +86,9 @@ namespace Wiwa {
 		MonoDomain* AppDomain;
 
 		MonoAssembly* CoreAssembly = nullptr;
+		MonoAssembly* SystemAssembly = nullptr;
+
+		MonoDomain* SystemDomain = nullptr;
 
 		ScriptClass EnityClass;
 	};
@@ -96,7 +100,7 @@ namespace Wiwa {
 		MonoImage* image = mono_assembly_get_image(assembly);
 		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
-
+		File file = FileSystem::OpenO("assembly.txt");
 		for (int32_t i = 0; i < numTypes; i++)
 		{
 			uint32_t cols[MONO_TYPEDEF_SIZE];
@@ -105,8 +109,13 @@ namespace Wiwa {
 			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
 			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
+			file << nameSpace;
+			file << name;
+			file << "\n";
+
 			WI_CORE_INFO("{0}.{1}", nameSpace, name);
 		}
+		file.Close();
 	}
 
 	void ScriptEngine::Init()
@@ -116,17 +125,23 @@ namespace Wiwa {
 		InitMono();
 		LoadAssembly("resources/scripts/Wiwa-ScriptCore.dll");
 		ScriptGlue::RegisterFunctions();
-		s_Data->EnityClass = ScriptClass("Wiwa", "Entity");
+		s_Data->EnityClass = ScriptClass("Wiwa", "Behaviour");
 		
 		MonoObject* instance = s_Data->EnityClass.Instantiate();
 
-		MonoMethod* printMessageFunc = s_Data->EnityClass.GetMethod("PrintLine", 0);
-		s_Data->EnityClass.InvokeMethod(instance, printMessageFunc, nullptr);
-	
-		MonoMethod* printIntFunc = s_Data->EnityClass.GetMethod("PrintInt", 1);
+		MonoMethod* printMessageFunc = s_Data->EnityClass.GetMethod("OnUpdate", 2);
+		int value = 2;
+		void* params[2]
+		{
+			&value,
+			&value
+		};
+		s_Data->EnityClass.InvokeMethod(instance, printMessageFunc, params);
+		
+	/*	MonoMethod* printIntFunc = s_Data->EnityClass.GetMethod("PrintInt", 1);
 		int value = 5;
 		void* param = &value;
-		s_Data->EnityClass.InvokeMethod(instance,printIntFunc, &param);
+		s_Data->EnityClass.InvokeMethod(instance,printIntFunc, &param);*/
 	}
 	void ScriptEngine::ShutDown()
 	{
@@ -140,8 +155,10 @@ namespace Wiwa {
 		mono_domain_set(s_Data->AppDomain, true);
 
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath.string().c_str());
+		s_Data->SystemAssembly = Utils::LoadMonoAssembly("mono/lib/mono/4.5/mscorlib.dll");
 		//PrintAssemblyTypes(s_Data->CoreAssembly);
-		
+		//PrintAssemblyTypes(s_Data->SystemAssembly);
+		//WI_CORE_ASSERT(false, "");
 	}
 
 	
@@ -167,6 +184,12 @@ namespace Wiwa {
 		s_Data->RootDomain = nullptr;
 	}
 
+
+
+	MonoArray* ScriptEngine::CreateArray(MonoClass* type, uint32_t size)
+	{
+		return mono_array_new(s_Data->AppDomain, type, (uintptr_t)size);
+	}
 	MonoObject* ScriptEngine::InstantiateClass(MonoClass* monoClass)
 	{
 		MonoObject* instance = mono_object_new(s_Data->AppDomain, monoClass);
@@ -188,6 +211,25 @@ namespace Wiwa {
 		return mono_class_get_method_from_name(m_MonoClass, name.c_str(), parameterCount);
 	}
 	MonoObject* ScriptClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
+	{
+		return mono_runtime_invoke(method, instance, params, nullptr);
+	}
+
+
+	SystemClass::SystemClass(const std::string& classNamespace, const std::string& className)
+		: m_ClassNamespace(classNamespace), m_ClassName(className)
+	{
+		m_MonoClass = Utils::GetClassInAssembly(s_Data->SystemAssembly, classNamespace.c_str(), className.c_str());
+	}
+	MonoObject* SystemClass::Instantiate()
+	{
+		return ScriptEngine::InstantiateClass(m_MonoClass);
+	}
+	MonoMethod* SystemClass::GetMethod(const std::string& name, int parameterCount)
+	{
+		return mono_class_get_method_from_name(m_MonoClass, name.c_str(), parameterCount);
+	}
+	MonoObject* SystemClass::InvokeMethod(MonoObject* instance, MonoMethod* method, void** params)
 	{
 		return mono_runtime_invoke(method, instance, params, nullptr);
 	}
