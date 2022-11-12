@@ -160,7 +160,6 @@ namespace Wiwa {
 		//PrintAssemblyTypes(s_Data->SystemAssembly);
 		//WI_CORE_ASSERT(false, "");
 	}
-
 	
 	void ScriptEngine::InitMono()
 	{

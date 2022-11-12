@@ -18,6 +18,8 @@ typedef size_t SystemId;
 typedef unsigned char byte;
 
 namespace Wiwa {
+	class System;
+
 	class WI_API EntityManager
 	{
 	private:
@@ -56,11 +58,9 @@ namespace Wiwa {
 		std::unordered_map<size_t, SystemId> m_SystemIds;
 		size_t m_SystemIdCount;
 
-		std::vector<void*> m_Systems;
+		std::vector<System*> m_Systems;
 
 		void RemoveEntity(EntityId eid);
-
-		void OnEntityComponentAdded(EntityId eid);
 	public:
 		EntityManager();
 		~EntityManager();
@@ -143,6 +143,8 @@ namespace Wiwa {
 		template<class T> SystemId GetSystemId();
 
 		// Register systems
+		template<class T> void ApplySystem(EntityId eid);
+
 		template<class T> void RegisterSystem();
 		template<class T> void ReserveSystem(size_t amount);
 	};
@@ -346,6 +348,14 @@ namespace Wiwa {
 	inline bool EntityManager::HasComponents(EntityId entityId)
 	{
 		return HasComponents<T>(entityId) && HasComponents<T2, TArgs...>(entityId);
+	}
+
+	template<class T>
+	inline void EntityManager::ApplySystem(EntityId eid)
+	{
+		SystemId sid = GetSystemId<T>();
+
+		m_Systems[sid]->AddEntity(eid);
 	}
 
 	template<class T>

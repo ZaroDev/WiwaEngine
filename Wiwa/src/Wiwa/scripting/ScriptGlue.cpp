@@ -6,6 +6,7 @@
 #include <glm.hpp>
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/Application.h>
+#include <Wiwa/ecs/systems/System.h>
 
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/metadata.h>
