@@ -11,13 +11,11 @@
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/metadata.h>
 #include <mono/metadata/class.h>
+
+#include <Wiwa/Input.h>
 namespace Wiwa {
 
 #define WI_ADD_INTERNAL_CALL(Name) mono_add_internal_call("Wiwa.InternalCalls::" #Name, Name)
-	static void CppFunc()
-	{
-		std::cout << "This is written in C++" << std::endl;
-	}
 	static void NativeLog(MonoString* string, int parameter)
 	{
 		char* str = mono_string_to_utf8(string);
@@ -52,11 +50,21 @@ namespace Wiwa {
 		}
 		return byteArray;
 	}
+	static bool IsKeyDownIntr(KeyCode keycode)
+	{
+		return Input::IsKeyPressed(keycode);
+	}
+	static bool IsMouseButtonPressedIntr(int button)
+	{
+		return Input::IsMouseButtonPressed(button);
+	}
+
 	void ScriptGlue::RegisterFunctions()
 	{
-		WI_ADD_INTERNAL_CALL(CppFunc);
 		WI_ADD_INTERNAL_CALL(NativeLog);
 		WI_ADD_INTERNAL_CALL(NativeLogVector);
 		WI_ADD_INTERNAL_CALL(GetComponent);
+		WI_ADD_INTERNAL_CALL(IsKeyDownIntr);
+		WI_ADD_INTERNAL_CALL(IsMouseButtonPressedIntr);
 	}
 }
