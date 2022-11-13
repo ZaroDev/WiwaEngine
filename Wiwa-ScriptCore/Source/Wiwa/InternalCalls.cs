@@ -2,7 +2,7 @@
 
 namespace Wiwa
 {
-    using EntityId = System.Int32;
+    using EntityId = System.UInt64;
     internal class InternalCalls
     {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

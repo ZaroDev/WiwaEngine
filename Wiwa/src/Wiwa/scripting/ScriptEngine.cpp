@@ -211,8 +211,6 @@ namespace Wiwa {
 	{
 		return mono_runtime_invoke(method, instance, params, nullptr);
 	}
-
-
 	SystemClass::SystemClass(const std::string& classNamespace, const std::string& className)
 		: m_ClassNamespace(classNamespace), m_ClassName(className)
 	{

@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 namespace Wiwa
-{ 
+{
+    using EntityId = System.UInt64;
     public class PlayerController : Behaviour
     {
-        public override void OnUpdate(int id, float dt)
+        void OnUpdate(EntityId id, float dt)
         {
-          
+
         }
     }
 }
