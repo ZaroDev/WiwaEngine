@@ -11,7 +11,7 @@
 #define memberoffset(type, member) (int)&((type*)0)->member
 
 struct Type {
-	const char* name;
+	std::string name;
 	size_t size;
 	size_t hash;
 	bool is_class;
@@ -27,7 +27,7 @@ struct Type {
 
 struct Field {
 	const Type* type;
-	const char* name;
+	std::string name;
 	size_t offset;
 };
 
@@ -52,8 +52,45 @@ struct Enum : public Type {
 	size_t member_count;
 };
 
+inline std::string ClearCppName(std::string cname)
+{
+	// Clear namespace
+	size_t nspace = cname.find(':');
+
+	if (nspace != cname.npos) {
+		cname.erase(0, nspace + 2);
+		return cname;
+	}
+
+	// Clear class
+	size_t ptype = cname.find("class ");
+
+	if (ptype != cname.npos) {
+		cname.erase(0, 6);
+		return cname;
+	}
+
+	// Clear struct
+	ptype = cname.find("struct ");
+
+	if (ptype != cname.npos) {
+		cname.erase(0, 7);
+		return cname;
+	}
+
+	// Clear enum
+	ptype = cname.find("enum ");
+
+	if (ptype != cname.npos) {
+		cname.erase(0, 5);
+		return cname;
+	}
+
+	return cname;
+}
+
 #define BASE_TYPE_BODY(T) \
-	type.name = typeid(T).name(); \
+	type.name = ClearCppName(typeid(T).name()); \
 	type.size = sizeof(T); \
 	type.hash = std::hash<std::string>{}(type.name); \
 	type.is_class = false; \

@@ -1,15 +1,15 @@
 ﻿namespace Wiwa
 {
     using ResourceId = System.UInt64;
-    #region Transform
+    #region Transform3D
     [Component]
-    public struct Transform
+    public struct Transform3D
     {
         public Vector3 Position;
         public Vector3 Rotation;
         public Vector3 Scale;
 
-        public Transform(Vector3 pos, Vector3 rot, Vector3 scl)
+        public Transform3D(Vector3 pos, Vector3 rot, Vector3 scl)
         {
             Position = pos;
             Rotation = rot;

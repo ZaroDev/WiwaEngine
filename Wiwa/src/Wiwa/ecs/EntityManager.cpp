@@ -325,7 +325,6 @@ namespace Wiwa {
 		if (cid == m_ComponentIds.end()) {
 			component_id = m_ComponentIdCount++;
 
-
 			m_ComponentIds[type->hash] = { type, component_id };
 		}
 		else {

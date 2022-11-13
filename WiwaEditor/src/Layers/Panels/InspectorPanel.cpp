@@ -11,47 +11,11 @@
 #include <Wiwa/utilities/math/Vector2i.h>
 #include "../../Utils/ImGuiWidgets.h"
 
-void InspectorPanel::ClearComponentName(std::string& cname)
-{
-	// Clear namespace
-	size_t nspace = cname.find(':');
-
-	if (nspace != cname.npos) {
-		cname.erase(0, nspace + 2);
-		return;
-	}
-
-	// Clear class
-	size_t ptype = cname.find("class ");
-
-	if (ptype != cname.npos) {
-		cname.erase(0, 6);
-		return;
-	}
-
-	// Clear struct
-	ptype = cname.find("struct ");
-
-	if (ptype != cname.npos) {
-		cname.erase(0, 7);
-		return;
-	}
-
-	// Clear enum
-	ptype = cname.find("enum ");
-
-	if (ptype != cname.npos) {
-		cname.erase(0, 5);
-		return;
-	}
-}
-
 void InspectorPanel::DrawComponent(size_t componentId)
 {
 	const Type* type = m_EntityManager->GetComponentType(componentId);
 
 	std::string name = type->name;
-	ClearComponentName(name);
 
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
@@ -75,7 +39,6 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		const Class* cl = (const Class*)field.type;
 
 		std::string name = field.name;
-		ClearComponentName(name);
 
 		if (ImGui::TreeNodeEx(name.c_str()))
 		{
@@ -92,8 +55,8 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	if (field.type->is_enum) {
 		const Enum* en = (const Enum*)field.type;
 
-		ImGui::Text(field.name);
-		ImGui::PushID(field.name);
+		ImGui::Text(field.name.c_str());
+		ImGui::PushID(field.name.c_str());
 
 		//TODO: DRAW LIST OF ENUMS TO CHOOSE FROM
 
@@ -102,7 +65,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	}
 
 	//Draw custom fields
-	if (strcmp(field.name, "materialId") == 0) 
+	if (strcmp(field.name.c_str(), "materialId") == 0)
 	{
 		ImGui::Text("Material");
 		if (ImGui::BeginDragDropTarget())
@@ -123,7 +86,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 
 			ImGui::EndDragDropTarget();
 		}
-		ImGui::PushID(field.name);
+		ImGui::PushID(field.name.c_str());
 		int id = *(int*)(data + field.offset);
 		Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
 		ImGui::Text("Material at: ");
@@ -165,10 +128,10 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::PopID();
 		return;
 	}
-	if (strcmp(field.name, "meshId") == 0)
+	if (strcmp(field.name.c_str(), "meshId") == 0)
 	{
 		ImGui::Text("Model");
-		ImGui::PushID(field.name);
+		ImGui::PushID(field.name.c_str());
 		int id = *(int*)(data + field.offset);
 		Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(id);
 		if (ImGui::BeginDragDropTarget())
@@ -199,59 +162,59 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		return;
 	}
 	// Draw basic fields
-	if (std::strcmp(field.type->name, "struct Wiwa::Vector2i") == 0)
+	if (std::strcmp(field.type->name.c_str(), "Vector2i") == 0)
 	{
-		ImGui::PushID(field.name);
-		DrawInt2Control(field.name, data, field);
+		ImGui::PushID(field.name.c_str());
+		DrawInt2Control(field.name.c_str(), data, field);
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name, "float") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "float") == 0)
 	{
-		ImGui::Text(field.name);
-		ImGui::PushID(field.name);
+		ImGui::Text(field.name.c_str());
+		ImGui::PushID(field.name.c_str());
 		ImGui::InputFloat("", (float*)(data + field.offset));
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name, "struct Wiwa::Vector2f") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "Vector2f") == 0)
 	{
-		ImGui::PushID(field.name);
-		DrawVec2Control(field.name, data, field);
+		ImGui::PushID(field.name.c_str());
+		DrawVec2Control(field.name.c_str(), data, field);
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name, "struct Wiwa::Vector3f") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "Vector3f") == 0)
 	{
-		ImGui::PushID(field.name);
-		if (std::strcmp(field.name, "scale") == 0)
-			DrawVec3Control(field.name, data, field, 1.0);
+		ImGui::PushID(field.name.c_str());
+		if (std::strcmp(field.name.c_str(), "scale") == 0)
+			DrawVec3Control(field.name.c_str(), data, field, 1.0);
 		else
-			DrawVec3Control(field.name, data, field,0.0f);
+			DrawVec3Control(field.name.c_str(), data, field,0.0f);
 
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name, "unsigned __int64") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "unsigned __int64") == 0)
 	{
-		ImGui::Text(field.name);
-		ImGui::PushID(field.name);
+		ImGui::Text(field.name.c_str());
+		ImGui::PushID(field.name.c_str());
 		ImGui::InputInt("", (int*)(data + field.offset));
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name, "int") == 0) 
+	else if (std::strcmp(field.type->name.c_str(), "int") == 0)
 	{
-		ImGui::Text(field.name);
-		ImGui::PushID(field.name);
+		ImGui::Text(field.name.c_str());
+		ImGui::PushID(field.name.c_str());
 		ImGui::InputInt("", (int*)(data + field.offset));
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name, "struct Wiwa::Rect2i") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "Rect2i") == 0)
 	{
-		ImGui::PushID(field.name);
-		DrawRect2Control(field.name, data, field);
+		ImGui::PushID(field.name.c_str());
+		DrawRect2Control(field.name.c_str(), data, field);
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name, "enum Wiwa::Renderer2D::Pivot") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "Pivot") == 0)
 	{
-		ImGui::Text(field.name);
-		ImGui::PushID(field.name);
+		ImGui::Text(field.name.c_str());
+		ImGui::PushID(field.name.c_str());
 		ImGui::InputInt("", (int*)(data + field.offset));
 		ImGui::PopID();
 	}
@@ -587,11 +550,11 @@ void InspectorPanel::Draw()
 			// Core components
 			for (size_t i = 0; i < tcount; i++) {
 				const Type* type = Wiwa::Application::Get().getCoreType(i);
-				const char* paintkit = type->name;
+				const char* paintkit = type->name.c_str();
 				if (filter.PassFilter(paintkit)) 
 				{
 					std::string label = paintkit;
-					ClearComponentName(label);
+
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{
@@ -603,11 +566,11 @@ void InspectorPanel::Draw()
 			// App components
 			for (size_t i = 0; i < tacount; i++) {
 				const Type* type = Wiwa::Application::Get().getAppType(i);
-				const char* paintkit = type->name;
+				const char* paintkit = type->name.c_str();
 				if (filter.PassFilter(paintkit))
 				{
 					std::string label = paintkit;
-					ClearComponentName(label);
+
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{

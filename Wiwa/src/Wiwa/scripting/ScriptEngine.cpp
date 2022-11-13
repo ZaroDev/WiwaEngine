@@ -154,7 +154,8 @@ namespace Wiwa {
 
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath.string().c_str());
 		s_Data->SystemAssembly = Utils::LoadMonoAssembly("mono/lib/mono/4.5/mscorlib.dll");
-		//PrintAssemblyTypes(s_Data->CoreAssembly);
+
+		PrintAssemblyTypes(s_Data->CoreAssembly);
 		//PrintAssemblyTypes(s_Data->SystemAssembly);
 		//WI_CORE_ASSERT(false, "");
 	}
