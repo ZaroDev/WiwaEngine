@@ -1,6 +1,7 @@
 #include <wipch.h>
 #include "ScriptGlue.h"
 #include "ScriptEngine.h"
+#include "SystemClass.h"
 
 #include <mono/metadata/object.h>
 #include <glm.hpp>
@@ -8,10 +9,10 @@
 #include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/systems/System.h>
 
+#include <Wiwa/utilities/Reflection.h>
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/metadata.h>
 #include <mono/metadata/class.h>
-
 #include <Wiwa/core/Input.h>
 
 namespace Wiwa {
@@ -25,8 +26,6 @@ namespace Wiwa {
 			str = str.substr(ind + 1, str.size() - ind - 1);
 		}
 	}
-
-	Type* ConvertType(MonoType* monotype);
 
 	Class* ConvertClass(MonoType* monotype, MonoClass* monoclass) {
 		Class* t = new Class();
@@ -98,11 +97,6 @@ namespace Wiwa {
 		}
 
 		delete type;
-	}
-
-	void CppFunc()
-	{
-		std::cout << "This is written in C++" << std::endl;
 	}
 
 	void NativeLog(MonoString* string, int parameter)

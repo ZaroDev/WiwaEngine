@@ -1,3 +1,7 @@
-﻿public class Component : System.Attribute {
-    // Component attributes
+﻿namespace Wiwa
+{
+    public class Component : System.Attribute
+    {
+        // Component attributes
+    }
 }
