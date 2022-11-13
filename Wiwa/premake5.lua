@@ -39,6 +39,7 @@ project "Wiwa"
 
 	links
 	{
+		"Wiwa-ScriptCore",
 		"GLFW",
 		"ImGui",
 		"opengl32.lib",
