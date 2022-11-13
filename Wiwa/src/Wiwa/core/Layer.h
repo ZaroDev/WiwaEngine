@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Wiwa/Core.h"
+#include <Wiwa/core/Core.h>
 #include "Wiwa/Events/Event.h"
 
 namespace Wiwa {

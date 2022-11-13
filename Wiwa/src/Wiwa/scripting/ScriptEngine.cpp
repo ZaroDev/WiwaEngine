@@ -7,7 +7,7 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/object.h>
-#include <Wiwa/FileSystem.h>
+#include <Wiwa/utilities/filesystem/FileSystem.h>
 
 namespace Wiwa {
 	namespace Utils {
@@ -109,9 +109,7 @@ namespace Wiwa {
 			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
 			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
-			file << nameSpace;
-			file << name;
-			file << "\n";
+			file << nameSpace << "." << name << "\n";
 
 			WI_CORE_INFO("{0}.{1}", nameSpace, name);
 		}
@@ -125,23 +123,6 @@ namespace Wiwa {
 		InitMono();
 		LoadAssembly("resources/scripts/Wiwa-ScriptCore.dll");
 		ScriptGlue::RegisterFunctions();
-		s_Data->EnityClass = ScriptClass("Wiwa", "Behaviour");
-		
-		MonoObject* instance = s_Data->EnityClass.Instantiate();
-
-		MonoMethod* printMessageFunc = s_Data->EnityClass.GetMethod("OnUpdate", 2);
-		int value = 2;
-		void* params[2]
-		{
-			&value,
-			&value
-		};
-		s_Data->EnityClass.InvokeMethod(instance, printMessageFunc, params);
-		
-	/*	MonoMethod* printIntFunc = s_Data->EnityClass.GetMethod("PrintInt", 1);
-		int value = 5;
-		void* param = &value;
-		s_Data->EnityClass.InvokeMethod(instance,printIntFunc, &param);*/
 	}
 	void ScriptEngine::ShutDown()
 	{
@@ -156,9 +137,6 @@ namespace Wiwa {
 
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath.string().c_str());
 		s_Data->SystemAssembly = Utils::LoadMonoAssembly("mono/lib/mono/4.5/mscorlib.dll");
-		//PrintAssemblyTypes(s_Data->CoreAssembly);
-		//PrintAssemblyTypes(s_Data->SystemAssembly);
-		//WI_CORE_ASSERT(false, "");
 	}
 	
 	void ScriptEngine::InitMono()

@@ -2,12 +2,12 @@
 
 #include <imgui.h>
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/EntityManager.h>
 #include "InspectorPanel.h"
 
 #include "../../Entities.h"
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Resources.h>
 
 #include <Wiwa/ecs/systems/SpriteRenderer.h>
 

@@ -1,13 +1,13 @@
 #pragma once
 #pragma warning(disable : 4251)
-#include "Core.h"
+#include <Wiwa/core/Core.h>
 
 #include "imgui.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 
-#include "ImGui/ImGuiLog.h"
+#include <Wiwa/imgui/ImGuiLog.h>
 
 namespace Wiwa {
 	class WI_API Log

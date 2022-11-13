@@ -4,7 +4,7 @@
 
 #include <Wiwa/ecs/EntityManager.h>
 
-#include "Wiwa/Log.h"
+#include <Wiwa/utilities/Log.h>
 
 #include <glew.h>
 #include <GLFW/glfw3.h>
@@ -20,18 +20,18 @@
 #include "Renderer2D.h"
 #include "Renderer3D.h"
 
-#include "ecs/systems/SpriteRenderer.h"
-#include "ecs/systems/MeshRenderer.h"
+#include <Wiwa/ecs/systems/SpriteRenderer.h>
+#include <Wiwa/ecs/systems/MeshRenderer.h>
 
-#include "ecs/components/Transform3D.h"
+#include <Wiwa/ecs/components/Transform3D.h>
 
-#include "scene/SceneManager.h"
+#include <Wiwa/scene/SceneManager.h>
 
-#include "utilities/json/JSONDocument.h"
+#include <Wiwa/utilities/json/JSONDocument.h>
 
 #include <Wiwa/utilities/AllocationMetrics.h>
 
-#include "scripting/ScriptEngine.h"
+#include <Wiwa/scripting/ScriptEngine.h>
 
 const size_t TYPE_COUNT = __COUNTER__;
 

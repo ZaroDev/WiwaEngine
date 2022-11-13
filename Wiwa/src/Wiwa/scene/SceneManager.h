@@ -3,7 +3,7 @@
 #include "Scene.h"
 
 #include <Wiwa/ecs/EntityManager.h>
-#include <Wiwa/Layer.h>
+#include <Wiwa/core/Layer.h>
 
 #include <vector>
 

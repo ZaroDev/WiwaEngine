@@ -5,8 +5,8 @@
 #include <Wiwa/scene/Scene.h>
 
 #include <imgui_internal.h>
-#include <Wiwa/Application.h>
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Application.h>
+#include <Wiwa/core/Resources.h>
 #include <Wiwa/utilities/render/Material.h>
 #include <Wiwa/utilities/math/Vector2i.h>
 #include "../../Utils/ImGuiWidgets.h"

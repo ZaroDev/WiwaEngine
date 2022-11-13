@@ -5,14 +5,14 @@
 #include <mono/metadata/object.h>
 #include <glm.hpp>
 #include <Wiwa/ecs/EntityManager.h>
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/systems/System.h>
 
 #include <mono/metadata/reflection.h>
 #include <mono/metadata/metadata.h>
 #include <mono/metadata/class.h>
 
-#include <Wiwa/Input.h>
+#include <Wiwa/core/Input.h>
 namespace Wiwa {
 
 #define WI_ADD_INTERNAL_CALL(Name) mono_add_internal_call("Wiwa.InternalCalls::" #Name, Name)

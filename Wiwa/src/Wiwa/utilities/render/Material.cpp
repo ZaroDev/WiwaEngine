@@ -1,5 +1,5 @@
 #include "wipch.h"
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Resources.h>
 
 #include <Wiwa/utilities/json/JSONDocument.h>
 

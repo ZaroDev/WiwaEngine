@@ -4,7 +4,7 @@
 #include "../components/Transform3D.h"
 #include "../components/Mesh.h"
 
-#include <Wiwa/Reflection.h>
+#include <Wiwa/utilities/Reflection.h>
 
 namespace Wiwa {
 	class WI_API MeshRenderer : public System {

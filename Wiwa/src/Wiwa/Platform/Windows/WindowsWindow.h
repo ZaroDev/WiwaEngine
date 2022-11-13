@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Wiwa/Window.h"
+#include <Wiwa/core/Window.h>
 
 #include <GLFW/glfw3.h>
 

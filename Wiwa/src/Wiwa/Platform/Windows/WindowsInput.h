@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Wiwa/Input.h"
+#include <Wiwa/core/Input.h>
 
 namespace Wiwa
 {

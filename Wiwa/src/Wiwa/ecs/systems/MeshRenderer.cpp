@@ -1,8 +1,8 @@
 #include <wipch.h>
 
 #include "MeshRenderer.h"
-#include <Wiwa/Log.h>
-#include <Wiwa/Renderer3D.h>
+#include <Wiwa/utilities/Log.h>
+#include <Wiwa/core/Renderer3D.h>
 
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/utilities/render/Material.h>

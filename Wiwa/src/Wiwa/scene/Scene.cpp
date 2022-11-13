@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "SceneManager.h"
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
 namespace Wiwa {
 	Scene::Scene()

@@ -1,10 +1,10 @@
 #include <wipch.h>
 #include "Renderer3D.h"
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
 #include <Wiwa/utilities/render/InstanceRenderer.h>
-#include <Wiwa/Log.h>
+#include <Wiwa/utilities/Log.h>
 
 #include <glew.h>
 

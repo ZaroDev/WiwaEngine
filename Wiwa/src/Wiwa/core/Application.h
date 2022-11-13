@@ -4,16 +4,16 @@
 
 #include "Core.h"
 #include "Window.h"
-#include "Wiwa/LayerStack.h"
+#include <Wiwa/core/LayerStack.h>
 #include "Wiwa/Events/Event.h"
 #include "Wiwa/Events/ApplicationEvent.h"
 #include "Wiwa/ImGui/ImGuiLayer.h"
 
 #include <Wiwa/utilities/math/Vector2i.h>
 #include <Wiwa/ecs/components/Transform3D.h>
-#include <Wiwa/Reflection.h>
+#include <Wiwa/utilities/Reflection.h>
 #include <Wiwa/utilities/math/Vector4f.h>
-#include <Wiwa/utilities/Time.h>
+#include <Wiwa/utilities/time/Time.h>
 
 namespace Wiwa
 {

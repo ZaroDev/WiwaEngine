@@ -3,15 +3,15 @@
 #include <imgui.h>
 #include <stdio.h>
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 
-#include <Wiwa/Input.h>
+#include <Wiwa/core/Input.h>
 #include <ImGuizmo.h>
 
 #include <imgui_internal.h>
 
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Resources.h>
 
 #include "../Utils/ProjectManager.h"
 #include <Wiwa/Platform/Windows/WindowsPlatformUtils.h>

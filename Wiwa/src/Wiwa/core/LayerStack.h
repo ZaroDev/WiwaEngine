@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Wiwa/Core.h"
+#include <Wiwa/core/Core.h>
 #include "Layer.h"
 
 #include <vector>

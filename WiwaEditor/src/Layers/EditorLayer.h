@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Wiwa/Layer.h>
+#include <Wiwa/core/Layer.h>
 #include <Wiwa/utilities/containers/List.h>
 
 #include "Panels/Panel.h"
-#include <Wiwa/utilities/Action.h>
+#include <Wiwa/utilities/functions/Action.h>
 #include <Wiwa/Events/Event.h>
 
 #include "../Events/PanelEvents.h"

@@ -1,7 +1,5 @@
 #pragma once
-#include "../Core.h"
-
-class WI_API Callable {};
+class Callable {};
 
 template<class... _params>
 class Action {

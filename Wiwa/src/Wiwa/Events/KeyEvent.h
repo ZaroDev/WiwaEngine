@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-#include "Wiwa/KeyCodes.h"
+#include <Wiwa/core/KeyCodes.h>
 
 namespace Wiwa {
 	class WI_API KeyEvent : public Event

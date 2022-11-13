@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/EntityManager.h>
 
 namespace Wiwa {

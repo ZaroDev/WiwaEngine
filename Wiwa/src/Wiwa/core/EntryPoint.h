@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Wiwa/Reflection.h>
+#include <Wiwa/utilities/Reflection.h>
+#include <Wiwa/core/Application.h>
 
 #ifdef WI_PLATFORM_WINDOWS
 extern Wiwa::Application* Wiwa::CreateApplication(int argc, char** argv);

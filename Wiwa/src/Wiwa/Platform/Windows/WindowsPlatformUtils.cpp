@@ -6,7 +6,7 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <GLFW/glfw3native.h>
 
-#include <Wiwa/Application.h>
+#include <Wiwa/Core/Application.h>
 
 std::string Wiwa::FileDialogs::OpenFile(const char* file)
 {

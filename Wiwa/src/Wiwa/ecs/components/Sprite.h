@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Wiwa/Core.h>
+#include <Wiwa/core/Core.h>
 #include <Wiwa/utilities/math/Math.h>
 
-#include <Wiwa/Resources.h>
-#include <Wiwa/Renderer2D.h>
+#include <Wiwa/core/Resources.h>
+#include <Wiwa/core/Renderer2D.h>
 
-#include <Wiwa/Reflection.h>
+#include <Wiwa/utilities/Reflection.h>
 
 namespace Wiwa {
 	struct WI_API Sprite {

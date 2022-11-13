@@ -3,8 +3,8 @@
 
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <Wiwa/Application.h>
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Application.h>
+#include <Wiwa/core/Resources.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 #include "MaterialPanel.h"
 #include "../EditorLayer.h"

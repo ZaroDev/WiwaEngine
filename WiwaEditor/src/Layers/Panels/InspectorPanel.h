@@ -2,7 +2,7 @@
 
 #include "Panel.h"
 
-#include <Wiwa/Reflection.h>
+#include <Wiwa/utilities/Reflection.h>
 #include <Wiwa/utilities/containers/Array.h>
 
 #include <Wiwa/utilities/math/Vector3f.h>

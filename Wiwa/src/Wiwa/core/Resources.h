@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning(disable : 4251)
 
-#include <Wiwa/Core.h>
+#include <Wiwa/core/Core.h>
 
 // Resources
 #include <Wiwa/utilities/render/Shader.h>

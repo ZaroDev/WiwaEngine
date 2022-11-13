@@ -3,10 +3,10 @@
 #include "EntityManager.h"
 #include "systems/System.h"
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 #include <Wiwa/utilities/render/Model.h>
 #include <Wiwa/utilities/render/Material.h>
-#include <Wiwa/Renderer3D.h>
+#include <Wiwa/core/Renderer3D.h>
 
 namespace Wiwa {
 	EntityManager::EntityManager()

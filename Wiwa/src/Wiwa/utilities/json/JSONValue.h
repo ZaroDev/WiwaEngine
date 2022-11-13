@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Wiwa/Core.h>
+#include <Wiwa/core/Core.h>
 #include "../vendor/rapidjson/document.h"
 
 namespace Wiwa {

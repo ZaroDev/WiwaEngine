@@ -5,7 +5,7 @@
 
 #include <functional>
 
-#include <Wiwa/Core.h>
+#include <Wiwa/core/Core.h>
 #include <Wiwa/utilities/containers/Array.h>
 
 #define memberoffset(type, member) (int)&((type*)0)->member

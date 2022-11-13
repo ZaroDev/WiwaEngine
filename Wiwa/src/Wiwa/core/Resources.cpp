@@ -1,5 +1,5 @@
 #include <wipch.h>
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Resources.h>
 
 namespace Wiwa {
 	std::vector<Resources::Resource*> Resources::m_Resources[Resources::WRT_LAST];

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Wiwa/Core.h>
+#include <Wiwa/core/Core.h>
 #include <Wiwa/utilities/math/Vector4f.h>
 #include <Wiwa/utilities/math/Vector3f.h>
 #include <Wiwa/utilities/math/Vector2i.h>

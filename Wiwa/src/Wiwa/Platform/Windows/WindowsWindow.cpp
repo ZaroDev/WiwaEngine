@@ -1,7 +1,7 @@
 #include "wipch.h"
 #include "WindowsWindow.h"
 
-#include "Wiwa/Log.h"
+#include <Wiwa/utilities/Log.h>
 
 #include "Wiwa/Events/ApplicationEvent.h"
 #include "Wiwa/Events/MouseEvent.h"

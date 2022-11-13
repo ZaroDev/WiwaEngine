@@ -1,8 +1,8 @@
 #include "wipch.h"
 #include "WindowsInput.h"
 
-#include "Wiwa/KeyCodes.h"
-#include "Wiwa/Application.h"
+#include <Wiwa/core/KeyCodes.h>
+#include <Wiwa/core/Application.h>
 
 #include <GLFW/glfw3.h>
 
