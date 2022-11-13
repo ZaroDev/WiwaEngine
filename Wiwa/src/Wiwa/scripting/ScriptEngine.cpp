@@ -109,9 +109,7 @@ namespace Wiwa {
 			const char* nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
 			const char* name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
 
-			file << nameSpace;
-			file << name;
-			file << "\n";
+			file << nameSpace << "." << name << "\n";
 
 			WI_CORE_INFO("{0}.{1}", nameSpace, name);
 		}
