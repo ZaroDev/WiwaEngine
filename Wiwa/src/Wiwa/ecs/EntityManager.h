@@ -144,6 +144,7 @@ namespace Wiwa {
 
 		// Register systems
 		template<class T> void ApplySystem(EntityId eid);
+		void ApplySystem(EntityId eid, SystemId sid);
 
 		template<class T> void RegisterSystem();
 		template<class T> void ReserveSystem(size_t amount);
@@ -355,7 +356,7 @@ namespace Wiwa {
 	{
 		SystemId sid = GetSystemId<T>();
 
-		m_Systems[sid]->AddEntity(eid);
+		ApplySystem(eid, sid);
 	}
 
 	template<class T>

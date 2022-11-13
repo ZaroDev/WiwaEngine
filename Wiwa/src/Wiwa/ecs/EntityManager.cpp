@@ -369,4 +369,9 @@ namespace Wiwa {
 
 		return false;
 	}
+
+	void EntityManager::ApplySystem(EntityId eid, SystemId sid)
+	{
+		m_Systems[sid]->AddEntity(eid);
+	}
 }
