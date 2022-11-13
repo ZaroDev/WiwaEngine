@@ -2,9 +2,9 @@
 #include "Log.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-#include "ImGui/ImGuiLayer.h"
-#include "ImGui/ImGuiLog.h"
-#include "Application.h"
+#include <Wiwa/imgui/ImGuiLayer.h>
+#include <Wiwa/imgui/ImGuiLog.h>
+#include <Wiwa/core/Application.h>
 
 namespace Wiwa {
 	std::shared_ptr<spdlog::logger>Log::s_CoreLogger;

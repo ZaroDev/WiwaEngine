@@ -5,8 +5,8 @@
 #include <memory>
 #include <utility>
 #include <algorithm>
-#include <Wiwa/utilities/Action.h>
-#include <Wiwa/utilities/Function.h>
+#include <Wiwa/utilities/functions/Action.h>
+#include <Wiwa/utilities/functions/Function.h>
 
 #include <string>
 #include <sstream>
@@ -18,7 +18,7 @@
 
 #include <filesystem>
 
-#include "Wiwa/Log.h"
+#include "Wiwa/utilities/Log.h"
 
 #ifdef WI_PLATFORM_WINDOWS
 	#include <Windows.h>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Wiwa/Log.h>
+#include <Wiwa/utilities/Log.h>
 
 #include <string>
 #include <typeinfo>

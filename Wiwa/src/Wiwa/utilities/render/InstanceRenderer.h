@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Wiwa/Core.h>
+#include <Wiwa/core/Core.h>
 
 #include <Wiwa/utilities/math/Math.h>
 
 #include "VertexBuffer.h"
 
-#include <Wiwa/Resources.h>
-#include <Wiwa/Renderer2D.h>
+#include <Wiwa/core/Resources.h>
+#include <Wiwa/core/Renderer2D.h>
 
 #define MAX_INSTANCE_TEXTURES 16
 

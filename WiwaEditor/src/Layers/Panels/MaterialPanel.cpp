@@ -1,14 +1,14 @@
 #include <wipch.h>
 #include "MaterialPanel.h"
 
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Resources.h>
 
 #include <Wiwa/utilities/json/JSONDocument.h>
 
 #include "../../Utils/ImGuiWidgets.h"
 
-#include <Wiwa/Renderer3D.h>
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Renderer3D.h>
+#include <Wiwa/core/Application.h>
 
 
 MaterialPanel::MaterialPanel(EditorLayer* instance)

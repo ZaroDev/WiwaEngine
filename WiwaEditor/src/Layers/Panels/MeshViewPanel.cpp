@@ -7,17 +7,17 @@
 #include <ImGuizmo.h>
 
 #include <Wiwa/utilities/math/Math.h>
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
-#include <Wiwa/Renderer2D.h>
-#include <Wiwa/Renderer3D.h>
+#include <Wiwa/core/Renderer2D.h>
+#include <Wiwa/core/Renderer3D.h>
 
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
 #include <Wiwa/ecs/components/Mesh.h>
 
-#include <Wiwa/Input.h>
-#include <Wiwa/KeyCodes.h>
+#include <Wiwa/core/Input.h>
+#include <Wiwa/core/KeyCodes.h>
 
 #include <Wiwa/ecs/EntityManager.h>
 #include <gtc/quaternion.hpp>

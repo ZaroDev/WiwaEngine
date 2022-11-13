@@ -2,8 +2,8 @@
 
 #include "wipch.h"
 
-#include "Wiwa/Core.h"
-#include "Wiwa/Events/Event.h"
+#include <Wiwa/core/Core.h>
+#include <Wiwa/events/Event.h>
 
 namespace Wiwa {
 	struct WindowProps

@@ -1,7 +1,7 @@
 #include <wipch.h>
 #include "ProjectManager.h"
 #include <Wiwa/utilities/json/JSONDocument.h>
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
 namespace Utils
 {

@@ -1,8 +1,8 @@
 #include <wipch.h>
 
 #include "SpriteRenderer.h"
-#include <Wiwa/Log.h>
-#include <Wiwa/Renderer2D.h>
+#include <Wiwa/utilities/Log.h>
+#include <Wiwa/core/Renderer2D.h>
 
 #include <Wiwa/ecs/EntityManager.h>
 

@@ -2,7 +2,7 @@
 #include "FrameBuffer.h"
 
 #include <glew.h>
-#include <Wiwa/Log.h>
+#include <Wiwa/utilities/Log.h>
 
 namespace Wiwa {
 	FrameBuffer::FrameBuffer()

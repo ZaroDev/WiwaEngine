@@ -1,14 +1,14 @@
 #pragma once
 #pragma warning(disable : 4251)
-#include <Wiwa/Core.h>
-#include <Wiwa/Layer.h>
+#include <Wiwa/core/Core.h>
+#include <Wiwa/core/Layer.h>
 
 #include <vector>
 #include <map>
 #include <unordered_map>
 
-#include <Wiwa/Reflection.h>
-#include <Wiwa/utilities/Action.h>
+#include <Wiwa/utilities/Reflection.h>
+#include <Wiwa/utilities/functions/Action.h>
 
 typedef size_t EntityId;
 typedef size_t ComponentId;

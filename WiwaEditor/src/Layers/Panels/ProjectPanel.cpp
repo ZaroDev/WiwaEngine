@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
 ProjectPanel::ProjectPanel(EditorLayer* instance) : Panel("Project", instance)
 {

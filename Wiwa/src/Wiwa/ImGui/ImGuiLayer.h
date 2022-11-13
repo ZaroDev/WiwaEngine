@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Wiwa/Layer.h"
+#include <Wiwa/core/Layer.h>
 
 #include "Wiwa/Events/Event.h"
 #include "Wiwa/Events/KeyEvent.h"

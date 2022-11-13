@@ -3,7 +3,7 @@
 #include "Panel.h"
 
 #include "Wiwa/utilities/containers/List.h"
-#include "Wiwa/Application.h"
+#include <Wiwa/core/Application.h>
 
 class ConfigurationPanel : public Panel
 {

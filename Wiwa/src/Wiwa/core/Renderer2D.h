@@ -1,15 +1,15 @@
 #pragma once
 #pragma warning( disable : 4251 )
 
-#include <Wiwa/Core.h>
+#include <Wiwa/core/Core.h>
 
 // 3D maths lib
 //#include <MathGeoLib.h>
 // 2D maths lib
 #include <Wiwa/utilities/math/Math.h>
 
-#include <Wiwa/Log.h>
-#include <Wiwa/Resources.h>
+#include <Wiwa/utilities/Log.h>
+#include <Wiwa/core/Resources.h>
 
 //#include "utilities/gui/Texture.h"
 

@@ -7,11 +7,11 @@
 #include "ImGuizmo.h"
 
 #include <Wiwa/utilities/math/Math.h>
-#include <Wiwa/Application.h>
-#include <Wiwa/Renderer2D.h>
-#include <Wiwa/Renderer3D.h>
+#include <Wiwa/core/Application.h>
+#include <Wiwa/core/Renderer2D.h>
+#include <Wiwa/core/Renderer3D.h>
 #include <Wiwa/ecs/EntityManager.h>
-#include <Wiwa/Input.h>
+#include <Wiwa/core/Input.h>
 
 #include "InspectorPanel.h"
 

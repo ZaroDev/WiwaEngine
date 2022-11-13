@@ -2,10 +2,10 @@
 
 #include "InstanceRenderer.h"
 
-#include <Wiwa/Resources.h>
-#include <Wiwa/Renderer2D.h>
+#include <Wiwa/core/Resources.h>
+#include <Wiwa/core/Renderer2D.h>
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
 #include <glew.h>
 
