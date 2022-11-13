@@ -29,7 +29,10 @@ namespace Wiwa {
 
 	void System::AddEntity(EntityId entity)
 	{
-		m_RegisteredEntities.emplace_back(entity);
+		size_t index = getEntityPos(entity);
+
+		if (index == m_RegisteredEntities.size())
+			m_RegisteredEntities.emplace_back(entity);
 	}
 
 	void System::RemoveEntity(EntityId eid)
