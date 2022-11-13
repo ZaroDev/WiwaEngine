@@ -27,9 +27,9 @@ public:
 
 	void Close();
 
-	friend void operator<<(File& file, std::string& str);
-	friend void operator<<(File& file, const char* str);
-	friend void operator<<(File& file, char ch);
+	friend File& operator<<(File& file, std::string& str);
+	friend File& operator<<(File& file, const char* str);
+	friend File& operator<<(File& file, char ch);
 
 	friend void operator>>(File& file, std::string& str);
 	friend void operator>>(File& file, char& ch);

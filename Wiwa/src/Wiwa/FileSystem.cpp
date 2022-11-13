@@ -133,19 +133,25 @@ void FileMapping::Close()
 	CloseHandle(mapFile);
 }
 
-void operator<<(File& file, std::string& str)
+File& operator<<(File& file, std::string& str)
 {
 	(*file.fstream) << str;
+
+	return file;
 }
 
-void operator<<(File& file, const char* str)
+File& operator<<(File& file, const char* str)
 {
 	(*file.fstream) << str;
+
+	return file;
 }
 
-void operator<<(File& file, char ch)
+File& operator<<(File& file, char ch)
 {
 	(*file.fstream) << ch;
+
+	return file;
 }
 
 void operator>>(File& file, std::string& str)
