@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-namespace Wiwa
+﻿namespace Wiwa
 {
     using ResourceId = System.UInt64;
     #region Transform
+    [Component]
     public struct Transform
     {
         public Vector3 Position;
@@ -22,6 +18,7 @@ namespace Wiwa
     }
     #endregion
     #region Mesh
+    [Component]
     public struct Mesh
     {
         public ResourceId MeshId;
@@ -34,4 +31,5 @@ namespace Wiwa
         }
     }
     #endregion
+
 }

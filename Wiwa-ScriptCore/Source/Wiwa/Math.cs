@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Wiwa
+﻿namespace Wiwa
 {
     public struct Vector3
     {
