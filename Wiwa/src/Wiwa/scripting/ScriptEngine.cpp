@@ -11,6 +11,7 @@
 #include <mono/metadata/object.h>
 #include <Wiwa/utilities/filesystem/FileSystem.h>
 #include <mono/metadata/reflection.h>
+#include <optick.h>
 
 namespace Wiwa {
 	ScriptEngine::ScriptEngineData* ScriptEngine::s_Data = nullptr;
@@ -21,6 +22,11 @@ namespace Wiwa {
 
 		InitMono();
 		LoadAssembly("resources/scripts/Wiwa-ScriptCore.dll");
+		LoadAppAssembly("resources/scripts/Wiwa-AppAssembly.dll");
+		WI_CORE_WARN("Components");
+		Utils::PrintReflectionTypes(s_Data->Components);
+		WI_CORE_WARN("Systems");
+		Utils::PrintReflectionTypes(s_Data->Systems);
 		ScriptGlue::RegisterFunctions();
 	}
 	void ScriptEngine::ShutDown()
@@ -39,7 +45,14 @@ namespace Wiwa {
 		LoadAssemblyTypes(s_Data->CoreAssembly);
 		//Utils::PrintAssemblyTypes(s_Data->CoreAssembly);
 		//Utils::PrintAssemblyTypes(s_Data->SystemAssembly);
+		
 		//WI_CORE_ASSERT(false, "");
+	}
+
+	void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
+	{
+		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath.string().c_str());
+		LoadAssemblyTypes(s_Data->AppAssembly);
 	}
 	
 	void ScriptEngine::InitMono()

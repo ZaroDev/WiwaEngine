@@ -4,6 +4,7 @@
 #include <mono/metadata/assembly.h>
 #include <Wiwa/utilities/filesystem/FileSystem.h>
 #include <mono/metadata/class.h>
+#include <Wiwa/utilities/Reflection.h>
 
 namespace Wiwa {
 	namespace Utils
@@ -57,7 +58,7 @@ namespace Wiwa {
 
 			// Don't forget to free the file data
 			delete[] fileData;
-
+			WI_CORE_INFO("Succesfully loaded assembly at {0}", assemblyPath.string().c_str());
 			return assembly;
 		}
 		MonoClass* GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className)
@@ -92,6 +93,13 @@ namespace Wiwa {
 				WI_CORE_INFO("{0}.{1}", nameSpace, name);
 			}
 			file.Close();
+		}
+		void PrintReflectionTypes(std::unordered_map<size_t, Type*> types)
+		{
+			for (auto& i = types.begin(); i != types.end(); i++)
+			{
+				WI_CORE_INFO("{0}", i->second->name);
+			}
 		}
 	}
 }

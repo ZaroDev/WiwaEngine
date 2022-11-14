@@ -25,6 +25,7 @@ namespace Wiwa {
 		static void ShutDown();
 
 		static void LoadAssembly(const std::filesystem::path& filepath);
+		static void LoadAppAssembly(const std::filesystem::path& filepath);
 		static MonoArray* CreateArray(MonoClass* type, uint32_t size);
 	private:
 		struct ScriptEngineData
@@ -34,7 +35,7 @@ namespace Wiwa {
 
 			MonoAssembly* CoreAssembly = nullptr;
 			MonoAssembly* SystemAssembly = nullptr;
-			MonoAssembly* UserAssembly = nullptr;
+			MonoAssembly* AppAssembly = nullptr;
 
 			std::unordered_map<size_t, Type*> Components;
 			std::unordered_map<size_t, Type*> Systems;

@@ -178,13 +178,16 @@ void AssetsPanel::Draw()
 				ImGui::CloseCurrentPopup();
 			ImGui::EndPopup();
 		}
-		
+		ImGui::SameLine();
+		ImGui::PushItemWidth(200.0f);
+		ImGui::SliderFloat("##size", &m_ButtonSize, 0.5f, 2.0f);
+		ImGui::PopItemWidth();
 		ImGui::Separator();
 		//Assets display
-		float padding = 16.0f;
-		float thumbnailSize = 64.0f;
-		float cellSize = thumbnailSize + padding;
-
+		float padding = 16.0f * m_ButtonSize;
+		float thumbnailSize = 64.0f * m_ButtonSize;
+		float cellSize = (thumbnailSize + padding);
+		
 		float panelWidth = ImGui::GetContentRegionAvail().x;
 		int columnCount = (int)(panelWidth / cellSize);
 		if (columnCount < 1)

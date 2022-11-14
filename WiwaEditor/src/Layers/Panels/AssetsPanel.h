@@ -37,4 +37,5 @@ private:
 	Directory m_Directory;
 	std::filesystem::path m_CurrentPath;
 	std::filesystem::file_time_type lastWriteTime;
+	float m_ButtonSize = 1.0f;
 };

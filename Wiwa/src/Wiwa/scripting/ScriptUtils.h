@@ -1,5 +1,6 @@
 #pragma once
 #include <filesystem>
+struct Type;
 
 extern "C" {
 	typedef struct _MonoClass MonoClass;
@@ -13,5 +14,6 @@ namespace Wiwa {
 		MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath);
 		MonoClass* GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className);
 		void PrintAssemblyTypes(MonoAssembly* assembly);
+		void PrintReflectionTypes(std::unordered_map<size_t, Type*> types);
 	}
 }
