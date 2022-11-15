@@ -35,7 +35,7 @@ AssetsPanel::~AssetsPanel()
 
 void AssetsPanel::Update()
 {
-	auto lastAbsoluteDirTime = std::filesystem::last_write_time(m_Directory.path);
+	auto lastAbsoluteDirTime = std::filesystem::last_write_time(m_CurrentPath);
 	if (lastWriteTime != lastAbsoluteDirTime)
 	{
 		m_Directory.directories.clear();
