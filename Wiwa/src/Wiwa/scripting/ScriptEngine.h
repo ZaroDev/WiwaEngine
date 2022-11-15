@@ -3,7 +3,8 @@
 #include <filesystem>
 #include <string>
 #include <unordered_map>
-#include <Wiwa/utilities/Reflection.h>
+
+struct Type;
 
 extern "C" {
 	typedef struct _MonoClass MonoClass;
@@ -16,9 +17,7 @@ extern "C" {
 
 
 namespace Wiwa {
-	
-
-	class ScriptEngine
+	class WI_API ScriptEngine
 	{
 	public:
 		static void Init();
@@ -27,6 +26,9 @@ namespace Wiwa {
 		static void LoadAssembly(const std::filesystem::path& filepath);
 		static void LoadAppAssembly(const std::filesystem::path& filepath);
 		static MonoArray* CreateArray(MonoClass* type, uint32_t size);
+
+		static std::unordered_map<size_t, Type*> getSystems();
+		static std::unordered_map<size_t, Type*> getComponents();
 	private:
 		struct ScriptEngineData
 		{

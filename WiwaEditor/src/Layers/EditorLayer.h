@@ -19,6 +19,7 @@
 #include "Panels/MeshViewPanel.h"
 #include "Panels/MaterialPanel.h"
 #include "Panels/ProjectPanel.h"
+#include "Panels/SystemsPanel.h"
 
 #include <memory>
 
@@ -70,6 +71,7 @@ private:
 	std::unique_ptr<Panel>	m_MeshView;
 	std::unique_ptr<Panel>	m_MaterialEditor;
 	std::unique_ptr<Panel>	m_ProjectPanel;
+	std::unique_ptr<Panel>	m_SystemsPanel;
 
 	std::vector<Panel*> m_Panels;
 	std::vector<Panel*> m_Settings;

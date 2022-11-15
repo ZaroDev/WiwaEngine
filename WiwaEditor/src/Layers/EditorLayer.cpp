@@ -16,6 +16,8 @@
 #include "../Utils/ProjectManager.h"
 #include <Wiwa/Platform/Windows/WindowsPlatformUtils.h>
 
+
+
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -37,6 +39,7 @@ void EditorLayer::OnAttach()
 	m_Inspector = std::make_unique<InspectorPanel>(this);
 	m_MeshView = std::make_unique<MeshViewPanel>(this);
 	m_MaterialEditor = std::make_unique<MaterialPanel>(this);
+	m_SystemsPanel = std::make_unique<SystemsPanel>(this);
 
 
 	m_ProjectPanel = std::make_unique<ProjectPanel>(this);
@@ -50,6 +53,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_Inspector.get());
 	m_Panels.push_back(m_MeshView.get());
 	m_Panels.push_back(m_MaterialEditor.get());
+	m_Panels.push_back(m_SystemsPanel.get());
 
 	m_Settings.push_back(m_ProjectPanel.get());
 	m_Settings.push_back(m_About.get());
@@ -77,7 +81,7 @@ void EditorLayer::OnAttach()
 void EditorLayer::OnDetach()
 {
 	m_Panels.clear();
-
+	m_Settings.clear();
 }
 
 void EditorLayer::OnUpdate()

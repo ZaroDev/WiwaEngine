@@ -1,7 +1,7 @@
 project "Wiwa-ScriptCore"
 	kind "SharedLib"
 	language "C#"
-	dotnetframework "4.6.1"
+	dotnetframework "4.7.2"
 	clr "Unsafe"
 
 	targetdir ("%{wks.location}/Editor/resources/scripts")

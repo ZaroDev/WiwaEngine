@@ -12,6 +12,7 @@
 #include <Wiwa/utilities/filesystem/FileSystem.h>
 #include <mono/metadata/reflection.h>
 #include <optick.h>
+#include <Wiwa/utilities/Reflection.h>
 
 namespace Wiwa {
 	ScriptEngine::ScriptEngineData* ScriptEngine::s_Data = nullptr;
@@ -80,6 +81,14 @@ namespace Wiwa {
 	MonoArray* ScriptEngine::CreateArray(MonoClass* type, uint32_t size)
 	{
 		return mono_array_new(s_Data->AppDomain, type, (uintptr_t)size);
+	}
+	std::unordered_map<size_t, Type*> ScriptEngine::getSystems()
+	{
+		return s_Data->Systems;
+	}
+	std::unordered_map<size_t, Type*> ScriptEngine::getComponents()
+	{
+		return s_Data->Components;
 	}
 	MonoObject* ScriptEngine::InstantiateClass(MonoClass* monoClass)
 	{
