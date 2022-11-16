@@ -56,7 +56,6 @@ namespace Wiwa {
 		m_Document.ParseStream(is);
 
 		fclose(fp);
-
 		return true;
 	}
 

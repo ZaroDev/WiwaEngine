@@ -7,8 +7,8 @@
 #include <Wiwa/core/Application.h>
 
 namespace Wiwa {
-	std::shared_ptr<spdlog::logger>Log::s_CoreLogger;
-	std::shared_ptr<spdlog::logger>Log::s_ClientLogger;
+	std::shared_ptr<spdlog::logger>Log::s_CoreLogger = nullptr;
+	std::shared_ptr<spdlog::logger>Log::s_ClientLogger = nullptr;
 
 	void Log::Init()
 	{
@@ -18,7 +18,7 @@ namespace Wiwa {
 		s_CoreLogger->set_level(spdlog::level::trace);
 
 		s_ClientLogger = spdlog::stdout_color_mt("APP");
-		s_ClientLogger->set_level(spdlog::level::trace);		
+		s_ClientLogger->set_level(spdlog::level::trace);
 	}
 	const char* Log::GetCoreLastLog()
 	{

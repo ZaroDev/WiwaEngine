@@ -52,11 +52,12 @@ namespace Wiwa {
 
 		m_TargetResolution = { 1920, 1080 };
 		
-		JSONDocument project("config/project.json");
-		m_ProjectName = project["name"].get<const char*>();
-		m_ProjectVersion = project["version"].get<const char*>();
-		m_ProjectCompany = project["company"].get<const char*>();
-		m_ProjectTarget = (ProjectTarget)project["target"].get<int>();
+		//JSONDocument project("config/project.json");
+		//m_ProjectName = project["name"].get<const char*>();
+		//m_ProjectVersion = project["version"].get<const char*>();
+		//m_ProjectCompany = project["company"].get<const char*>();
+		//m_ProjectTarget = (ProjectTarget)project["target"].get<int>();
+		//project.save_file("config/project.json");
 
 		m_Window = std::unique_ptr<Window>(Window::Create(WindowProps("Wiwa Engine: " + m_ProjectName)));
 		m_Window->SetEventCallback({ &Application::OnEvent, this });
@@ -67,8 +68,8 @@ namespace Wiwa {
 
 		SetHwInfo();
 
-		m_Renderer2D = new Renderer2D();
-		m_Renderer2D->Init();
+		/*m_Renderer2D = new Renderer2D();
+		m_Renderer2D->Init();*/
 
 		m_Renderer3D = new Renderer3D();
 		m_Renderer3D->Init();
@@ -111,6 +112,9 @@ namespace Wiwa {
 	{
 		SceneManager::CleanUp();
 		ScriptEngine::ShutDown();
+
+		delete m_ImGuiLayer;
+		delete s_Instance;
 	}
 
 	void Application::Run()
@@ -118,11 +122,10 @@ namespace Wiwa {
 		while (m_Running)
 		{
 			OPTICK_FRAME("Application Loop");
-			OPTICK_EVENT();
 			glClearColor(m_RenderColor.r, m_RenderColor.g, m_RenderColor.b, m_RenderColor.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			m_Renderer2D->Update();
+			//m_Renderer2D->Update();
 			m_Renderer3D->Update();
 
 			// Update time
@@ -218,7 +221,7 @@ namespace Wiwa {
 		project.AddMember("name", m_ProjectName.c_str());
 		project.AddMember("version", m_ProjectVersion.c_str());
 		project.AddMember("company", m_ProjectCompany.c_str());
-		project.AddMember("scenes", 0);
+		
 		project.AddMember("target", (int)m_ProjectTarget);
 
 		project.save_file("config/project.json");

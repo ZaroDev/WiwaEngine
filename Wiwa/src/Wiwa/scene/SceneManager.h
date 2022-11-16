@@ -34,5 +34,6 @@ namespace Wiwa {
 
 		static size_t CreateScene();
 		static Scene* getScene(SceneId sceneId) { return m_Scenes[sceneId]; }
+		inline static std::vector<Scene*>& getScenes() { return m_Scenes; }
 	};
 }
