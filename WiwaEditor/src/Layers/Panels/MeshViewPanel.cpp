@@ -20,6 +20,7 @@
 #include <Wiwa/core/KeyCodes.h>
 
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
 #include <gtc/quaternion.hpp>
 
 MeshViewPanel::MeshViewPanel(EditorLayer* instance)
@@ -266,7 +267,9 @@ void MeshViewPanel::OnEvent(Wiwa::Event& e)
 
 bool MeshViewPanel::EntityChange(EntityChangeEvent& e)
 {
-    Wiwa::Mesh* mesh = Wiwa::Application::Get().GetEntityManager().GetComponent<Wiwa::Mesh>(e.GetResourceId());
+    Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+    Wiwa::Mesh* mesh = em.GetComponent<Wiwa::Mesh>(e.GetResourceId());
     if (!mesh)
         return false;
 

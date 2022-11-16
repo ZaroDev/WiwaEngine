@@ -7,15 +7,9 @@
 
 #include <Wiwa/utilities/math/Vector3f.h>
 
-namespace Wiwa {
-	class EntityManager;
-};
-
 class InspectorPanel : public Panel
 {
 private:
-	void ClearComponentName(std::string& cname);
-
 	void DrawComponent(size_t componentId);
 	void DrawField(unsigned char* data, const Field& field);
 
@@ -23,8 +17,6 @@ private:
 	void DrawVec2Control(const char* label, unsigned char* data, const Field field , float resetValue = 0.0f, float columnWidth = 100.0f);
 	void DrawInt2Control(const char* label, unsigned char* data, const Field field , int resetValue = 0.0f, float columnWidth = 100.0f);
 	void DrawRect2Control(const char* label, unsigned char* data, const Field field , int resetValue = 0.0f, float columnWidth = 100.0f);
-
-	Wiwa::EntityManager* m_EntityManager;
 public:
 	InspectorPanel(EditorLayer* instance);
 	virtual ~InspectorPanel();

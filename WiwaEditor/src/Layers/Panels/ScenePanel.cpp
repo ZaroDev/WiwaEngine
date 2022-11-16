@@ -280,12 +280,11 @@ void ScenePanel::Draw()
         ImGui::TextColored(ImColor(255, 255, 255, 128), "%.3f ms", 1000 / ImGui::GetIO().Framerate);
     }
     //Gizmos
-    Wiwa::EntityManager& entityManager = Wiwa::Application::Get().GetEntityManager();
+    Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
     if (m_EntSelected != -1)
     {
-        Wiwa::EntityManager& entMan = Wiwa::Application::Get().GetEntityManager();
-        m_SelectedTransform = entMan.GetComponent<Wiwa::Transform3D>(m_EntSelected);
+        m_SelectedTransform = entityManager.GetComponent<Wiwa::Transform3D>(m_EntSelected);
         m_GizmoType = instance->GetGizmo();
         if (m_GizmoType != -1)
         {

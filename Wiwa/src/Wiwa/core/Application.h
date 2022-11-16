@@ -18,7 +18,6 @@
 namespace Wiwa
 {
 
-	class EntityManager;
 	class SceneManager;
 	class Renderer2D;
 	class Renderer3D;
@@ -68,9 +67,7 @@ namespace Wiwa
 		inline Window &GetWindow() { return *m_Window; }
 		inline Renderer2D &GetRenderer2D() { return *m_Renderer2D; }
 		inline Renderer3D &GetRenderer3D() { return *m_Renderer3D; }
-		inline EntityManager &GetEntityManager() { return *m_EntityManager; }
 		inline ImGuiLayer &GetImGuiLayer() { return *m_ImGuiLayer; }
-		inline SceneManager& GetSceneManager() { return *m_SceneManager; }
 
 		inline ImGuiContext *GetImGuiContext() { return m_ImGuiLayer->GetContext(); }
 
@@ -134,8 +131,6 @@ namespace Wiwa
 
 		LayerStack m_LayerStack;
 		ImGuiLayer *m_ImGuiLayer;
-		EntityManager *m_EntityManager;
-		SceneManager* m_SceneManager;
 
 	private:
 		static Application *s_Instance;

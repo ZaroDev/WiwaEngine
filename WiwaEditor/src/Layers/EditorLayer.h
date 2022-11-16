@@ -21,6 +21,8 @@
 #include "Panels/ProjectPanel.h"
 #include "Panels/SystemsPanel.h"
 
+#include <Wiwa/scene/SceneManager.h>
+
 #include <memory>
 
 typedef void* ImTextureID;
@@ -83,6 +85,9 @@ private:
 	ImTextureID m_ErrorIcon = 0;
 
 	Action<Wiwa::Event&> m_EventCallback;
+
+	SceneId m_EditorSceneId;
+	Wiwa::Scene* m_EditorScene;
 
 	int m_GizmoType = -1;
 };

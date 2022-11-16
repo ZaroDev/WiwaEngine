@@ -1,8 +1,12 @@
 #pragma once
+
+#include <Wiwa/core/Core.h>
+
 #include <vector>
+#include <Wiwa/ecs/EntityManager.h>
 
 namespace Wiwa {
-	class Scene {
+	class WI_API Scene {
 	public:
 		Scene();
 		~Scene();
@@ -22,6 +26,8 @@ namespace Wiwa {
 		State getState() { return m_CurrentState; }
 
 		void ChangeScene(size_t scene);
+
+		EntityManager& GetEntityManager() { return m_EntityManager; }
 	protected:
 		virtual void ProcessInput() {}
 
@@ -34,6 +40,8 @@ namespace Wiwa {
 		virtual void RenderLeave() {}
 
 		size_t mMaxTimeEntering, mMaxTimeLeaving = 0;
+
+		EntityManager m_EntityManager;
 	private:
 		State m_CurrentState = SCENE_ENTERING;
 		size_t m_TransitionTimer = 0;

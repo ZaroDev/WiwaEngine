@@ -3,42 +3,56 @@
 #include <Wiwa/core/Application.h>
 
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/ecs/components/Transform3D.h>
 #include <Wiwa/ecs/components/Mesh.h>
+#include <Wiwa/ecs/systems/MeshRenderer.h>
 
 void CreateCube()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Cube");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+	EntityId myEntity = em.CreateEntity("Cube");
+	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("cube");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }
 void CreatePlane()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Plane");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+	EntityId myEntity = em.CreateEntity("Plane");
+	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("plane");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }
 void CreatePyramid()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Pyramid");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+	EntityId myEntity = em.CreateEntity("Pyramid");
+	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("pyramid");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }
 void CreateSphere()
 {
-	EntityId myEntity = Wiwa::Application::Get().GetEntityManager().CreateEntity("Sphere");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+	EntityId myEntity = em.CreateEntity("Sphere");
+	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("resources/meshes/sphere.fbx");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
-	Wiwa::Application::Get().GetEntityManager().AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
+	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }

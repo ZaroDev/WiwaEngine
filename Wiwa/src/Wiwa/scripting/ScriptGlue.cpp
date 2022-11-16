@@ -15,6 +15,8 @@
 #include <mono/metadata/class.h>
 #include <Wiwa/core/Input.h>
 
+#include <Wiwa/scene/SceneManager.h>
+
 namespace Wiwa {
 
 #define WI_ADD_INTERNAL_CALL(Name) mono_add_internal_call("Wiwa.InternalCalls::" #Name, Name)
@@ -135,8 +137,10 @@ namespace Wiwa {
 
 		int alingment;
 
-		ComponentId compID = Application::Get().GetEntityManager().GetComponentId(t);
-		byte* comp = Application::Get().GetEntityManager().GetComponent(id, compID, t->size);
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+		ComponentId compID = em.GetComponentId(t);
+		byte* comp = em.GetComponent(id, compID, t->size);
 
 		MonoArray* byteArray = NULL;
 

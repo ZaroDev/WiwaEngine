@@ -15,7 +15,7 @@
 
 #include "../Utils/ProjectManager.h"
 #include <Wiwa/Platform/Windows/WindowsPlatformUtils.h>
-
+#include <Wiwa/ecs/systems/MeshRenderer.h>
 
 
 EditorLayer::EditorLayer()
@@ -70,6 +70,29 @@ void EditorLayer::OnAttach()
 	m_WarningIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(warnId)->GetTextureId();
 	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
 
+	// Editor scene
+	m_EditorSceneId = Wiwa::SceneManager::CreateScene();
+	m_EditorScene = Wiwa::SceneManager::getScene(m_EditorSceneId);
+
+	Wiwa::SceneManager::SetScene(m_EditorSceneId);
+
+	// Test
+	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
+	em.RegisterSystem<Wiwa::MeshRenderer>();	
+
+	Wiwa::Mesh mesh;
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("resources/meshes/BakerHouse.fbx");
+	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/bakerhouse_material.wimaterial");
+
+	Wiwa::Transform3D t3d;
+	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.scale = { 1.0f, 1.0f, 1.0f };
+
+	EntityId eid = em.CreateEntity("Baker house");
+	em.AddComponent<Wiwa::Mesh>(eid, mesh);
+	em.AddComponent<Wiwa::Transform3D>(eid, t3d);
+	em.ApplySystem<Wiwa::MeshRenderer>(eid);
 
 	m_EventCallback = { &Wiwa::Application::OnEvent, &Wiwa::Application::Get()};
 

@@ -67,8 +67,6 @@ namespace Wiwa {
 
 		SetHwInfo();
 
-		
-
 		m_Renderer2D = new Renderer2D();
 		m_Renderer2D->Init();
 
@@ -78,31 +76,7 @@ namespace Wiwa {
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		m_SceneManager = new SceneManager();
-		PushLayer(m_SceneManager);
-
-		m_EntityManager = new EntityManager();
-
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
-
-		m_EntityManager->RegisterSystem<MeshRenderer>();
-		//m_EntityManager->RegisterSystem<SpriteRenderer>();		
-
-		Resources::Load<Material>("resources/materials/default_material.wimaterial");
-
-		Mesh mesh;
-		mesh.meshId = Resources::Load<Model>("resources/meshes/BakerHouse.fbx");
-		mesh.materialId = Resources::Load<Material>("resources/materials/bakerhouse_material.wimaterial");
-
-		Transform3D t3d;
-		t3d.position = { 0.0f, 0.0f, 0.0f };
-		t3d.rotation = { 0.0f,0.0f, 0.0f };
-		t3d.scale = { 1.0f, 1.0f, 1.0f };
-
-		EntityId eid = m_EntityManager->CreateEntity("Baker house");
-		m_EntityManager->AddComponent<Mesh>(eid, mesh);
-		m_EntityManager->AddComponent<Transform3D>(eid, t3d);
-		m_EntityManager->ApplySystem<MeshRenderer>(eid);
 
 		ScriptEngine::Init();
 	}
@@ -135,6 +109,7 @@ namespace Wiwa {
 
 	Application::~Application()
 	{
+		SceneManager::CleanUp();
 		ScriptEngine::ShutDown();
 	}
 
@@ -149,8 +124,12 @@ namespace Wiwa {
 
 			m_Renderer2D->Update();
 			m_Renderer3D->Update();
+
+			// Update time
 			Time::Update();
-			m_EntityManager->Update();
+			
+			// Update scene manager
+			SceneManager::Update();
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

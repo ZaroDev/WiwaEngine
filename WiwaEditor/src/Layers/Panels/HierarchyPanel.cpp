@@ -4,6 +4,7 @@
 
 #include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
 #include "InspectorPanel.h"
 
 #include "../../Entities.h"
@@ -28,7 +29,7 @@ HierarchyPanel::~HierarchyPanel()
 
 void HierarchyPanel::Draw()
 {
-	Wiwa::EntityManager& entityManager = Wiwa::Application::Get().GetEntityManager();
+	Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 	ImGui::Begin(name, &active);
 	if (ImGui::BeginPopupContextWindow("Context Menu"))
 	{
@@ -79,7 +80,7 @@ void HierarchyPanel::Draw()
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 	if (ImGui::Button("+"))
 	{
-		Wiwa::Application::Get().GetEntityManager().CreateEntity();
+		Wiwa::SceneManager::getActiveScene()->GetEntityManager().CreateEntity();
 	}
 	ImGui::PopStyleColor();
 

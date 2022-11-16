@@ -2,6 +2,7 @@
 
 #include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
 
 namespace Wiwa {
 	class WI_API System {
@@ -33,7 +34,7 @@ namespace Wiwa {
 	template<class T>
 	inline T* System::GetComponent(EntityId eid)
 	{
-		EntityManager& em = Application::Get().GetEntityManager();
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 		T* component = em.GetComponent<T>(eid);
 

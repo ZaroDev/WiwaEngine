@@ -26,13 +26,15 @@ namespace Wiwa {
 			RenderEnter();
 			break;
 		case Scene::SCENE_LOOP:
+			m_EntityManager.Update();
+
 			ProcessInput();
 			UpdateLoop();
 			RenderLoop();
 			break;
 		case Scene::SCENE_LEAVING:
 			m_TransitionTimer += (size_t)Wiwa::Time::GetRealDeltaTime();
-			if (m_TransitionTimer >= mMaxTimeLeaving) Application::Get().GetSceneManager().ChangeScene(m_SceneToChange);
+			if (m_TransitionTimer >= mMaxTimeLeaving) SceneManager::ChangeScene(m_SceneToChange);
 			UpdateLeave();
 			RenderLeave();
 			break;

@@ -13,13 +13,15 @@
 
 void InspectorPanel::DrawComponent(size_t componentId)
 {
-	const Type* type = m_EntityManager->GetComponentType(componentId);
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+	const Type* type = em.GetComponentType(componentId);
 
 	std::string name = type->name;
 
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		byte* data = m_EntityManager->GetComponent(m_CurrentID, componentId, type->size);
+		byte* data = em.GetComponent(m_CurrentID, componentId, type->size);
 
 		if (type->is_class) {
 			const Class* cl = (const Class*)type;
@@ -503,7 +505,6 @@ void InspectorPanel::DrawRect2Control(const char* label, unsigned char* data, co
 InspectorPanel::InspectorPanel(EditorLayer* instance)
 	: Panel("Inspector", instance)
 {
-	m_EntityManager = &Wiwa::Application::Get().GetEntityManager();
 }
 
 InspectorPanel::~InspectorPanel()
@@ -512,24 +513,25 @@ InspectorPanel::~InspectorPanel()
 
 void InspectorPanel::Draw()
 {
-	Wiwa::EntityManager& entityManager = Wiwa::Application::Get().GetEntityManager();
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
 	ImGui::Begin(name, &active);
 	if (m_EntitySet)
 	{
-		const char* entName = entityManager.GetEntityName(m_CurrentID);
+		const char* entName = em.GetEntityName(m_CurrentID);
 		std::string edit = entName;
 		
 		ImGui::InputText("Name", (char*)edit.c_str(), 64);
 		if (ImGui::Button("Delete"))
 		{
 			m_EntitySet = false;
-			entityManager.DestroyEntity(m_CurrentID);
+			em.DestroyEntity(m_CurrentID);
 		}
 		if (strcmp(edit.c_str(), entName) != 0)
-			entityManager.SetEntityName(m_CurrentID, edit.c_str());
+			em.SetEntityName(m_CurrentID, edit.c_str());
 		
 
-		std::map<ComponentId, size_t>& map = entityManager.GetEntityComponents(m_CurrentID);
+		std::map<ComponentId, size_t>& map = em.GetEntityComponents(m_CurrentID);
 		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
 		{
 			DrawComponent(comp->first);
@@ -558,7 +560,7 @@ void InspectorPanel::Draw()
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{
-						entityManager.AddComponent(m_CurrentID, type);
+						em.AddComponent(m_CurrentID, type);
 						ImGui::CloseCurrentPopup();
 					}
 				}
@@ -574,7 +576,7 @@ void InspectorPanel::Draw()
 					label += "##" + std::to_string(i);
 					if (ImGui::MenuItem(label.c_str()))
 					{
-						entityManager.AddComponent(m_CurrentID, type);
+						em.AddComponent(m_CurrentID, type);
 						ImGui::CloseCurrentPopup();
 					}
 				}

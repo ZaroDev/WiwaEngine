@@ -2,27 +2,26 @@
 #include "SceneManager.h"
 
 namespace Wiwa {
-	SceneManager::SceneManager()
-	{
-		m_ActiveScene = -1;
-		m_SceneSize = 0;
-	}
-
-	SceneManager::~SceneManager()
-	{
-		for (size_t i = 0; i < m_SceneSize; i++) {
-			delete m_Scenes[i];
-		}
-	}
+	std::vector<Scene*> SceneManager::m_Scenes;
+	SceneId SceneManager::m_ActiveScene = -1;
 
 	void SceneManager::Update()
 	{
 		m_Scenes[m_ActiveScene]->Update();
 	}
 
-	size_t SceneManager::CreateScene()
+	void SceneManager::CleanUp()
 	{
-		size_t scene_id = m_Scenes.size();
+		size_t scsize = m_Scenes.size();
+
+		for (size_t i = 0; i < scsize; i++) {
+			delete m_Scenes[i];
+		}
+	}
+
+	SceneId SceneManager::CreateScene()
+	{
+		SceneId scene_id = m_Scenes.size();
 
 		Scene* sc = new Scene();
 
@@ -33,14 +32,14 @@ namespace Wiwa {
 		return scene_id;
 	}
 
-	void SceneManager::ChangeScene(size_t sceneId)
+	void SceneManager::ChangeScene(SceneId sceneId)
 	{
 		m_Scenes[m_ActiveScene]->Unload();
 		m_ActiveScene = sceneId;
 		m_Scenes[m_ActiveScene]->Load();
 	}
 
-	void SceneManager::StartChangeScene(size_t sceneId)
+	void SceneManager::StartChangeScene(SceneId sceneId)
 	{
 		m_Scenes[m_ActiveScene]->ChangeScene(sceneId);
 	}
