@@ -45,6 +45,7 @@ namespace Wiwa {
 	public:
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
+		template<class T> static ResourceId Import(const char* file);
 
 		static void Clear();
 	};
@@ -71,7 +72,6 @@ namespace Wiwa {
 
 		return resourceId;
 	}
-
 	template<>
 	inline Shader* Resources::GetResourceById<Shader>(ResourceId id) {
 		Shader* resource = NULL;
@@ -82,7 +82,44 @@ namespace Wiwa {
 
 		return resource;
 	}
+	template<>
+	inline ResourceId Resources::Import<Shader>(const char* file)
+	{
+		ResourceId position = Load<Shader>(file);
+		Shader* shader = GetResourceById<Shader>(position);
+		
+		std::string filePath = file;
+		filePath += ".vs";
+		std::string* vertexShader = shader->getFileData(filePath.c_str());
+		
+		filePath = file;
+		filePath += ".fs";
+		std::string* fragmentShader = shader->getFileData(filePath.c_str());
+		
+		filePath = file;
+		filePath += ".gs";
+		std::string* geometryShader = shader->getFileData(filePath.c_str());
 
+		std::string shaderFile;
+
+		if (vertexShader)
+			shaderFile += vertexShader->c_str();
+		if (fragmentShader)
+			shaderFile += fragmentShader->c_str();
+		if (geometryShader)
+			shaderFile += geometryShader->c_str();
+
+		delete vertexShader;
+		delete fragmentShader;
+		delete geometryShader;
+
+		if (shaderFile.empty())
+			return NULL;
+
+		std::ifstream file();
+
+		return position;
+	}
 	//--SPECIALIZATION FOR SPRITE
 	template<>
 	inline ResourceId Resources::Load<Image>(const char * file)
@@ -106,7 +143,6 @@ namespace Wiwa {
 
 		return resourceId;
 	}
-
 	template<>
 	inline Image* Resources::GetResourceById<Image>(ResourceId id)
 	{

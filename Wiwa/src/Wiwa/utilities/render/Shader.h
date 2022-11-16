@@ -35,8 +35,8 @@ namespace Wiwa {
 		void setUniformFloat(unsigned int uniform_id, float value);
 		void setUniformVec3(unsigned int uniform_id, glm::vec3 value);
 		void setUniformVec4(unsigned int uniform_id, glm::vec4 value);
-	private:
 		std::string* getFileData(const char* file);
+	private:
 		uint32_t m_IDprogram;
 		bool m_AllOk;
 	};
