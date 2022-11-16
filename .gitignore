@@ -28,6 +28,7 @@
 *.vcxproj.filters
 *.vcxproj.user
 *.csproj
+*.csproj.user
 
 *.ini
 /Editor/WiwaEditor.exe

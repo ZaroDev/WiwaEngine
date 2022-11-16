@@ -34,7 +34,9 @@ inline bool ButtonCenteredOnLine(const char* label, float alignment = 0.5f)
 	return ImGui::Button(label);
 }
 
-inline bool AssetContainer(const char* label)
+inline void AssetContainer(const char* label)
 {
-
+	ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 20.0f);
+	ImGui::InputText("##label", (char*)label, 64, ImGuiInputTextFlags_ReadOnly);
+	ImGui::PopStyleVar();
 }

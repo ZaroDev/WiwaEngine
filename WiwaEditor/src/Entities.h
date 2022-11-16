@@ -7,7 +7,18 @@
 #include <Wiwa/ecs/components/Transform3D.h>
 #include <Wiwa/ecs/components/Mesh.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
-
+void CreateNew3DEnt()
+{
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+	EntityId myEntity = em.CreateEntity("New Entity");
+	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+}
+void CreateNewChild(EntityId parentId)
+{
+	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+	EntityId myEntity = em.CreateEntity("New entity", parentId);
+	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+}
 void CreateCube()
 {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();

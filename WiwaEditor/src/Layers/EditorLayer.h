@@ -69,7 +69,7 @@ private:
 	std::unique_ptr<Panel>	m_Scene;
 	std::unique_ptr<Panel>	m_Hierarchy;
 	std::unique_ptr<Panel>	m_Assets;
-	std::unique_ptr<Panel>	m_Inspector ;
+	std::unique_ptr<Panel>	m_Inspector;
 	std::unique_ptr<Panel>	m_MeshView;
 	std::unique_ptr<Panel>	m_MaterialEditor;
 	std::unique_ptr<Panel>	m_ProjectPanel;

@@ -12,6 +12,8 @@
 #include <Wiwa/core/Renderer3D.h>
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/core/Input.h>
+#include <Wiwa/ecs/components/Mesh.h>
+#include <Wiwa/ecs/systems/MeshRenderer.h>
 
 #include "InspectorPanel.h"
 
@@ -236,7 +238,7 @@ void ScenePanel::Draw()
     ImGui::SetCursorPos(cpos);
     //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
-
+    Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
     if (ImGui::BeginDragDropTarget())
     {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -244,8 +246,17 @@ void ScenePanel::Draw()
             const wchar_t* path = (const wchar_t*)payload->Data;
             std::wstring ws(path);
             std::string pathS(ws.begin(), ws.end());
-            //TODO: Load the scene with the path
-            WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+            std::filesystem::path p = pathS;
+            if (p.extension() == ".fbx" || p.extension() == ".FBX")
+            {
+                EntityId newEnt = entityManager.CreateEntity(p.stem().string().c_str());
+                Wiwa::Mesh mesh;
+                entityManager.AddComponent<Wiwa::Transform3D>(newEnt, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+                mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
+                mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
+                entityManager.AddComponent<Wiwa::Mesh>(newEnt, mesh);
+                entityManager.ApplySystem<Wiwa::MeshRenderer>(newEnt);
+            }
 
         }
 
@@ -280,7 +291,7 @@ void ScenePanel::Draw()
         ImGui::TextColored(ImColor(255, 255, 255, 128), "%.3f ms", 1000 / ImGui::GetIO().Framerate);
     }
     //Gizmos
-    Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
 
     if (m_EntSelected != -1)
     {

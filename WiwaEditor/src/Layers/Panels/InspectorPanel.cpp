@@ -70,6 +70,9 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 	if (strcmp(field.name.c_str(), "materialId") == 0)
 	{
 		ImGui::Text("Material");
+		int id = *(int*)(data + field.offset);
+		Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
+		AssetContainer(std::filesystem::path(mat->getMaterialPath()).stem().string().c_str());
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -89,8 +92,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 			ImGui::EndDragDropTarget();
 		}
 		ImGui::PushID(field.name.c_str());
-		int id = *(int*)(data + field.offset);
-		Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
+
 		ImGui::Text("Material at: ");
 		ImGui::SameLine();
 		ImGui::Text(mat->getMaterialPath());
@@ -136,6 +138,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::PushID(field.name.c_str());
 		int id = *(int*)(data + field.offset);
 		Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(id);
+		AssetContainer(std::filesystem::path(mod->getModelPath()).stem().string().c_str());
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))

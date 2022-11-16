@@ -35,7 +35,7 @@ void HierarchyPanel::Draw()
 	{
 		if (ImGui::MenuItem("Create New Entity"))
 		{
-			entityManager.CreateEntity("New entity");
+			CreateNew3DEnt();
 		}
 		ImGui::Separator();
 		if (ImGui::BeginMenu("Primitives"))
@@ -64,8 +64,7 @@ void HierarchyPanel::Draw()
 			ImGui::TextDisabled(entityManager.GetEntityName(m_CurrentID));
 			if (ImGui::MenuItem("Create child"))
 			{
-				EntityId id = entityManager.CreateEntity("New entity", m_CurrentID);
-				
+				CreateNewChild(m_CurrentID);
 			}
 
 			if (ImGui::MenuItem("Delete"))
@@ -90,6 +89,7 @@ void HierarchyPanel::Draw()
 	filter.Draw("##searchbar", 200.f);
 	ImGui::Separator();
 
+	ImGui::Text("%i", Wiwa::SceneManager::getActiveSceneId());
 	std::vector<EntityId>* entities = entityManager.GetParentEntitiesAlive();
 	size_t count = entities->size();
 	int id = 0;
