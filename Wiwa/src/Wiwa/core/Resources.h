@@ -40,10 +40,6 @@ namespace Wiwa {
 			// Any type
 			void* resource;
 		};
-		struct ImportSettings
-		{
-			ImportSettings() = default;
-		};
 		enum class CompressionType {
 			NONE = 0,
 			RGB_DXT1,
@@ -51,9 +47,7 @@ namespace Wiwa {
 			RGBA_DXT3,
 			RGBA_DXT5
 		};
-		struct ImageSettings : public ImportSettings
-		{
-			ImageSettings() : ImportSettings(){}
+		struct ImageSettings {
 			CompressionType Compression = CompressionType::RGBA_DXT5;
 			bool Interlaced = false;
 			int32_t OffsetX = 0;
@@ -75,6 +69,10 @@ namespace Wiwa {
 			uint16_t SharpenFactor = 0;
 			uint16_t SharpenIterations = 0;
 			bool Scale = 0;
+			ImageSettings() = default;
+		};
+		struct ModelSettings {
+
 		};
 	private:
 		Resources();
@@ -87,7 +85,7 @@ namespace Wiwa {
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
 		template<class T> static void Import(const char* file);
-		template<class T, class T2> static void CreateMeta(const char* file, T2 settings);
+		template<class T, class... T2> static void CreateMeta(const char* file, T2... settings);
 
 		inline static void SaveFile(const char* file, std::string& shaderFile)
 		{
@@ -128,7 +126,7 @@ namespace Wiwa {
 
 	// SPECIALIZATION FOR SHADER
 	template<>
-	inline void Resources::CreateMeta<Shader>(const char* file, ImportSettings settings)
+	inline void Resources::CreateMeta<Shader>(const char* file)
 	{	
 		std::string filePath = file;
 		filePath += ".meta";
