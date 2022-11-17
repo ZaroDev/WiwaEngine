@@ -30,7 +30,7 @@ namespace Wiwa {
 		m_ActiveCamera.lookat({ 0.0f, 0.0f, 0.0f });
 
 		// Color shader
-		m_ColorShaderId = Resources::Import<Shader>("resources/shaders/lit_model_color");
+		m_ColorShaderId = Resources::Load<Shader>("resources/shaders/lit_model_color");
 		m_ColorShader = Resources::GetResourceById<Shader>(m_ColorShaderId);
 
 		m_CSColorUniformLocation = m_ColorShader->getUniformLocation("u_Color");

@@ -204,6 +204,8 @@ void AssetsPanel::Draw()
 			int id = 0;
 			for (auto& directoryEntry : std::filesystem::directory_iterator(m_CurrentPath))
 			{
+				if (directoryEntry.path().extension() == ".meta")
+					continue;
 				ImGui::TableNextColumn();
 				ImGui::PushID(id++);
 

@@ -66,7 +66,7 @@ namespace Wiwa {
 
 		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
 
-		return JSONValue(&jval);
+		return JSONValue(&jval, m_Allocator);
 	}
 
 	template<>
