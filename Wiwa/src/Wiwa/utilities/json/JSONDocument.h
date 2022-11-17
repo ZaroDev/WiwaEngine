@@ -25,6 +25,8 @@ namespace Wiwa {
 		template<class T>
 		JSONValue AddMember(const char* mem, T value);
 
+		JSONValue AddMemberObject(const char* mem);
+
 		bool HasMember(const char* mem);
 
 		bool load_file(const char* path);
@@ -41,8 +43,9 @@ namespace Wiwa {
 
 		rapidjson::Value& jval = m_Document.AddMember(key, v, m_Document.GetAllocator());
 
-		return JSONValue(&jval);
+		return JSONValue(&jval, &m_Document.GetAllocator());
 	}
+
 	template<>
 	inline JSONValue JSONDocument::AddMember(const char* mem, int value)
 	{
@@ -51,8 +54,9 @@ namespace Wiwa {
 
 		rapidjson::Value& jval = m_Document.AddMember(key, v, m_Document.GetAllocator());
 
-		return JSONValue(&jval);
+		return JSONValue(&jval, &m_Document.GetAllocator());
 	}
+
 	template<>
 	inline JSONValue JSONDocument::AddMember<const char*>(const char* mem, const char* value) {
 		rapidjson::Value key(mem, m_Document.GetAllocator());
@@ -61,6 +65,6 @@ namespace Wiwa {
 
 		rapidjson::Value& jval = m_Document.AddMember(key, v, m_Document.GetAllocator());
 
-		return JSONValue(&jval);
+		return JSONValue(&jval, &m_Document.GetAllocator());
 	}
 }

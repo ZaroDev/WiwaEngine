@@ -7,8 +7,9 @@ namespace Wiwa {
 	class WI_API JSONValue {
 	private:
 		rapidjson::Value* m_Value;
+		rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>* m_Allocator;
 	public:
-		JSONValue(rapidjson::Value* value);
+		JSONValue(rapidjson::Value* value, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>* allocator);
 		~JSONValue();
 
 		template<class T> void set(T data);
@@ -17,6 +18,15 @@ namespace Wiwa {
 		template<class T> T get();
 
 		template<class T> operator T();
+
+		template<class T>
+		JSONValue AddMember(const char* mem, T value);
+
+		JSONValue AddMemberObject(const char* mem);
+
+		bool HasMember(const char* mem);
+
+		JSONValue operator[](const char* key);
 	};
 
 	template<class T>
@@ -48,4 +58,36 @@ namespace Wiwa {
 		return get<T>();
 	}
 
+	template<class T>
+	inline JSONValue JSONValue::AddMember(const char* mem, T value)
+	{
+		rapidjson::Value key(mem, *m_Allocator);
+		rapidjson::Value v(value);
+
+		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
+
+		return JSONValue(&jval);
+	}
+
+	template<>
+	inline JSONValue JSONValue::AddMember(const char* mem, int value)
+	{
+		rapidjson::Value key(mem, *m_Allocator);
+		rapidjson::Value v(value);
+
+		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
+
+		return JSONValue(&jval, m_Allocator);
+	}
+
+	template<>
+	inline JSONValue JSONValue::AddMember<const char*>(const char* mem, const char* value) {
+		rapidjson::Value key(mem, strlen(mem));
+		rapidjson::Value v;
+		v.SetString(value, *m_Allocator);
+
+		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
+
+		return JSONValue(&jval, m_Allocator);
+	}
 }
