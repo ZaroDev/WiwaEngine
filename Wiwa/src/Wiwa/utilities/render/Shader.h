@@ -21,7 +21,8 @@ namespace Wiwa {
 
 		void Init(const char* filename);
 		uint32_t getID() { return m_IDprogram; }
-		void Use();
+		void Bind();
+		void UnBind();
 		void Delete();
 
 		bool getAllOk() { return m_AllOk; }

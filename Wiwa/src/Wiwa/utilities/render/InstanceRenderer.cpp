@@ -27,7 +27,7 @@ namespace Wiwa {
 		m_InstanceShaderId = Resources::Load<Shader>(shader_path);
 		m_InstanceShader = Resources::GetResourceById<Shader>(m_InstanceShaderId);
 
-		m_InstanceShader->Use();
+		m_InstanceShader->Bind();
 		uint32_t texs_id = glGetUniformLocation(m_InstanceShader->getID(), "u_Textures");
 
 		// Set samplers id
@@ -119,7 +119,7 @@ namespace Wiwa {
 
 	void InstanceRenderer::Render()
 	{
-		m_InstanceShader->Use();
+		m_InstanceShader->Bind();
 		m_InstanceShader->setUniform(m_OrthoLocation, Application::Get().GetRenderer2D().GetOrthoProjection());
 		m_InstanceShader->setUniform(m_ViewLocation, Application::Get().GetRenderer2D().GetView());
 

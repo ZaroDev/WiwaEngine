@@ -111,7 +111,7 @@ namespace Wiwa {
 		glm::vec3 diffuseLight = { target->getDirectionalLight().Diffuse.r, target->getDirectionalLight().Diffuse.g , target->getDirectionalLight().Diffuse.b };
 		glm::vec3 specularLight = { target->getDirectionalLight().Specular.r, target->getDirectionalLight().Specular.g , target->getDirectionalLight().Specular.b };
 		
-		m_ColorShader->Use();
+		m_ColorShader->Bind();
 
 		m_ColorShader->setUniform(m_CSDLUniforms.Direction, directionLight);
 		m_ColorShader->setUniform(m_CSDLUniforms.Ambient, ambientLight);
@@ -136,14 +136,16 @@ namespace Wiwa {
 
 		if (mesh->showNormals)
 		{
-			m_NormalDisplayShader->Use();
+			m_NormalDisplayShader->Bind();
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
 
 			mesh->Render();
+			//m_NormalDisplayShader->UnBind();
 		}
 		target->Unbind();
+		m_ColorShader->UnBind();
 	}
 
 	void Renderer3D::RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear, FrameBuffer* target, Camera* camera)
@@ -168,7 +170,7 @@ namespace Wiwa {
 		model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));
 		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
 
-		m_TextureShader->Use();
+		m_TextureShader->Bind();
 
 
 		glm::vec3 postitionLight = { target->getDirectionalLight().Direction.x, target->getDirectionalLight().Direction.y , target->getDirectionalLight().Direction.z };
@@ -213,14 +215,18 @@ namespace Wiwa {
 		{
 			glBindTexture(GL_TEXTURE_2D, 0);
 
-			m_NormalDisplayShader->Use();
+			m_NormalDisplayShader->Bind();
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
 
 			mesh->Render();
+			mesh->DrawBoudingBox();
+			m_NormalDisplayShader->UnBind();
 		}
 		target->Unbind();
+		m_TextureShader->UnBind();
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Renderer3D::RenderGrid(Model* grid, FrameBuffer* target, bool clear, Camera* camera)

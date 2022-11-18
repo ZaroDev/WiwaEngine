@@ -148,9 +148,14 @@ namespace Wiwa {
 		m_AllOk = true;
 	}
 
-	void Shader::Use()
+	void Shader::Bind()
 	{
 		glUseProgram(m_IDprogram);
+	}
+
+	void Shader::UnBind()
+	{
+		glUseProgram(0);
 	}
 
 	void Shader::Delete()

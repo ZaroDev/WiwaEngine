@@ -41,6 +41,8 @@ namespace Wiwa {
 
 		void Render();
 
+		void DrawBoudingBox();
+
 		inline unsigned int getVAO() { return vao; }
 
 		inline const char* getModelPath() { return m_ModelPath.c_str(); }

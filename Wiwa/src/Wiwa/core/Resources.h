@@ -71,8 +71,9 @@ namespace Wiwa {
 			bool Scale = 0;
 			ImageSettings() = default;
 		};
-		struct ModelSettings {
 
+		struct ModelSettings {
+			
 		};
 	private:
 		Resources();
