@@ -6,7 +6,7 @@
 
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/utilities/render/Material.h>
-
+#include <Wiwa/utilities/render/CameraManager.h>
 namespace Wiwa {
 	MeshRenderer::MeshRenderer()
 	{
@@ -26,10 +26,12 @@ namespace Wiwa {
 
 		Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
 		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
-		if (mat->getType() == Wiwa::Material::MaterialType::color)
-			r3d.RenderMeshColor(mod, t3d->position, t3d->rotation, t3d->scale, mat);
-
-		if (mat->getType() == Wiwa::Material::MaterialType::textured)
-			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat);
+		size_t cameraCount = Wiwa::CameraManager::getCameraSize();
+		for (size_t i = 0; i < cameraCount; i++)
+		{
+			if (Wiwa::CameraManager::getCamera(i)->cull && !Wiwa::CameraManager::getCamera(i)->frustrum.IsBoxVisible(mod->boundingBox.getMin(), mod->boundingBox.getMax()))
+				return;
+			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, Wiwa::CameraManager::getCamera(i));
+		}
 	}
 }

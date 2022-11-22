@@ -4,6 +4,8 @@
 
 #include <vector>
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/utilities/render/Camera.h>
+#include <Wiwa/utilities/render/CameraManager.h>
 
 namespace Wiwa {
 	class WI_API Scene {
@@ -46,5 +48,7 @@ namespace Wiwa {
 		State m_CurrentState = SCENE_ENTERING;
 		size_t m_TransitionTimer = 0;
 		size_t m_SceneToChange = 0;
+		Camera* m_SceneCamera = nullptr;
+		CameraId m_SceneCameraId = -1;
 	};
 }

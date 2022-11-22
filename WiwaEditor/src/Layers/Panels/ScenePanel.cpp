@@ -41,10 +41,10 @@ ScenePanel::ScenePanel(EditorLayer* instance)
     float ar = res.w / (float)res.h;
     nearPlane = 0.1f;
     farPlane = 1000.0f;
-
-    m_Camera.SetPerspective(45.0f, ar, nearPlane, farPlane);
-    m_Camera.setPosition({ 0.0f, 1.0f, 5.0f });
-    m_Camera.lookat({ 0.0f, 0.0f, 0.0f });
+    m_CameraId = Wiwa::CameraManager::CreatePerspectiveCamera(45.0f, ar, nearPlane, farPlane);
+    m_Camera = Wiwa::CameraManager::getCamera(m_CameraId);
+    m_Camera->setPosition({ 0.0f, 1.0f, 5.0f });
+    m_Camera->lookat({ 0.0f, 0.0f, 0.0f });
     // Camera control
     camSpeed = 0.005f;
     sensitivity = 0.5f;
@@ -57,6 +57,7 @@ ScenePanel::ScenePanel(EditorLayer* instance)
 
 ScenePanel::~ScenePanel()
 {
+    delete m_Camera;
 }
 
 void ScenePanel::Draw()
@@ -97,19 +98,18 @@ void ScenePanel::Draw()
             ImGui::SliderFloat("Camera sensitivity", &sensitivity, 0.01f, 5.0f);
             if (ImGui::InputFloat("Near Plane", &nearPlane, 0.1f, 1.0f))
             {
-                m_Camera.setPlanes(nearPlane, farPlane);
+                m_Camera->setPlanes(nearPlane, farPlane);
             }
 
             if(ImGui::InputFloat("Far Plane", &farPlane, 0.1f, 1.0f))
             {
-                m_Camera.setPlanes(nearPlane, farPlane);
+                m_Camera->setPlanes(nearPlane, farPlane);
             }
             ImGui::EndMenu();
         }
         ImGui::EndMenuBar();
     }
 
-    //TODO: Render the scene
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
     Wiwa::Size2i resolution = Wiwa::Application::Get().GetTargetResolution();
@@ -143,16 +143,16 @@ void ScenePanel::Draw()
             direction.x = radius * cos(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_SelectedTransform->position.x;
             direction.y = radius * sin(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_SelectedTransform->position.y;
             direction.z = radius * cos(glm::radians(yaw)) + m_SelectedTransform->position.z;
-            m_Camera.setPosition({ direction.x, direction.y, direction.z });
-            m_Camera.lookat(m_SelectedTransform->position);
+            m_Camera->setPosition({ direction.x, direction.y, direction.z });
+            m_Camera->lookat(m_SelectedTransform->position);
         }
 
         // Scene zoom
         if (m_Scroll != 0.0f) {
-            float fov = m_Camera.getFOV();
+            float fov = m_Camera->getFOV();
             fov += m_Scroll * m_ScrollSpeed;
             CLAMP(fov, 1, 120);
-            m_Camera.setFOV(fov);
+            m_Camera->setFOV(fov);
         }
 
         // Check if right click was pressed
@@ -175,8 +175,8 @@ void ScenePanel::Draw()
                     direction.x = radius * cos(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_SelectedTransform->position.x;
                     direction.y = radius * sin(glm::radians(pitch)) * sin(glm::radians(yaw)) + m_SelectedTransform->position.y;
                     direction.z = radius * cos(glm::radians(yaw)) + m_SelectedTransform->position.z;
-                    m_Camera.setPosition({ direction.x, direction.y, direction.z });
-                    m_Camera.lookat(m_SelectedTransform->position);
+                    m_Camera->setPosition({ direction.x, direction.y, direction.z });
+                    m_Camera->lookat(m_SelectedTransform->position);
                 }
                 else
                 {
@@ -186,7 +186,7 @@ void ScenePanel::Draw()
                     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
                     glm::vec3 front = glm::normalize(direction);
-                    m_Camera.setFront({ front.x, front.y, front.z });
+                    m_Camera->setFront({ front.x, front.y, front.z });
                 }
             }
 
@@ -196,43 +196,43 @@ void ScenePanel::Draw()
                 camFastSpeed = camSpeed;
             
             // Camera movement
-            glm::vec3 campos = m_Camera.getPosition();
+            glm::vec3 campos = m_Camera->getPosition();
 
             if (Wiwa::Input::IsKeyPressed(Wiwa::Key::W)) {
-                campos += m_Camera.getFront() * camFastSpeed;
+                campos += m_Camera->getFront() * camFastSpeed;
             }
 
             if (Wiwa::Input::IsKeyPressed(Wiwa::Key::S)) {
-                campos -= m_Camera.getFront() * camFastSpeed;
+                campos -= m_Camera->getFront() * camFastSpeed;
             }
 
             if (Wiwa::Input::IsKeyPressed(Wiwa::Key::A)) {
-                campos -= glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+                campos -= glm::normalize(glm::cross(m_Camera->getFront(), m_Camera->getUp())) * camFastSpeed;
             }
 
             if (Wiwa::Input::IsKeyPressed(Wiwa::Key::D)) {
-                campos += glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * camFastSpeed;
+                campos += glm::normalize(glm::cross(m_Camera->getFront(), m_Camera->getUp())) * camFastSpeed;
             }
 
             if (Wiwa::Input::IsKeyPressed(Wiwa::Key::Q)) {
-                campos += m_Camera.getUp() * camFastSpeed;
+                campos += m_Camera->getUp() * camFastSpeed;
             }
 
             if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
-                campos -= m_Camera.getUp() * camFastSpeed;
+                campos -= m_Camera->getUp() * camFastSpeed;
             }
-            m_Camera.setPosition({ campos.x, campos.y, campos.z }); 
+            m_Camera->setPosition({ campos.x, campos.y, campos.z }); 
         }
     }
     
     m_Scroll = 0.0f;
 
-    Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
 
     static bool grid = true;
 
-    ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getColorBufferTexture();
     
+    //Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
+    ImTextureID tex = (ImTextureID)(intptr_t)m_Camera->frameBuffer->getColorBufferTexture();
     ImVec2 cpos = ImGui::GetCursorPos();
     cpos.x = (viewportPanelSize.x - isize.x) / 2;
     ImGui::SetCursorPos(cpos);
@@ -307,8 +307,7 @@ void ScenePanel::Draw()
             ImGuizmo::SetRect(rectPos.x, rectPos.y, isize.x, isize.y);
 
             glm::mat4 cameraView = Wiwa::Application::Get().GetRenderer3D().GetView();
-            const glm::mat4& cameraProjection = m_Camera.getProjection();
-            //TODO: Change to get the transform of the entity
+            const glm::mat4& cameraProjection = m_Camera->getProjection();
 
             if (m_SelectedTransform)
             {

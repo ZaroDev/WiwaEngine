@@ -2,6 +2,7 @@
 #include "Camera.h"
 
 #include <gtc/matrix_transform.hpp>
+#include <Wiwa/core/Application.h>
 
 namespace Wiwa {
 	Camera::Camera()
@@ -21,17 +22,19 @@ namespace Wiwa {
 
 		// Start camera as INVALID
 		m_CameraType = CameraType::INVALID;
+		
 	}
 
 
 	Camera::~Camera()
 	{
+		delete frameBuffer;
 	}
 
 	void Camera::updateView()
 	{
 		m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
-		m_Frustrum = Frustum(m_Projection * m_View);
+		UpdateFrustrum();
 	}
 
 	void Camera::setPlanes(const float nearPlane, const float farPlane)
@@ -40,6 +43,7 @@ namespace Wiwa {
 		m_FarPlaneDist = farPlane;
 		if (m_CameraType == CameraType::PERSPECTIVE)
 			m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, nearPlane, farPlane);
+		UpdateFrustrum();
 	}
 
 	void Camera::setAspectRatio(const float aspectRatio)
@@ -48,6 +52,7 @@ namespace Wiwa {
 
 		if(m_CameraType == CameraType::PERSPECTIVE)
 			m_Projection = glm::perspective(glm::radians(m_FOV), aspectRatio, m_NearPlaneDist, m_FarPlaneDist);
+		UpdateFrustrum();
 	}
 
 	void Camera::setResolution(const int width, const int height)
@@ -58,6 +63,7 @@ namespace Wiwa {
 			m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearPlaneDist, m_FarPlaneDist);
 		else if(m_CameraType == CameraType::ORTHOGRAPHIC)
 			m_Projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
+		UpdateFrustrum();
 	}
 
 	void Camera::setFOV(const float fov)
@@ -66,6 +72,7 @@ namespace Wiwa {
 
 		if (m_CameraType == CameraType::PERSPECTIVE)
 			m_Projection = glm::perspective(glm::radians(fov), m_AspectRatio, m_NearPlaneDist, m_FarPlaneDist);
+		UpdateFrustrum();
 	}
 
 	void Camera::setPosition(const Vector3f position)
@@ -73,6 +80,7 @@ namespace Wiwa {
 		m_CameraPos = glm::vec3(position.x, position.y, position.z);
 
 		updateView();
+		UpdateFrustrum();
 	}
 
 	void Camera::setFront(const Vector3f front)
@@ -80,6 +88,7 @@ namespace Wiwa {
 		m_CameraFront = glm::vec3(front.x, front.y, front.z);
 
 		updateView();
+		UpdateFrustrum();
 	}
 
 	void Camera::lookat(const Vector3f position)
@@ -89,6 +98,7 @@ namespace Wiwa {
 		m_CameraFront = pos - m_CameraPos;
 
 		m_View = glm::lookAt(m_CameraPos, pos, m_CameraUp);
+		UpdateFrustrum();
 	}
 
 	void Camera::lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp)
@@ -100,6 +110,7 @@ namespace Wiwa {
 		m_CameraFront = pos - m_CameraPos;
 
 		m_View = glm::lookAt(m_CameraPos, pos, m_CameraUp);
+		UpdateFrustrum();
 	}
 
 	void Camera::SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance, const float farPlaneDistance)
@@ -111,7 +122,16 @@ namespace Wiwa {
 		m_AspectRatio = aspectRatio;
 		m_NearPlaneDist = nearPlaneDistance;
 		m_FarPlaneDist = farPlaneDistance;
-		m_Frustrum = Frustum(m_Projection * m_View);
+		UpdateFrustrum();
+		Size2i res = Application::Get().GetTargetResolution();
+		frameBuffer = new FrameBuffer();
+		frameBuffer->Init(res.w, res.h);
+		
+	}
+
+	void Camera::UpdateFrustrum()
+	{
+		frustrum = Frustum(m_Projection * m_View);
 	}
 
 	void Camera::SetOrthographic(const int width, const int height, const float nearPlaneDistance, const float farPlaneDistance)

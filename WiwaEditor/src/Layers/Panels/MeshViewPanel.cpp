@@ -28,8 +28,7 @@ MeshViewPanel::MeshViewPanel(EditorLayer* instance)
 {
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
-
-    m_FrameBuffer.Init(res.w, res.h);    
+    
 
     m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
     m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");
@@ -58,6 +57,7 @@ MeshViewPanel::~MeshViewPanel()
 
 void MeshViewPanel::Update()
 {
+    m_Camera.frameBuffer->Clear();
 }
 
 void MeshViewPanel::Draw()
@@ -74,7 +74,7 @@ void MeshViewPanel::Draw()
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
 
-    ImTextureID tex = (ImTextureID)(intptr_t)m_FrameBuffer.getColorBufferTexture();
+    ImTextureID tex = (ImTextureID)(intptr_t)m_Camera.frameBuffer->getColorBufferTexture();
 
     // Horizontal-align viewport
     ImVec2 cpos = ImGui::GetCursorPos();
@@ -192,39 +192,8 @@ void MeshViewPanel::Draw()
     }
 
     // Render to frame buffer and imgui viewport
-    Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_FrameBuffer, &m_Camera);
+    Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_Camera);
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
-
-    /*ImVec2 rectPos = ImGui::GetItemRectMin();
-    ImVec2 rectSize(rectPos.x + 150.0f, rectPos.y + 50.0f);
-    ImGui::GetWindowDrawList()->AddRectFilled(
-        ImVec2(rectPos.x, rectPos.y),
-        rectSize,
-        IM_COL32(30, 30, 30, 128)
-    );
-
-    ImGui::GetWindowDrawList()->AddRect(
-        ImVec2(rectPos.x, rectPos.y),
-        rectSize,
-        IM_COL32(255, 255, 255, 30)
-    );
-    float y = cpos.y + 5.0f;
-    float x = cpos.x + 5.0f;
-    ImGui::SetCursorPos(ImVec2(x, y));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Camera Pos");
-    ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f x", m_Camera.getPosition().x);
-    ImGui::SameLine();
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f y", m_Camera.getPosition().y);
-    ImGui::SameLine();
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f z", m_Camera.getPosition().z);
-
-    ImGui::SetCursorPos(ImVec2(x, y + 30.0f));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Angles");
-    ImGui::SetCursorPos(ImVec2(x, y + 50.0f));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Pitch: %.3f ", pitch);
-    ImGui::SameLine();
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Yaw: %.3f ", yaw);*/
 
     //Drag and drop
     if (ImGui::BeginDragDropTarget())

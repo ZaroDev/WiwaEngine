@@ -7,7 +7,7 @@
 #include <glm.hpp>
 #include <Wiwa/Events/MouseEvent.h>
 #include <Wiwa/ecs/components/Transform3D.h> 
-
+#include <Wiwa/utilities/render/CameraManager.h>
 
 struct ShadingView;
 
@@ -27,8 +27,9 @@ private:
 
 	std::vector<ShadingView*> m_Shadings;
 
-	Wiwa::Camera m_Camera = {};
-
+	Wiwa::Camera* m_Camera = nullptr;
+	CameraId m_CameraId = -1;
+	
 	bool m_ShowFPS = true;
 
 	Wiwa::Vector4f m_MeshColor = {};

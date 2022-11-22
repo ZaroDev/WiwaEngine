@@ -20,6 +20,8 @@
 #include "Panels/MaterialPanel.h"
 #include "Panels/ProjectPanel.h"
 #include "Panels/SystemsPanel.h"
+#include "Panels/GamePanel.h"
+#include "Panels/CamerasPanel.h"
 
 #include <Wiwa/scene/SceneManager.h>
 
@@ -74,6 +76,8 @@ private:
 	std::unique_ptr<Panel>	m_MaterialEditor;
 	std::unique_ptr<Panel>	m_ProjectPanel;
 	std::unique_ptr<Panel>	m_SystemsPanel;
+	std::unique_ptr<Panel>	m_GamePanel;
+	std::unique_ptr<Panel>	m_CamerasPanel;
 
 	std::vector<Panel*> m_Panels;
 	std::vector<Panel*> m_Settings;

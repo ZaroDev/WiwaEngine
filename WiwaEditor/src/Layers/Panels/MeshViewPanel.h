@@ -27,7 +27,6 @@ public:
 
 private:
 	std::vector<ShadingView *> m_Shadings;
-	Wiwa::FrameBuffer m_FrameBuffer;
 	Wiwa::Camera m_Camera;
 
 	Wiwa::Model *m_ActiveMesh;

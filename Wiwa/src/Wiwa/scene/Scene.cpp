@@ -9,10 +9,17 @@ namespace Wiwa {
 	{
 		mMaxTimeEntering = 0;
 		mMaxTimeLeaving = 0;
+		Size2i& resolution = Application::Get().GetTargetResolution();
+		m_SceneCameraId = Wiwa::CameraManager::CreatePerspectiveCamera(45.0f, resolution.w / (float)resolution.h);
+		m_SceneCamera = Wiwa::CameraManager::getCamera(m_SceneCameraId);
+		m_SceneCamera->setPosition({ 10.0f, 1.0f, 5.0f });
+		m_SceneCamera->lookat({ 0.0f, 0.0f, 0.0f });
+		Wiwa::CameraManager::SetCamera(m_SceneCameraId);
 	}
 
 	Scene::~Scene()
 	{
+		delete m_SceneCamera;
 	}
 
 	void Scene::Update()

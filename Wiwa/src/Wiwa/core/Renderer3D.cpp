@@ -18,16 +18,13 @@ namespace Wiwa {
 
 	bool Renderer3D::Init()
 	{
-		Window& window = Application::Get().GetWindow();
 		Size2i& resolution = Application::Get().GetTargetResolution();
 
-		// Init framebuffer
-		m_FrameBuffer.Init(resolution.w, resolution.h);
-
 		// Init perspective camera for 3D
-		m_ActiveCamera.SetPerspective(45.0f, resolution.w / (float)resolution.h);
-		m_ActiveCamera.setPosition({ 0.0f, 1.0f, 5.0f });
-		m_ActiveCamera.lookat({ 0.0f, 0.0f, 0.0f });
+		m_ActiveCamera = new Camera();
+		m_ActiveCamera->SetPerspective(45.0f, resolution.w / (float)resolution.h);
+		m_ActiveCamera->setPosition({ 0.0f, 1.0f, 5.0f });
+		m_ActiveCamera->lookat({ 0.0f, 0.0f, 0.0f });
 
 		// Color shader
 		m_ColorShaderId = Resources::Load<Shader>("resources/shaders/lit_model_color");
@@ -87,13 +84,14 @@ namespace Wiwa {
 
 	void Renderer3D::Update()
 	{
-		m_FrameBuffer.Clear();
+		m_ActiveCamera->frameBuffer->Clear();
 	}
 
-	void Renderer3D::RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear, FrameBuffer* target, Camera* camera)
+	void Renderer3D::RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear, Camera* camera, bool cull)
 	{
-		if (!target) target = &m_FrameBuffer;
-		if (!camera) camera = &m_ActiveCamera;
+		if (!camera) camera = m_ActiveCamera;
+
+		FrameBuffer* target = camera->frameBuffer;
 
 		glViewport(0, 0, target->getWidth(), target->getHeight());
 
@@ -148,20 +146,24 @@ namespace Wiwa {
 		m_ColorShader->UnBind();
 	}
 
-	void Renderer3D::RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear, FrameBuffer* target, Camera* camera)
+	void Renderer3D::RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear, Camera* camera, bool cull)
 	{
-		if (!target) target = &m_FrameBuffer;
-		if (!camera) camera = &m_ActiveCamera;
+
+		if (!camera)
+		{
+			camera = m_ActiveCamera;
+		}
+		
 
 		if (material->getType() == Wiwa::Material::MaterialType::color)
 		{
-			RenderMeshColor(mesh, position, rotation, scale, material, clear, target, camera);
+			RenderMeshColor(mesh, position, rotation, scale, material, clear, camera, cull);
 			return;
 		}
 
-		glViewport(0, 0, target->getWidth(), target->getHeight());
+		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
 
-		target->Bind(clear);
+		camera->frameBuffer->Bind(clear);
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
@@ -173,12 +175,12 @@ namespace Wiwa {
 		m_TextureShader->Bind();
 
 
-		glm::vec3 postitionLight = { target->getDirectionalLight().Direction.x, target->getDirectionalLight().Direction.y , target->getDirectionalLight().Direction.z };
-		glm::vec3 ambientLight = { target->getDirectionalLight().Ambient.r, target->getDirectionalLight().Ambient.g , target->getDirectionalLight().Ambient.b };
-		glm::vec3 diffuseLight = { target->getDirectionalLight().Diffuse.r, target->getDirectionalLight().Diffuse.g , target->getDirectionalLight().Diffuse.b };
-		glm::vec3 specularLight = { target->getDirectionalLight().Specular.r, target->getDirectionalLight().Specular.g , target->getDirectionalLight().Specular.b };
+		glm::vec3 postitionLight = { camera->frameBuffer->getDirectionalLight().Direction.x, camera->frameBuffer->getDirectionalLight().Direction.y , camera->frameBuffer->getDirectionalLight().Direction.z };
+		glm::vec3 ambientLight = { camera->frameBuffer->getDirectionalLight().Ambient.r, camera->frameBuffer->getDirectionalLight().Ambient.g , camera->frameBuffer->getDirectionalLight().Ambient.b };
+		glm::vec3 diffuseLight = { camera->frameBuffer->getDirectionalLight().Diffuse.r, camera->frameBuffer->getDirectionalLight().Diffuse.g , camera->frameBuffer->getDirectionalLight().Diffuse.b };
+		glm::vec3 specularLight = { camera->frameBuffer->getDirectionalLight().Specular.r, camera->frameBuffer->getDirectionalLight().Specular.g , camera->frameBuffer->getDirectionalLight().Specular.b };
 
-		m_TextureShader->setUniform(m_TSPLUniforms.Position, (unsigned int)target->getPointLights()->size());
+		m_TextureShader->setUniform(m_TSPLUniforms.Position, (unsigned int)camera->frameBuffer->getPointLights()->size());
 
 		/*for (int i = 0; i < target->getPointLights()->size(); i++)
 		{
@@ -224,15 +226,15 @@ namespace Wiwa {
 			mesh->DrawBoudingBox();
 			m_NormalDisplayShader->UnBind();
 		}
-		target->Unbind();
+		camera->frameBuffer->Unbind();
 		m_TextureShader->UnBind();
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Renderer3D::RenderGrid(Model* grid, FrameBuffer* target, bool clear, Camera* camera)
 	{
-		if (!target) target = &m_FrameBuffer;
-		if (!camera) camera = &m_ActiveCamera;
+
+		if (!camera) camera = m_ActiveCamera;
 		/*glViewport(0, 0, target->getWidth(), target->getHeight());
 
 		target->Bind(clear);

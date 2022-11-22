@@ -5,6 +5,7 @@
 #include <glm.hpp>
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/utilities/math/Frustrum.h>
+#include <Wiwa/utilities/render/FrameBuffer.h>
 namespace Wiwa {
 	class WI_API Camera
 	{
@@ -14,6 +15,9 @@ namespace Wiwa {
 			ORTHOGRAPHIC,
 			PERSPECTIVE
 		};
+		Frustum frustrum;
+		FrameBuffer* frameBuffer;
+		bool cull = false;
 	private:
 		float m_FOV;
 		CameraType m_CameraType;
@@ -28,8 +32,6 @@ namespace Wiwa {
 		float m_NearPlaneDist;
 		float m_FarPlaneDist;
 		float m_AspectRatio;
-		Frustum m_Frustrum;
-
 		void updateView();
 	public:
 		Camera();
@@ -55,11 +57,13 @@ namespace Wiwa {
 		void lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp);
 
 		void SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
+		void UpdateFrustrum();
 		void SetOrthographic(const int width, const int height, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
 
 		CameraType GetCameraType() { return m_CameraType; }
 
 		glm::mat4 getView() { return m_View; }
 		glm::mat4 getProjection() { return m_Projection; }
+		
 	};
 }

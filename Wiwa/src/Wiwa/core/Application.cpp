@@ -112,9 +112,7 @@ namespace Wiwa {
 	{
 		SceneManager::CleanUp();
 		ScriptEngine::ShutDown();
-
-		delete m_ImGuiLayer;
-		delete s_Instance;
+		
 	}
 
 	void Application::Run()
@@ -126,6 +124,7 @@ namespace Wiwa {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			//m_Renderer2D->Update();
+			CameraManager::Update();
 			m_Renderer3D->Update();
 
 			// Update time
