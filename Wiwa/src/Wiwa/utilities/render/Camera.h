@@ -4,7 +4,7 @@
 
 #include <glm.hpp>
 #include <Wiwa/utilities/math/Math.h>
-
+#include <Wiwa/utilities/math/Frustrum.h>
 namespace Wiwa {
 	class WI_API Camera
 	{
@@ -16,7 +16,6 @@ namespace Wiwa {
 		};
 	private:
 		float m_FOV;
-
 		CameraType m_CameraType;
 
 		glm::vec3 m_CameraPos;
@@ -29,6 +28,7 @@ namespace Wiwa {
 		float m_NearPlaneDist;
 		float m_FarPlaneDist;
 		float m_AspectRatio;
+		Frustum m_Frustrum;
 
 		void updateView();
 	public:

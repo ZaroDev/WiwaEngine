@@ -31,6 +31,7 @@ namespace Wiwa {
 	void Camera::updateView()
 	{
 		m_View = glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
+		m_Frustrum = Frustum(m_Projection * m_View);
 	}
 
 	void Camera::setPlanes(const float nearPlane, const float farPlane)
@@ -110,6 +111,7 @@ namespace Wiwa {
 		m_AspectRatio = aspectRatio;
 		m_NearPlaneDist = nearPlaneDistance;
 		m_FarPlaneDist = farPlaneDistance;
+		m_Frustrum = Frustum(m_Projection * m_View);
 	}
 
 	void Camera::SetOrthographic(const int width, const int height, const float nearPlaneDistance, const float farPlaneDistance)
