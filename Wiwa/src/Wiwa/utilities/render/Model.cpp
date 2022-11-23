@@ -223,39 +223,7 @@ namespace Wiwa {
 		generateBuffers();
 	}
 
-	void Model::CreateGrid()
-	{
-		int slices = 64;
-		for (int j = 0; j <= slices; ++j) {
-			for (int i = 0; i <= slices; ++i) {
-				float x = (float)i / (float)slices;
-				float y = 0;
-				float z = (float)j / (float)slices;
-				vbo_data.push_back(x);
-				vbo_data.push_back(y);
-				vbo_data.push_back(z);
-			}
-		}
 
-		for (int j = 0; j < slices; ++j) {
-			for (int i = 0; i < slices; ++i) {
-
-				int row1 = j * (slices + 1);
-				int row2 = (j + 1) * (slices + 1);
-
-				ebo_data.push_back(row1 + i);
-				ebo_data.push_back( row1 + i + 1);
-				ebo_data.push_back( row1 + i + 1);
-				ebo_data.push_back( row2 + i + 1);
-				ebo_data.push_back(row2 + i + 1);
-				ebo_data.push_back(row2 + i);
-				ebo_data.push_back(row2 + i);
-				ebo_data.push_back(row1 + i);
-
-			}
-		}
-		generateGridBuffers();
-	}
 
 	void Model::generateBuffers()
 	{
@@ -329,34 +297,32 @@ namespace Wiwa {
 		{
 			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
 		}
+		
 
 		for (int i = 0; i < vbo_data.size(); i += 8)
 		{
 			glm::vec3 vec = { vbo_data[i], vbo_data[i + 1], vbo_data[i + 2] };
 			boundingBox.extend(vec);
 		}
-	}
 
-	void Model::generateGridBuffers()
-	{
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z));
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z));
 
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, vbo_data.size() * sizeof(float), vbo_data.data(), GL_STATIC_DRAW);
+		glGenBuffers(1, &bbvbo);
+		glGenVertexArrays(1, &bbvao);
+
+		glBindVertexArray(bbvao);
+		glBindBuffer(GL_ARRAY_BUFFER, bbvbo);
+		glBufferData(GL_ARRAY_BUFFER, bbvbo_data.size() * sizeof(glm::vec3), bbvbo_data.data(), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec3), (void*)0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-		glGenBuffers(1, &ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_data.size() * sizeof(int), ebo_data.data(), GL_STATIC_DRAW);
 
-		glBindVertexArray(0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+		glBindVertexArray(0);
 	}
+
 
 
 	Model::Model(const char* file)
@@ -380,10 +346,6 @@ namespace Wiwa {
 			else if (strcmp(file, "sphere") == 0)
 			{
 				CreateSphere();
-			}
-			else if(strcmp(file, "grid") == 0)
-			{
-				CreateGrid();
 			}
 			else
 			{
@@ -419,6 +381,9 @@ namespace Wiwa {
 			DrawBoudingBox();
 			glBindVertexArray(vao);
 			glDrawElements(GL_TRIANGLES, (GLsizei)ebo_data.size(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+			glBindVertexArray(bbvao);
+			glDrawArrays(GL_LINES, (GLint)bbvbo_data.data(), (GLsizei)bbvbo_data.size());
 		}
 	}
 	void Model::DrawBoudingBox()
@@ -432,10 +397,8 @@ namespace Wiwa {
 		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
 		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
 
-
 		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
 		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
-
 		
 		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
 		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);

@@ -253,7 +253,7 @@ namespace Wiwa {
 		ResourceId position = getResourcePosition(WRT_IMAGE, file);
 		size_t size = m_Resources[WRT_IMAGE].size();
 		ImageSettings* settings = new ImageSettings();
-		CreateMeta<Image>(file, settings);
+		//CreateMeta<Image>(file, settings);
 		ResourceId resourceId;
 
 		if (position == size) {

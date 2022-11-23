@@ -18,12 +18,13 @@ namespace Wiwa {
 
 		std::vector<float> vbo_data;
 		std::vector<int> ebo_data;
+		std::vector<glm::vec3> bbvbo_data;
 
 		std::vector<Model*> models;
 		void generateBuffers();
-		void generateGridBuffers();
+
 	private:
-		unsigned int vao, vbo, ebo;
+		unsigned int vao, vbo, ebo, bbvao, bbvbo;
 
 		void getMeshFromFile(const char* file);
 
@@ -33,8 +34,6 @@ namespace Wiwa {
 		void CreatePlane();
 		void CreatePyramid();
 		void CreateSphere();
-		void CreateGrid();
-
 	public:
 		Model(const char* file);
 		~Model();
