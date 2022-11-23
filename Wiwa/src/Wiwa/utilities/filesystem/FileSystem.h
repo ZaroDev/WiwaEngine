@@ -71,18 +71,23 @@ public:
 		OM_BINARY = 32
 	};
 
+	// Directly read all bytes from file
 	static size_t ReadAll(const char* file, sbyte* memblock);
 
+	// Base open
 	static File Open(const char* file, int openMode);
 
+	// Open text
 	static File OpenI(const char* file) { return Open(file, OM_IN); }
 	static File OpenO(const char* file) { return Open(file, OM_OUT); }
 	static File OpenIO(const char* file) { return Open(file, OM_IN | OM_OUT); }
 
+	// Open binary
 	static File OpenIB(const char* file) { return Open(file, OM_IN | OM_BINARY); }
 	static File OpenOB(const char* file) { return Open(file, OM_OUT | OM_BINARY); }
 	static File OpenIOB(const char* file) { return Open(file, OM_IN | OM_OUT | OM_BINARY); }
 
+	// Memory mapped file
 	static FileMapping CreateMemoryMappedFile(const char* name, size_t size);
 	static FileMapping OpenMemoryMappedFile(const char* name, size_t size);
 };
