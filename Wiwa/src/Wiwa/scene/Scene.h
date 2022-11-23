@@ -21,6 +21,8 @@ namespace Wiwa {
 
 		void Update();
 
+		void Start();
+
 		virtual void Init() {};
 		virtual void Load();
 		virtual void Unload() {}

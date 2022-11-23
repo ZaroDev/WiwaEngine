@@ -85,8 +85,10 @@ void EditorLayer::OnAttach()
 	em.RegisterSystem<Wiwa::MeshRenderer>();	
 
 	Wiwa::Mesh mesh;
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("resources/meshes/BakerHouse.fbx");
-	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/bakerhouse_material.wimaterial");
+	sprintf(mesh.mesh_path, "%s", "resources/meshes/BakerHouse.fbx");
+	sprintf(mesh.mat_path, "%s", "resources/materials/bakerhouse_material.wimaterial");
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
+	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 
 	Wiwa::Transform3D t3d;
 	t3d.position = { 0.0f, 0.0f, 0.0f };
@@ -379,7 +381,7 @@ void EditorLayer::OpenScene()
 	{
 		SceneId scene_id = Wiwa::SceneManager::LoadScene(filePath.c_str());
 		Wiwa::SceneManager::SetScene(scene_id);
-		WI_INFO("Succesfully opened project at path {0}", filePath.c_str());
+		WI_INFO("Succesfully opened scene at path {0}", filePath.c_str());
 	}
 }
 

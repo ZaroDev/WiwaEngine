@@ -26,8 +26,10 @@ void CreateCube()
 	EntityId myEntity = em.CreateEntity("Cube");
 	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("cube");
-	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
+	sprintf(mesh.mesh_path, "%s", "cube");
+	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
+	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }
@@ -38,8 +40,10 @@ void CreatePlane()
 	EntityId myEntity = em.CreateEntity("Plane");
 	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("plane");
-	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
+	sprintf(mesh.mesh_path, "%s", "plane");
+	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
+	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }
@@ -50,8 +54,10 @@ void CreatePyramid()
 	EntityId myEntity = em.CreateEntity("Pyramid");
 	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("pyramid");
-	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
+	sprintf(mesh.mesh_path, "%s", "pyramid");
+	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
+	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }
@@ -62,8 +68,10 @@ void CreateSphere()
 	EntityId myEntity = em.CreateEntity("Sphere");
 	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
 	Wiwa::Mesh mesh;
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("resources/meshes/sphere.fbx");
-	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
+	sprintf(mesh.mesh_path, "%s", "resources/meshes/sphere.fbx");
+	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
+	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	em.AddComponent<Wiwa::Mesh>(myEntity, mesh);
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }

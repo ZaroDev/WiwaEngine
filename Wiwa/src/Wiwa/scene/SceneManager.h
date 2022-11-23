@@ -25,7 +25,7 @@ namespace Wiwa {
 		static void Update();
 		static void CleanUp();
 		
-		static void SetScene(SceneId sceneId) { m_ActiveScene = sceneId; }
+		static void SetScene(SceneId sceneId) { m_ActiveScene = sceneId; m_Scenes[sceneId]->Start(); }
 		static void ChangeScene(SceneId sceneId);
 
 		static void StartChangeScene(SceneId sceneId);

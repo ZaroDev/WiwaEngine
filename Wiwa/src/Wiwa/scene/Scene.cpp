@@ -14,7 +14,6 @@ namespace Wiwa {
 		m_SceneCamera = Wiwa::CameraManager::getCamera(m_SceneCameraId);
 		m_SceneCamera->setPosition({ 10.0f, 1.0f, 5.0f });
 		m_SceneCamera->lookat({ 0.0f, 0.0f, 0.0f });
-		Wiwa::CameraManager::SetCamera(m_SceneCameraId);
 	}
 
 	Scene::~Scene()
@@ -48,6 +47,11 @@ namespace Wiwa {
 		default:
 			break;
 		}
+	}
+
+	void Scene::Start()
+	{
+		Wiwa::CameraManager::SetCamera(m_SceneCameraId);
 	}
 
 	void Scene::Load()

@@ -405,8 +405,33 @@ namespace Wiwa {
 		return false;
 	}
 
-	void EntityManager::ApplySystem(EntityId eid, SystemId sid)
+	SystemId EntityManager::GetSystemId(SystemHash system_hash)
 	{
+		SystemId system_id = -1;
+		std::unordered_map<size_t, SystemId>::iterator sid = m_SystemIds.find(system_hash);
+
+		if (sid == m_SystemIds.end()) {
+			system_id = m_SystemIdCount++;
+
+			m_SystemIds[system_hash] = system_id;
+		}
+		else {
+			system_id = sid->second;
+		}
+
+		return system_id;
+	}
+
+	SystemId EntityManager::GetSystemId(const Type* type)
+	{
+		return GetSystemId(type->hash);
+	}
+
+	void EntityManager::ApplySystem(EntityId eid, SystemHash system_hash)
+	{
+		SystemId sid = GetSystemId(system_hash);
+
 		m_Systems[sid]->AddEntity(eid);
+		m_EntitySystems[eid].push_back(sid);
 	}
 }
