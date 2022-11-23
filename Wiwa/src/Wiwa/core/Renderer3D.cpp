@@ -221,6 +221,7 @@ namespace Wiwa {
 		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
 
 		mesh->Render();
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 		m_TextureShader->UnBind();
 		if (mesh->showNormals)
@@ -233,14 +234,16 @@ namespace Wiwa {
 			mesh->Render();
 			m_NormalDisplayShader->UnBind();
 
+			
+		}
+		if (camera->drawBoundingBoxes)
+		{
 			m_BBDisplayShader->Bind();
 			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, model);
 			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
 			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
-			m_BBDisplayShader->setUniform(glGetUniformLocation(m_BBDisplayShader->getID(), "u_Min"), mesh->boundingBox.getMin());
-			m_BBDisplayShader->setUniform(glGetUniformLocation(m_BBDisplayShader->getID(), "u_Max"), mesh->boundingBox.getMax());
-			
-			mesh->Render();
+			mesh->DrawBoudingBox();
+
 			m_BBDisplayShader->UnBind();
 		}
 		

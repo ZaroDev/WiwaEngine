@@ -18,6 +18,7 @@ namespace Wiwa {
 		Frustum frustrum;
 		FrameBuffer* frameBuffer;
 		bool cull = false;
+		bool drawBoundingBoxes = false;
 	private:
 		float m_FOV;
 		CameraType m_CameraType;

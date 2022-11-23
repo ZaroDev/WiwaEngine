@@ -153,6 +153,7 @@ namespace Wiwa {
 			// TODO: Save scene info??
 			// Scene name, etc
 
+
 			EntityManager& em = sc->GetEntityManager();
 			std::vector<EntityId>* pentities = em.GetParentEntitiesAlive();
 			size_t p_entity_count = pentities->size();

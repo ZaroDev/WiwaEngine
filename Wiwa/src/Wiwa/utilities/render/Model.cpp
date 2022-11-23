@@ -308,6 +308,24 @@ namespace Wiwa {
 		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z));
 		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z));
 
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z));
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z));
+
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z));
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z));
+
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z));
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z));
+
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMax().z));
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z));
+
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z));
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z));
+
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z));
+		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMax().z));
+
 		glGenBuffers(1, &bbvbo);
 		glGenVertexArrays(1, &bbvao);
 
@@ -315,7 +333,7 @@ namespace Wiwa {
 		glBindBuffer(GL_ARRAY_BUFFER, bbvbo);
 		glBufferData(GL_ARRAY_BUFFER, bbvbo_data.size() * sizeof(glm::vec3), bbvbo_data.data(), GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(glm::vec3), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 		glEnableVertexAttribArray(0);
 
 
@@ -378,42 +396,26 @@ namespace Wiwa {
 			}
 		}
 		else {
-			DrawBoudingBox();
+
 			glBindVertexArray(vao);
 			glDrawElements(GL_TRIANGLES, (GLsizei)ebo_data.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
-			glBindVertexArray(bbvao);
-			glDrawArrays(GL_LINES, (GLint)bbvbo_data.data(), (GLsizei)bbvbo_data.size());
+		
 		}
 	}
 	void Model::DrawBoudingBox()
 	{
-		glLineWidth(2.0f);
-		glBegin(GL_LINES);
-		glColor3f(0.1f, 1.0f, 0.1f);
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
+		if (is_root) {
+			size_t meshCount = models.size();
 
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
-
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
-		
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
-
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
-
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
-
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
-
-		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
-		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
-		glEnd();
+			for (size_t i = 0; i < meshCount; i++) {
+				models[i]->DrawBoudingBox();
+			}
+		}
+		else {
+			glBindVertexArray(bbvao);
+			glDrawArrays(GL_LINES, (GLint)bbvbo_data.data(), (GLsizei)bbvbo_data.size());
+			glBindVertexArray(0);
+		}
 	}
 }

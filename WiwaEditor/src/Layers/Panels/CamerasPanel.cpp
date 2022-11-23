@@ -30,7 +30,8 @@ void CamerasPanel::Draw()
 			ImGui::Text("%i", row);
 			ImGui::TableSetColumnIndex(1);
 			ImGui::PushID(row);
-			ImGui::Checkbox("##culling", &cam->cull);
+			ImGui::Checkbox("Cull##culling", &cam->cull);
+			ImGui::Checkbox("BoudingBoxes##culling", &cam->drawBoundingBoxes);
 			ImGui::TableSetColumnIndex(2);
 			glm::vec3 pos = cam->getPosition();
 			glm::vec3 front = cam->getFront();
