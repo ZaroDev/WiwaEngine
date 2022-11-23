@@ -416,9 +416,9 @@ namespace Wiwa {
 			}
 		}
 		else {
+			DrawBoudingBox();
 			glBindVertexArray(vao);
 			glDrawElements(GL_TRIANGLES, (GLsizei)ebo_data.size(), GL_UNSIGNED_INT, 0);
-			DrawBoudingBox();
 		}
 	}
 	void Model::DrawBoudingBox()
