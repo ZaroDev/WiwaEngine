@@ -1,5 +1,6 @@
 #include <wipch.h>
 #include "SceneManager.h"
+#include <Wiwa/ecs/systems/MeshRenderer.h>
 
 namespace Wiwa {
 	std::vector<Scene*> SceneManager::m_Scenes;
@@ -70,8 +71,22 @@ namespace Wiwa {
 			data = new byte[c_size];
 			scene_file.Read(data, c_size);
 
-			em.AddComponent(eid, c_hash, data);
+			byte* component = em.AddComponent(eid, c_hash, data);
 			delete[] data;
+
+			size_t mesh_hash = em.GetComponentType(em.GetComponentId<Mesh>())->hash;
+
+			if (c_hash == mesh_hash) {
+				Mesh* mesh = (Mesh*)component;
+
+				mesh->meshId = Resources::Load<Model>(mesh->mesh_path);
+				mesh->materialId = Resources::Load<Material>(mesh->mat_path);
+			}
+		}
+
+		if (em.HasComponents<Transform3D, Mesh>(eid)) {
+			
+			em.ApplySystem<MeshRenderer>(eid);
 		}
 
 		// Check for child entities
@@ -176,6 +191,7 @@ namespace Wiwa {
 
 			// Load entities
 			EntityManager& em = sc->GetEntityManager();
+			em.RegisterSystem<MeshRenderer>();
 
 			size_t entity_count;
 			size_t p_entity_count;

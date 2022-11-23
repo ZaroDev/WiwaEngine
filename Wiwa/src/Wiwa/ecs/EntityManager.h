@@ -14,6 +14,7 @@ typedef size_t EntityId;
 typedef size_t ComponentId;
 typedef size_t ComponentHash;
 typedef size_t SystemId;
+typedef size_t SystemHash;
 
 typedef unsigned char byte;
 
@@ -142,10 +143,12 @@ namespace Wiwa {
 		bool HasSystem(EntityId eid, SystemId sid);
 
 		template<class T> SystemId GetSystemId();
+		SystemId GetSystemId(SystemHash system_hash);
+		SystemId GetSystemId(const Type* type);
 
 		// Register systems
 		template<class T> void ApplySystem(EntityId eid);
-		void ApplySystem(EntityId eid, SystemId sid);
+		void ApplySystem(EntityId eid, SystemHash system_hash);
 
 		template<class T> void RegisterSystem();
 		template<class T> void ReserveSystem(size_t amount);
@@ -155,21 +158,9 @@ namespace Wiwa {
 	template<class T>
 	inline SystemId EntityManager::GetSystemId()
 	{
-		size_t system_id = 0;
-
 		const Type* stype = GetType<T>();
-		std::unordered_map<size_t, SystemId>::iterator sid = m_SystemIds.find(stype->hash);
-
-		if (sid == m_SystemIds.end()) {
-			system_id = m_SystemIdCount++;
-
-			m_SystemIds[stype->hash] = system_id;
-		}
-		else {
-			system_id = sid->second;
-		}
-
-		return system_id;
+		
+		return GetSystemId(stype->hash);
 	}
 
 	// Get component ID using Reflection
@@ -355,9 +346,9 @@ namespace Wiwa {
 	template<class T>
 	inline void EntityManager::ApplySystem(EntityId eid)
 	{
-		SystemId sid = GetSystemId<T>();
+		const Type* stype = GetType<T>();
 
-		ApplySystem(eid, sid);
+		ApplySystem(eid, stype->hash);
 	}
 
 	template<class T>

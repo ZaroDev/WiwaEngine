@@ -157,7 +157,6 @@ namespace Wiwa {
 
 	void Renderer3D::RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear, Camera* camera, bool cull)
 	{
-
 		if (!camera)
 		{
 			camera = m_ActiveCamera;
