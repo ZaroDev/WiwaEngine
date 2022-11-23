@@ -54,6 +54,11 @@ namespace Wiwa {
 		Shader* m_NormalDisplayShader;
 		DefaultUnlitUniforms m_NDSUniforms;
 
+		ResourceId m_BBDisplayShaderId;
+		Shader* m_BBDisplayShader;
+		DefaultUnlitUniforms m_BBDSUniforms;
+
+
 		glm::mat4 m_PersProj{ 0.0f };
 		glm::mat4 m_View{ 0.0f };
 		Camera* m_ActiveCamera;
@@ -73,7 +78,6 @@ namespace Wiwa {
 		void DisableOption(Options option);
 		void RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, Camera* camera=NULL , bool cull = false);
 		void RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, Camera* camera=NULL, bool cull = false);
-		void RenderGrid(Model* grid, FrameBuffer* target = NULL, bool clear = false, Camera* camera = NULL);
 		void Close();
 		
 		inline void SetLight(const DirectionalLight& light) { m_ActiveCamera->frameBuffer->setLight(light); }

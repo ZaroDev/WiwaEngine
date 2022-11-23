@@ -77,6 +77,14 @@ namespace Wiwa {
 		m_NDSUniforms.View = m_NormalDisplayShader->getUniformLocation("u_View");
 		m_NDSUniforms.Projection = m_NormalDisplayShader->getUniformLocation("u_Projection");
 		
+		//Bounding box display shader
+		m_BBDisplayShaderId = Resources::Load<Shader>("resources/shaders/boundingbox_display");
+		m_BBDisplayShader = Resources::GetResourceById<Shader>(m_BBDisplayShaderId);
+
+		m_BBDSUniforms.Model = m_BBDisplayShader->getUniformLocation("u_Model");
+		m_BBDSUniforms.View = m_BBDisplayShader->getUniformLocation("u_View");
+		m_BBDSUniforms.Projection = m_BBDisplayShader->getUniformLocation("u_Projection");
+
 		WI_CORE_INFO("Renderer3D initialized");
 		SetOption(Options::DEPTH_TEST);
 		SetOption(Options::CULL_FACE);
@@ -227,28 +235,18 @@ namespace Wiwa {
 
 			mesh->Render();
 			m_NormalDisplayShader->UnBind();
+
+			m_BBDisplayShader->Bind();
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, model);
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
+			m_BBDisplayShader->setUniform(glGetUniformLocation(m_BBDisplayShader->getID(), "u_Min"), mesh->boundingBox.getMin());
+			m_BBDisplayShader->setUniform(glGetUniformLocation(m_BBDisplayShader->getID(), "u_Max"), mesh->boundingBox.getMax());
+			mesh->Render();
+			m_BBDisplayShader->UnBind();
 		}
-		size_t cameraCount = Wiwa::CameraManager::getCameraSize();
-		for (size_t i = 0; i < cameraCount; i++)
-		{
-			Wiwa::CameraManager::getCamera(i)->DrawFrustum();
-		}
+		
 		camera->frameBuffer->Unbind();
-	}
-
-	void Renderer3D::RenderGrid(Model* grid, FrameBuffer* target, bool clear, Camera* camera)
-	{
-
-		if (!camera) camera = m_ActiveCamera;
-		/*glViewport(0, 0, target->getWidth(), target->getHeight());
-
-		target->Bind(clear);
-		glBindVertexArray(grid->getVAO());
-
-		glDrawElements(GL_LINES, grid., GL_UNSIGNED_INT, NULL);
-
-		glBindVertexArray(0);
-		target->Unbind();*/
 	}
 
 
@@ -312,6 +310,6 @@ namespace Wiwa {
 
 	void Renderer3D::Close()
 	{
-
+		delete m_ActiveCamera;
 	}
 }
