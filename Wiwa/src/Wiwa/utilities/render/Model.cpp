@@ -418,43 +418,39 @@ namespace Wiwa {
 		else {
 			glBindVertexArray(vao);
 			glDrawElements(GL_TRIANGLES, (GLsizei)ebo_data.size(), GL_UNSIGNED_INT, 0);
+			DrawBoudingBox();
 		}
 	}
 	void Model::DrawBoudingBox()
 	{
 		glLineWidth(2.0f);
 		glBegin(GL_LINES);
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z);
+		glColor3f(0.1f, 1.0f, 0.1f);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z);
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMin().z);
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMax().z);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z);
+		
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMax().y, (GLfloat)boundingBox.getMax().z);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMax().z);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
 
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMax().z);
-		glVertex3f(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMax().z);
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMin().z);
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
+
+		glVertex3f((GLfloat)boundingBox.getMin().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
+		glVertex3f((GLfloat)boundingBox.getMax().x, (GLfloat)boundingBox.getMin().y, (GLfloat)boundingBox.getMax().z);
 		glEnd();
 	}
 }

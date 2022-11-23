@@ -5,6 +5,7 @@
 
 #include <Wiwa/utilities/render/InstanceRenderer.h>
 #include <Wiwa/utilities/Log.h>
+#include <Wiwa/utilities/render/CameraManager.h>
 
 #include <glew.h>
 
@@ -140,7 +141,7 @@ namespace Wiwa {
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
 
 			mesh->Render();
-			//m_NormalDisplayShader->UnBind();
+			m_NormalDisplayShader->UnBind();
 		}
 		target->Unbind();
 		m_ColorShader->UnBind();
@@ -213,6 +214,8 @@ namespace Wiwa {
 		glBindTexture(GL_TEXTURE_2D, material->getTextureId());
 
 		mesh->Render();
+		glBindTexture(GL_TEXTURE_2D, 0);
+		m_TextureShader->UnBind();
 		if (mesh->showNormals)
 		{
 			glBindTexture(GL_TEXTURE_2D, 0);
@@ -223,12 +226,14 @@ namespace Wiwa {
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
 
 			mesh->Render();
-			mesh->DrawBoudingBox();
 			m_NormalDisplayShader->UnBind();
 		}
+		size_t cameraCount = Wiwa::CameraManager::getCameraSize();
+		for (size_t i = 0; i < cameraCount; i++)
+		{
+			Wiwa::CameraManager::getCamera(i)->DrawFrustum();
+		}
 		camera->frameBuffer->Unbind();
-		m_TextureShader->UnBind();
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Renderer3D::RenderGrid(Model* grid, FrameBuffer* target, bool clear, Camera* camera)

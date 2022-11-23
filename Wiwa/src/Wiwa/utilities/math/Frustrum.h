@@ -117,3 +117,4 @@ inline glm::vec3 Frustum::Intersection(const glm::vec3* crosses) const
 		glm::vec3(m_planes[a].w, m_planes[b].w, m_planes[c].w);
 	return res * (-1.0f / D);
 }
+
