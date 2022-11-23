@@ -18,7 +18,7 @@ public:
 	virtual ~ScenePanel();
 
 	void Draw() override;
-
+	void Update() override;
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e);
 	bool OnEntityChange(EntityChangeEvent& e);
