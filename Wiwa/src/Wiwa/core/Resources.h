@@ -26,7 +26,7 @@ namespace Wiwa {
 		// Enum that indicates all the resources that can be loaded by the engine
 		enum ResourceType {
 			WRT_IMAGE,
-			WRT_AUDIOCLIP,
+			WRT_AUDIOCLIP, //TODO
 			WRT_SHADER,
 			WRT_MODEL,
 			WRT_MATERIAL,
@@ -209,7 +209,6 @@ namespace Wiwa {
 
 		if (shaderFile.empty())
 			return;
-
 		SaveFile(file, shaderFile);
 		CreateMeta<Shader>(file, NULL);
 	}

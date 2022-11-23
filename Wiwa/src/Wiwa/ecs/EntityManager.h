@@ -125,7 +125,8 @@ namespace Wiwa {
 
 		// Reserve functions
 		void ReserveEntities(size_t amount);
-		template<class T> void ReserveComponent(size_t amount);		
+		void ReserveComponent(ComponentHash hash, size_t amount);
+		template<class T> void ReserveComponent(size_t amount);
 
 		// Component utilities
 		template<class T> bool HasComponent(EntityId entityId);

@@ -172,6 +172,42 @@ namespace Wiwa {
 		m_ParentEntitiesAlive.reserve(amount);
 	}
 
+	void EntityManager::ReserveComponent(ComponentHash hash, size_t amount)
+	{
+		// Get component ID
+		ComponentId cid = GetComponentId(hash);
+		const Type* c_type = m_ComponentIds[cid].ctype;
+		size_t c_size = c_type->size;
+
+		if (cid >= m_Components.size()) {
+			m_Components.resize(cid + 1, NULL);
+			m_ComponentsSize.resize(cid + 1, 0);
+			m_ComponentsReserved.resize(cid + 1, 0);
+			m_ComponentTypes.resize(cid + 1, NULL);
+			m_ComponentsRemoved.resize(cid + 1);
+		}
+
+		if (m_Components[cid]) {
+			byte* oldBlock = m_Components[cid];
+			size_t oldSize = m_ComponentsSize[cid] * c_size;
+			size_t newSize = oldSize + amount * c_size;
+
+			byte* newBlock = new byte[newSize];
+
+			memcpy(newBlock, oldBlock, oldSize);
+
+			delete[] oldBlock;
+
+			m_Components[cid] = newBlock;
+		}
+		else {
+			m_Components[cid] = new byte[amount * c_size];
+			m_ComponentTypes[cid] = c_type;
+		}
+
+		m_ComponentsReserved[cid] = m_ComponentsSize[cid] + amount;
+	}
+
 	byte* EntityManager::AddComponent(EntityId entityId, ComponentHash hash, byte* value) {
 		const Type* ctype = Application::Get().getCoreTypeH(hash);
 		if (!ctype) ctype = Application::Get().getAppTypeH(hash);

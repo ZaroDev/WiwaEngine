@@ -44,7 +44,7 @@ void AssetsPanel::Update()
 		{
 			if (p.is_directory())
 			{
-				Directory *dir = new Directory();
+				DirectorySpecs*dir = new DirectorySpecs();
 				dir->path = p.path();
 				m_Directory.directories.push_back(dir);
 				for (auto &p1 : std::filesystem::directory_iterator(dir->path))
@@ -54,7 +54,7 @@ void AssetsPanel::Update()
 			}
 			else
 			{
-				File f;
+				FileSpecs f;
 				f.path = p.path();
 				f.size = p.file_size();
 				m_Directory.files.push_back(f);
@@ -64,11 +64,11 @@ void AssetsPanel::Update()
 		lastWriteTime = lastAbsoluteDirTime;
 	}
 }
-void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Directory *dir)
+void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, DirectorySpecs*dir)
 {
 	if (p1.is_directory())
 	{
-		Directory *d = new Directory();
+		DirectorySpecs*d = new DirectorySpecs();
 		d->path = p1.path();
 		dir->directories.push_back(d);
 		for (auto &p2 : std::filesystem::directory_iterator(d->path))
@@ -78,7 +78,7 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 	}
 	else
 	{
-		File f;
+		FileSpecs f;
 		f.path = p1.path();
 		f.size = p1.file_size();
 		dir->files.push_back(f);
@@ -284,7 +284,7 @@ void AssetsPanel::Draw()
 	ImGui::End();
 }
 
-void AssetsPanel::DisplayNode(Directory *directoryEntry)
+void AssetsPanel::DisplayNode(DirectorySpecs*directoryEntry)
 {
 	const auto &path = directoryEntry->path;
 

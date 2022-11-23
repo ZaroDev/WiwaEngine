@@ -96,6 +96,16 @@ void File::Write(const sbyte* memblock, size_t count)
 	fstream->write(memblock, count);
 }
 
+void File::Read(void* memblock, size_t count)
+{
+	fstream->read((sbyte*)memblock, count);
+}
+
+void File::Write(const void* memblock, size_t count)
+{
+	fstream->write((const sbyte*)memblock, count);
+}
+
 bool File::Eof() const
 {
 	return fstream->eof();

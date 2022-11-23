@@ -4,16 +4,16 @@
 
 #include <filesystem>
 typedef void* ImTextureID;
-struct File
+struct FileSpecs
 {
 	std::filesystem::path path;
 	uintmax_t size = 0;
 };
-struct Directory
+struct DirectorySpecs
 {
 	std::filesystem::path path;
-	std::vector<Directory *> directories;
-	std::vector<File> files;
+	std::vector<DirectorySpecs*> directories;
+	std::vector<FileSpecs> files;
 };
 
 class AssetsPanel : public Panel
@@ -23,18 +23,18 @@ public:
 	virtual ~AssetsPanel();
 
 	void Update() override;
-	void UpdateDir(const std::filesystem::directory_entry &p1, Directory *dir);
+	void UpdateDir(const std::filesystem::directory_entry &p1, DirectorySpecs*dir);
 	void Draw() override;
 
 private:
-	void DisplayNode(Directory *directoryEntry);
+	void DisplayNode(DirectorySpecs* directoryEntry);
 
 private:
 	ImTextureID m_FileIcon;
 	ImTextureID m_FolderIcon;
 	ImTextureID m_BackIcon;
 	ImTextureID m_MaterialIcon;
-	Directory m_Directory;
+	DirectorySpecs m_Directory;
 	std::filesystem::path m_CurrentPath;
 	std::filesystem::file_time_type lastWriteTime;
 	float m_ButtonSize = 1.0f;

@@ -5,17 +5,20 @@
 #include "Scene.h"
 
 #include <Wiwa/ecs/EntityManager.h>
-#include <Wiwa/core/Layer.h>
+#include <Wiwa/utilities/filesystem/FileSystem.h>
 
 #include <vector>
 
 typedef size_t SceneId;
 
 namespace Wiwa {
-	class WI_API SceneManager : public Layer {
+	class WI_API SceneManager {
 	private:
 		static std::vector<Scene*> m_Scenes;
 		static SceneId m_ActiveScene;
+
+		static void LoadEntity(File& scene_file, EntityId parent, EntityManager& em, bool is_parent);
+		static void SaveEntity(File& scene_file, EntityId eid, EntityManager& em);
 
 		SceneManager();
 	public:
@@ -35,5 +38,8 @@ namespace Wiwa {
 		static size_t CreateScene();
 		static Scene* getScene(SceneId sceneId) { return m_Scenes[sceneId]; }
 		inline static std::vector<Scene*>& getScenes() { return m_Scenes; }
+
+		static void SaveScene(SceneId scene_id, const char* scene_path);
+		static SceneId LoadScene(const char* scene_path);
 	};
 }

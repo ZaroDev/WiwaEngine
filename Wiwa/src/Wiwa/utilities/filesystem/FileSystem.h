@@ -20,6 +20,9 @@ public:
 	void Read(sbyte* memblock, size_t count);
 	void Write(const sbyte* memblock, size_t count);
 
+	void Read(void* memblock, size_t count);
+	void Write(const void* memblock, size_t count);
+
 	bool IsOpen() const { return is_open; }
 
 	bool Eof() const;
