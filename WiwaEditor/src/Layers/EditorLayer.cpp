@@ -191,7 +191,7 @@ void EditorLayer::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Open scene", ""))
 			{
-
+				OpenScene();
 			}
 			if (ImGui::MenuItem("Save scene"))
 			{
@@ -199,7 +199,7 @@ void EditorLayer::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Save scene as..."))
 			{
-
+				SaveSceneAs();
 			}
 			if (ImGui::MenuItem("Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
@@ -356,6 +356,30 @@ void EditorLayer::NewProject()
 	{
 		Utils::ProjectManager::CreateProject(filePath.c_str());
 		WI_INFO("Succesfully created project at path {0}", filePath.c_str());
+	}
+}
+
+void EditorLayer::SaveSceneAs()
+{
+	std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Scene (*.wiscene)\0*.wiscene\0");
+	if (!filePath.empty())
+	{
+		if (filePath.find(".wiscene") == filePath.npos) {
+			filePath += ".wiscene";
+		}
+		Wiwa::SceneManager::SaveScene(Wiwa::SceneManager::getActiveSceneId(), filePath.c_str());
+		WI_INFO("Succesfully saved scene at path {0}", filePath.c_str());
+	}
+}
+
+void EditorLayer::OpenScene()
+{
+	std::string filePath = Wiwa::FileDialogs::OpenFile("Wiwa Scene (*.wiscene)\0*.wiscene\0");
+	if (!filePath.empty())
+	{
+		SceneId scene_id = Wiwa::SceneManager::LoadScene(filePath.c_str());
+		Wiwa::SceneManager::SetScene(scene_id);
+		WI_INFO("Succesfully opened project at path {0}", filePath.c_str());
 	}
 }
 

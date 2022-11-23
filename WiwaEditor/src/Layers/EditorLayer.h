@@ -51,6 +51,10 @@ private:
 	void NewProject();
 	void DockSpace();
 
+	// Scene functions
+	void SaveSceneAs();
+	void OpenScene();
+
 	void LoadPanelConfig();
 	void SavePanelConfig();
 

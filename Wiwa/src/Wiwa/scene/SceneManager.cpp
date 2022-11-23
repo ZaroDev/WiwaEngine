@@ -187,7 +187,7 @@ namespace Wiwa {
 
 			em.ReserveEntities(entity_count);
 
-			for (size_t i = 0; i < entity_count; i++) {
+			for (size_t i = 0; i < p_entity_count; i++) {
 				LoadEntity(scene_file, i, em, true);
 			}
 
