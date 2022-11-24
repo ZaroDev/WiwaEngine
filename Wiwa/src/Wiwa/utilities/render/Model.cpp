@@ -304,39 +304,38 @@ namespace Wiwa {
 			glm::vec3 vec = { vbo_data[i], vbo_data[i + 1], vbo_data[i + 2] };
 			boundingBox.extend(vec);
 		}
+		bbebo_data = {
+			0, 1, 1, 2, 2, 3, 3, 0, // Front
+			4, 5, 5, 6, 6, 7, 7, 4, // Back
+			0, 4, 1, 5, 2, 6, 3, 7
+		};
+		bbvbo_data = {
+			boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z, //TOP
+			boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z,
+			boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z,
+			boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z,
 
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z));
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z));
-
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMin().z));
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z));
-
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMin().z));
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z));
-
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMax().y, boundingBox.getMax().z));
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMax().y, boundingBox.getMax().z));
-
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMax().z));
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z));
-
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z));
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z));
-
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z));
-		bbvbo_data.push_back(glm::vec3(boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMax().z));
+			boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMax().z, //Bottom
+			boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMax().z,
+			boundingBox.getMin().x, boundingBox.getMin().y, boundingBox.getMin().z,
+			boundingBox.getMax().x, boundingBox.getMin().y, boundingBox.getMin().z,
+		};
 
 		glGenBuffers(1, &bbvbo);
+		glGenBuffers(1, &bbebo);
 		glGenVertexArrays(1, &bbvao);
 
 		glBindVertexArray(bbvao);
 		glBindBuffer(GL_ARRAY_BUFFER, bbvbo);
-		glBufferData(GL_ARRAY_BUFFER, bbvbo_data.size() * sizeof(glm::vec3), bbvbo_data.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, bbvbo_data.size() * sizeof(float), bbvbo_data.data(), GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bbebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, bbebo_data.size() * sizeof(int), bbebo_data.data(), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
-
+		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
@@ -414,7 +413,7 @@ namespace Wiwa {
 		}
 		else {
 			glBindVertexArray(bbvao);
-			glDrawArrays(GL_LINES, (GLint)bbvbo_data.data(), (GLsizei)bbvbo_data.size());
+			glDrawElements(GL_LINES, (GLsizei)bbebo_data.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 		}
 	}

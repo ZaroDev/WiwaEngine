@@ -83,7 +83,7 @@ namespace Wiwa {
 
 		m_BBDSUniforms.Model = m_BBDisplayShader->getUniformLocation("u_Model");
 		m_BBDSUniforms.View = m_BBDisplayShader->getUniformLocation("u_View");
-		m_BBDSUniforms.Projection = m_BBDisplayShader->getUniformLocation("u_Projection");
+		m_BBDSUniforms.Projection = m_BBDisplayShader->getUniformLocation("u_Proj");
 
 		WI_CORE_INFO("Renderer3D initialized");
 		SetOption(Options::DEPTH_TEST);
@@ -230,8 +230,8 @@ namespace Wiwa {
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
 			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
-
 			mesh->Render();
+
 			m_NormalDisplayShader->UnBind();
 
 			
@@ -243,7 +243,6 @@ namespace Wiwa {
 			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
 			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
 			mesh->DrawBoudingBox();
-
 			m_BBDisplayShader->UnBind();
 		}
 		

@@ -18,13 +18,14 @@ namespace Wiwa {
 
 		std::vector<float> vbo_data;
 		std::vector<int> ebo_data;
-		std::vector<glm::vec3> bbvbo_data;
+		std::vector<int> bbebo_data;
+		std::vector<float> bbvbo_data;
 
 		std::vector<Model*> models;
 		void generateBuffers();
 
 	private:
-		unsigned int vao, vbo, ebo, bbvao, bbvbo;
+		unsigned int vao, vbo, ebo, bbvao, bbvbo, bbebo;
 
 		void getMeshFromFile(const char* file);
 
