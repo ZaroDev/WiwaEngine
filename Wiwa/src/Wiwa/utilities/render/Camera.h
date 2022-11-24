@@ -19,6 +19,7 @@ namespace Wiwa {
 		FrameBuffer* frameBuffer;
 		bool cull = false;
 		bool drawBoundingBoxes = false;
+		bool drawFrustrums = true;
 	private:
 		float m_FOV;
 		CameraType m_CameraType;
@@ -34,6 +35,10 @@ namespace Wiwa {
 		float m_FarPlaneDist;
 		float m_AspectRatio;
 		void updateView();
+
+		std::vector<int> indicies;
+		std::vector<float> vertices;
+		unsigned int vao, vbo, ebo;
 	public:
 		Camera();
 		~Camera();
@@ -56,7 +61,6 @@ namespace Wiwa {
 
 		void lookat(const Vector3f position);
 		void lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp);
-		void DrawFrustum();
 		void SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
 		void UpdateFrustrum();
 		void SetOrthographic(const int width, const int height, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
@@ -66,6 +70,8 @@ namespace Wiwa {
 		glm::mat4 getView() { return m_View; }
 		glm::mat4 getProjection() { return m_Projection; }
 		
+		void DrawFrustrum();
+
 		inline void GetCornerPoints(glm::vec3* points)
 		{
 			float tanhfov = glm::tan(m_FOV * 0.5f);
@@ -75,7 +81,7 @@ namespace Wiwa {
 			float farPlaneHalfWidth = tanhfov * m_FarPlaneDist;
 			float farPlaneHalfHeight = tanvfov * m_FarPlaneDist;
 
-			glm::vec3 right = glm::cross(m_CameraFront, m_CameraUp);
+			glm::vec3 right = glm::cross(m_CameraUp, m_CameraFront);
 
 			glm::vec3 nearCenter = m_CameraPos + m_CameraFront * m_NearPlaneDist;
 			glm::vec3 nearHalfWidth = frontPlaneHalfWidth * right;

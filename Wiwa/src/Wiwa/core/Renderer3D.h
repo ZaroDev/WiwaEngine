@@ -79,7 +79,7 @@ namespace Wiwa {
 		void RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, Camera* camera=NULL , bool cull = false);
 		void RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, Camera* camera=NULL, bool cull = false);
 		void Close();
-		
+		void RenderFrustrums(Camera* camera = NULL);
 		inline void SetLight(const DirectionalLight& light) { m_ActiveCamera->frameBuffer->setLight(light); }
 
 		// Getters

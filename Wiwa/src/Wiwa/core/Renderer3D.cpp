@@ -151,6 +151,15 @@ namespace Wiwa {
 			mesh->Render();
 			m_NormalDisplayShader->UnBind();
 		}
+		if (camera->drawBoundingBoxes)
+		{
+			m_BBDisplayShader->Bind();
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, model);
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
+			mesh->DrawBoudingBox();
+			m_BBDisplayShader->UnBind();
+		}
 		target->Unbind();
 		m_ColorShader->UnBind();
 	}
@@ -303,13 +312,43 @@ namespace Wiwa {
 		default:
 			break;
 		}
-
-
-
 	}
 
 	void Renderer3D::Close()
 	{
 		delete m_ActiveCamera;
+	}
+	void Renderer3D::RenderFrustrums(Camera* camera)
+	{
+		if (!camera)
+		{
+			camera = m_ActiveCamera;
+		}
+		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
+
+		camera->frameBuffer->Bind(false);
+		size_t cameraCount = CameraManager::getCameraSize();
+		for (size_t i = 0; i < cameraCount; i++)
+		{
+			Camera* cam = CameraManager::getCamera(i);
+			if (camera == cam)
+				continue;
+
+			m_BBDisplayShader->Bind();
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cam->getPosition());
+			model = glm::rotate(model, 0.0f, glm::vec3(1, 0, 0));
+			model = glm::rotate(model, 0.0f, glm::vec3(0, 1, 0));
+			model = glm::rotate(model, 0.0f, glm::vec3(0, 0, 1));
+			model = glm::scale(model, glm::vec3(1.0f));
+
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, model);
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
+			cam->DrawFrustrum();
+
+			m_BBDisplayShader->UnBind();
+		}
+		camera->frameBuffer->Unbind();
 	}
 }

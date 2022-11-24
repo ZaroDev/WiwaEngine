@@ -23,7 +23,7 @@ namespace Wiwa{
 		inline static size_t getCameraSize() { return m_Cameras.size(); }
 
 		static size_t CreateCamera();
-		static size_t CreatePerspectiveCamera(const float fov, const float aspectRatio, const float nearPlaneDistance = 0.1f, const float farPlaneDistance = 1000.0f);
+		static size_t CreatePerspectiveCamera(const float fov, const float aspectRatio, const float nearPlaneDistance = 0.1f, const float farPlaneDistance = 100.0f);
 		static Camera* getCamera(CameraId cameraId) { return m_Cameras[cameraId]; }
 		inline static std::vector<Camera*>& getScenes() { return m_Cameras; }
 	};

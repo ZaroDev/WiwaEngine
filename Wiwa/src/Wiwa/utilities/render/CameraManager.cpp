@@ -1,12 +1,21 @@
 #include "wipch.h"
 #include "CameraManager.h"
+#include <Wiwa/core/Application.h>
+#include <Wiwa/core/Renderer3D.h>
 namespace Wiwa {
 	std::vector<Camera*> CameraManager::m_Cameras;
 	CameraId CameraManager::m_ActiveCamera = -1;
 	void CameraManager::Update()
 	{
 		for (size_t i = 0; i < m_Cameras.size(); i++)
+		{
 			m_Cameras[i]->frameBuffer->Clear();
+			if (m_Cameras[i]->drawFrustrums)
+			{
+				Wiwa::Application::Get().GetRenderer3D().RenderFrustrums(m_Cameras[i]);
+			}
+		}
+
 	}
 	void CameraManager::CleanUp()
 	{
