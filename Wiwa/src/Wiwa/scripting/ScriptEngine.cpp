@@ -119,8 +119,6 @@ namespace Wiwa {
 
 			MonoClass* monoClass = Utils::GetClassInAssembly(assembly, nameSpace, name);
 
-			size_t hash = std::hash<std::string>{}(fullName);
-
 			if (monoClass == systemClass || monoClass == componentClass)
 				continue;
 			
@@ -131,10 +129,12 @@ namespace Wiwa {
 			bool isSystem = mono_class_is_subclass_of(monoClass, systemClass, false);
 
 			MonoType* monoType = mono_class_get_type(monoClass);
+
 			Type* type = ConvertType(monoType);
+
 			if (isSystem)
 			{
-				s_Data->Systems[hash] = type;
+				s_Data->Systems[type->hash] = type;
 				continue;
 			}
 			MonoCustomAttrInfo* attributes = mono_custom_attrs_from_class(monoClass);
@@ -144,10 +144,8 @@ namespace Wiwa {
 			mono_bool isComponent = mono_custom_attrs_has_attr(attributes, componentClass);
 			if (isComponent == 1)
 			{
-				s_Data->Components[hash] = type;
+				s_Data->Components[type->hash] = type;
 			}
 		}
-
-
 	}
 }

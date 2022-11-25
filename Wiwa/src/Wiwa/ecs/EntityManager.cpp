@@ -183,7 +183,6 @@ namespace Wiwa {
 			m_Components.resize(cid + 1, NULL);
 			m_ComponentsSize.resize(cid + 1, 0);
 			m_ComponentsReserved.resize(cid + 1, 0);
-			m_ComponentTypes.resize(cid + 1, NULL);
 			m_ComponentsRemoved.resize(cid + 1);
 		}
 
@@ -202,7 +201,6 @@ namespace Wiwa {
 		}
 		else {
 			m_Components[cid] = new byte[amount * c_size];
-			m_ComponentTypes[cid] = c_type;
 		}
 
 		m_ComponentsReserved[cid] = m_ComponentsSize[cid] + amount;
@@ -236,7 +234,7 @@ namespace Wiwa {
 				m_Components.resize(cid + 1, NULL);
 				m_ComponentsSize.resize(cid + 1, 0);
 				m_ComponentsReserved.resize(cid + 1, 0);
-				m_ComponentTypes.resize(cid + 1, NULL);
+				
 				m_ComponentsRemoved.resize(cid + 1);
 			}
 
@@ -253,8 +251,6 @@ namespace Wiwa {
 				m_ComponentsSize[cid]++;
 				m_ComponentsReserved[cid]++;
 				ec->insert_or_assign(cid, 0);
-
-				m_ComponentTypes[cid] = type;
 			}
 			else {
 				// Check if component index available
@@ -362,6 +358,12 @@ namespace Wiwa {
 			component_id = m_ComponentIdCount++;
 
 			m_ComponentIds[type->hash] = { type, component_id };
+
+			if (m_ComponentTypes.size() >= component_id) {
+				m_ComponentTypes.resize(component_id + 1, NULL);
+			}
+			
+			m_ComponentTypes[component_id] = type;
 		}
 		else {
 			component_id = cid->second.cid;
