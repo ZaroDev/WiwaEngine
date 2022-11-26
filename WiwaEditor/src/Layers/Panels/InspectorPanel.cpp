@@ -166,6 +166,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		ImGui::PopID();
 		return;
 	}
+
 	// Draw basic fields
 	if (std::strcmp(field.type->name.c_str(), "Vector2i") == 0)
 	{
@@ -173,7 +174,7 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		DrawInt2Control(field.name.c_str(), data, field);
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "float") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "float") == 0 || std::strcmp(field.type->name.c_str(), "Single") == 0)
 	{
 		ImGui::Text(field.name.c_str());
 		ImGui::PushID(field.name.c_str());
@@ -196,14 +197,14 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "unsigned __int64") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "unsigned __int64") == 0 || std::strcmp(field.type->name.c_str(), "UInt64") == 0)
 	{
 		ImGui::Text(field.name.c_str());
 		ImGui::PushID(field.name.c_str());
 		ImGui::InputInt("", (int*)(data + field.offset));
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "int") == 0)
+	else if (std::strcmp(field.type->name.c_str(), "int") == 0 || std::strcmp(field.type->name.c_str(), "Int32") == 0)
 	{
 		ImGui::Text(field.name.c_str());
 		ImGui::PushID(field.name.c_str());
@@ -267,8 +268,7 @@ void InspectorPanel::Draw()
 		if (ButtonCenteredOnLine("Add component"))
 			ImGui::OpenPopup("Components");
 
-		size_t tcount = Wiwa::Application::Get().getCoreTypeCount();
-		size_t tacount = Wiwa::Application::Get().getAppTypeCount();
+		size_t c_count = Wiwa::Application::Get().GetComponentTypeCount();
 
 		if (ImGui::BeginPopup("Components"))
 		{
@@ -276,25 +276,8 @@ void InspectorPanel::Draw()
 			ImGui::Text("Search:");
 			filter.Draw("##searchbar", 340.f);
 			ImGui::BeginChild("listbox child", ImVec2(300, 200));
-			// Core components
-			for (size_t i = 0; i < tcount; i++) {
-				const Type* type = Wiwa::Application::Get().getCoreType(i);
-				const char* paintkit = type->name.c_str();
-				if (filter.PassFilter(paintkit)) 
-				{
-					std::string label = paintkit;
-
-					label += "##" + std::to_string(i);
-					if (ImGui::MenuItem(label.c_str()))
-					{
-						em.AddComponent(m_CurrentID, type);
-						ImGui::CloseCurrentPopup();
-					}
-				}
-			}
-			// App components
-			for (size_t i = 0; i < tacount; i++) {
-				const Type* type = Wiwa::Application::Get().getAppType(i);
+			for (size_t i = 0; i < c_count; i++) {
+				const Type* type = Wiwa::Application::Get().GetComponentType(i);
 				const char* paintkit = type->name.c_str();
 				if (filter.PassFilter(paintkit))
 				{

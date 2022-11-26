@@ -86,14 +86,19 @@ namespace Wiwa
 		inline void SetTargetResolution(int width, int height) { m_TargetResolution = {width, height}; }
 		inline Size2i &GetTargetResolution() { return m_TargetResolution; }
 
-		// Core Reflection
+		// Core Type Reflection
 		size_t getCoreTypeCount() const;
 		const Type *getCoreType(size_t index) const;
 		const Type *getCoreTypeH(size_t hash) const;
-		// App Reflection
+		// App Type Reflection
 		virtual size_t getAppTypeCount() const = 0;
 		virtual const Type* getAppType(size_t index) const = 0;
 		virtual const Type* getAppTypeH(size_t hash) const = 0;
+		// Component reflection
+		size_t GetComponentTypeCount() const { return m_ComponentTypes.size(); }
+		const Type* GetComponentTypeH(size_t hash) const;
+		const Type* GetComponentType(size_t index) const;
+		void RegisterComponentType(const Type* component);
 
 		inline void SetRenderColor(Vector4f color) { m_RenderColor = color; }
 		inline Vector4f GetRenderColor() { return m_RenderColor; }
@@ -105,9 +110,9 @@ namespace Wiwa
 		int m_ArgC;
 		std::vector<std::string> m_Argv;
 
-		Size2i m_TargetResolution;
+		std::vector<const Type*> m_ComponentTypes;
 
-		
+		Size2i m_TargetResolution;		
 
 		bool OnWindowClose(WindowCloseEvent &e);
 		bool OnLoad(OnLoadEvent &e);
@@ -156,3 +161,7 @@ namespace Wiwa
 		} \
 		return type; \
 	}
+
+#define REFLECTION_REGISTER() \
+	const Wiwa::Array<const Type*, TYPE_COUNT>* types = GET_TYPES(); \
+	for(size_t i=0;i<TYPE_COUNT;i++){ RegisterComponentType(types->at(i)); }

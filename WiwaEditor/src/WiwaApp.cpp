@@ -10,6 +10,8 @@ public:
 
 	WiwaApp(int argc, char** argv) : Wiwa::Application(argc, argv)
 	{
+		REFLECTION_REGISTER();
+
 		PushOverlay(new EditorLayer());
 	}
 

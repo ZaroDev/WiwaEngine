@@ -13,6 +13,7 @@
 #include <mono/metadata/reflection.h>
 #include <optick.h>
 #include <Wiwa/utilities/Reflection.h>
+#include <Wiwa/core/Application.h>
 
 namespace Wiwa {
 	ScriptEngine::ScriptEngineData* ScriptEngine::s_Data = nullptr;
@@ -135,6 +136,7 @@ namespace Wiwa {
 			if (isSystem)
 			{
 				s_Data->Systems[type->hash] = type;
+				// TODO: Register systems
 				continue;
 			}
 			MonoCustomAttrInfo* attributes = mono_custom_attrs_from_class(monoClass);
@@ -145,6 +147,8 @@ namespace Wiwa {
 			if (isComponent == 1)
 			{
 				s_Data->Components[type->hash] = type;
+				Class* c = (Class*)type;
+				Application::Get().RegisterComponentType(type);
 			}
 		}
 	}

@@ -31,6 +31,9 @@ namespace Wiwa {
 
 	Class* ConvertClass(MonoType* monotype, MonoClass* monoclass) {
 		Class* t = new Class();
+		t->is_class = true;
+		t->is_array = false;
+		t->is_enum = false;
 
 		int alignment;
 
@@ -70,11 +73,10 @@ namespace Wiwa {
 		}
 		else {
 			type = new Type();
+			type->is_enum = false;
+			type->is_array = false;
+			type->is_class = false;
 		}
-
-		type->is_enum = false;
-		type->is_array = false;
-		type->is_class = false;
 
 		int alignment = 0;
 

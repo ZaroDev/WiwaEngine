@@ -42,6 +42,8 @@ namespace Wiwa {
 	{
 		WI_CORE_ASSERT(!s_Instance, "Application already exists!");
 
+		REFLECTION_REGISTER();
+
 		m_ArgC = argc;
 
 		for (int i = 0; i < argc; i++) {
@@ -70,7 +72,7 @@ namespace Wiwa {
 
 		/*m_Renderer2D = new Renderer2D();
 		m_Renderer2D->Init();*/
-
+		
 		m_Renderer3D = new Renderer3D();
 		m_Renderer3D->Init();
 
@@ -172,6 +174,34 @@ namespace Wiwa {
 		}
 
 		return type;
+	}
+
+	const Type* Application::GetComponentTypeH(size_t hash) const
+	{
+		size_t size = m_ComponentTypes.size();
+
+		const Type* type = NULL;
+
+		for (size_t i = 0; i < size; i++) {
+			if (m_ComponentTypes[i]->hash == hash) {
+				type = m_ComponentTypes[i];
+				break;
+			}
+		}
+
+		return type;
+	}
+
+	const Type* Application::GetComponentType(size_t index) const
+	{
+		return m_ComponentTypes[index];
+	}
+
+	void Application::RegisterComponentType(const Type* component)
+	{
+		const Type* type = GetComponentTypeH(component->hash);
+
+		if (!type) m_ComponentTypes.push_back(component);
 	}
 
 	void Application::OpenDir(const char* path)

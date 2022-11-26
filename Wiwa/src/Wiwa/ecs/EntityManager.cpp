@@ -373,8 +373,7 @@ namespace Wiwa {
 	}
 
 	ComponentId EntityManager::GetComponentId(ComponentHash hash) {
-		const Type* ctype = Application::Get().getCoreTypeH(hash);
-		if (!ctype) ctype = Application::Get().getAppTypeH(hash);
+		const Type* ctype = Application::Get().GetComponentTypeH(hash);
 
 		return GetComponentId(ctype);
 	}

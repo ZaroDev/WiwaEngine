@@ -40,7 +40,7 @@ ScenePanel::ScenePanel(EditorLayer* instance)
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
     nearPlane = 0.1f;
-    farPlane = 1000.0f;
+    farPlane = 10000.0f;
     m_CameraId = Wiwa::CameraManager::CreatePerspectiveCamera(45.0f, ar, nearPlane, farPlane);
     m_Camera = Wiwa::CameraManager::getCamera(m_CameraId);
     m_Camera->setPosition({ 0.0f, 1.0f, 5.0f });
