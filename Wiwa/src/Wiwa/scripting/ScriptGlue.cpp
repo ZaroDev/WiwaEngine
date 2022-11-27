@@ -80,7 +80,27 @@ namespace Wiwa {
 
 		int alignment = 0;
 
-		type->name = mono_type_get_name(monotype); ClearName(type->name);
+		std::string name = mono_type_get_name(monotype);
+		ClearName(name);
+
+		// Translate C# to C++
+		if (name == "Single") {
+			name = "float";
+		}
+		else if (name == "UInt32") {
+			name = "unsigned int";
+		}
+		else if (name == "UInt64") {
+			name = "unsigned __int64";
+		}
+		else if (name == "Int32") {
+			name = "int";
+		}
+		else if (name == "Int64") {
+			name = "__int64";
+		}
+
+		type->name = name;
 		type->size = mono_type_size(monotype, &alignment);
 		type->hash = std::hash<std::string>{}(type->name);
 

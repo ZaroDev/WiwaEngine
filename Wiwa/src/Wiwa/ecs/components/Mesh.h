@@ -7,16 +7,16 @@
 
 namespace Wiwa {
 	struct WI_API Mesh {
-		char mesh_path[128];
 		ResourceId meshId;
-		char mat_path[128];
 		ResourceId materialId;
+		char mesh_path[128];
+		char mat_path[128];
 	};
 }
 
 REFLECTION_BEGIN(Wiwa::Mesh)
-	REFLECT_MEMBER(mesh_path)
 	REFLECT_MEMBER(meshId)
-	REFLECT_MEMBER(mat_path)
 	REFLECT_MEMBER(materialId)
+	REFLECT_MEMBER(mesh_path)
+	REFLECT_MEMBER(mat_path)
 REFLECTION_END;

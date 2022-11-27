@@ -6,6 +6,7 @@
 #include <Wiwa/utilities/containers/Array.h>
 
 #include <Wiwa/utilities/math/Vector3f.h>
+#include <Wiwa/ecs/EntityManager.h>
 
 class InspectorPanel : public Panel
 {
@@ -13,7 +14,7 @@ private:
 	void DrawComponent(size_t componentId);
 	void DrawField(unsigned char* data, const Field& field);
 
-	
+	void DrawMeshComponent(byte* data);
 public:
 	InspectorPanel(EditorLayer* instance);
 	virtual ~InspectorPanel();

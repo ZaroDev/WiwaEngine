@@ -7,6 +7,7 @@
 
 #include <Wiwa/core/Core.h>
 #include <Wiwa/utilities/containers/Array.h>
+#include <Wiwa/utilities/Hashing.h>
 
 #define memberoffset(type, member) (int)&((type*)0)->member
 
@@ -197,3 +198,31 @@ inline const Wiwa::Array<const Type*, count>* GetTypes() {
 
 // Call where TYPE_COUNT is defined
 #define GET_TYPES() GetTypes<TYPE_COUNT>()
+
+// Enum of basic type hashes
+enum class TypeHash : size_t {
+	// Basic hashes
+	Int32 = FNV1A_HASH("int"),
+	UInt32 = FNV1A_HASH("unsigned int"),
+	Int64 = FNV1A_HASH("__int64"),
+	UInt64 = FNV1A_HASH("unsigned __int64"),
+	Char = FNV1A_HASH("char"),
+	UChar = FNV1A_HASH("unsigned char"),
+	WChar = FNV1A_HASH("wchar_t"),
+	Float = FNV1A_HASH("float"),
+	Double = FNV1A_HASH("double"),
+	LongDouble = FNV1A_HASH("long double"),
+
+	// Vector hashes
+	Vector2i = FNV1A_HASH("Vector2i"),
+	Vector2f = FNV1A_HASH("Vector2f"),
+
+	Vector3i = FNV1A_HASH("Vector3i"),
+	Vector3f = FNV1A_HASH("Vector3f"),
+
+	// Rect hashes
+	Rect2i = FNV1A_HASH("Rect2i"),
+
+	// Custom
+	Pivot = FNV1A_HASH("Pivot")
+};

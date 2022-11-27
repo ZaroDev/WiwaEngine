@@ -1,6 +1,5 @@
 #include "InspectorPanel.h"
 
-#include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/scene/Scene.h>
 
@@ -23,6 +22,10 @@ void InspectorPanel::DrawComponent(size_t componentId)
 	{
 		byte* data = em.GetComponent(m_CurrentID, componentId, type->size);
 
+		// Custom component interface
+		if (type->hash == FNV1A_HASH("Mesh")) {	DrawMeshComponent(data); } else
+
+		// Basic component interface
 		if (type->is_class) {
 			const Class* cl = (const Class*)type;
 
@@ -66,128 +69,27 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 		return;
 	}
 
-	//Draw custom fields
-	if (strcmp(field.name.c_str(), "materialId") == 0)
-	{
-		ImGui::Text("Material");
-		int id = *(int*)(data + field.offset);
-		Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(id);
-		AssetContainer(std::filesystem::path(mat->getMaterialPath()).stem().string().c_str());
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-			{
-				const wchar_t* path = (const wchar_t*)payload->Data;
-				std::wstring ws(path);
-				std::string pathS(ws.begin(), ws.end());
-				std::filesystem::path p = pathS.c_str();
-				if (p.extension() == ".wimaterial")
-				{
-					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-					ResourceId id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
-					*(ResourceId*)(data + field.offset) = id;
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
-		ImGui::PushID(field.name.c_str());
-
-		ImGui::Text("Material at: ");
-		ImGui::SameLine();
-		ImGui::Text(mat->getMaterialPath());
-		ImGui::Image((ImTextureID)(intptr_t)mat->getTextureId(), { 64, 64 });
-		ImGui::Text("Texture size: ");
-		ImGui::SameLine();
-		ImGui::Text("%i", mat->getTextureSize().x);
-		ImGui::SameLine();
-		ImGui::Text("x %i", mat->getTextureSize().y);
-		const char* types[] = { "Color", "Textured" };
-		const char* currentItem = mat->getType() == Wiwa::Material::MaterialType::color ? types[0] : types[1];
-		ImGui::Text("Texture path: %s", mat->getTexturePath());
-		ImGui::Text("Type");
-		
-		ImGui::SameLine();
-		ImGui::Text(currentItem);
-		static glm::vec4 color = { mat->getColor().r, mat->getColor().g,mat->getColor().b , mat->getColor().a };
-		ImGui::ColorEdit4("Color", glm::value_ptr(color));
-
-		Wiwa::Material::MaterialSettings& settings = mat->getSettings();
-		ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
-		ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
-		ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
-		ImGui::Text(mat->getTexturePath());
-		static bool checker = false;
-		if(ImGui::Checkbox("Set Checker", &checker))
-		{
-			mat->setTexture("checker");
-			if (!checker)
-			{
-				mat->setTexture(mat->getTexturePath());
-			}
-		}
-
-		const char* type = mat->getType() == 0 ? "Type: Color" : "Type: Texture";
-		ImGui::Text(type);
-		ImGui::PopID();
-		return;
-	}
-	if (strcmp(field.name.c_str(), "meshId") == 0)
-	{
-		ImGui::Text("Model");
-		ImGui::PushID(field.name.c_str());
-		int id = *(int*)(data + field.offset);
-		Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(id);
-		AssetContainer(std::filesystem::path(mod->getModelPath()).stem().string().c_str());
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-			{
-				const wchar_t* path = (const wchar_t*)payload->Data;
-				std::wstring ws(path);
-				std::string pathS(ws.begin(), ws.end());
-				std::filesystem::path p = pathS.c_str();
-				if (p.extension() == ".fbx" || p.extension() == ".FBX")
-				{
-					WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-					ResourceId id = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
-					*(ResourceId*)(data + field.offset) = id;
-				}
-			}
-
-			ImGui::EndDragDropTarget();
-		}
-		ImGui::Text("Model path: ");
-		ImGui::SameLine();
-		ImGui::Text(mod->getModelPath());
-		static bool showNormals = false;
-		if (ImGui::Checkbox("Show normals", &showNormals))
-			mod->showNormals = showNormals;
-		ImGui::PopID();
-		return;
-	}
-
 	// Draw basic fields
-	if (std::strcmp(field.type->name.c_str(), "Vector2i") == 0)
+	if (field.type->hash == (size_t)TypeHash::Vector2i)
 	{
 		ImGui::PushID(field.name.c_str());
 		DrawInt2Control(field.name.c_str(), data, field);
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "float") == 0 || std::strcmp(field.type->name.c_str(), "Single") == 0)
+	else if (field.type->hash == (size_t)TypeHash::Float)
 	{
 		ImGui::Text(field.name.c_str());
 		ImGui::PushID(field.name.c_str());
 		ImGui::InputFloat("", (float*)(data + field.offset));
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "Vector2f") == 0)
+	else if (field.type->hash == (size_t)TypeHash::Vector2f)
 	{
 		ImGui::PushID(field.name.c_str());
 		DrawVec2Control(field.name.c_str(), data, field);
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "Vector3f") == 0)
+	else if (field.type->hash == (size_t)TypeHash::Vector3f)
 	{
 		ImGui::PushID(field.name.c_str());
 		if (std::strcmp(field.name.c_str(), "scale") == 0)
@@ -197,38 +99,132 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "unsigned __int64") == 0 || std::strcmp(field.type->name.c_str(), "UInt64") == 0)
+	else if (field.type->hash == (size_t)TypeHash::UInt64)
 	{
 		ImGui::Text(field.name.c_str());
 		ImGui::PushID(field.name.c_str());
 		ImGui::InputInt("", (int*)(data + field.offset));
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "int") == 0 || std::strcmp(field.type->name.c_str(), "Int32") == 0)
+	else if (field.type->hash == (size_t)TypeHash::Int32)
 	{
 		ImGui::Text(field.name.c_str());
 		ImGui::PushID(field.name.c_str());
 		ImGui::InputInt("", (int*)(data + field.offset));
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "Rect2i") == 0)
+	else if (field.type->hash == (size_t)TypeHash::Rect2i)
 	{
 		ImGui::PushID(field.name.c_str());
 		DrawRect2Control(field.name.c_str(), data, field);
 		ImGui::PopID();
 	}
-	else if (std::strcmp(field.type->name.c_str(), "Pivot") == 0)
+	else if (field.type->hash == (size_t)TypeHash::Pivot)
 	{
 		ImGui::Text(field.name.c_str());
 		ImGui::PushID(field.name.c_str());
 		ImGui::InputInt("", (int*)(data + field.offset));
 		ImGui::PopID();
 	}
-
-	
 }
 
+void InspectorPanel::DrawMeshComponent(byte* data)
+{
+	ResourceId* mesh_id = (ResourceId*)(data);
+	ResourceId* mat_id = (ResourceId*)(data + sizeof(ResourceId));
 
+	// Draw meshId field
+	ImGui::Text("Model");
+	ImGui::PushID("meshId");
+
+	Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(*mesh_id);
+	AssetContainer(std::filesystem::path(mod->getModelPath()).stem().string().c_str());
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+		{
+			const wchar_t* path = (const wchar_t*)payload->Data;
+			std::wstring ws(path);
+			std::string pathS(ws.begin(), ws.end());
+			std::filesystem::path p = pathS.c_str();
+			if (p.extension() == ".fbx" || p.extension() == ".FBX")
+			{
+				WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+				*mesh_id = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+	ImGui::Text("Model path: ");
+	ImGui::SameLine();
+	ImGui::Text(mod->getModelPath());
+	static bool showNormals = false;
+	if (ImGui::Checkbox("Show normals", &showNormals))
+		mod->showNormals = showNormals;
+	ImGui::PopID();
+
+	//Draw materialId field
+	ImGui::Text("Material");
+	Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(*mat_id);
+	AssetContainer(std::filesystem::path(mat->getMaterialPath()).stem().string().c_str());
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+		{
+			const wchar_t* path = (const wchar_t*)payload->Data;
+			std::wstring ws(path);
+			std::string pathS(ws.begin(), ws.end());
+			std::filesystem::path p = pathS.c_str();
+			if (p.extension() == ".wimaterial")
+			{
+				WI_INFO("Trying to load payload at path {0}", pathS.c_str());
+				*mat_id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+	ImGui::PushID("materialId");
+
+	ImGui::Text("Material at: ");
+	ImGui::SameLine();
+	ImGui::Text(mat->getMaterialPath());
+	ImGui::Image((ImTextureID)(intptr_t)mat->getTextureId(), { 64, 64 });
+	ImGui::Text("Texture size: ");
+	ImGui::SameLine();
+	ImGui::Text("%i", mat->getTextureSize().x);
+	ImGui::SameLine();
+	ImGui::Text("x %i", mat->getTextureSize().y);
+	const char* types[] = { "Color", "Textured" };
+	const char* currentItem = mat->getType() == Wiwa::Material::MaterialType::color ? types[0] : types[1];
+	ImGui::Text("Texture path: %s", mat->getTexturePath());
+	ImGui::Text("Type");
+
+	ImGui::SameLine();
+	ImGui::Text(currentItem);
+	static glm::vec4 color = { mat->getColor().r, mat->getColor().g,mat->getColor().b , mat->getColor().a };
+	ImGui::ColorEdit4("Color", glm::value_ptr(color));
+
+	Wiwa::Material::MaterialSettings& settings = mat->getSettings();
+	ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
+	ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
+	ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
+	ImGui::Text(mat->getTexturePath());
+	static bool checker = false;
+	if (ImGui::Checkbox("Set Checker", &checker))
+	{
+		mat->setTexture("checker");
+		if (!checker)
+		{
+			mat->setTexture(mat->getTexturePath());
+		}
+	}
+
+	const char* type = mat->getType() == 0 ? "Type: Color" : "Type: Texture";
+	ImGui::Text(type);
+	ImGui::PopID();
+}
 
 InspectorPanel::InspectorPanel(EditorLayer* instance)
 	: Panel("Inspector", instance)
