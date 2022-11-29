@@ -3,6 +3,72 @@
 #include <fstream>
 #include <Windows.h>
 #include <string>
+#include <filesystem>
+
+bool FileSystem::Exists(const char* file)
+{
+	return std::filesystem::exists(file);
+}
+
+size_t FileSystem::FileSize(const char* file)
+{
+	return std::filesystem::file_size(file);
+}
+
+bool FileSystem::CreateDir(const char* path)
+{
+	return std::filesystem::create_directory(path);
+}
+
+bool FileSystem::CreateDirs(const char* path)
+{
+	return std::filesystem::create_directories(path);;
+}
+
+void FileSystem::CreateDirSymlink(const char* to, const char* symlink)
+{
+	std::filesystem::create_directory_symlink(to, symlink);
+}
+
+void FileSystem::CreateHardlink(const char* to, const char* hardlink)
+{
+	std::filesystem::create_hard_link(to, hardlink);
+}
+
+void FileSystem::CreateSymlink(const char* to, const char* symlink)
+{
+	std::filesystem::create_symlink(to, symlink);
+}
+
+bool FileSystem::Remove(const char* path)
+{
+	return std::filesystem::remove(path);
+}
+
+bool FileSystem::RemoveAll(const char* path)
+{
+	return std::filesystem::remove_all(path);
+}
+
+std::string FileSystem::CurrentPath()
+{
+	return std::filesystem::current_path().string();
+}
+
+void FileSystem::CurrentPath(const char* path)
+{
+	std::filesystem::current_path(path);
+}
+
+bool FileSystem::IsEmpty(const char* path)
+{
+	return std::filesystem::is_empty(path);
+}
+
+bool FileSystem::IsEquivalent(const char* path1, const char* path2)
+{
+	return std::filesystem::equivalent(path1, path2);
+}
 
 size_t FileSystem::ReadAll(const char* file, sbyte* memblock)
 {
