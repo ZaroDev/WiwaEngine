@@ -15,7 +15,8 @@ public:
 	void Draw() override;
 
 	void CreateNode(const EntityId& eid, const char* entName, ImGuiTextFilter& filter, Wiwa::EntityManager& entityManager);
-
+	bool OnEntityChange(EntityChangeEvent& e);
+	void OnEvent(Wiwa::Event& e) override;
 private:
 	int m_CurrentID = -1;
 };

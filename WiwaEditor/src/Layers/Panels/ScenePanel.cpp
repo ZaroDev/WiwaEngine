@@ -20,6 +20,7 @@
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
 #include <Wiwa/utilities/render/Model.h>
+#include <Wiwa/utilities/math/Math.h>
 
 
 #include <gtx/matrix_decompose.hpp>
@@ -118,7 +119,8 @@ void ScenePanel::Draw()
     float scale = scales.x < scales.y ? scales.x : scales.y;
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
-    
+
+    Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
     if (ImGui::IsWindowHovered())
     {
         // Calculate mouse position in viewport (0 to 1)
@@ -154,6 +156,53 @@ void ScenePanel::Draw()
             m_Camera->setFOV(fov);
         }
 
+        if(Wiwa::Input::IsMouseButtonPressed(0))
+        {
+            glm::vec3 out_dir;
+            glm::vec3 out_origin;
+            WI_INFO("X: {0} Y{1}", rpos.x, rpos.y);
+            Wiwa::Math::ScreenPosToWorldRay(rpos.x, rpos.y , isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
+            float minDist = 0.0f;
+            int id = -1;
+            for (size_t i = 0; i < entityManager.GetEntityCount(); i++) 
+            {
+                if (!entityManager.HasComponent<Wiwa::Mesh>(i))
+                    continue;
+                Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(entityManager.GetComponent<Wiwa::Mesh>(i)->meshId);
+                Wiwa::Transform3D* trs = entityManager.GetComponent<Wiwa::Transform3D>(i);
+                glm::mat4 transform(1.0f);
+
+                transform = glm::translate(transform, glm::vec3(trs->position.x, trs->position.y, trs->position.z));
+                transform = glm::rotate(transform, trs->rotation.x, { 1,0,0 });
+                transform = glm::rotate(transform, trs->rotation.y, { 0,1,0 });
+                transform = glm::rotate(transform, trs->rotation.z, { 0,0,1 });
+                transform = glm::scale(transform, glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z));
+                float intersectDist = 0.0f;
+                if (Wiwa::Math::TestRayOBBIntersection(out_origin, out_dir, model->boundingBox.getMin(), model->boundingBox.getMax(), transform, intersectDist))
+                {
+                    if (i == 0)
+                    {
+                        minDist = intersectDist;
+                        id = i;
+                    }
+                    else if (intersectDist < minDist)
+                    {
+                        minDist = intersectDist;
+                        id = i;
+                    }
+                }
+            }
+            if (id >= 0)
+            {
+                m_EntSelected = id;
+                WI_INFO("Changed selected to id: {0}", id);
+                EntityChangeEvent event((uint32_t)id);
+                Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
+                act(event);
+            }
+            else
+                m_EntSelected = -1;
+        }
         // Check if right click was pressed
         if (Wiwa::Input::IsMouseButtonPressed(1)) {
             // Check if relative motion is not 0
@@ -239,7 +288,6 @@ void ScenePanel::Draw()
     //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
-    Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
     if (ImGui::BeginDragDropTarget())
     {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))

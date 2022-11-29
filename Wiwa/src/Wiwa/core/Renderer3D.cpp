@@ -242,8 +242,6 @@ namespace Wiwa {
 			mesh->Render();
 
 			m_NormalDisplayShader->UnBind();
-
-			
 		}
 		if (camera->drawBoundingBoxes)
 		{
@@ -257,7 +255,6 @@ namespace Wiwa {
 		
 		camera->frameBuffer->Unbind();
 	}
-
 
 	void Renderer3D::SetOption(Options option)
 	{

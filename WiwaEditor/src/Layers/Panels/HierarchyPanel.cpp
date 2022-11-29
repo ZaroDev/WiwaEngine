@@ -160,3 +160,15 @@ void HierarchyPanel::CreateNode(const EntityId& eid, const char* entName, ImGuiT
 	}
 
 }
+
+bool HierarchyPanel::OnEntityChange(EntityChangeEvent& e)
+{
+	m_CurrentID = (int)e.GetResourceId();
+	return false;
+}
+
+void HierarchyPanel::OnEvent(Wiwa::Event& e)
+{
+	Wiwa::EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<EntityChangeEvent>({ &HierarchyPanel::OnEntityChange, this });
+}
