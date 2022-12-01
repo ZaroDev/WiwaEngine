@@ -4,7 +4,7 @@
 
 #include <glm.hpp>
 #include <Wiwa/utilities/math/Math.h>
-#include <Wiwa/utilities/math/Frustrum.h>
+#include <Wiwa/utilities/math/Frustum.h>
 #include <Wiwa/utilities/render/FrameBuffer.h>
 namespace Wiwa {
 	class WI_API Camera
@@ -71,7 +71,24 @@ namespace Wiwa {
 		glm::mat4 getProjection() { return m_Projection; }
 		
 		void DrawFrustrum();
-
+		inline glm::vec3 FarPlanePos(float x, float y) const
+		{
+			float farPlaneHalfWidth = glm::tan(m_FOV * 0.5f)* m_FarPlaneDist;
+			float farPlaneHalfHeight = glm::tan(m_FOV * 0.5f) * m_FarPlaneDist;
+			x = x * farPlaneHalfWidth;
+			y = y * farPlaneHalfHeight;
+			glm::vec3 right = glm::cross(m_CameraFront, m_CameraUp);
+			return m_CameraPos + m_CameraFront * m_FarPlaneDist + x * right + y * m_CameraUp;
+		}
+		inline glm::vec3 NearPlanePos(float x, float y) const 
+		{
+			float frontPlaneHalfWidth = glm::tan(m_FOV * 0.5f) * m_NearPlaneDist;
+			float frontPlaneHalfHeight = glm::tan(m_FOV * 0.5f) * m_NearPlaneDist;
+			x = x * frontPlaneHalfWidth; // Map [-1,1] to [-width/2, width/2].
+			y = y * frontPlaneHalfHeight;  // Map [-1,1] to [-height/2, height/2].
+			glm::vec3 right = glm::cross(m_CameraFront, m_CameraUp);
+			return m_CameraPos + m_CameraFront * m_NearPlaneDist + x * right + y * m_CameraUp;
+		}
 		inline void GetCornerPoints(glm::vec3* points)
 		{
 			float tanhfov = glm::tan(m_FOV * 0.5f);
