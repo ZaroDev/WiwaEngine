@@ -208,7 +208,6 @@ namespace Wiwa {
 
 	byte* EntityManager::AddComponent(EntityId entityId, ComponentHash hash, byte* value) {
 		const Type* ctype = Application::Get().getCoreTypeH(hash);
-		if (!ctype) ctype = Application::Get().getAppTypeH(hash);
 
 		return AddComponent(entityId, ctype, value);
 	}
@@ -316,6 +315,38 @@ namespace Wiwa {
 		}
 
 		return component;
+	}
+
+	void EntityManager::RemoveComponent(EntityId entity, ComponentHash hash)
+	{
+		std::map<ComponentId, size_t>& c_map = m_EntityComponents[entity];
+
+		std::map<ComponentId, size_t>::iterator c_it;
+
+		for (c_it = c_map.begin(); c_it != c_map.end(); c_it++) {
+			ComponentId c_id = c_it->first;
+			const Type* c_type = m_ComponentTypes[c_id];
+			
+			if (c_type->hash == hash) {
+				m_ComponentsRemoved[c_it->first].push_back(c_it->second);
+
+				c_map.erase(c_it);
+
+				break;
+			}
+		}
+	}
+
+	void EntityManager::RemoveComponentById(EntityId entity, ComponentId componentId)
+	{
+		std::map<ComponentId, size_t>& c_map = m_EntityComponents[entity];
+		std::map<ComponentId, size_t>::iterator c_it = c_map.find(componentId);
+
+		if (c_it != c_map.end()) {
+			m_ComponentsRemoved[c_it->first].push_back(c_it->second);
+
+			c_map.erase(c_it);
+		}
 	}
 
 	byte* EntityManager::GetComponent(EntityId entityId, ComponentId componentId, size_t componentSize)

@@ -69,6 +69,7 @@ namespace Wiwa {
 		// System registration functions
 		//Action<> registrations[10];
 
+		// Update entity manager
 		void Update();
 
 		// Create entity
@@ -97,14 +98,23 @@ namespace Wiwa {
 
 		size_t GetComponentIndex(EntityId entityId, ComponentId componentId, size_t componentSize);
 
-		// Component add functions
+		// Add component by hash
 		byte* AddComponent(EntityId entity, ComponentHash hash, byte* value=NULL);
+
+		// Add component by type
 		byte* AddComponent(EntityId entity, const Type* type, byte* value = NULL);
+
+		// Add component by template
 		template<class T> T* AddComponent(EntityId entity, T value = {});
 
 		template<class T> void AddComponents(EntityId entity, T arg = {});
 		template<class T, class T2, class... TArgs> void AddComponents(EntityId entity, T arg1, T2 arg2, TArgs... args);
 		template<class T, class T2, class... TArgs> void AddComponents(EntityId entity);
+
+		void RemoveComponent(EntityId entity, ComponentHash hash);
+		void RemoveComponentById(EntityId entity, ComponentId componentId);
+
+		template<class T> void RemoveComponent(EntityId entity);
 
 		// Component get functions
 		byte* GetComponent(EntityId entityId, ComponentId componentId, size_t componentSize);
@@ -295,6 +305,14 @@ namespace Wiwa {
 		}
 
 		m_ComponentsReserved[cid] = m_ComponentsSize[cid] + amount;
+	}
+
+	template<class T>
+	inline void EntityManager::RemoveComponent(EntityId entity)
+	{
+		const Type* t = GetType<T>();
+
+		RemoveComponent(entity, t->hash);
 	}
 
 	template<class T>
