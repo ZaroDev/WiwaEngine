@@ -119,7 +119,8 @@ void ScenePanel::Draw()
     float scale = scales.x < scales.y ? scales.x : scales.y;
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
-
+    ImVec2 cpos = ImGui::GetCursorPos();
+    cpos.x = (viewportPanelSize.x - isize.x) / 2;
     Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
     if (ImGui::IsWindowHovered())
     {
@@ -156,13 +157,19 @@ void ScenePanel::Draw()
             m_Camera->setFOV(fov);
         }
 
-        if(Wiwa::Input::IsMouseButtonPressed(0))
+        if(Wiwa::Input::IsMouseButtonPressed(0) && !ImGuizmo::IsUsing())
         {
             glm::vec3 out_dir;
             glm::vec3 out_origin;
-            WI_INFO("X: {0} Y{1}", rpos.x, rpos.y);
-            Wiwa::Math::ScreenPosToWorldRay(rpos.x, rpos.y , isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
-            float minDist = 0.0f;
+            ImVec2 mrpos = ImGui::GetMousePos();
+            ImVec2 mousePos = { mrpos.x - cspos.x, mrpos.y - cspos.y };
+            CLAMP(mousePos.x, 0.0f, isize.x);
+            CLAMP(mousePos.y, 0.0f, isize.y);
+            mousePos.y -= isize.y;
+            mousePos.y = glm::abs(mousePos.y);
+            
+            Wiwa::Math::ScreenPosToWorldRay(mousePos.x, mousePos.y , isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
+            float minDist = FLT_MAX;
             int id = -1;
             for (size_t i = 0; i < entityManager.GetEntityCount(); i++) 
             {
@@ -171,14 +178,21 @@ void ScenePanel::Draw()
                 Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(entityManager.GetComponent<Wiwa::Mesh>(i)->meshId);
                 Wiwa::Transform3D* trs = entityManager.GetComponent<Wiwa::Transform3D>(i);
                 glm::mat4 transform(1.0f);
-
+                glm::vec3 scale = glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z);
                 transform = glm::translate(transform, glm::vec3(trs->position.x, trs->position.y, trs->position.z));
                 transform = glm::rotate(transform, trs->rotation.x, { 1,0,0 });
                 transform = glm::rotate(transform, trs->rotation.y, { 0,1,0 });
                 transform = glm::rotate(transform, trs->rotation.z, { 0,0,1 });
-                transform = glm::scale(transform, glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z));
+                transform = glm::scale(transform, scale);
                 float intersectDist = 0.0f;
-                if (Wiwa::Math::TestRayOBBIntersection(out_origin, out_dir, model->boundingBox.getMin(), model->boundingBox.getMax(), transform, intersectDist))
+                if (Wiwa::Math::TestRayOBBIntersection(
+                    out_origin,
+                    out_dir,
+                    model->boundingBox.getMin() * scale,
+                    model->boundingBox.getMax() * scale, 
+                    transform,
+                    intersectDist
+                ))
                 {
                     if (i == 0)
                     {
@@ -193,15 +207,13 @@ void ScenePanel::Draw()
                 }
             }
             if (id >= 0)
-            {
                 m_EntSelected = id;
-                WI_INFO("Changed selected to id: {0}", id);
-                EntityChangeEvent event((uint32_t)id);
-                Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
-                act(event);
-            }
             else
                 m_EntSelected = -1;
+
+            EntityChangeEvent event((uint32_t)id);
+            Action<Wiwa::Event&> act = { &EditorLayer::OnEvent, instance };
+            act(event);
         }
         // Check if right click was pressed
         if (Wiwa::Input::IsMouseButtonPressed(1)) {
@@ -282,8 +294,6 @@ void ScenePanel::Draw()
     //Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
 
     ImTextureID tex = (ImTextureID)(intptr_t)m_Camera->frameBuffer->getColorBufferTexture();
-    ImVec2 cpos = ImGui::GetCursorPos();
-    cpos.x = (viewportPanelSize.x - isize.x) / 2;
     ImGui::SetCursorPos(cpos);
     //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));

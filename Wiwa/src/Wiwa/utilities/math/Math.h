@@ -71,14 +71,13 @@ namespace Wiwa {
 			glm::vec3 aabb_min,          // Minimum X,Y,Z coords of the mesh when not transformed at all.
 			glm::vec3 aabb_max,          // Maximum X,Y,Z coords. Often aabb_min*-1 if your mesh is centered, but it's not always the case.
 			glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
-			float& intersection_distance // Output : distance between ray_origin and the intersection with the OBB
+			float& intersection_distance// Output : distance between ray_origin and the intersection with the OBB
 		) {
 
 			// Intersection method from Real-Time Rendering and Essential Mathematics for Games
 
 			float tMin = 0.0f;
 			float tMax = 100000.0f;
-
 			glm::vec3 OBBposition_worldspace(ModelMatrix[3].x, ModelMatrix[3].y, ModelMatrix[3].z);
 
 			glm::vec3 delta = OBBposition_worldspace - ray_origin;
