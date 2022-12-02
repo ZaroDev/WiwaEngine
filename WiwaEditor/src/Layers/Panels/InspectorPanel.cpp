@@ -20,6 +20,10 @@ void InspectorPanel::DrawComponent(size_t componentId)
 
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
+		if (ImGui::Button("Delete"))
+		{
+			
+		}
 		byte* data = em.GetComponent(m_CurrentID, componentId, type->size);
 
 		// Custom component interface

@@ -159,7 +159,6 @@ void ScenePanel::Draw()
 
         if(Wiwa::Input::IsMouseButtonPressed(0) && !ImGuizmo::IsUsing())
         {
-            WI_INFO("Raycast");
             glm::vec3 out_dir;
             glm::vec3 out_origin;
             ImVec2 mrpos = ImGui::GetMousePos();
@@ -179,14 +178,21 @@ void ScenePanel::Draw()
                 Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(entityManager.GetComponent<Wiwa::Mesh>(i)->meshId);
                 Wiwa::Transform3D* trs = entityManager.GetComponent<Wiwa::Transform3D>(i);
                 glm::mat4 transform(1.0f);
-
+                glm::vec3 scale = glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z);
                 transform = glm::translate(transform, glm::vec3(trs->position.x, trs->position.y, trs->position.z));
                 transform = glm::rotate(transform, trs->rotation.x, { 1,0,0 });
                 transform = glm::rotate(transform, trs->rotation.y, { 0,1,0 });
                 transform = glm::rotate(transform, trs->rotation.z, { 0,0,1 });
-                transform = glm::scale(transform, glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z));
+                transform = glm::scale(transform, scale);
                 float intersectDist = 0.0f;
-                if (Wiwa::Math::TestRayOBBIntersection(out_origin, out_dir, model->boundingBox.getMin(), model->boundingBox.getMax(), transform, intersectDist))
+                if (Wiwa::Math::TestRayOBBIntersection(
+                    out_origin,
+                    out_dir,
+                    model->boundingBox.getMin() * scale,
+                    model->boundingBox.getMax() * scale, 
+                    transform,
+                    intersectDist
+                ))
                 {
                     if (i == 0)
                     {
