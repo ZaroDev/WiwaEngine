@@ -78,6 +78,8 @@ namespace Wiwa {
 		EntityId CreateEntity(EntityId parent);
 		EntityId CreateEntity(const char* name, EntityId parent);
 
+		void SetParent(EntityId entity, EntityId parent);
+
 		// Remove entity
 		void DestroyEntity(EntityId entity);
 

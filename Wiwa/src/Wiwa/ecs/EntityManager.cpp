@@ -156,6 +156,35 @@ namespace Wiwa {
 		return eid;
 	}
 
+	void EntityManager::SetParent(EntityId entity, EntityId parent)
+	{
+		EntityId prev_parent = m_EntityParent[entity];
+		if (prev_parent == entity) {
+			size_t p_size = m_ParentEntitiesAlive.size();
+
+			for (size_t i = 0; i < p_size; i++) {
+				if (m_ParentEntitiesAlive[i] == entity) {
+					m_ParentEntitiesAlive.erase(m_ParentEntitiesAlive.begin() + i);
+					break;
+				}
+			}
+		}
+		else {
+			std::vector<EntityId>& prev_parent_children = m_EntityChildren[prev_parent];
+			size_t size = prev_parent_children.size();
+
+			for (size_t i = 0; i < size; i++) {
+				if (prev_parent_children[i] == entity) {
+					prev_parent_children.erase(prev_parent_children.begin() + i);
+					break;
+				}
+			}
+		}
+
+		m_EntityParent[entity] = parent;
+		m_EntityChildren[parent].push_back(entity);
+	}
+
 	void EntityManager::DestroyEntity(EntityId entity)
 	{
 		m_EntitiesToDestroy.push_back(entity);
