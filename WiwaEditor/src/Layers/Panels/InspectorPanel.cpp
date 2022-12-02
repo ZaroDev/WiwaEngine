@@ -240,7 +240,7 @@ void InspectorPanel::Draw()
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 	ImGui::Begin(name, &active);
-	if (m_EntitySet)
+	if (m_EntitySet && m_CurrentID >= 0)
 	{
 		const char* entName = em.GetEntityName(m_CurrentID);
 		std::string edit = entName;
