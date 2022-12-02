@@ -16,6 +16,7 @@
 #include "../Utils/ProjectManager.h"
 #include <Wiwa/Platform/Windows/WindowsPlatformUtils.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
+#include <Wiwa/ecs/components/Sprite.h>
 
 
 EditorLayer::EditorLayer()
@@ -96,8 +97,8 @@ void EditorLayer::OnAttach()
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
 
 	EntityId eid = em.CreateEntity("Baker house");
-	em.AddComponent<Wiwa::Mesh>(eid, mesh);
 	em.AddComponent<Wiwa::Transform3D>(eid, t3d);
+	em.AddComponent<Wiwa::Mesh>(eid, mesh);
 	em.ApplySystem<Wiwa::MeshRenderer>(eid);
 
 	m_EventCallback = { &Wiwa::Application::OnEvent, &Wiwa::Application::Get()};

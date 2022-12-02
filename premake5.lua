@@ -29,6 +29,7 @@ IncludeDirs["SPDLOG"] = "%{wks.location}/Wiwa/vendor/spdlog/include"
 IncludeDirs["Optick"] = "%{wks.location}/Wiwa/vendor/Optick/include"
 IncludeDirs["assimp"] = "%{wks.location}/Wiwa/vendor/assimp/include"
 IncludeDirs["ImGuizmo"] = "%{wks.location}/Wiwa/vendor/imguizmo"
+IncludeDirs["GLI"] = "%{wks.location}/Wiwa/vendor/gli/gli"
 
 LibraryDirs = {}
 LibraryDirs["mono"] = "%{wks.location}/Wiwa/vendor/mono/lib/%{cfg.buildcfg}"
