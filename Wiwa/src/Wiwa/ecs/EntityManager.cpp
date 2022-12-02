@@ -159,6 +159,11 @@ namespace Wiwa {
 	void EntityManager::SetParent(EntityId entity, EntityId parent)
 	{
 		EntityId prev_parent = m_EntityParent[entity];
+
+		// If already is parent
+		if (prev_parent == parent) return;
+
+		// If entity didn't have a parent
 		if (prev_parent == entity) {
 			size_t p_size = m_ParentEntitiesAlive.size();
 
@@ -169,6 +174,7 @@ namespace Wiwa {
 				}
 			}
 		}
+		// If entity had a parent
 		else {
 			std::vector<EntityId>& prev_parent_children = m_EntityChildren[prev_parent];
 			size_t size = prev_parent_children.size();
@@ -182,7 +188,13 @@ namespace Wiwa {
 		}
 
 		m_EntityParent[entity] = parent;
-		m_EntityChildren[parent].push_back(entity);
+
+		if (entity == parent) {
+			m_ParentEntitiesAlive.push_back(entity);
+		}
+		else {
+			m_EntityChildren[parent].push_back(entity);
+		}
 	}
 
 	void EntityManager::DestroyEntity(EntityId entity)
