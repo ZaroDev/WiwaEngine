@@ -5,7 +5,7 @@
 #include <Wiwa/utilities/math/Vector3f.h>
 #include <Wiwa/utilities/math/Vector2i.h>
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 namespace Wiwa {
 	typedef size_t ResourceId;

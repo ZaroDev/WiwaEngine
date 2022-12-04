@@ -21,7 +21,7 @@
 
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/scene/SceneManager.h>
-#include <gtc/quaternion.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     : Panel("Mesh view", instance)

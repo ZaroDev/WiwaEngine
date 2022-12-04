@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <Wiwa/utilities/math/Vector3f.h>
 #include <Wiwa/utilities/containers/List.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 namespace Wiwa {
 	struct DirectionalLight

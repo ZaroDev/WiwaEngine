@@ -23,7 +23,7 @@
 #include <Wiwa/utilities/math/Math.h>
 
 
-#include <gtx/matrix_decompose.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <Wiwa/scene/Scene.h>
 #include <Wiwa/scene/SceneManager.h>
 #include "../EditorLayer.h"

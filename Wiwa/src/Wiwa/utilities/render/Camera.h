@@ -2,7 +2,7 @@
 
 #include <Wiwa/core/Core.h>
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/utilities/math/Frustum.h>
 #include <Wiwa/utilities/render/FrameBuffer.h>

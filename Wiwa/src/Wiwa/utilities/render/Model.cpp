@@ -10,7 +10,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
 namespace Wiwa {
 	void Model::getMeshFromFile(const char* file)

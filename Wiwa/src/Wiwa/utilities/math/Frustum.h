@@ -1,5 +1,5 @@
 #pragma once
-#include <matrix.hpp>
+#include <glm/matrix.hpp>
 
 namespace Wiwa {
 	class Frustum
