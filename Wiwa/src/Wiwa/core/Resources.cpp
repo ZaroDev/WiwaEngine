@@ -1,7 +1,6 @@
 #include <wipch.h>
 #include "Resources.h"
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "../vendor/stb/stb_image.h"
 
 namespace Wiwa {
