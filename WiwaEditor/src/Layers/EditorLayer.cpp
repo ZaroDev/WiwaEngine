@@ -68,12 +68,14 @@ void EditorLayer::OnAttach()
 	ResourceId infoId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/info_icon.png");
 	ResourceId warnId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/warning_icon.png");
 	ResourceId errorId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/error_icon.png");
+	ResourceId stopId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/stop_icon.png");
 
 	m_PlayIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(playId)->GetTextureId();
 	m_PauseIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pauseId)->GetTextureId();
 	m_InfoIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(infoId)->GetTextureId();
 	m_WarningIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(warnId)->GetTextureId();
 	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
+	m_StopIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId();
 
 	// Editor scene
 	m_EditorSceneId = Wiwa::SceneManager::CreateScene();
@@ -270,7 +272,7 @@ void EditorLayer::MainMenuBar()
 
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
-			ImTextureID play = Wiwa::Time::IsPlaying() ? m_PauseIcon : m_PlayIcon;
+			ImTextureID play = Wiwa::Time::IsPlaying() ? m_StopIcon : m_PlayIcon;
 			if (ImGui::ImageButton(play, { 15, 15 }))
 			{
 				if (!Wiwa::Time::IsPlaying())
@@ -278,12 +280,13 @@ void EditorLayer::MainMenuBar()
 				else
 					Wiwa::Time::Stop();
 			}
-			/*if (ImGui::ImageButton(m_PauseIcon, { 15, 15 }))
+
+			if (ImGui::ImageButton(m_PauseIcon, { 15, 15 }))
 			{
-				Wiwa::Time::Get().Stop();
-			}*/
+				Wiwa::Time::PauseUnPause();
+			}
+
 			ImGui::PopStyleColor();
-			
 			ImGui::EndMenuBar();
 		}
 		ImGui::End();

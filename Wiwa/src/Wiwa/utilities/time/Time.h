@@ -20,10 +20,12 @@ namespace Wiwa
 		static std::chrono::duration<float> m_RealTimeSinceStartup;
 		static std::chrono::duration<float> m_RealTimeDeltaTime;
 		static bool m_IsPlaying;
+		static bool m_IsPaused;
 	private:
 		Time();
 	public:
 		static void Play();
+		static void PauseUnPause();
 		static void Update();
 		static void Stop();
 
@@ -35,6 +37,7 @@ namespace Wiwa
 		static inline float GetRealTimeSinceStartup() { return m_RealTimeSinceStartup.count(); }
 		static inline float GetRealDeltaTime() { return m_RealTimeDeltaTime.count() * 1000.0f; }
 		static inline bool IsPlaying() { return m_IsPlaying; }
+		static inline bool IsPaused() { return m_IsPaused; }
 	};
 }
 

@@ -91,6 +91,7 @@ private:
 	ImTextureID m_InfoIcon = 0;
 	ImTextureID m_WarningIcon = 0;
 	ImTextureID m_ErrorIcon = 0;
+	ImTextureID m_StopIcon = 0;
 
 	Action<Wiwa::Event&> m_EventCallback;
 

@@ -30,56 +30,23 @@ HierarchyPanel::~HierarchyPanel()
 void HierarchyPanel::Draw()
 {
 	Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
 	ImGui::Begin(name, &active);
 	if (ImGui::BeginPopupContextWindow("Context Menu"))
 	{
-		if (ImGui::MenuItem("Create New Entity"))
-		{
-			CreateNew3DEnt();
-		}
-		ImGui::Separator();
-		if (ImGui::BeginMenu("Primitives"))
-		{
-			if (ImGui::MenuItem("Create cube"))
-			{
-				CreateCube();
-			}
-			if (ImGui::MenuItem("Create plane"))
-			{
-				CreatePlane();
-			}
-			if (ImGui::MenuItem("Create sphere"))
-			{
-				CreateSphere();
-			}
-			if (ImGui::MenuItem("Create pyramid"))
-			{
-				CreatePyramid();
-			}
-			ImGui::EndMenu();
-		}
-		if (m_CurrentID >= 0)
-		{
-			ImGui::Separator();
-			ImGui::TextDisabled(entityManager.GetEntityName(m_CurrentID));
-			if (ImGui::MenuItem("Create child"))
-			{
-				CreateNewChild(m_CurrentID);
-			}
-
-			if (ImGui::MenuItem("Delete"))
-			{
-				entityManager.DestroyEntity(m_CurrentID);
-				m_CurrentID = -1;
-			}
-		}
+		DrawAddMenu(entityManager);
 		ImGui::EndPopup();
 	}
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 	if (ImGui::Button("+"))
 	{
-		Wiwa::SceneManager::getActiveScene()->GetEntityManager().CreateEntity();
+		ImGui::OpenPopup("Add menu");
+	}
+	if (ImGui::BeginPopup("Add menu"))
+	{
+		DrawAddMenu(entityManager);
+		ImGui::EndPopup();
 	}
 	ImGui::PopStyleColor();
 
@@ -103,8 +70,67 @@ void HierarchyPanel::Draw()
 		}
 		ImGui::PopID();
 	}
-
+	size_t cameraCount = Wiwa::CameraManager::getCameraSize();
+	for (size_t i = 0; i < cameraCount; i++)
+	{
+		ImGui::PushID(i++);
+		std::string camName = "Camera " + std::to_string(i);
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+		bool open = ImGui::TreeNodeEx(camName.c_str(), flags);
+		if (open)
+		{
+			ImGui::TreePop();
+		}
+	}
 	ImGui::End();
+}
+
+void HierarchyPanel::DrawAddMenu(Wiwa::EntityManager& entityManager)
+{
+	if (ImGui::MenuItem("Create New Entity"))
+	{
+		CreateNew3DEnt();
+	}
+	ImGui::Separator();
+	if (ImGui::BeginMenu("Primitives"))
+	{
+		if (ImGui::MenuItem("Create cube"))
+		{
+			CreateCube();
+		}
+		if (ImGui::MenuItem("Create plane"))
+		{
+			CreatePlane();
+		}
+		if (ImGui::MenuItem("Create sphere"))
+		{
+			CreateSphere();
+		}
+		if (ImGui::MenuItem("Create pyramid"))
+		{
+			CreatePyramid();
+		}
+		ImGui::EndMenu();
+	}
+	if (ImGui::MenuItem("Camera"))
+	{
+		Wiwa::CameraManager::CreatePerspectiveCamera(60, 16/9);
+	}
+	if (m_CurrentID >= 0)
+	{
+		ImGui::Separator();
+		ImGui::TextDisabled(entityManager.GetEntityName(m_CurrentID));
+		if (ImGui::MenuItem("Create child"))
+		{
+			CreateNewChild(m_CurrentID);
+		}
+
+		if (ImGui::MenuItem("Delete"))
+		{
+			entityManager.DestroyEntity(m_CurrentID);
+			m_CurrentID = -1;
+		}
+	}
 }
 
 void HierarchyPanel::CreateNode(const EntityId& eid, const char* entName, ImGuiTextFilter& filter, Wiwa::EntityManager& entityManager)

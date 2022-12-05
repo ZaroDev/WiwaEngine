@@ -14,6 +14,8 @@ public:
 
 	void Draw() override;
 
+	void DrawAddMenu(Wiwa::EntityManager& entityManager);
+
 	void CreateNode(const EntityId& eid, const char* entName, ImGuiTextFilter& filter, Wiwa::EntityManager& entityManager);
 	bool OnEntityChange(EntityChangeEvent& e);
 	void OnEvent(Wiwa::Event& e) override;

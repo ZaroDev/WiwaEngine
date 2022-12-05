@@ -161,14 +161,10 @@ void ScenePanel::Draw()
         {
             glm::vec3 out_dir;
             glm::vec3 out_origin;
-            ImVec2 mrpos = ImGui::GetMousePos();
-            ImVec2 mousePos = { mrpos.x - cspos.x, mrpos.y - cspos.y };
-            CLAMP(mousePos.x, 0.0f, isize.x);
-            CLAMP(mousePos.y, 0.0f, isize.y);
-            mousePos.y -= isize.y;
-            mousePos.y = glm::abs(mousePos.y);
+            rpos.y -= isize.y;
+            rpos.y = glm::abs(rpos.y);
             
-            Wiwa::Math::ScreenPosToWorldRay(mousePos.x, mousePos.y , isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
+            Wiwa::Math::ScreenPosToWorldRay(rpos.x, rpos.y , isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
             float minDist = FLT_MAX;
             int id = -1;
             for (size_t i = 0; i < entityManager.GetEntityCount(); i++) 
