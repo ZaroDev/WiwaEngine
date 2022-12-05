@@ -82,6 +82,10 @@ namespace Wiwa {
 
 		static void PushResource(ResourceType rt, const char* file, void* rsc);
 		static ResourceId getResourcePosition(ResourceType rt, const char* file);
+
+		// Implementations
+		static void _import_image_impl(const char* origin, const char* destination);
+		static void _import_model_impl(const char* origin, const char* destination);
 	public:
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
@@ -281,11 +285,19 @@ namespace Wiwa {
 	
 		return image;
 	}
+
 	template<>
 	inline void Resources::Import<Image>(const char* file, ImageSettings* settings)
 	{
+		std::filesystem::path load_path = file;
 
+		std::filesystem::path import_path = "library/";
+		import_path += load_path.filename();
+		import_path.replace_extension(".dds");
+
+		_import_image_impl(file, import_path.string().c_str());
 	}
+
 	//--SPECIALIZATION FOR MODEL
 	template<>
 	inline void Resources::CreateMeta<Model>(const char* file, ModelSettings* settings)
@@ -327,7 +339,13 @@ namespace Wiwa {
 	template<>
 	inline void Resources::Import<Model>(const char* file, ModelSettings* settings)
 	{
+		std::filesystem::path load_path = file;
 
+		std::filesystem::path import_path = "library/";
+		import_path += load_path.filename();
+		import_path.replace_extension(".wimodel");
+
+		_import_model_impl(file, import_path.string().c_str());
 	}
 	//--SPECIALIZATION FOR MATERIAL
 	template<>

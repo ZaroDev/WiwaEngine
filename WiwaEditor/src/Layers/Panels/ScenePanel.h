@@ -4,7 +4,7 @@
 
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/utilities/render/Camera.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <Wiwa/Events/MouseEvent.h>
 #include <Wiwa/ecs/components/Transform3D.h> 
 #include <Wiwa/utilities/render/CameraManager.h>
@@ -23,8 +23,6 @@ public:
 	bool OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e);
 	bool OnEntityChange(EntityChangeEvent& e);
 private:
-
-
 	std::vector<ShadingView*> m_Shadings;
 
 	Wiwa::Camera* m_Camera = nullptr;

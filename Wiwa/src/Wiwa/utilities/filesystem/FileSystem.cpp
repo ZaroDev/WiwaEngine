@@ -10,6 +10,11 @@ bool FileSystem::Exists(const char* file)
 	return std::filesystem::exists(file);
 }
 
+time_t FileSystem::LastWriteTime(const char* path)
+{
+	return std::filesystem::last_write_time(path).time_since_epoch().count();
+}
+
 size_t FileSystem::FileSize(const char* file)
 {
 	return std::filesystem::file_size(file);
@@ -136,6 +141,8 @@ FileMapping FileSystem::OpenMemoryMappedFile(const char* name, size_t size)
 	return fmap;
 }
 
+
+// ============================ FILE ============================
 File::File()
 {
 	fstream = new std::fstream();
@@ -193,22 +200,6 @@ void File::Close()
 	delete fstream;
 }
 
-void FileMapping::Write(sbyte* data, size_t offset, size_t count)
-{
-	memcpy(mapView + offset, data, count);
-}
-
-void FileMapping::Read(sbyte* data, size_t offset, size_t count)
-{
-	memcpy(data, mapView + offset, count);
-}
-
-void FileMapping::Close()
-{
-	UnmapViewOfFile(mapView);
-	CloseHandle(mapFile);
-}
-
 File& operator<<(File& file, std::string& str)
 {
 	(*file.fstream) << str;
@@ -238,4 +229,22 @@ void operator>>(File& file, std::string& str)
 void operator>>(File& file, char& ch)
 {
 	(*file.fstream) >> ch;
+}
+
+// ============================ FILE MAPPING ============================
+
+void FileMapping::Write(sbyte* data, size_t offset, size_t count)
+{
+	memcpy(mapView + offset, data, count);
+}
+
+void FileMapping::Read(sbyte* data, size_t offset, size_t count)
+{
+	memcpy(data, mapView + offset, count);
+}
+
+void FileMapping::Close()
+{
+	UnmapViewOfFile(mapView);
+	CloseHandle(mapFile);
 }

@@ -10,7 +10,7 @@
 #include "Vector4f.h"
 
 #include "Rectangle.h"
-#include "glm.hpp"
+#include <glm/glm.hpp>
 
 
 namespace Wiwa {

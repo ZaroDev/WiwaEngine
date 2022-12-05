@@ -16,6 +16,7 @@ namespace Wiwa {
 		~Image();
 
 		bool Init(const char* path);
+		bool InitDDS(const char* path);
 
 		bool CreateCheckerText();
 
@@ -25,5 +26,10 @@ namespace Wiwa {
 		int GetWidth() { return m_ImageSize.w; }
 		int GetHeight() { return m_ImageSize.h; }
 		Size2i GetSize() { return m_ImageSize; }
+
+		// Image utils
+		static void raw_to_dds_file(const char* filename, const unsigned char* pData, int width, int height, int bpp);
+		static unsigned char* raw_to_dds_mem(const unsigned char* data, int width, int height, int bpp, size_t* outSize);
+		static void free_dds_mem(unsigned char* data);
 	};
 }

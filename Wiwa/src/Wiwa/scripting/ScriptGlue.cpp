@@ -4,7 +4,7 @@
 #include "SystemClass.h"
 
 #include <mono/metadata/object.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/systems/System.h>

@@ -91,10 +91,11 @@ public:
 	};
 
 	//======== File system utils ========
-	// File statuses
-
 	// Check whether the file or directory exists
 	static bool Exists(const char* path);
+
+	// Check last write time of a file or directory
+	static time_t LastWriteTime(const char* path);
 
 	// Take file size in bytes
 	static size_t FileSize(const char* file);

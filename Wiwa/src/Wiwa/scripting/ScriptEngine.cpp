@@ -1,7 +1,7 @@
 #include <wipch.h>
 #include "ScriptEngine.h"
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include "ScriptGlue.h"
 
 #include "ScriptUtils.h"

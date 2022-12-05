@@ -5,8 +5,8 @@
 #include <string>
 #include <typeinfo>
 
-#include <glm.hpp>
-#include <gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Wiwa {
 	class WI_API Shader

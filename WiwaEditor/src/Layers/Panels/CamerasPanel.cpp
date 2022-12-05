@@ -1,7 +1,7 @@
 #include "CamerasPanel.h"
 #include <Wiwa/utilities/render/CameraManager.h>
 #include "../../Utils/ImGuiWidgets.h"
-#include <gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 CamerasPanel::CamerasPanel(EditorLayer* instance)
 	: Panel("Cameras", instance)

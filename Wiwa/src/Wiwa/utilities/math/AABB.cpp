@@ -1,6 +1,6 @@
 #include "wipch.h"
 #include "AABB.h"
-#include <gtx/component_wise.hpp>
+#include <glm/gtx/component_wise.hpp>
 
 namespace Wiwa {
 
