@@ -32,6 +32,8 @@ namespace Wiwa {
 			if (Wiwa::CameraManager::getCamera(i)->cull && !Wiwa::CameraManager::getCamera(i)->frustrum.IsBoxVisible(mod->boundingBox.getMin(), mod->boundingBox.getMax()))
 				return;
 			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, Wiwa::CameraManager::getCamera(i));
+			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, Wiwa::CameraManager::editorCamera);
+
 		}
 	}
 }

@@ -80,8 +80,9 @@ namespace Wiwa {
 		PushOverlay(m_ImGuiLayer);
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
-
+		CameraManager::Init();
 		ScriptEngine::Init();
+		
 	}
 
 	void Application::SetHwInfo()

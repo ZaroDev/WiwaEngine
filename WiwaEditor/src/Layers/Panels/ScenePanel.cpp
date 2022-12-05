@@ -42,8 +42,9 @@ ScenePanel::ScenePanel(EditorLayer* instance)
     float ar = res.w / (float)res.h;
     nearPlane = 0.1f;
     farPlane = 10000.0f;
-    m_CameraId = Wiwa::CameraManager::CreatePerspectiveCamera(45.0f, ar, nearPlane, farPlane);
-    m_Camera = Wiwa::CameraManager::getCamera(m_CameraId);
+
+    m_Camera = Wiwa::CameraManager::editorCamera;
+    m_Camera->SetPerspective(60, ar, nearPlane, farPlane);
     m_Camera->setPosition({ 0.0f, 1.0f, 5.0f });
     m_Camera->lookat({ 0.0f, 0.0f, 0.0f });
     // Camera control
@@ -58,7 +59,6 @@ ScenePanel::ScenePanel(EditorLayer* instance)
 
 ScenePanel::~ScenePanel()
 {
-    delete m_Camera;
 }
 
 void ScenePanel::Draw()

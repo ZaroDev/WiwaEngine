@@ -25,7 +25,7 @@ public:
 private:
 	std::vector<ShadingView*> m_Shadings;
 
-	Wiwa::Camera* m_Camera = nullptr;
+	Wiwa::Camera* m_Camera;
 	CameraId m_CameraId = -1;
 	
 	bool m_ShowFPS = true;

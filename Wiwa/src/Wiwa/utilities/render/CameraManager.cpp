@@ -5,17 +5,23 @@
 namespace Wiwa {
 	std::vector<Camera*> CameraManager::m_Cameras;
 	CameraId CameraManager::m_ActiveCamera = -1;
+	Camera* CameraManager::editorCamera = nullptr;
+	void CameraManager::Init()
+	{
+		editorCamera = new Camera();
+	}
 	void CameraManager::Update()
 	{
-		for (size_t i = 0; i < m_Cameras.size(); i++)
+		editorCamera->frameBuffer->Clear();
+		if (editorCamera->drawFrustrums)
+		{
+			Wiwa::Application::Get().GetRenderer3D().RenderFrustrums(editorCamera);
+		}
+		size_t cameraCount = m_Cameras.size();
+		for (size_t i = 0; i < cameraCount; i++)
 		{
 			m_Cameras[i]->frameBuffer->Clear();
-			if (m_Cameras[i]->drawFrustrums)
-			{
-				Wiwa::Application::Get().GetRenderer3D().RenderFrustrums(m_Cameras[i]);
-			}
 		}
-
 	}
 	void CameraManager::CleanUp()
 	{
@@ -23,6 +29,7 @@ namespace Wiwa {
 			delete m_Cameras[i];
 
 		m_Cameras.clear();
+		delete editorCamera;
 	}
 	size_t CameraManager::CreateCamera()
 	{

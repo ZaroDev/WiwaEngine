@@ -70,18 +70,6 @@ void HierarchyPanel::Draw()
 		}
 		ImGui::PopID();
 	}
-	size_t cameraCount = Wiwa::CameraManager::getCameraSize();
-	for (size_t i = 0; i < cameraCount; i++)
-	{
-		ImGui::PushID(i++);
-		std::string camName = "Camera " + std::to_string(i);
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-		bool open = ImGui::TreeNodeEx(camName.c_str(), flags);
-		if (open)
-		{
-			ImGui::TreePop();
-		}
-	}
 	ImGui::End();
 }
 

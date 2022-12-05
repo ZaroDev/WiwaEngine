@@ -58,6 +58,8 @@ namespace Wiwa {
 		glm::vec3 getPosition() { return m_CameraPos; }
 		glm::vec3 getFront() { return m_CameraFront; }
 		glm::vec3 getUp() { return m_CameraUp; }
+		float getFar() { return m_FarPlaneDist; }
+		float getNear() { return m_NearPlaneDist; }
 
 		void lookat(const Vector3f position);
 		void lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp);

@@ -2,6 +2,7 @@
 #include <Wiwa/core/Application.h>
 #include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/core/Renderer3D.h>
+#include "../../Utils/ImGuiWidgets.h"
 
 GamePanel::GamePanel(EditorLayer* instance)
 	: Panel("Game",instance)
@@ -24,15 +25,21 @@ void GamePanel::Draw()
     float scale = scales.x < scales.y ? scales.x : scales.y;
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
-    Wiwa::Camera* cam = Wiwa::CameraManager::getActiveCamera();
+    if (Wiwa::CameraManager::getCameraSize() > 0)
+    {
+        Wiwa::Camera* cam = Wiwa::CameraManager::getActiveCamera();
 
-    ImTextureID tex = (ImTextureID)(intptr_t)cam->frameBuffer->getColorBufferTexture();
+        ImTextureID tex = (ImTextureID)(intptr_t)cam->frameBuffer->getColorBufferTexture();
 
-    ImVec2 cpos = ImGui::GetCursorPos();
-    cpos.x = (viewportPanelSize.x - isize.x) / 2;
-    ImGui::SetCursorPos(cpos);
-    ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
-
+        ImVec2 cpos = ImGui::GetCursorPos();
+        cpos.x = (viewportPanelSize.x - isize.x) / 2;
+        ImGui::SetCursorPos(cpos);
+        ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
+    }
+    else
+    {
+        TextCentered("No cameras to display, please create a camera to render the scene!");
+    }
     ImGui::End();
 }
 
