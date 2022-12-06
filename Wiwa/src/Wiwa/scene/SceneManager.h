@@ -33,11 +33,11 @@ namespace Wiwa {
 		static SceneId getActiveSceneId() { return m_ActiveScene; }
 		static Scene* getActiveScene() { return m_Scenes[m_ActiveScene]; }
 
-		inline static size_t getSceneSize() { return m_Scenes.size(); }
+		static size_t getSceneSize() { return m_Scenes.size(); }
 
 		static size_t CreateScene();
 		static Scene* getScene(SceneId sceneId) { return m_Scenes[sceneId]; }
-		inline static std::vector<Scene*>& getScenes() { return m_Scenes; }
+		static std::vector<Scene*>& getScenes() { return m_Scenes; }
 
 		static void SaveScene(SceneId scene_id, const char* scene_path);
 		static SceneId LoadScene(const char* scene_path);
