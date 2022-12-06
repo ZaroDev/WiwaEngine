@@ -10,7 +10,7 @@
 #include <Wiwa/utilities/math/Vector2i.h>
 #include "../../Utils/ImGuiWidgets.h"
 
-void InspectorPanel::DrawComponent(size_t componentId)
+bool InspectorPanel::DrawComponent(size_t componentId)
 {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
@@ -20,10 +20,11 @@ void InspectorPanel::DrawComponent(size_t componentId)
 
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		if (ImGui::Button("Delete"))
+		if (ImGui::Button("Delete##comp"))
 		{
-			
+			return false;
 		}
+
 		byte* data = em.GetComponent(m_CurrentID, componentId, type->size);
 
 		// Custom component interface
@@ -39,6 +40,7 @@ void InspectorPanel::DrawComponent(size_t componentId)
 			}
 		}
 	}
+	return true;
 }
 
 void InspectorPanel::DrawField(unsigned char* data, const Field& field)
@@ -250,7 +252,7 @@ void InspectorPanel::Draw()
 		std::string edit = entName;
 		
 		ImGui::InputText("Name", (char*)edit.c_str(), 64);
-		if (ImGui::Button("Delete"))
+		if (ImGui::Button("Delete##entity"))
 		{
 			m_EntitySet = false;
 			em.DestroyEntity(m_CurrentID);
@@ -262,7 +264,11 @@ void InspectorPanel::Draw()
 		std::map<ComponentId, size_t>& map = em.GetEntityComponents(m_CurrentID);
 		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
 		{
-			DrawComponent(comp->first);
+			if (!DrawComponent(comp->first))
+			{
+				size_t idToRemove = comp->first;
+				em.RemoveComponentById(m_CurrentID, idToRemove);
+			}
 		}
 
 		if (ButtonCenteredOnLine("Add component"))

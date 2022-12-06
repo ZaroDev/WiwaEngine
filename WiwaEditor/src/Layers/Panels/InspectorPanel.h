@@ -11,7 +11,7 @@
 class InspectorPanel : public Panel
 {
 private:
-	void DrawComponent(size_t componentId);
+	bool DrawComponent(size_t componentId);
 	void DrawField(unsigned char* data, const Field& field);
 
 	void DrawMeshComponent(byte* data);
