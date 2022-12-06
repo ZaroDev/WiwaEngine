@@ -388,13 +388,12 @@ void ScenePanel::Draw()
 
                 if (ImGuizmo::IsUsing())
                 {
-                    ////TODO: Change the transform matrix!
                     float translation[3], rotation[3], scale[3];
 
                     ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), translation, rotation, scale);
-
+                    WI_INFO("X: {0} Y:{1} Z{2}", rotation[0], rotation[1], rotation[2]);
                     Wiwa::Vector3f newTranslation = { translation[0], translation[1], translation[2] };
-                    Wiwa::Vector3f newRotation = { glm::radians(rotation[0]), glm::radians(rotation[1]), glm::radians(rotation[2]) };
+                    Wiwa::Vector3f newRotation = { glm::radians(rotation[0]), glm::radians(rotation[1]),glm::radians(rotation[2])};
                     Wiwa::Vector3f newScale = { scale[0], scale[1], scale[2] };
 
                     m_SelectedTransform->position = newTranslation;

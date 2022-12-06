@@ -102,7 +102,9 @@ void HierarchyPanel::DrawAddMenu(Wiwa::EntityManager& entityManager)
 	}
 	if (ImGui::MenuItem("Camera"))
 	{
-		Wiwa::CameraManager::CreatePerspectiveCamera(60, 16/9);
+		Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
+		float ar = res.w / (float)res.h;
+		Wiwa::CameraManager::CreatePerspectiveCamera(60, ar);
 	}
 	if (m_CurrentID >= 0)
 	{
@@ -112,7 +114,27 @@ void HierarchyPanel::DrawAddMenu(Wiwa::EntityManager& entityManager)
 		{
 			CreateNewChild(m_CurrentID);
 		}
-
+		if (entityManager.GetEntityParent(m_CurrentID) != m_CurrentID)
+		{
+			if (ImGui::MenuItem("Unparent"))
+			{
+				entityManager.SetParent(m_CurrentID, m_CurrentID);
+			}
+		}
+		if (ImGui::BeginMenu("Reparent to"))
+		{
+			for(size_t i = 0; i < entityManager.GetEntitiesAlive()->size(); i++)
+			{
+				if (i == m_CurrentID)
+					continue;
+				const char* name = entityManager.GetEntityName(i);
+				if (ImGui::MenuItem(name))
+				{
+					entityManager.SetParent(m_CurrentID, i);
+				}
+			}
+			ImGui::EndMenu();
+		}
 		if (ImGui::MenuItem("Delete"))
 		{
 			entityManager.DestroyEntity(m_CurrentID);

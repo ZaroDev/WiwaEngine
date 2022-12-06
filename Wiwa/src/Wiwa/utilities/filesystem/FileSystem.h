@@ -36,6 +36,8 @@ public:
 	// Check if reached end of file
 	bool Eof() const;
 
+	
+
 	// Check file size
 	size_t Size();
 

@@ -60,6 +60,8 @@ std::string FileSystem::CurrentPath()
 	return std::filesystem::current_path().string();
 }
 
+
+
 void FileSystem::CurrentPath(const char* path)
 {
 	std::filesystem::current_path(path);
