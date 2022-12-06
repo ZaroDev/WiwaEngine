@@ -233,6 +233,7 @@ void AssetsPanel::Draw()
 						Action<Wiwa::Event&> action = { &EditorLayer::OnEvent, instance };
 						action(event);
 					}
+					m_SelectedEntry = directoryEntry;
 				}
 
 				ImGui::PopStyleColor();
@@ -259,19 +260,21 @@ void AssetsPanel::Draw()
 					{
 						Wiwa::Application::Get().OpenDir(m_CurrentPath.string().c_str());
 					}
-					if (directoryEntry.is_directory())
+					if (m_SelectedEntry.exists())
 					{
+						ImGui::Separator();
+
+						ImGui::TextDisabled(m_SelectedEntry.path().filename().string().c_str());
 						if (ImGui::MenuItem("Delete"))
 						{
-							std::filesystem::path p = m_CurrentPath;
-							p /= path.filename();
-							if (_rmdir(p.string().c_str()) == -1)
-								WI_ERROR("Folder can't be destroyed");
+							if (m_SelectedEntry.is_directory())
+								_rmdir(m_SelectedEntry.path().string().c_str());
+							else
+								remove(m_SelectedEntry.path().string().c_str());
 						}
 					}
 					ImGui::EndPopup();
 				}
-				
 				ImGui::TextWrapped(filenameString.c_str());
 
 				ImGui::PopID();
