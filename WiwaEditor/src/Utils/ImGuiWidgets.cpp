@@ -1,5 +1,6 @@
 #include "ImGuiWidgets.h"
 #include <Wiwa/utilities/Reflection.h>
+#include <fstream>
 
 void DrawVec3Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
 {

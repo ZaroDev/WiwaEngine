@@ -8,6 +8,7 @@
 #include <Wiwa/utilities/json/JSONDocument.h>
 #include "MaterialPanel.h"
 #include "../EditorLayer.h"
+#include "../../Utils/ImGuiWidgets.h"
 
 
 static const std::filesystem::path s_AssetsPath = "Assets";
@@ -282,6 +283,24 @@ void AssetsPanel::Draw()
 
 	//Assets context window
 	ImGui::End();
+}
+
+void AssetsPanel::OnEvent(Wiwa::Event& e)
+{
+	Wiwa::EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<Wiwa::WindowDropEvent>({&AssetsPanel::OnDragAndDrop, this});
+}
+
+bool AssetsPanel::OnDragAndDrop(Wiwa::WindowDropEvent& e)
+{
+	for (size_t i = 0; i < e.GetCount(); i++)
+	{
+		std::filesystem::path from = e.GetPaths()[i];
+		std::filesystem::path to = m_CurrentPath;
+		to /= from.filename();
+		std::filesystem::copy_file(from, to);
+	}
+	return true;
 }
 
 void AssetsPanel::DisplayNode(DirectorySpecs*directoryEntry)
