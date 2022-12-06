@@ -27,7 +27,7 @@ namespace Wiwa {
 		glm::vec3 m_CameraPos;
 		glm::vec3 m_CameraFront;
 		glm::vec3 m_CameraUp;
-
+		glm::vec3 m_CameraRot;
 		glm::mat4 m_View;
 		glm::mat4 m_Projection;
 
@@ -55,22 +55,25 @@ namespace Wiwa {
 		void setPosition(Vector3f position);
 		void setFront(Vector3f front);
 
-		glm::vec3 getPosition() { return m_CameraPos; }
-		glm::vec3 getFront() { return m_CameraFront; }
-		glm::vec3 getUp() { return m_CameraUp; }
-		float getFar() { return m_FarPlaneDist; }
-		float getNear() { return m_NearPlaneDist; }
 
+		inline glm::vec3 getPosition() { return m_CameraPos; }
+		inline glm::vec3 getFront() { return m_CameraFront; }
+		inline glm::vec3 getUp() { return m_CameraUp; }
+		inline glm::vec3 getRotation() { return m_CameraRot; }
+		inline float getFar() { return m_FarPlaneDist; }
+		inline float getNear() { return m_NearPlaneDist; }
+
+		inline void setRotation(const glm::vec3 rot) { m_CameraRot = rot; }
 		void lookat(const Vector3f position);
 		void lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp);
 		void SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
 		void UpdateFrustrum();
 		void SetOrthographic(const int width, const int height, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
 
-		CameraType GetCameraType() { return m_CameraType; }
+		inline CameraType GetCameraType() { return m_CameraType; }
 
-		glm::mat4 getView() { return m_View; }
-		glm::mat4 getProjection() { return m_Projection; }
+		inline glm::mat4 getView() { return m_View; }
+		inline glm::mat4 getProjection() { return m_Projection; }
 		
 		void DrawFrustrum();
 		inline glm::vec3 FarPlanePos(float x, float y) const

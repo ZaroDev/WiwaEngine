@@ -13,6 +13,7 @@ namespace Wiwa {
 		m_CameraPos = glm::vec3(0.0f, 0.0f, 1.5f);
 		m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_CameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		// Initialize camera distance planes
 		m_NearPlaneDist = 0.1f;
@@ -86,7 +87,6 @@ namespace Wiwa {
 		m_CameraPos = glm::vec3(position.x, position.y, position.z);
 
 		updateView();
-		UpdateFrustrum();
 	}
 
 	void Camera::setFront(const Vector3f front)
@@ -94,8 +94,9 @@ namespace Wiwa {
 		m_CameraFront = glm::vec3(front.x, front.y, front.z);
 
 		updateView();
-		UpdateFrustrum();
 	}
+
+
 
 	void Camera::lookat(const Vector3f position)
 	{

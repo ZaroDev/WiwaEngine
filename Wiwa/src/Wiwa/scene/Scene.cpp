@@ -51,7 +51,7 @@ namespace Wiwa {
 
 	void Scene::Start()
 	{
-		Wiwa::CameraManager::SetCamera(m_SceneCameraId);
+		Wiwa::CameraManager::setActiveCamera(m_SceneCameraId);
 	}
 
 	void Scene::Load()

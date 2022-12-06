@@ -16,7 +16,7 @@ namespace Wiwa{
 		static void Update();
 		static void CleanUp();
 
-		static void SetCamera(CameraId cameraId) { m_ActiveCamera = cameraId; }
+		static void setActiveCamera(CameraId cameraId) { m_ActiveCamera = cameraId; }
 
 		static CameraId getActiveCameraId() { return m_ActiveCamera; }
 		static Camera* getActiveCamera() { return m_Cameras[m_ActiveCamera]; }

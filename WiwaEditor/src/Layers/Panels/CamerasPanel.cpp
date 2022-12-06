@@ -44,23 +44,40 @@ void CamerasPanel::Draw()
 			ImGui::PushID(row);
 			ImGui::Checkbox("Cull##culling", &cam->cull);
 			ImGui::Checkbox("BoudingBoxes##culling", &cam->drawBoundingBoxes);
+			bool selected =
+				Wiwa::CameraManager::getActiveCamera() == Wiwa::CameraManager::getCamera(row) ?
+				true : false;
+			ImGui::Checkbox("Active", &selected);
+			if (selected)
+			{
+				Wiwa::CameraManager::setActiveCamera(row);
+			}
 			if (ImGui::Button("Delete"))
 			{
 				Wiwa::CameraManager::DestroyCamera(row);
 			}
 			ImGui::TableSetColumnIndex(2);
 			glm::vec3 pos = cam->getPosition();
-			glm::vec3 angles = cam->getFront();
+			glm::vec3 angles = cam->getRotation();
+			
 			float fov = cam->getFOV();
 			float nearP = cam->getNear();
 			float farP = cam->getFar();
 			DrawVec3Control("Position", glm::value_ptr(pos), 0.0f, 50.0f);
-			DrawVec3Control("Front", glm::value_ptr(angles), 0.0f, 50.0f);
+			DrawVec3Control("Angles", glm::value_ptr(angles), 0.0f, 50.0f);
+			cam->setRotation(angles);
 			ImGui::DragFloat("Fov", &fov);
 			ImGui::DragFloat("Near", &nearP);
 			ImGui::DragFloat("Far", &farP);
 			cam->setPosition({ pos.x, pos.y, pos.z });
-			//cam->setFront({ front.x, front.y, front.z });
+			glm::vec3 direction;
+			direction.x = cos(glm::radians(angles.x)) * cos(glm::radians(angles.y));
+			direction.y = sin(glm::radians(angles.y));
+			direction.z = sin(glm::radians(angles.x)) * cos(glm::radians(angles.y));
+
+			glm::vec3 front = glm::normalize(direction);
+			cam->setFront({ front.x, front.y, front.z });
+			
 			cam->setFOV(fov);
 			cam->setPlanes(nearP, farP);
 			ImGui::PopID();
