@@ -20,7 +20,9 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 
 	if (ImGui::CollapsingHeader(name.c_str()))
 	{
-		if (ImGui::Button("Delete##comp"))
+		std::string del_label = "Delete##comp";
+		del_label += name.c_str();
+		if (ImGui::Button(del_label.c_str()))
 		{
 			return false;
 		}
@@ -260,15 +262,21 @@ void InspectorPanel::Draw()
 		if (strcmp(edit.c_str(), entName) != 0)
 			em.SetEntityName(m_CurrentID, edit.c_str());
 		
-
 		std::map<ComponentId, size_t>& map = em.GetEntityComponents(m_CurrentID);
+		bool removed = false;
+		size_t idToRemove;
+
 		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
 		{
 			if (!DrawComponent(comp->first))
 			{
-				size_t idToRemove = comp->first;
-				em.RemoveComponentById(m_CurrentID, idToRemove);
+				idToRemove = comp->first;
+				removed = true;
 			}
+		}
+
+		if (removed) { 
+			em.RemoveComponentById(m_CurrentID, idToRemove);
 		}
 
 		if (ButtonCenteredOnLine("Add component"))

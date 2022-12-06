@@ -22,6 +22,8 @@ namespace Wiwa {
 		Transform3D* t3d = GetComponent<Transform3D>(eid);
 		Mesh* mesh = GetComponent<Mesh>(eid);
 
+		if (!t3d || !mesh) return;
+
 		Renderer3D& r3d = Application::Get().GetRenderer3D();
 
 		Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
