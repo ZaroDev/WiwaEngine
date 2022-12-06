@@ -88,7 +88,7 @@ void EditorLayer::OnAttach()
 	em.RegisterSystem<Wiwa::MeshRenderer>();	
 
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "resources/meshes/BakerHouse.fbx");
+	sprintf(mesh.mesh_path, "%s", "Models/BakerHouse");
 	sprintf(mesh.mat_path, "%s", "resources/materials/bakerhouse_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);

@@ -83,6 +83,10 @@ namespace Wiwa {
 		static void PushResource(ResourceType rt, const char* file, void* rsc);
 		static ResourceId getResourcePosition(ResourceType rt, const char* file);
 
+		// Resource path for importing
+		static std::string _assetToLibPath(std::string path);
+		static bool _preparePath(std::string path);
+
 		// Implementations
 		static void _import_image_impl(const char* origin, const char* destination);
 		static void _import_model_impl(const char* origin, const char* destination);
@@ -313,7 +317,11 @@ namespace Wiwa {
 		ResourceId resourceId;
 
 		if (position == size) {
-			Model* model = new Model(file);
+			Model* model = new Model(NULL);
+			std::string file_path = "library/";
+			file_path += file;
+			file_path += ".wimodel";
+			model->LoadWiMesh(file_path.c_str());
 
 			PushResource(WRT_MODEL, file, model);
 
@@ -339,13 +347,18 @@ namespace Wiwa {
 	template<>
 	inline void Resources::Import<Model>(const char* file, ModelSettings* settings)
 	{
-		std::filesystem::path load_path = file;
+		std::filesystem::path import_file = "assets/";
+		import_file += file;
 
-		std::filesystem::path import_path = "library/";
-		import_path += load_path.filename();
-		import_path.replace_extension(".wimodel");
+		std::filesystem::path export_file = "library/";
+		export_file += file;
+		export_file.replace_extension(".wimodel");
 
-		_import_model_impl(file, import_path.string().c_str());
+		std::filesystem::path export_path = export_file.parent_path();
+
+		if (_preparePath(export_path.string())) {
+			_import_model_impl(import_file.string().c_str(), export_file.string().c_str());
+		}
 	}
 	//--SPECIALIZATION FOR MATERIAL
 	template<>

@@ -12,8 +12,10 @@
 
 #include <glm/glm.hpp>
 
+#include <Wiwa/utilities/filesystem/FileSystem.h>
+
 namespace Wiwa {
-	void Model::getMeshFromFile(const char* file)
+	void Model::getMeshFromFile(const char* file, bool gen_buffers)
 	{
 		const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -28,6 +30,10 @@ namespace Wiwa {
 			for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
 				Model* model = loadmesh(scene->mMeshes[i]);
 
+				if (gen_buffers) { 
+					model->generateBuffers();
+				}
+
 				models.push_back(model);
 			}
 
@@ -37,6 +43,45 @@ namespace Wiwa {
 			WI_CORE_ERROR("Error loading mesh {0} with error {1}", file, aiGetErrorString());
 		}
 		m_ModelPath = file;
+	}
+
+	void Model::getWiMeshFromFile(const char* file)
+	{
+		is_root = true;
+
+		File f = FileSystem::OpenIB(file);
+
+		if (f.IsOpen()) {
+			m_ModelPath = file;
+
+			size_t model_size;
+
+			// Model size
+			f.Read(&model_size, sizeof(size_t));
+
+			models.reserve(model_size);
+
+			for (size_t i = 0; i < model_size; i++) {
+				Model* model = new Model(NULL);
+
+				// Read vbo
+				size_t vbo_size;
+				f.Read(&vbo_size, sizeof(size_t));
+				model->vbo_data.resize(vbo_size);
+				f.Read(&model->vbo_data[0], vbo_size * sizeof(float));
+
+				// Read ebo
+				size_t ebo_size;
+				f.Read(&ebo_size, sizeof(size_t));
+				model->ebo_data.resize(ebo_size);
+				f.Read(&model->ebo_data[0], ebo_size * sizeof(int));
+
+				model->generateBuffers();
+				models.push_back(model);
+			}
+		}
+
+		f.Close();
 	}
 
 	Model* Model::loadmesh(const aiMesh* mesh)
@@ -86,7 +131,7 @@ namespace Wiwa {
 		{
 			WI_CORE_INFO("Index buffer generated correctly");
 		}
-		model->generateBuffers();
+		
 		return model;
 	}
 
@@ -223,11 +268,9 @@ namespace Wiwa {
 		generateBuffers();
 	}
 
-
-
 	void Model::generateBuffers()
 	{
-
+		if (is_root) return;
 #if 0
 		printf("Vertices\n");
 		for (float vert : vbo_data)
@@ -383,6 +426,11 @@ namespace Wiwa {
 
 	Model::~Model()
 	{
+		size_t m_size = models.size();
+
+		for (size_t i = 0; i < m_size; i++) {
+			delete models[i];
+		}
 	}
 
 	void Model::Render()
@@ -402,6 +450,7 @@ namespace Wiwa {
 		
 		}
 	}
+
 	void Model::DrawBoudingBox()
 	{
 		if (is_root) {
@@ -416,5 +465,52 @@ namespace Wiwa {
 			glDrawElements(GL_LINES, (GLsizei)bbebo_data.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 		}
+	}
+
+	void Model::LoadMesh(const char* file)
+	{
+		getMeshFromFile(file);
+	}
+
+	void Model::LoadWiMesh(const char* file)
+	{
+		getWiMeshFromFile(file);
+	}
+
+	Model* Model::GetModelFromFile(const char* file)
+	{
+		Model* model = new Model(NULL);
+
+		model->getMeshFromFile(file, false);
+
+		return model;
+	}
+
+	void Model::SaveModel(Model* model, const char* file)
+	{
+		File f = FileSystem::OpenOB(file);
+
+		if (f.IsOpen()) {
+			// Model size
+			size_t model_size = model->models.size();
+			f.Write(&model_size, sizeof(size_t));
+
+			// Model list
+			for (size_t i = 0; i < model_size; i++) {
+				Model* c_model = model->models[i];
+
+				// Model vbo
+				size_t vbo_size = c_model->vbo_data.size();
+				f.Write(&vbo_size, sizeof(size_t));
+				f.Write(c_model->vbo_data.data(), vbo_size * sizeof(float));
+
+				// Model ebo
+				size_t ebo_size = c_model->ebo_data.size();
+				f.Write(&ebo_size, sizeof(size_t));
+				f.Write(c_model->ebo_data.data(), ebo_size * sizeof(int));
+			}
+		}
+
+		f.Close();
 	}
 }

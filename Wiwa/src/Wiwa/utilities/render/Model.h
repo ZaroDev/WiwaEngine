@@ -27,7 +27,8 @@ namespace Wiwa {
 	private:
 		unsigned int vao, vbo, ebo, bbvao, bbvbo, bbebo;
 
-		void getMeshFromFile(const char* file);
+		void getMeshFromFile(const char* file, bool gen_buffers=true);
+		void getWiMeshFromFile(const char* file);
 
 		Model* loadmesh(const aiMesh* mesh);
 		
@@ -43,9 +44,15 @@ namespace Wiwa {
 
 		void DrawBoudingBox();
 
-		inline unsigned int getVAO() { return vao; }
+		unsigned int getVAO() { return vao; }
 
-		inline const char* getModelPath() { return m_ModelPath.c_str(); }
+		const char* getModelPath() { return m_ModelPath.c_str(); }
+
+		void LoadMesh(const char* file);
+		void LoadWiMesh(const char* file);
+
+		static Model* GetModelFromFile(const char* file);
+		static void SaveModel(Model* model, const char* file);
 	public:
 		bool showNormals = false;
 		AABB boundingBox;

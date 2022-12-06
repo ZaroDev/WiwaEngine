@@ -32,6 +32,7 @@
 #include <Wiwa/utilities/AllocationMetrics.h>
 
 #include <Wiwa/scripting/ScriptEngine.h>
+#include <Wiwa/core/Resources.h>
 
 const size_t TYPE_COUNT = __COUNTER__;
 
@@ -53,6 +54,8 @@ namespace Wiwa {
 		s_Instance = this;
 
 		m_TargetResolution = { 1920, 1080 };
+
+		Resources::Import<Model>("Models/BakerHouse.fbx", (Resources::ModelSettings*)NULL);
 		
 		//JSONDocument project("config/project.json");
 		//m_ProjectName = project["name"].get<const char*>();

@@ -40,6 +40,27 @@ namespace Wiwa {
 		return resourceId;
 	}
 
+	std::string Resources::_assetToLibPath(std::string path)
+	{
+		size_t a_ind = path.find("assets");
+
+		path.replace(a_ind, 6, "library");
+
+		return path;
+	}
+
+	bool Resources::_preparePath(std::string path)
+	{
+		if (!std::filesystem::exists(path)) {
+			if (!std::filesystem::create_directories(path)) {
+				WI_ERROR("Couldn't create directory {}", path.c_str());
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	void Resources::_import_image_impl(const char* origin, const char* destination)
 	{
 		int w, h, ch;
@@ -54,9 +75,11 @@ namespace Wiwa {
 
 	void Resources::_import_model_impl(const char* origin, const char* destination)
 	{
-		Model model(origin);
+		Model* model = Model::GetModelFromFile(origin);
 
+		Model::SaveModel(model, destination);
 
+		delete model;
 	}
 
 	void Resources::Clear()
