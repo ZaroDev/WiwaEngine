@@ -21,7 +21,7 @@
 namespace Wiwa {
 	void Model::getMeshFromFile(const char* file, bool gen_buffers)
 	{
-		const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs);
+		const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_PreTransformVertices);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			WI_ERROR("Couldn't load mesh file: {0}", file);

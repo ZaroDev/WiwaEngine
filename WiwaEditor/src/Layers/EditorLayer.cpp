@@ -91,8 +91,8 @@ void EditorLayer::OnAttach()
 
 	// Prepare mesh data
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "assets/Models/BakerHouse.fbx");
-	sprintf(mesh.mat_path, "%s", "resources/materials/bakerhouse_material.wimaterial");
+	sprintf(mesh.mesh_path, "%s", "assets/Models/street2.fbx");
+	sprintf(mesh.mat_path, "%s", "assets/street2_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 
@@ -112,18 +112,49 @@ void EditorLayer::OnAttach()
 	EntityId e_root = em.CreateEntity(model_h->name.c_str());
 	em.AddComponent<Wiwa::Transform3D>(e_root, t3d);
 
+	auto process_h = [&, this](const Wiwa::ModelHierarchy* m_h, EntityId parent, auto&& process_h) -> void {
+		Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
+
+		EntityId e_child = em.CreateEntity(m_h->name.c_str(), parent);
+		em.AddComponent(e_child, t3d);
+
+		size_t c_mesh_size = m_h->meshIndexes.size();
+		size_t c_child_size = m_h->children.size();
+
+		if (c_mesh_size > 0) {
+			mesh.modelIndex = m_h->meshIndexes[0];
+			em.AddComponent(e_child, mesh);
+			em.ApplySystem<Wiwa::MeshRenderer>(e_child);
+		}
+
+		if (c_child_size > 0) {
+			for (size_t i = 0; i < c_child_size; i++) {
+				process_h(m_h->children[i], e_child, process_h);
+			}
+		}
+	};
+
 	for (size_t i = 0; i < children_size; i++) {
+		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
+
+		process_h(child_h, e_root, process_h);
+	}
+
+	/*for (size_t i = 0; i < children_size; i++) {
 		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
 
 		EntityId e_child = em.CreateEntity(child_h->name.c_str(), e_root);
 		em.AddComponent(e_child, t3d);
+
+		size_t c_mesh_size = child_h->meshIndexes.size();
+		size_t c_child_size = child_h->children.size();
 
 		if (child_h->meshIndexes.size() > 0) {
 			mesh.modelIndex = child_h->meshIndexes[0];
 			em.AddComponent(e_child, mesh);
 			em.ApplySystem<Wiwa::MeshRenderer>(e_child);
 		}
-	}
+	}*/
 
 	m_EventCallback = { &Wiwa::Application::OnEvent, &Wiwa::Application::Get()};
 
