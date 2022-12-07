@@ -27,6 +27,7 @@
 #include <Wiwa/scene/Scene.h>
 #include <Wiwa/scene/SceneManager.h>
 #include "../EditorLayer.h"
+#include "../../Entities.h"
 
 ScenePanel::ScenePanel(EditorLayer* instance)
     : Panel("Scene", instance)
@@ -298,14 +299,7 @@ void ScenePanel::Draw()
             std::filesystem::path p = pathS;
             if (p.extension() == ".fbx" || p.extension() == ".FBX")
             {
-                EntityId newEnt = entityManager.CreateEntity(p.stem().string().c_str());
-                Wiwa::Mesh mesh;
-                entityManager.AddComponent<Wiwa::Transform3D>(newEnt, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
-                mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
-                mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
-                mesh.modelIndex = 0;
-                entityManager.AddComponent<Wiwa::Mesh>(newEnt, mesh);
-                entityManager.ApplySystem<Wiwa::MeshRenderer>(newEnt);
+                CreateEntityWithModelHiearchy(pathS.c_str(), "resources/materials/default_material.wimaterial");
             }
             if (p.extension() == ".wiscene")
             {

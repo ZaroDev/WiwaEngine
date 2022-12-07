@@ -18,6 +18,7 @@
 #include <Wiwa/ecs/systems/MeshRenderer.h>
 #include <Wiwa/ecs/components/Sprite.h>
 
+#include "../Entities.h"
 
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
@@ -98,57 +99,7 @@ void EditorLayer::OnAttach()
 	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
 	em.RegisterSystem<Wiwa::MeshRenderer>();	
 
-	// Prepare mesh data
-	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "assets/Models/street2.fbx");
-	sprintf(mesh.mat_path, "%s", "assets/street2_material.wimaterial");
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
-	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
-
-	// Prepare default transform
-	Wiwa::Transform3D t3d;
-	t3d.position = { 0.0f, 0.0f, 0.0f };
-	t3d.rotation = { 0.0f,0.0f, 0.0f };
-	t3d.scale = { 1.0f, 1.0f, 1.0f };
-
-	// Take root model
-	Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh.meshId);
-	Wiwa::Resources::Import<Wiwa::Model>("assets/models/street2.fbx");
-
-	// Create entity with model's hierarchy
-	const Wiwa::ModelHierarchy* model_h = model->getModelHierarchy();
-	size_t children_size = model_h->children.size();
-
-	EntityId e_root = em.CreateEntity(model_h->name.c_str());
-	em.AddComponent<Wiwa::Transform3D>(e_root, t3d);
-
-	auto process_h = [&, this](const Wiwa::ModelHierarchy* m_h, EntityId parent, auto&& process_h) -> void {
-		Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
-
-		EntityId e_child = em.CreateEntity(m_h->name.c_str(), parent);
-		em.AddComponent(e_child, t3d);
-
-		size_t c_mesh_size = m_h->meshIndexes.size();
-		size_t c_child_size = m_h->children.size();
-
-		if (c_mesh_size > 0) {
-			mesh.modelIndex = m_h->meshIndexes[0];
-			em.AddComponent(e_child, mesh);
-			em.ApplySystem<Wiwa::MeshRenderer>(e_child);
-		}
-
-		if (c_child_size > 0) {
-			for (size_t i = 0; i < c_child_size; i++) {
-				process_h(m_h->children[i], e_child, process_h);
-			}
-		}
-	};
-
-	for (size_t i = 0; i < children_size; i++) {
-		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
-
-		process_h(child_h, e_root, process_h);
-	}
+	CreateEntityWithModelHiearchy("assets/models/street2.fbx", "assets/street2_material.wimaterial");
 
 	/*for (size_t i = 0; i < children_size; i++) {
 		const Wiwa::ModelHierarchy* child_h = model_h->children[i];

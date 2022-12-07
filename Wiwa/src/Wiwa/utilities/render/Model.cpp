@@ -309,7 +309,8 @@ namespace Wiwa {
 				}
 			}
 		}
-		models.push_back(this);
+		
+		is_root = false;
 		generateBuffers();
 	}
 
@@ -456,7 +457,6 @@ namespace Wiwa {
 			else
 			{
 				getMeshFromFile(file);
-				generateBuffers();
 			}
 		}
 		else {

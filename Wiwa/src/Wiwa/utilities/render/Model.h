@@ -74,6 +74,8 @@ namespace Wiwa {
 
 		const char* getModelPath() { return m_ModelPath.c_str(); }
 
+		bool IsRoot() const { return is_root; }
+
 		Model* getModelAt(size_t index) { return models[index]; }
 
 		const ModelHierarchy* getModelHierarchy() { return model_hierarchy; }

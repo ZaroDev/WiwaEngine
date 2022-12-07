@@ -27,7 +27,14 @@ namespace Wiwa {
 		Renderer3D& r3d = Application::Get().GetRenderer3D();
 
 		Model* root_mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
-		Model* mod = root_mod->getModelAt(mesh->modelIndex);
+		Model* mod = NULL;
+		if (root_mod->IsRoot()) {
+			mod = root_mod->getModelAt(mesh->modelIndex);
+		}
+		else {
+			mod = root_mod;
+		}
+		
 		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
 
 		CameraManager& man = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
