@@ -325,9 +325,11 @@ namespace Wiwa {
 
 		camera->frameBuffer->Bind(false);
 		size_t cameraCount = CameraManager::getCameraSize();
+		std::vector<CameraId>& cameras = CameraManager::getCameras();
 		for (size_t i = 0; i < cameraCount; i++)
 		{
-			Camera* cam = CameraManager::getCamera(i);
+			CameraId cam_id = cameras[i];
+			Camera* cam = CameraManager::getCamera(cam_id);
 			if (camera == cam)
 				continue;
 

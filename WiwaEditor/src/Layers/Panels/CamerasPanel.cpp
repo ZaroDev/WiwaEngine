@@ -27,34 +27,44 @@ void CamerasPanel::Draw()
 	ImGui::Checkbox("Show AABB", &editorCam->drawBoundingBoxes);
 	ImGui::SameLine();
 	ImGui::Checkbox("Show Frustrums", &editorCam->drawFrustrums);
+	
+
+	std::vector<CameraId>& cameras = Wiwa::CameraManager::getCameras();
 	size_t cameraCount = Wiwa::CameraManager::getCameraSize();
+
 	if (ImGui::BeginTable("##cameras", 3, ImGuiTableFlags_Resizable))
 	{
 		ImGui::TableSetupColumn("Camera Id", ImGuiTableColumnFlags_WidthFixed);
 		ImGui::TableSetupColumn("Options", ImGuiTableColumnFlags_WidthFixed);
 		ImGui::TableSetupColumn("Transform", ImGuiTableColumnFlags_WidthFixed);
 		ImGui::TableHeadersRow();
+
+		CameraId remove_cam_id = -1;
+		bool remove_cam = false;
+
 		for (size_t row = 0; row < cameraCount; row++)
 		{
-			Wiwa::Camera* cam = Wiwa::CameraManager::getCamera(row);
+			CameraId cam_id = cameras[row];
+			Wiwa::Camera* cam = Wiwa::CameraManager::getCamera(cam_id);
 			ImGui::TableNextRow();
 			ImGui::TableSetColumnIndex(0);
-			ImGui::Text("%i", row);
+			ImGui::Text("%i", cam_id);
 			ImGui::TableSetColumnIndex(1);
-			ImGui::PushID(row);
+			ImGui::PushID(cam_id);
 			ImGui::Checkbox("Cull##culling", &cam->cull);
 			ImGui::Checkbox("BoudingBoxes##culling", &cam->drawBoundingBoxes);
 			bool selected =
-				Wiwa::CameraManager::getActiveCamera() == Wiwa::CameraManager::getCamera(row) ?
+				Wiwa::CameraManager::getActiveCamera() == Wiwa::CameraManager::getCamera(cam_id) ?
 				true : false;
 			ImGui::Checkbox("Active", &selected);
 			if (selected)
 			{
-				Wiwa::CameraManager::setActiveCamera(row);
+				Wiwa::CameraManager::setActiveCamera(cam_id);
 			}
 			if (ImGui::Button("Delete"))
 			{
-				Wiwa::CameraManager::DestroyCamera(row);
+				remove_cam_id = cam_id;
+				remove_cam = true;
 			}
 			ImGui::TableSetColumnIndex(2);
 			glm::vec3 pos = cam->getPosition();
@@ -82,6 +92,10 @@ void CamerasPanel::Draw()
 			cam->setPlanes(nearP, farP);
 			ImGui::PopID();
 
+		}
+
+		if (remove_cam) {
+			Wiwa::CameraManager::DestroyCamera(remove_cam_id);
 		}
 		
 		ImGui::EndTable();
