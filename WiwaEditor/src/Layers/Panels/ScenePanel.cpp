@@ -365,13 +365,21 @@ void ScenePanel::Draw()
 
             if (m_SelectedTransform)
             {
-                glm::mat4 transform(1.0f);
+                float tmpMatrix[16];
+                float translation[3], rotation[3], scale[3];
+                translation[0] = m_SelectedTransform->position.x;
+                translation[1] = m_SelectedTransform->position.y;
+                translation[2] = m_SelectedTransform->position.z;
 
-                transform = glm::translate(transform, glm::vec3(m_SelectedTransform->position.x, m_SelectedTransform->position.y, m_SelectedTransform->position.z));
-                transform = glm::rotate(transform, m_SelectedTransform->rotation.x, { 1,0,0 });
-                transform = glm::rotate(transform, m_SelectedTransform->rotation.y, { 0,1,0 });
-                transform = glm::rotate(transform, m_SelectedTransform->rotation.z, { 0,0,1 });
-                transform = glm::scale(transform, glm::vec3(m_SelectedTransform->scale.x, m_SelectedTransform->scale.y, m_SelectedTransform->scale.z));
+                rotation[0] = m_SelectedTransform->rotation.x;
+                rotation[1] = m_SelectedTransform->rotation.y;
+                rotation[2] = m_SelectedTransform->rotation.z;
+
+                scale[0] = m_SelectedTransform->scale.x;
+                scale[1] = m_SelectedTransform->scale.y;
+                scale[2] = m_SelectedTransform->scale.z;
+
+                ImGuizmo::RecomposeMatrixFromComponents(translation, rotation, scale, tmpMatrix);
 
                 //Snaping
                 bool snap = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl);
@@ -383,22 +391,27 @@ void ScenePanel::Draw()
                 float snapValues[3] = { snapValue, snapValue, snapValue };
 
                 ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                    (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+                    (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, tmpMatrix,
                     nullptr, snap ? snapValues : nullptr);
 
                 if (ImGuizmo::IsUsing())
                 {
-                    float translation[3], rotation[3], scale[3];
-
-                    ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), translation, rotation, scale);
-                    WI_INFO("X: {0} Y:{1} Z{2}", rotation[0], rotation[1], rotation[2]);
-                    Wiwa::Vector3f newTranslation = { translation[0], translation[1], translation[2] };
-                    Wiwa::Vector3f newRotation = { glm::radians(rotation[0]), glm::radians(rotation[1]),glm::radians(rotation[2])};
-                    Wiwa::Vector3f newScale = { scale[0], scale[1], scale[2] };
-
-                    m_SelectedTransform->position = newTranslation;
-                    m_SelectedTransform->rotation = newRotation;
-                    m_SelectedTransform->scale = newScale;
+                    ImGuizmo::DecomposeMatrixToComponents(tmpMatrix, translation, rotation, scale);
+                    
+                    switch (m_GizmoType)
+                    {
+                    case ImGuizmo::OPERATION::TRANSLATE: {
+                        m_SelectedTransform->position = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
+                    }break;
+                    case ImGuizmo::OPERATION::ROTATE: {
+                        m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
+                    }break;
+                    case ImGuizmo::OPERATION::SCALE: {
+                        m_SelectedTransform->rotation = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
+                    }break;
+                    default:
+                        break;
+                    }
                 }
             }
         }
