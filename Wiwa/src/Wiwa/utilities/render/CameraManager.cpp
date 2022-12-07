@@ -3,18 +3,24 @@
 #include <Wiwa/core/Application.h>
 #include <Wiwa/core/Renderer3D.h>
 namespace Wiwa {
-	std::vector<Camera*> CameraManager::m_Cameras;
-
-	std::vector<CameraId> CameraManager::m_CamerasAlive;
-	std::vector<CameraId> CameraManager::m_RemovedCameras;
-
-	CameraId CameraManager::m_ActiveCamera = -1;
-
-	Camera* CameraManager::editorCamera = nullptr;
-
+	CameraManager::CameraManager()
+	{
+		Init();
+	}
+	CameraManager::~CameraManager()
+	{
+		CleanUp();
+	}
 	void CameraManager::Init()
 	{
 		editorCamera = new Camera();
+		Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
+		float ar = res.w / (float)res.h;
+		editorCamera->SetPerspective(60, ar, 0.1f, 10000.0f);
+		editorCamera->setPosition({ 0.0f, 1.0f, 5.0f });
+		editorCamera->lookat({ 0.0f, 0.0f, 0.0f });
+
+		CreatePerspectiveCamera(45, ar);
 	}
 	void CameraManager::Update()
 	{

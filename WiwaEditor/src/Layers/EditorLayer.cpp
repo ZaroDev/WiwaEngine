@@ -32,6 +32,12 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
+	// Editor scene
+	m_EditorSceneId = Wiwa::SceneManager::CreateScene();
+	m_EditorScene = Wiwa::SceneManager::getScene(m_EditorSceneId);
+
+	Wiwa::SceneManager::SetScene(m_EditorSceneId);
+
 	m_Configuration = std::make_unique<ConfigurationPanel>(this);
 	m_Console = std::make_unique<ConsolePanel>(this);
 	m_Scene = std::make_unique<ScenePanel>(this);
@@ -77,11 +83,7 @@ void EditorLayer::OnAttach()
 	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
 	m_StopIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId();
 
-	// Editor scene
-	m_EditorSceneId = Wiwa::SceneManager::CreateScene();
-	m_EditorScene = Wiwa::SceneManager::getScene(m_EditorSceneId);
-
-	Wiwa::SceneManager::SetScene(m_EditorSceneId);
+	
 
 	// Test
 	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();

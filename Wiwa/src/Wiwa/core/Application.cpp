@@ -55,7 +55,7 @@ namespace Wiwa {
 
 		m_TargetResolution = { 1920, 1080 };
 
-		Resources::Import<Model>("Models/BakerHouse.fbx", (Resources::ModelSettings*)NULL);
+		Resources::Import<Model>("Models/BakerHouse.fbx");
 		
 		//JSONDocument project("config/project.json");
 		//m_ProjectName = project["name"].get<const char*>();
@@ -83,7 +83,6 @@ namespace Wiwa {
 		PushOverlay(m_ImGuiLayer);
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
-		CameraManager::Init();
 		ScriptEngine::Init();
 		
 	}
@@ -130,14 +129,14 @@ namespace Wiwa {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			//m_Renderer2D->Update();
-			CameraManager::Update();
+			SceneManager::Update();
+			
 			m_Renderer3D->Update();
 
 			// Update time
 			Time::Update();
 			
 			// Update scene manager
-			SceneManager::Update();
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

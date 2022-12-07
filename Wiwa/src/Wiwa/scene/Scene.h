@@ -32,6 +32,7 @@ namespace Wiwa {
 		void ChangeScene(size_t scene);
 
 		EntityManager& GetEntityManager() { return m_EntityManager; }
+		CameraManager& GetCameraManager() { return *m_CameraManager; }
 	protected:
 		virtual void ProcessInput() {}
 
@@ -46,6 +47,7 @@ namespace Wiwa {
 		size_t mMaxTimeEntering, mMaxTimeLeaving = 0;
 
 		EntityManager m_EntityManager;
+		CameraManager* m_CameraManager;
 	private:
 		State m_CurrentState = SCENE_ENTERING;
 		size_t m_TransitionTimer = 0;

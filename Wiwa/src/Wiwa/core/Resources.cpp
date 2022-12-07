@@ -67,7 +67,11 @@ namespace Wiwa {
 
 		// STBI_rgb_alpha loads image as 32 bpp (4 channels), ch = image origin channels
 		unsigned char* image = stbi_load(origin, &w, &h, &ch, STBI_rgb_alpha);
-
+		if (w != h)
+		{
+			WI_ERROR("Image at {0} needs to be square in order to be imported", origin);
+			return;
+		}
 		Image::raw_to_dds_file(destination, image, w, h, 32);
 
 		stbi_image_free(image);

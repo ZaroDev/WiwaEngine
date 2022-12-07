@@ -93,7 +93,7 @@ namespace Wiwa {
 	public:
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
-		template<class T, class... T2> static void Import(const char* file, T2... settings);
+		template<class T> static void Import(const char* file);
 		template<class T, class... T2> static void CreateMeta(const char* file, T2... settings);
 
 		inline static void SaveFile(const char* file, std::string& shaderFile)
@@ -291,7 +291,7 @@ namespace Wiwa {
 	}
 
 	template<>
-	inline void Resources::Import<Image>(const char* file, ImageSettings* settings)
+	inline void Resources::Import<Image>(const char* file)
 	{
 		std::filesystem::path load_path = file;
 
@@ -346,7 +346,7 @@ namespace Wiwa {
 		return model;
 	}
 	template<>
-	inline void Resources::Import<Model>(const char* file, ModelSettings* settings)
+	inline void Resources::Import<Model>(const char* file)
 	{
 		std::filesystem::path import_file = "assets/";
 		import_file += file;

@@ -3,6 +3,7 @@
 #include "../../Utils/ImGuiWidgets.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/core/Application.h>
 CamerasPanel::CamerasPanel(EditorLayer* instance)
 	: Panel("Cameras", instance)
@@ -16,12 +17,13 @@ CamerasPanel::~CamerasPanel()
 void CamerasPanel::Draw()
 {
 	ImGui::Begin(name, &active);
-	Wiwa::Camera* editorCam = Wiwa::CameraManager::editorCamera;
+	Wiwa::CameraManager& cameraManager = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
+	Wiwa::Camera* editorCam = cameraManager.editorCamera;
 	if (ImGui::Button("Create Camera"))
 	{
 		Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
 		float ar = res.w / (float)res.h;
-		Wiwa::CameraManager::CreatePerspectiveCamera(60, ar);
+		cameraManager.CreatePerspectiveCamera(60, ar);
 	}
 	ImGui::SameLine();
 	ImGui::Checkbox("Show AABB", &editorCam->drawBoundingBoxes);
@@ -29,8 +31,8 @@ void CamerasPanel::Draw()
 	ImGui::Checkbox("Show Frustrums", &editorCam->drawFrustrums);
 	
 
-	std::vector<CameraId>& cameras = Wiwa::CameraManager::getCameras();
-	size_t cameraCount = Wiwa::CameraManager::getCameraSize();
+	std::vector<CameraId>& cameras = cameraManager.getCameras();
+	size_t cameraCount = cameraManager.getCameraSize();
 
 	if (ImGui::BeginTable("##cameras", 3, ImGuiTableFlags_Resizable))
 	{
@@ -45,7 +47,7 @@ void CamerasPanel::Draw()
 		for (size_t row = 0; row < cameraCount; row++)
 		{
 			CameraId cam_id = cameras[row];
-			Wiwa::Camera* cam = Wiwa::CameraManager::getCamera(cam_id);
+			Wiwa::Camera* cam = cameraManager.getCamera(cam_id);
 			ImGui::TableNextRow();
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text("%i", cam_id);
@@ -54,12 +56,13 @@ void CamerasPanel::Draw()
 			ImGui::Checkbox("Cull##culling", &cam->cull);
 			ImGui::Checkbox("BoudingBoxes##culling", &cam->drawBoundingBoxes);
 			bool selected =
-				Wiwa::CameraManager::getActiveCamera() == Wiwa::CameraManager::getCamera(cam_id) ?
+				cameraManager.getActiveCamera() == cameraManager.getCamera(cam_id) ?
 				true : false;
+
 			ImGui::Checkbox("Active", &selected);
 			if (selected)
 			{
-				Wiwa::CameraManager::setActiveCamera(cam_id);
+				cameraManager.setActiveCamera(cam_id);
 			}
 			if (ImGui::Button("Delete"))
 			{
@@ -95,7 +98,7 @@ void CamerasPanel::Draw()
 		}
 
 		if (remove_cam) {
-			Wiwa::CameraManager::DestroyCamera(remove_cam_id);
+			cameraManager.DestroyCamera(remove_cam_id);
 		}
 		
 		ImGui::EndTable();

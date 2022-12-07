@@ -6,6 +6,10 @@
 
 #include <glew.h>
 
+#include <Wiwa/core/Application.h>
+#include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
+
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

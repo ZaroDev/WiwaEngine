@@ -5,6 +5,8 @@
 #include <imgui_internal.h>
 #include <Wiwa/core/Application.h>
 #include <Wiwa/core/Resources.h>
+#include <Wiwa/utilities/render/Model.h>
+#include <Wiwa/utilities/render/Image.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 #include "MaterialPanel.h"
 #include "../EditorLayer.h"
@@ -59,6 +61,26 @@ void AssetsPanel::Update()
 				f.path = p.path();
 				f.size = p.file_size();
 				m_Directory.files.push_back(f);
+				if (p.path().extension() == ".png"
+					|| p.path().extension() == ".jpeg"
+					|| p.path().extension() == ".jpg"
+					|| p.path().extension() == ".tga"
+					|| p.path().extension() == ".bmp"
+					|| p.path().extension() == ".psd")
+				{
+
+					Wiwa::Resources::Import<Wiwa::Image>(p.path().string().c_str());
+				}
+				if (p.path().extension() == ".fbx"
+					|| p.path().extension() == ".FBX"
+					|| p.path().extension() == ".obj"
+					|| p.path().extension() == ".OBJ"
+					|| p.path().extension() == ".blend"
+					|| p.path().extension() == ".3d")
+				{
+
+					Wiwa::Resources::Import<Wiwa::Model>(p.path().string().c_str());
+				}
 			}
 		}
 

@@ -38,15 +38,9 @@ ScenePanel::ScenePanel(EditorLayer* instance)
     m_Shadings.push_back(new ShadingView("Texture 2D", Wiwa::Renderer3D::Options::TEXTURE_2D, false));
     m_Shadings.push_back(new ShadingView("Wireframe", Wiwa::Renderer3D::Options::WIREFRAME, false));
 
-    Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
-    float ar = res.w / (float)res.h;
-    nearPlane = 0.1f;
-    farPlane = 10000.0f;
-
-    m_Camera = Wiwa::CameraManager::editorCamera;
-    m_Camera->SetPerspective(60, ar, nearPlane, farPlane);
-    m_Camera->setPosition({ 0.0f, 1.0f, 5.0f });
-    m_Camera->lookat({ 0.0f, 0.0f, 0.0f });
+   
+    m_Camera = Wiwa::SceneManager::getActiveScene()->GetCameraManager().editorCamera;
+   
     // Camera control
     camSpeed = 0.005f;
     sensitivity = 0.5f;
@@ -64,7 +58,7 @@ ScenePanel::~ScenePanel()
 void ScenePanel::Draw()
 {
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
-
+    m_Camera = Wiwa::SceneManager::getActiveScene()->GetCameraManager().editorCamera;
     if (ImGui::BeginMenuBar())
     {
 

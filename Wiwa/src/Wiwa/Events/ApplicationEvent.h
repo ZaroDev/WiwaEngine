@@ -48,6 +48,19 @@ namespace Wiwa
 		int m_Count;
 		const char** m_Paths;
 	};
+	class SceneChangeEvent : public Event 
+	{
+	public:
+		SceneChangeEvent(size_t id) 
+			: m_Id(id){}
+
+		size_t GetID() const { return m_Id; }
+
+		EVENT_CLASS_TYPE(SceneChange)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	private:
+		size_t m_Id;
+	};
 	class AppTickEvent : public Event
 	{
 	public:

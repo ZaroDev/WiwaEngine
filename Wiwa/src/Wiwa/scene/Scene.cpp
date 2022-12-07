@@ -9,6 +9,7 @@ namespace Wiwa {
 	{
 		mMaxTimeEntering = 0;
 		mMaxTimeLeaving = 0;
+		m_CameraManager = new CameraManager();
 	}
 
 	Scene::~Scene()
@@ -18,6 +19,7 @@ namespace Wiwa {
 
 	void Scene::Update()
 	{
+		m_CameraManager->Update();
 		switch (m_CurrentState)
 		{
 		case Scene::SCENE_ENTERING:
