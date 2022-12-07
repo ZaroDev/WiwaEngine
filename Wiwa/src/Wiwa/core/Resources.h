@@ -348,11 +348,9 @@ namespace Wiwa {
 	template<>
 	inline void Resources::Import<Model>(const char* file)
 	{
-		std::filesystem::path import_file = "assets/";
-		import_file += file;
+		std::filesystem::path import_file = file;
 
-		std::filesystem::path export_file = "library/";
-		export_file += file;
+		std::filesystem::path export_file = _assetToLibPath(file);
 		export_file.replace_extension(".wimodel");
 
 		std::filesystem::path export_path = export_file.parent_path();

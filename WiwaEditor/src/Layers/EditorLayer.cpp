@@ -111,6 +111,7 @@ void EditorLayer::OnAttach()
 
 	// Take root model
 	Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh.meshId);
+	Wiwa::Resources::Import<Wiwa::Model>("assets/Models/street2.fbx");
 
 	// Create entity with model's hierarchy
 	const Wiwa::ModelHierarchy* model_h = model->getModelHierarchy();

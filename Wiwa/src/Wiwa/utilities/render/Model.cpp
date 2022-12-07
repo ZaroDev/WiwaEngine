@@ -29,16 +29,33 @@ namespace Wiwa {
 		}
 
 		WI_CORE_INFO("Loading mesh file at: {0} ...", file);
+		
 		is_root = true;
 
 		model_hierarchy = loadModelHierarchy(scene->mRootNode);
-
 		std::filesystem::path p = file;
-
 		model_hierarchy->name = p.stem().string();
+
+		m_ModelPath = file;
 
 		model_name = scene->mRootNode->mName.C_Str();
 
+		// Process materials
+		if (scene->HasMaterials()) {
+			for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
+				aiMaterial* mat = scene->mMaterials[i];
+
+				aiString name;
+				aiGetMaterialString(mat, AI_MATKEY_NAME, &name);
+
+				aiString texture_diffuse;
+				aiGetMaterialString(mat, AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), &texture_diffuse);
+
+				std::cout << "Mat " << i << ": " << name.C_Str() << " Texture: " << texture_diffuse.C_Str() << std::endl;
+			}
+		}
+
+		// Load mesh list
 		if (scene->HasMeshes())
 		{
 			for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
@@ -50,13 +67,9 @@ namespace Wiwa {
 
 				models.push_back(model);
 			}
+		}
 
-			aiReleaseImport(scene);
-		}
-		else {
-			WI_CORE_ERROR("Error loading mesh {0} with error {1}", file, aiGetErrorString());
-		}
-		m_ModelPath = file;
+		aiReleaseImport(scene);
 	}
 
 	void Model::getWiMeshFromFile(const char* file)
