@@ -79,7 +79,6 @@ namespace Wiwa {
 		Resources();
 
 		static std::vector<Resource*> m_Resources[WRT_LAST];
-
 		static void PushResource(ResourceType rt, const char* file, void* rsc);
 		static ResourceId getResourcePosition(ResourceType rt, const char* file);
 
@@ -92,6 +91,7 @@ namespace Wiwa {
 		static void _import_image_impl(const char* origin, const char* destination);
 		static void _import_model_impl(const char* origin, const char* destination);
 	public:
+		inline static std::vector<Resource*> GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
 		template<class T> static void Import(const char* file);

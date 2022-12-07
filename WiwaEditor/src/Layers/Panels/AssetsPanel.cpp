@@ -28,6 +28,9 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	m_FileIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
 	m_BackIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(backId)->GetTextureId();
 	m_MaterialIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(matId)->GetTextureId();
+
+
+	
 }
 
 AssetsPanel::~AssetsPanel()
@@ -61,26 +64,7 @@ void AssetsPanel::Update()
 				f.path = p.path();
 				f.size = p.file_size();
 				m_Directory.files.push_back(f);
-				if (p.path().extension() == ".png"
-					|| p.path().extension() == ".jpeg"
-					|| p.path().extension() == ".jpg"
-					|| p.path().extension() == ".tga"
-					|| p.path().extension() == ".bmp"
-					|| p.path().extension() == ".psd")
-				{
-
-					Wiwa::Resources::Import<Wiwa::Image>(p.path().string().c_str());
-				}
-				if (p.path().extension() == ".fbx"
-					|| p.path().extension() == ".FBX"
-					|| p.path().extension() == ".obj"
-					|| p.path().extension() == ".OBJ"
-					|| p.path().extension() == ".blend"
-					|| p.path().extension() == ".3d")
-				{
-
-					Wiwa::Resources::Import<Wiwa::Model>(p.path().string().c_str());
-				}
+				
 			}
 		}
 
@@ -105,6 +89,26 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 		f.path = p1.path();
 		f.size = p1.file_size();
 		dir->files.push_back(f);
+		if (p1.path().extension() == ".png"
+			|| p1.path().extension() == ".jpeg"
+			|| p1.path().extension() == ".jpg"
+			|| p1.path().extension() == ".tga"
+			|| p1.path().extension() == ".bmp"
+			|| p1.path().extension() == ".psd")
+		{
+
+			Wiwa::Resources::Import<Wiwa::Image>(p1.path().string().c_str());
+		}
+		else if (p1.path().extension() == ".fbx"
+			|| p1.path().extension() == ".FBX"
+			|| p1.path().extension() == ".obj"
+			|| p1.path().extension() == ".OBJ"
+			|| p1.path().extension() == ".blend"
+			|| p1.path().extension() == ".3d")
+		{
+
+			Wiwa::Resources::Import<Wiwa::Model>(p1.path().string().c_str());
+		}
 	}
 }
 void AssetsPanel::Draw()

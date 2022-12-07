@@ -56,6 +56,7 @@ void EditorLayer::OnAttach()
 	m_SystemsPanel = std::make_unique<SystemsPanel>(this);
 	m_GamePanel = std::make_unique<GamePanel>(this);
 	m_CamerasPanel = std::make_unique<CamerasPanel>(this);
+	m_ResourcesPanel = std::make_unique<ResourcesPanel>(this);
 
 
 	m_ProjectPanel = std::make_unique<ProjectPanel>(this);
@@ -72,6 +73,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_SystemsPanel.get());
 	m_Panels.push_back(m_GamePanel.get());
 	m_Panels.push_back(m_CamerasPanel.get());
+	m_Panels.push_back(m_ResourcesPanel.get());
 
 	m_Settings.push_back(m_ProjectPanel.get());
 	m_Settings.push_back(m_About.get());
