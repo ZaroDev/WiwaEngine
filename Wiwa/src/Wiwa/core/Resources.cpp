@@ -42,9 +42,13 @@ namespace Wiwa {
 
 	std::string Resources::_assetToLibPath(std::string path)
 	{
+		_toLower(path);
+
 		size_t a_ind = path.find("assets");
 
-		path.replace(a_ind, 6, "library");
+		if (a_ind != path.npos) {
+			path.replace(a_ind, 6, "library");
+		}
 
 		return path;
 	}
@@ -59,6 +63,15 @@ namespace Wiwa {
 		}
 
 		return true;
+	}
+
+	void Resources::_toLower(std::string& path)
+	{
+		size_t len = path.size();
+
+		for (size_t i = 0; i < len; i++) {
+			if (path[i] >= 'A' && path[i] <= 'Z') path[i] -= ('Z' - 'z');
+		}
 	}
 
 	void Resources::_import_image_impl(const char* origin, const char* destination)

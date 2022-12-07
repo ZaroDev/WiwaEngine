@@ -86,6 +86,7 @@ namespace Wiwa {
 		// Resource path for importing
 		static std::string _assetToLibPath(std::string path);
 		static bool _preparePath(std::string path);
+		static void _toLower(std::string& path);
 
 		// Implementations
 		static void _import_image_impl(const char* origin, const char* destination);
