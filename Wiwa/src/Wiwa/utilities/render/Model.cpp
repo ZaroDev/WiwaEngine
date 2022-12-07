@@ -21,11 +21,21 @@ namespace Wiwa {
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			WI_ERROR("Couldn't load mesh file: {0}", file);
+			return;
 		}
+
 		WI_CORE_INFO("Loading mesh file at: {0} ...", file);
 		is_root = true;
 
-		if (scene != nullptr && scene->HasMeshes())
+		model_hierarchy = loadModelHierarchy(scene->mRootNode);
+
+		std::filesystem::path p = file;
+
+		model_hierarchy->name = p.stem().string();
+
+		model_name = scene->mRootNode->mName.C_Str();
+
+		if (scene->HasMeshes())
 		{
 			for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
 				Model* model = loadmesh(scene->mMeshes[i]);
@@ -88,6 +98,7 @@ namespace Wiwa {
 	{
 		Model* model = new Model(NULL);
 
+		model->model_name = mesh->mName.C_Str();
 		for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
 			// Vertices
 			model->vbo_data.push_back(mesh->mVertices[j].x);
@@ -133,6 +144,23 @@ namespace Wiwa {
 		}
 		
 		return model;
+	}
+
+	ModelHierarchy* Model::loadModelHierarchy(const aiNode* node)
+	{
+		ModelHierarchy* h = new ModelHierarchy();
+
+		h->name = node->mName.C_Str();
+
+		for (int i = 0; i < node->mNumMeshes; i++) {
+			h->meshIndexes.push_back(node->mMeshes[i]);
+		}
+
+		for (int i = 0; i < node->mNumChildren; i++) {
+			h->children.push_back(loadModelHierarchy(node->mChildren[i]));
+		}
+
+		return h;
 	}
 
 	void Model::CreateCube()
@@ -389,6 +417,7 @@ namespace Wiwa {
 		: ebo(0), vbo(0), vao(0)
 	{
 		is_root = true;
+		model_hierarchy = NULL;
 
 		if (file) {
 			if (strcmp(file, "cube") == 0)
@@ -430,6 +459,10 @@ namespace Wiwa {
 
 		for (size_t i = 0; i < m_size; i++) {
 			delete models[i];
+		}
+
+		if (model_hierarchy) {
+			delete model_hierarchy;
 		}
 	}
 

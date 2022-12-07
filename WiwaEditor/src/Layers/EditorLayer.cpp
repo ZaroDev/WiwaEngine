@@ -87,21 +87,41 @@ void EditorLayer::OnAttach()
 	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
 	em.RegisterSystem<Wiwa::MeshRenderer>();	
 
+	// Prepare mesh data
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "Models/BakerHouse");
+	sprintf(mesh.mesh_path, "%s", "assets/Models/BakerHouse.fbx");
 	sprintf(mesh.mat_path, "%s", "resources/materials/bakerhouse_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 
+	// Prepare default transform
 	Wiwa::Transform3D t3d;
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
 
-	EntityId eid = em.CreateEntity("Baker house");
-	em.AddComponent<Wiwa::Transform3D>(eid, t3d);
-	em.AddComponent<Wiwa::Mesh>(eid, mesh);
-	em.ApplySystem<Wiwa::MeshRenderer>(eid);
+	// Take root model
+	Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh.meshId);
+
+	// Create entity with model's hierarchy
+	const Wiwa::ModelHierarchy* model_h = model->getModelHierarchy();
+	size_t children_size = model_h->children.size();
+
+	EntityId e_root = em.CreateEntity(model_h->name.c_str());
+	em.AddComponent<Wiwa::Transform3D>(e_root, t3d);
+
+	for (size_t i = 0; i < children_size; i++) {
+		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
+
+		EntityId e_child = em.CreateEntity(child_h->name.c_str(), e_root);
+		em.AddComponent(e_child, t3d);
+
+		if (child_h->meshIndexes.size() > 0) {
+			mesh.modelIndex = child_h->meshIndexes[0];
+			em.AddComponent(e_child, mesh);
+			em.ApplySystem<Wiwa::MeshRenderer>(e_child);
+		}
+	}
 
 	m_EventCallback = { &Wiwa::Application::OnEvent, &Wiwa::Application::Get()};
 

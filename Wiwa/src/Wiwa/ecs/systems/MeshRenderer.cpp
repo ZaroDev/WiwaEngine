@@ -26,7 +26,8 @@ namespace Wiwa {
 
 		Renderer3D& r3d = Application::Get().GetRenderer3D();
 
-		Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
+		Model* root_mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
+		Model* mod = root_mod->getModelAt(mesh->modelIndex);
 		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
 		size_t cameraCount = Wiwa::CameraManager::getCameraSize();
 		std::vector<CameraId>& cameras = Wiwa::CameraManager::getCameras();
@@ -41,7 +42,6 @@ namespace Wiwa {
 
 			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, camera);
 			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, Wiwa::CameraManager::editorCamera);
-
 		}
 	}
 }

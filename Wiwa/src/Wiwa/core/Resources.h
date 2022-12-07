@@ -317,11 +317,12 @@ namespace Wiwa {
 		ResourceId resourceId;
 
 		if (position == size) {
-			Model* model = new Model(NULL);
+			Model* model = new Model(file);
+			/*Model* model = new Model(NULL);
 			std::string file_path = "library/";
 			file_path += file;
 			file_path += ".wimodel";
-			model->LoadWiMesh(file_path.c_str());
+			model->LoadWiMesh(file_path.c_str());*/
 
 			PushResource(WRT_MODEL, file, model);
 
