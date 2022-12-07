@@ -33,20 +33,22 @@ namespace Wiwa {
 	}
 	void CameraManager::Clear()
 	{
-		m_Cameras.clear();
-	}
-	void CameraManager::CleanUp()
-	{
 		size_t cameraCount = m_CamerasAlive.size();
 		for (size_t i = 0; i < cameraCount; i++)
 		{
-			CameraId cam_id = m_CamerasAlive.size();
+			CameraId cam_id = m_CamerasAlive[i];
 			delete m_Cameras[cam_id];
-		}			
+		}
 
 		m_Cameras.clear();
 		m_CamerasAlive.clear();
 		m_RemovedCameras.clear();
+
+		m_ActiveCamera = -1;
+	}
+	void CameraManager::CleanUp()
+	{
+		Clear();
 
 		delete editorCamera;
 	}

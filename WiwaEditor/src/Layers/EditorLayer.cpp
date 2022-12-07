@@ -195,6 +195,10 @@ void EditorLayer::MainMenuBar()
 				size_t id =Wiwa::SceneManager::CreateScene();
 				Wiwa::SceneManager::SetScene(id);
 			}
+			if (ImGui::MenuItem("Open scene", ""))
+			{
+				OpenScene();
+			}
 			if (ImGui::MenuItem("Save scene as..."))
 			{
 				SaveSceneAs();

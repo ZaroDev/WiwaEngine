@@ -26,6 +26,13 @@ namespace Wiwa {
 
 		Scene* sc = new Scene();
 
+		// Create default camera for scene
+		Size2i& resolution = Application::Get().GetTargetResolution();
+		CameraId cam_id = Wiwa::CameraManager::CreatePerspectiveCamera(45.0f, (float)resolution.w / (float)resolution.h);
+		Camera* cam = Wiwa::CameraManager::getCamera(cam_id);
+		cam->setPosition({ -5.0f, 1.0f, 0.0f });
+		cam->lookat({ 0.0f, 0.0f, 0.0f });
+
 		m_Scenes.push_back(sc);
 
 		sc->Init();
@@ -78,9 +85,12 @@ namespace Wiwa {
 
 			if (c_hash == mesh_hash) {
 				Mesh* mesh = (Mesh*)component;
+				
+				size_t meshpath_size = strlen(mesh->mesh_path);
+				if(meshpath_size > 0) mesh->meshId = Resources::Load<Model>(mesh->mesh_path);
 
-				mesh->meshId = Resources::Load<Model>(mesh->mesh_path);
-				mesh->materialId = Resources::Load<Material>(mesh->mat_path);
+				size_t matpath_size = strlen(mesh->mat_path);
+				if(matpath_size > 0) mesh->materialId = Resources::Load<Material>(mesh->mat_path);
 			}
 		}
 
@@ -186,6 +196,8 @@ namespace Wiwa {
 		SceneId sceneid = -1;
 		File scene_file = FileSystem::Open(scene_path, FileSystem::OM_IN | FileSystem::OM_BINARY);
 		if (scene_file.IsOpen()) {
+			CameraManager::Clear();
+
 			sceneid = CreateScene();
 			Scene* sc = m_Scenes[sceneid];
 
