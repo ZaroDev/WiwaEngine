@@ -38,6 +38,13 @@ void EditorLayer::OnAttach()
 
 	Wiwa::SceneManager::SetScene(m_EditorSceneId);
 
+	Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
+	float ar = res.w / (float)res.h;
+	CameraId cam_id = m_EditorScene->GetCameraManager().CreatePerspectiveCamera(45, ar, 0.1f, 131.0f);
+	Wiwa::Camera* cam = m_EditorScene->GetCameraManager().getCamera(cam_id);
+	cam->setPosition({ -52.5f, 30.2f, 26.2f });
+	cam->setRotation({ -26.0f, -30.2f, 0.0f });
+
 	m_Configuration = std::make_unique<ConfigurationPanel>(this);
 	m_Console = std::make_unique<ConsolePanel>(this);
 	m_Scene = std::make_unique<ScenePanel>(this);

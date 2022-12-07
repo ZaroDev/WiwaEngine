@@ -31,7 +31,6 @@ namespace Wiwa {
 
 		// Create default camera for scene
 		Size2i& resolution = Application::Get().GetTargetResolution();
-		
 
 		m_Scenes.push_back(sc);
 
@@ -162,8 +161,63 @@ namespace Wiwa {
 			// Save scene data
 			// TODO: Save scene info??
 			// Scene name, etc
+			CameraManager& cm = sc->GetCameraManager();
+			std::vector<CameraId>& cameras = cm.getCameras();
+			size_t camera_count = cameras.size();
+			
+			// Save camera count
+			scene_file.Write(&camera_count, sizeof(size_t));
 
+			CameraId active_cam = cm.getActiveCameraId();
 
+			for (size_t i = 0; i < camera_count; i++) {
+				CameraId cam_id = cameras[i];
+				Camera* camera = cm.getCamera(cam_id);
+
+				Wiwa::Camera::CameraType camtype = camera->GetCameraType();
+				float fov = camera->getFOV();
+				float ar = camera->getAspectRatio();
+				float nplane = camera->getNear();
+				float fplane = camera->getFar();
+				glm::vec3 pos = camera->getPosition();
+				glm::vec3 rot = camera->getRotation();
+
+				bool is_active = cam_id == active_cam;
+
+				// Write camera active
+				scene_file.Write(&is_active, 1);
+
+				// Write camera type
+				scene_file.Write(&camtype, sizeof(Wiwa::Camera::CameraType));
+
+				// Write camera FOV
+				scene_file.Write(&fov, sizeof(float));
+
+				// Write camera aspect ratio
+				scene_file.Write(&ar, sizeof(float));
+
+				// Write camera near plane distance
+				scene_file.Write(&nplane, sizeof(float));
+
+				// Write camera far plane distance
+				scene_file.Write(&fplane, sizeof(float));
+
+				// Write camera cull
+				scene_file.Write(&camera->cull, 1);
+
+				// Write camera draw BB
+				scene_file.Write(&camera->drawBoundingBoxes, 1);
+
+				// Write camera draw frustums
+				scene_file.Write(&camera->drawFrustrums, 1);
+
+				// Write camera position
+				scene_file.Write(glm::value_ptr(pos), sizeof(glm::vec3));
+
+				// Write camera rotation
+				scene_file.Write(glm::value_ptr(rot), sizeof(glm::vec3));
+			}
+			
 			EntityManager& em = sc->GetEntityManager();
 			std::vector<EntityId>* pentities = em.GetParentEntitiesAlive();
 			size_t p_entity_count = pentities->size();
@@ -198,6 +252,73 @@ namespace Wiwa {
 		if (scene_file.IsOpen()) {
 			sceneid = CreateScene();
 			Scene* sc = m_Scenes[sceneid];
+
+			// Load cameras
+			CameraManager& cm = sc->GetCameraManager();
+			size_t camera_count;
+
+			// Read camera count
+			scene_file.Read(&camera_count, sizeof(size_t));
+
+			for (size_t i = 0; i < camera_count; i++) {
+				Wiwa::Camera::CameraType camtype;
+				float fov;
+				float ar;
+				float nplane;
+				float fplane;
+				Vector3f pos;
+				glm::vec3 rot;
+				bool is_active;
+
+				// Read camera active
+				scene_file.Read(&is_active, 1);
+
+				// Read camera type
+				scene_file.Read(&camtype, sizeof(Wiwa::Camera::CameraType));
+
+				// Read camera FOV
+				scene_file.Read(&fov, sizeof(float));
+
+				// Read camera aspect ratio
+				scene_file.Read(&ar, sizeof(float));
+
+				// Write camera near plane distance
+				scene_file.Read(&nplane, sizeof(float));
+
+				// Write camera far plane distance
+				scene_file.Read(&fplane, sizeof(float));
+
+				CameraId cam_id = -1;
+				
+				if (camtype == Wiwa::Camera::CameraType::PERSPECTIVE) {
+					cam_id = cm.CreatePerspectiveCamera(fov, ar, nplane, fplane);
+				}
+				else {
+					// TODO: LOAD ORTHOGRAPHIC
+				}
+
+				if (is_active) cm.setActiveCamera(cam_id);
+
+				Camera* camera = cm.getCamera(cam_id);
+
+				// Read camera cull
+				scene_file.Read(&camera->cull, 1);
+
+				// Read camera draw BB
+				scene_file.Read(&camera->drawBoundingBoxes, 1);
+
+				// Read camera draw frustums
+				scene_file.Read(&camera->drawFrustrums, 1);
+
+				// Read camera position
+				scene_file.Read(&pos, sizeof(Vector3f));
+
+				// Read camera rotation
+				scene_file.Read(glm::value_ptr(rot), sizeof(glm::vec3));
+
+				camera->setPosition(pos);
+				camera->setRotation(rot);
+			}
 
 			// Load entities
 			EntityManager& em = sc->GetEntityManager();
