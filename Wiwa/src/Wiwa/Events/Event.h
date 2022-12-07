@@ -11,7 +11,8 @@ namespace Wiwa {
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
-		OnLoad, OnSave, OnMaterialChange, OnEntityChange
+		OnLoad, OnSave, OnMaterialChange, OnEntityChange,
+		SceneChange,
 	};
 
 	enum EventCategory

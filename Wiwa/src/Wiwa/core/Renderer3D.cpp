@@ -6,7 +6,7 @@
 #include <Wiwa/utilities/render/InstanceRenderer.h>
 #include <Wiwa/utilities/Log.h>
 #include <Wiwa/utilities/render/CameraManager.h>
-
+#include <Wiwa/scene/SceneManager.h>
 #include <glew.h>
 
 namespace Wiwa {
@@ -322,14 +322,14 @@ namespace Wiwa {
 			camera = m_ActiveCamera;
 		}
 		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
-
+		CameraManager& cameraManager = SceneManager::getActiveScene()->GetCameraManager();
 		camera->frameBuffer->Bind(false);
-		size_t cameraCount = CameraManager::getCameraSize();
-		std::vector<CameraId>& cameras = CameraManager::getCameras();
+		size_t cameraCount = cameraManager.getCameraSize();
+		std::vector<CameraId>& cameras = cameraManager.getCameras();
 		for (size_t i = 0; i < cameraCount; i++)
 		{
 			CameraId cam_id = cameras[i];
-			Camera* cam = CameraManager::getCamera(cam_id);
+			Camera* cam = cameraManager.getCamera(cam_id);
 			if (camera == cam)
 				continue;
 

@@ -4,6 +4,7 @@
 #include <Wiwa/core/Renderer3D.h>
 #include "../../Utils/ImGuiWidgets.h"
 
+
 GamePanel::GamePanel(EditorLayer* instance)
 	: Panel("Game",instance)
 {
@@ -16,6 +17,8 @@ GamePanel::~GamePanel()
 void GamePanel::Draw()
 {
     ImGui::Begin(name, &active);
+    Wiwa::CameraManager& cameraManager = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
+
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
     Wiwa::Size2i resolution = Wiwa::Application::Get().GetTargetResolution();
@@ -23,11 +26,10 @@ void GamePanel::Draw()
     Wiwa::Size2f scales = { viewportPanelSize.x / (float)resolution.w, viewportPanelSize.y / (float)resolution.h };
 
     float scale = scales.x < scales.y ? scales.x : scales.y;
-
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
-    if (Wiwa::CameraManager::getCameraSize() > 0)
+    if (cameraManager.getCameraSize() > 0)
     {
-        Wiwa::Camera* cam = Wiwa::CameraManager::getActiveCamera();
+        Wiwa::Camera* cam = cameraManager.getActiveCamera();
 
         ImTextureID tex = (ImTextureID)(intptr_t)cam->frameBuffer->getColorBufferTexture();
 

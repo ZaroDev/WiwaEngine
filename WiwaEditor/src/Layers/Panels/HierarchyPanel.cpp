@@ -104,7 +104,7 @@ void HierarchyPanel::DrawAddMenu(Wiwa::EntityManager& entityManager)
 	{
 		Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
 		float ar = res.w / (float)res.h;
-		Wiwa::CameraManager::CreatePerspectiveCamera(60, ar);
+		Wiwa::SceneManager::getActiveScene()->GetCameraManager().CreatePerspectiveCamera(60, ar);
 	}
 	if (m_CurrentID >= 0)
 	{

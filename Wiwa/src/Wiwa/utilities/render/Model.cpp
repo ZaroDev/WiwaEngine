@@ -6,6 +6,10 @@
 
 #include <glew.h>
 
+#include <Wiwa/core/Application.h>
+#include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
+
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -22,6 +26,8 @@ namespace Wiwa {
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			WI_ERROR("Couldn't load mesh file: {0}", file);
 		}
+		
+
 		WI_CORE_INFO("Loading mesh file at: {0} ...", file);
 		is_root = true;
 

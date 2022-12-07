@@ -1,6 +1,8 @@
 #include <wipch.h>
 #include "SceneManager.h"
 #include <Wiwa/ecs/systems/MeshRenderer.h>
+#include <Wiwa/events/Event.h>
+#include <Wiwa/events/ApplicationEvent.h>
 
 namespace Wiwa {
 	std::vector<Scene*> SceneManager::m_Scenes;
@@ -9,6 +11,7 @@ namespace Wiwa {
 	void SceneManager::Update()
 	{
 		m_Scenes[m_ActiveScene]->Update();
+
 	}
 
 	void SceneManager::CleanUp()
@@ -28,10 +31,7 @@ namespace Wiwa {
 
 		// Create default camera for scene
 		Size2i& resolution = Application::Get().GetTargetResolution();
-		CameraId cam_id = Wiwa::CameraManager::CreatePerspectiveCamera(45.0f, (float)resolution.w / (float)resolution.h);
-		Camera* cam = Wiwa::CameraManager::getCamera(cam_id);
-		cam->setPosition({ -5.0f, 1.0f, 0.0f });
-		cam->lookat({ 0.0f, 0.0f, 0.0f });
+		
 
 		m_Scenes.push_back(sc);
 
@@ -196,8 +196,6 @@ namespace Wiwa {
 		SceneId sceneid = -1;
 		File scene_file = FileSystem::Open(scene_path, FileSystem::OM_IN | FileSystem::OM_BINARY);
 		if (scene_file.IsOpen()) {
-			CameraManager::Clear();
-
 			sceneid = CreateScene();
 			Scene* sc = m_Scenes[sceneid];
 
