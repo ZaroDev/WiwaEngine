@@ -55,7 +55,7 @@ namespace Wiwa {
 
 		m_TargetResolution = { 1920, 1080 };
 
-		Resources::Import<Model>("Models/BakerHouse.fbx", (Resources::ModelSettings*)NULL);
+		Resources::Import<Model>("Models/BakerHouse.fbx");
 		
 		//JSONDocument project("config/project.json");
 		//m_ProjectName = project["name"].get<const char*>();
