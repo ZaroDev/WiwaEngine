@@ -303,6 +303,7 @@ void ScenePanel::Draw()
                 entityManager.AddComponent<Wiwa::Transform3D>(newEnt, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
                 mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
                 mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>("resources/materials/default_material.wimaterial");
+                mesh.modelIndex = 0;
                 entityManager.AddComponent<Wiwa::Mesh>(newEnt, mesh);
                 entityManager.ApplySystem<Wiwa::MeshRenderer>(newEnt);
             }
