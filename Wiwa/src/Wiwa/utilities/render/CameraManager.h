@@ -21,6 +21,7 @@ namespace Wiwa{
 		static Camera* editorCamera;
 		static void Init();
 		static void Update();
+		static void Clear();
 		static void CleanUp();
 
 		static void setActiveCamera(CameraId cameraId) { m_ActiveCamera = cameraId; }

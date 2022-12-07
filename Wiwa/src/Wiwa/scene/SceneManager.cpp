@@ -185,7 +185,6 @@ namespace Wiwa {
 	{
 		SceneId sceneid = -1;
 		File scene_file = FileSystem::Open(scene_path, FileSystem::OM_IN | FileSystem::OM_BINARY);
-
 		if (scene_file.IsOpen()) {
 			sceneid = CreateScene();
 			Scene* sc = m_Scenes[sceneid];

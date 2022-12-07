@@ -56,6 +56,7 @@ namespace Wiwa {
 
 	void Scene::Load()
 	{
+		Wiwa::CameraManager::Clear();
 		m_TransitionTimer = 0;
 
 		m_CurrentState = SCENE_ENTERING;

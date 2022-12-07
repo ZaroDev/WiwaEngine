@@ -31,6 +31,10 @@ namespace Wiwa {
 			m_Cameras[cam_id]->frameBuffer->Clear();
 		}
 	}
+	void CameraManager::Clear()
+	{
+		m_Cameras.clear();
+	}
 	void CameraManager::CleanUp()
 	{
 		size_t cameraCount = m_CamerasAlive.size();
