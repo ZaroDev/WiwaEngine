@@ -312,6 +312,11 @@ void ScenePanel::Draw()
                 entityManager.AddComponent<Wiwa::Mesh>(newEnt, mesh);
                 entityManager.ApplySystem<Wiwa::MeshRenderer>(newEnt);
             }
+            if (p.extension() == ".wiscene")
+            {
+               SceneId id =  Wiwa::SceneManager::LoadScene(pathS.c_str());
+               Wiwa::SceneManager::SetScene(id);
+            }
 
         }
 
