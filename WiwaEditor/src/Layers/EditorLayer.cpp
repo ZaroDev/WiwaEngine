@@ -99,7 +99,7 @@ void EditorLayer::OnAttach()
 	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
 	em.RegisterSystem<Wiwa::MeshRenderer>();
 
-	CreateEntityWithModelHiearchy("models/street2", "assets/street2_material.wimaterial");
+	CreateEntityWithModelHierarchy("models/street2_fixed", "assets/street2_material.wimaterial");
 
 	/*for (size_t i = 0; i < children_size; i++) {
 		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
