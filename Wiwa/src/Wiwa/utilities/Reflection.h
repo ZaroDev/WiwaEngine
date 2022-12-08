@@ -93,7 +93,7 @@ inline std::string ClearCppName(std::string cname)
 #define BASE_TYPE_BODY(T) \
 	type.name = ClearCppName(typeid(T).name()); \
 	type.size = sizeof(T); \
-	type.hash = std::hash<std::string>{}(type.name); \
+	type.hash = FNV1A_HASH(type.name.c_str()); \
 	type.is_class = false; \
 	type.is_enum = false; \
 	type.is_array = false; \
@@ -212,6 +212,8 @@ enum class TypeHash : size_t {
 	Float = FNV1A_HASH("float"),
 	Double = FNV1A_HASH("double"),
 	LongDouble = FNV1A_HASH("long double"),
+	LongLong = FNV1A_HASH("long long"),
+	ULongLong = FNV1A_HASH("unsigned long long"),
 
 	// Vector hashes
 	Vector2i = FNV1A_HASH("Vector2i"),
@@ -224,5 +226,9 @@ enum class TypeHash : size_t {
 	Rect2i = FNV1A_HASH("Rect2i"),
 
 	// Custom
-	Pivot = FNV1A_HASH("Pivot")
+	Pivot = FNV1A_HASH("Pivot"),
+
+	// Components
+	Transform3D = FNV1A_HASH("Transform3D"),
+	Mesh = FNV1A_HASH("Mesh")
 };

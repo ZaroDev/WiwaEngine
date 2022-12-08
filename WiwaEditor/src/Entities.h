@@ -12,14 +12,30 @@ inline void CreateNew3DEnt()
 {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 	EntityId myEntity = em.CreateEntity("New Entity");
-	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+
+	// Prepare default transform
+	Wiwa::Transform3D t3d;
+	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
+	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.scale = { 1.0f, 1.0f, 1.0f };
+
+	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 }
 
 inline void CreateNewChild(EntityId parentId)
 {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 	EntityId myEntity = em.CreateEntity("New entity", parentId);
-	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+
+	// Prepare default transform
+	Wiwa::Transform3D t3d;
+	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
+	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.scale = { 1.0f, 1.0f, 1.0f };
+
+	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 }
 
 inline void CreateCube()
@@ -27,7 +43,15 @@ inline void CreateCube()
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 	EntityId myEntity = em.CreateEntity("Cube");
-	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+
+	// Prepare default transform
+	Wiwa::Transform3D t3d;
+	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
+	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.scale = { 1.0f, 1.0f, 1.0f };
+
+	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
 	sprintf(mesh.mesh_path, "%s", "cube");
 	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
@@ -42,7 +66,15 @@ inline void CreatePlane()
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 	EntityId myEntity = em.CreateEntity("Plane");
-	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+
+	// Prepare default transform
+	Wiwa::Transform3D t3d;
+	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
+	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.scale = { 1.0f, 1.0f, 1.0f };
+
+	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
 	sprintf(mesh.mesh_path, "%s", "plane");
 	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
@@ -57,7 +89,15 @@ inline void CreatePyramid()
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 	EntityId myEntity = em.CreateEntity("Pyramid");
-	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+
+	// Prepare default transform
+	Wiwa::Transform3D t3d;
+	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
+	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.scale = { 1.0f, 1.0f, 1.0f };
+
+	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
 	sprintf(mesh.mesh_path, "%s", "pyramid");
 	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
@@ -72,7 +112,15 @@ inline void CreateSphere()
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 	EntityId myEntity = em.CreateEntity("Sphere");
-	em.AddComponent<Wiwa::Transform3D>(myEntity, { {0,0,0},{0.0f, 0.0f, 0.0f},{1.0,1.0, 1.0} });
+
+	// Prepare default transform
+	Wiwa::Transform3D t3d;
+	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
+	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.scale = { 1.0f, 1.0f, 1.0f };
+
+	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
 	sprintf(mesh.mesh_path, "%s", "resources/meshes/sphere.fbx");
 	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
@@ -95,6 +143,7 @@ inline void CreateEntityWithModelHiearchy(const char* model_path, const char* ma
 	// Prepare default transform
 	Wiwa::Transform3D t3d;
 	t3d.position = { 0.0f, 0.0f, 0.0f };
+	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
 

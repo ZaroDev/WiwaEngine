@@ -78,6 +78,13 @@ namespace Wiwa {
 		m_EntityChildren[eid].clear();
 	}
 
+	void EntityManager::UpdateTransforms()
+	{
+		size_t p_ent_size = m_ParentEntitiesAlive.size();
+
+
+	}
+
 	void EntityManager::Update()
 	{
 		// Remove entities in pool

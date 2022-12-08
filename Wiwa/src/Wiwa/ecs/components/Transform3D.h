@@ -8,6 +8,7 @@
 namespace Wiwa {
 	struct WI_API Transform3D {
 		Vector3f position;
+		Vector3f localPosition;
 		Vector3f rotation;
 		Vector3f scale;
 	};
@@ -15,6 +16,7 @@ namespace Wiwa {
 
 REFLECTION_BEGIN(Wiwa::Transform3D)
 	REFLECT_MEMBER(position)
+	REFLECT_MEMBER(localPosition)
 	REFLECT_MEMBER(rotation)
 	REFLECT_MEMBER(scale)
 REFLECTION_END;

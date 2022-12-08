@@ -62,6 +62,8 @@ namespace Wiwa {
 		std::vector<System*> m_Systems;
 
 		void RemoveEntity(EntityId eid);
+
+		void UpdateTransforms();
 	public:
 		EntityManager();
 		~EntityManager();
