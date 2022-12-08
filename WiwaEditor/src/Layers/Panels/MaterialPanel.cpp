@@ -5,7 +5,7 @@
 
 #include <Wiwa/utilities/json/JSONDocument.h>
 
-#include "../../Utils/ImGuiWidgets.h"
+#include "../../Utils/EditorUtils.h"
 
 #include <Wiwa/core/Renderer3D.h>
 #include <Wiwa/core/Application.h>

@@ -20,6 +20,42 @@
 typedef size_t ResourceId;
 
 namespace Wiwa {
+	enum class CompressionType {
+		NONE = 0,
+		RGB_DXT1,
+		RGBA_DXT1,
+		RGBA_DXT3,
+		RGBA_DXT5
+	};
+	struct ImageSettings {
+		CompressionType Compression = CompressionType::RGBA_DXT5;
+		bool Interlaced = false;
+		int32_t OffsetX = 0;
+		int32_t OffsetY = 0;
+		bool MipMapping = true;
+		bool Anystropy = true;
+		bool MaxAnystropy = true;
+		bool BlurGausian = false;
+		bool BlurAverage = false;
+		bool Contrast = false;
+		uint16_t AmountOfContrast = 0;
+		bool Alienify = false;
+		bool GammaCorrection = false;
+		bool Noise = false;
+		bool Equialize = false;
+		bool Negative = false;
+		bool Pixelize = false;
+		bool Sharpen = false;
+		uint16_t SharpenFactor = 0;
+		uint16_t SharpenIterations = 0;
+		bool Scale = 0;
+		ImageSettings() = default;
+	};
+
+	struct ModelSettings {
+		bool preTranslatedVertices = false;
+		ModelSettings() = default;
+	};
 	class WI_API Resources
 	{
 	public:
@@ -40,41 +76,7 @@ namespace Wiwa {
 			// Any type
 			void* resource;
 		};
-		enum class CompressionType {
-			NONE = 0,
-			RGB_DXT1,
-			RGBA_DXT1,
-			RGBA_DXT3,
-			RGBA_DXT5
-		};
-		struct ImageSettings {
-			CompressionType Compression = CompressionType::RGBA_DXT5;
-			bool Interlaced = false;
-			int32_t OffsetX = 0;
-			int32_t OffsetY = 0;
-			bool MipMapping = true;
-			bool Anystropy = true;
-			bool MaxAnystropy = true;
-			bool BlurGausian = false;
-			bool BlurAverage = false;
-			bool Contrast = false;
-			uint16_t AmountOfContrast = 0;
-			bool Alienify = false;
-			bool GammaCorrection = false;
-			bool Noise = false;
-			bool Equialize = false;
-			bool Negative = false;
-			bool Pixelize = false;
-			bool Sharpen = false;
-			uint16_t SharpenFactor = 0;
-			uint16_t SharpenIterations = 0;
-			bool Scale = 0;
-			ImageSettings() = default;
-		};
-
-		struct ModelSettings {
-			
-		};
+		
 	private:
 		Resources();
 
@@ -85,17 +87,18 @@ namespace Wiwa {
 		// Resource path for importing
 		static std::string _assetToLibPath(std::string path);
 		static bool _preparePath(std::string path);
-		static void _toLower(std::string& path);
 
 		// Implementations
 		static void _import_image_impl(const char* origin, const char* destination);
 		static void _import_model_impl(const char* origin, const char* destination);
 	public:
+		static void _toLower(std::string& path);
 		inline static std::vector<Resource*> GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
 		template<class T> static void Import(const char* file);
 		template<class T, class... T2> static void CreateMeta(const char* file, T2... settings);
+		template<class T, class... T2> static void LoadMeta(const char* file, T2... settings);
 
 		inline static void SaveFile(const char* file, std::string& shaderFile)
 		{
@@ -135,6 +138,11 @@ namespace Wiwa {
 	};
 
 	// SPECIALIZATION FOR SHADER
+	template<>
+	inline void Resources::LoadMeta<Shader>(const char* file, ModelSettings* settings)
+	{
+
+	}
 	template<>
 	inline void Resources::CreateMeta<Shader>(const char* file)
 	{	
@@ -223,12 +231,44 @@ namespace Wiwa {
 	}
 	//--SPECIALIZATION FOR SPRITE
 	template<>
-	inline void Resources::CreateMeta<Image>(const char* file, ImageSettings* settings)
+	inline void Resources::LoadMeta<Image>(const char* file, ImageSettings* settings)
 	{
 		std::filesystem::path filePath = file;
-		filePath += ".meta";
-		JSONDocument doc;
+		filePath.replace_extension(".meta");
+		if (filePath.empty())
+			return;
+		JSONDocument doc(filePath.string().c_str());
+		if (!doc.HasMember("imageImportSettings"))
+			return;
+		settings->Compression = (CompressionType)doc["imageImportSettings"]["compression"].get<int>();
+		settings->Interlaced = doc["imageImportSettings"]["interlaced"].get<bool>();
+		settings->OffsetX = doc["imageImportSettings"]["offset_x"].get<int>();
+		settings->OffsetY = doc["imageImportSettings"]["offset_y"].get<int>();
+		settings->Anystropy = doc["imageImportSettings"]["anystropy"].get<bool>();
+		settings->MaxAnystropy = doc["imageImportSettings"]["max_anystropy"].get<bool>();
+		settings->BlurGausian = doc["imageImportSettings"]["blur_gausian"].get<bool>();
+		settings->BlurAverage = doc["imageImportSettings"]["blur_average"].get<bool>();
+		settings->Contrast = doc["imageImportSettings"]["contrast"].get<bool>();
+		settings->AmountOfContrast = doc["imageImportSettings"]["amount_of_contrast"].get<int>();
+		settings->Alienify = doc["imageImportSettings"]["alienify"].get<bool>();
+		settings->GammaCorrection = doc["imageImportSettings"]["gamma_correction"].get<bool>();
+		settings->Noise = doc["imageImportSettings"]["noise"].get<bool>();
+		settings->Equialize = doc["imageImportSettings"]["equialize"].get<bool>();
+		settings->Pixelize = doc["imageImportSettings"]["pixelize"].get<bool>();
+		settings->Sharpen = doc["imageImportSettings"]["sharpen"].get<bool>();
+		settings->SharpenFactor = doc["imageImportSettings"]["sharpen_factor"].get<int>();
+		settings->SharpenIterations = doc["imageImportSettings"]["sharpen_iterations"].get<int>();
+		settings->Scale = doc["imageImportSettings"]["scale"].get<int>();
 		doc.save_file(filePath.string().c_str());
+	}
+	template<>
+	inline void Resources::CreateMeta<Image>(const char* file, ImageSettings* settings)
+	{
+		if (!settings)
+			return;
+		std::filesystem::path filePath = file;
+		filePath.replace_extension(".meta");
+		JSONDocument doc;
 		doc.AddMember("fileFormatVersion", 1);
 		doc.AddMember("file", file);
 		doc.AddMember("folderAsset", false);
@@ -305,9 +345,30 @@ namespace Wiwa {
 
 	//--SPECIALIZATION FOR MODEL
 	template<>
+	inline void Resources::LoadMeta<Model>(const char* file, ModelSettings* settings)
+	{
+		std::filesystem::path filePath = file;
+		filePath.replace_extension(".meta");
+		if (filePath.empty())
+			return;
+		JSONDocument doc(filePath.string().c_str());
+		if (!doc.HasMember("modelImportSettings"))
+			return;
+		settings->preTranslatedVertices = doc["modelImportSettings"]["pre_translated_vertices"].get<bool>();
+	}
+	template<>
 	inline void Resources::CreateMeta<Model>(const char* file, ModelSettings* settings)
 	{
-
+		std::filesystem::path filePath = file;
+		filePath.replace_extension(".meta");
+		JSONDocument doc;
+		doc.AddMember("fileFormatVersion", 1);
+		doc.AddMember("file", file);
+		doc.AddMember("folderAsset", false);
+		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		doc.AddMember("timeCreated", std::ctime(&time));
+		JSONValue modelSettignsObject = doc.AddMemberObject("modelImportSettings");
+		modelSettignsObject.AddMember("pre_translated_vertices", settings->preTranslatedVertices);
 	}
 	template<>
 	inline ResourceId Resources::Load<Model>(const char* file)
@@ -361,6 +422,11 @@ namespace Wiwa {
 		}
 	}
 	//--SPECIALIZATION FOR MATERIAL
+	template<>
+	inline void Resources::LoadMeta<Material>(const char* file, ModelSettings* settings)
+	{
+
+	}
 	template<>
 	inline void Resources::CreateMeta<Material>(const char* file, ImageSettings* settings)
 	{

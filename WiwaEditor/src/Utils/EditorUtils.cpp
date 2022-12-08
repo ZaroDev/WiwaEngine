@@ -1,6 +1,7 @@
-#include "ImGuiWidgets.h"
+#include "EditorUtils.h"
 #include <Wiwa/utilities/Reflection.h>
 #include <fstream>
+#include <Wiwa/core/Resources.h>
 
 void DrawVec3Control(const char* label, unsigned char* data, const Field field, float resetValue, float columnWidth)
 {
@@ -278,6 +279,39 @@ void DrawRect2Control(const char* label, unsigned char* data, const Field field,
 	ImGui::Columns(1);
 
 	ImGui::PopID();
+}
+
+bool ImageExtensionComp(const std::filesystem::path file)
+{
+	std::string path = file.string();
+	Wiwa::Resources::_toLower(path);
+	std::filesystem::path formatedFile = path.c_str();
+
+	if (formatedFile.extension() == ".png"
+		|| formatedFile.extension() == ".jpeg"
+		|| formatedFile.extension() == ".jpg"
+		|| formatedFile.extension() == ".tga"
+		|| formatedFile.extension() == ".bmp"
+		|| formatedFile.extension() == ".psd")
+		return true;
+
+	return false;
+}
+
+bool ModelExtensionComp(const std::filesystem::path file)
+{
+	std::string path = file.string();
+	Wiwa::Resources::_toLower(path);
+	std::filesystem::path formatedFile = path.c_str();
+
+	if (formatedFile.extension() == ".fbx"
+		|| formatedFile.extension() == ".obj"
+		|| formatedFile.extension() == ".OBJ"
+		|| formatedFile.extension() == ".blend"
+		|| formatedFile.extension() == ".3d")
+		return true;
+
+	return false;
 }
 
 void DrawVec3Control(const std::string& label, float* values, float resetValue, float columnWidth)

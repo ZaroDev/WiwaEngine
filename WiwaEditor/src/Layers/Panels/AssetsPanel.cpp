@@ -10,7 +10,7 @@
 #include <Wiwa/utilities/json/JSONDocument.h>
 #include "MaterialPanel.h"
 #include "../EditorLayer.h"
-#include "../../Utils/ImGuiWidgets.h"
+#include "../../Utils/EditorUtils.h"
 
 
 static const std::filesystem::path s_AssetsPath = "Assets";
@@ -89,12 +89,7 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 		f.path = p1.path();
 		f.size = p1.file_size();
 		dir->files.push_back(f);
-		if (p1.path().extension() == ".png"
-			|| p1.path().extension() == ".jpeg"
-			|| p1.path().extension() == ".jpg"
-			|| p1.path().extension() == ".tga"
-			|| p1.path().extension() == ".bmp"
-			|| p1.path().extension() == ".psd")
+		if (ImageExtensionComp(p1.path()))
 		{
 
 			Wiwa::Resources::Import<Wiwa::Image>(p1.path().string().c_str());

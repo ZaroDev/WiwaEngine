@@ -15,7 +15,7 @@
 #include "ScenePanel.h"
 #include "../EditorLayer.h"
 
-#include "../../Utils/ImGuiWidgets.h"
+#include "../../Utils/EditorUtils.h"
 
 HierarchyPanel::HierarchyPanel(EditorLayer* instance)
 	: Panel("Hierarchy", instance)

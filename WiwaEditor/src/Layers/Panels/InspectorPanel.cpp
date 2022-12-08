@@ -8,7 +8,7 @@
 #include <Wiwa/core/Resources.h>
 #include <Wiwa/utilities/render/Material.h>
 #include <Wiwa/utilities/math/Vector2i.h>
-#include "../../Utils/ImGuiWidgets.h"
+#include "../../Utils/EditorUtils.h"
 
 bool InspectorPanel::DrawComponent(size_t componentId)
 {

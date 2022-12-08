@@ -1,6 +1,6 @@
 #include "CamerasPanel.h"
 #include <Wiwa/utilities/render/CameraManager.h>
-#include "../../Utils/ImGuiWidgets.h"
+#include "../../Utils/EditorUtils.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Wiwa/scene/SceneManager.h>

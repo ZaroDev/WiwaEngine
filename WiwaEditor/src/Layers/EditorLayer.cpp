@@ -58,6 +58,7 @@ void EditorLayer::OnAttach()
 	m_GamePanel = std::make_unique<GamePanel>(this);
 	m_CamerasPanel = std::make_unique<CamerasPanel>(this);
 	m_ResourcesPanel = std::make_unique<ResourcesPanel>(this);
+	m_ImportPanel = std::make_unique<ImportPanel>(this);
 
 
 	m_ProjectPanel = std::make_unique<ProjectPanel>(this);
@@ -75,6 +76,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_GamePanel.get());
 	m_Panels.push_back(m_CamerasPanel.get());
 	m_Panels.push_back(m_ResourcesPanel.get());
+	m_Panels.push_back(m_ImportPanel.get());
 
 	m_Settings.push_back(m_ProjectPanel.get());
 	m_Settings.push_back(m_About.get());
@@ -269,7 +271,7 @@ void EditorLayer::MainMenuBar()
 	if (ImGui::BeginViewportSideBar("##SecondaryMenuBar", viewport, ImGuiDir_Up, height, window_flags)) {
 		if (ImGui::BeginMenuBar()) 
 		{
-			if(ImGui::Button("All"))
+			if(ImGui::Button("None"))
 				m_GizmoType = -1;
 
 			if (ImGui::Button("Trns"))

@@ -2,7 +2,7 @@
 #include <Wiwa/core/Application.h>
 #include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/core/Renderer3D.h>
-#include "../../Utils/ImGuiWidgets.h"
+#include "../../Utils/EditorUtils.h"
 
 
 GamePanel::GamePanel(EditorLayer* instance)
