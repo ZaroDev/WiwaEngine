@@ -27,27 +27,27 @@ void ImportPanel::Draw()
             std::string pathS(ws.begin(), ws.end());
             m_CurrentPath = pathS;   
             m_MetaPath = m_CurrentPath;
-            m_MetaPath.replace_extension(".meta");
-          
-        }
-        if (ModelExtensionComp(m_CurrentPath))
-        {
-            if (!std::filesystem::exists(m_MetaPath))
+            m_MetaPath += ".meta";
+            if (ModelExtensionComp(m_CurrentPath))
             {
-                Wiwa::ModelSettings settings;
-                Wiwa::Resources::CreateMeta<Wiwa::Model>(m_CurrentPath.string().c_str(), &settings);
+                if (!std::filesystem::exists(m_MetaPath))
+                {
+                    Wiwa::ModelSettings settings;
+                    Wiwa::Resources::CreateMeta<Wiwa::Model>(m_CurrentPath.string().c_str(), &settings);
+                }
+                Wiwa::Resources::LoadMeta<Wiwa::Model>(m_CurrentPath.string().c_str(), &m_ModelSettings);
             }
-            Wiwa::Resources::LoadMeta<Wiwa::Model>(m_CurrentPath.string().c_str(), &m_ModelSettings);
-        }
-        if (ImageExtensionComp(m_CurrentPath))
-        {
-            if (!std::filesystem::exists(m_MetaPath))
+            if (ImageExtensionComp(m_CurrentPath))
             {
-                Wiwa::ImageSettings settings;
-                Wiwa::Resources::CreateMeta<Wiwa::Image>(m_CurrentPath.string().c_str(), &settings);
+                if (!std::filesystem::exists(m_MetaPath))
+                {
+                    Wiwa::ImageSettings settings;
+                    Wiwa::Resources::CreateMeta<Wiwa::Image>(m_CurrentPath.string().c_str(), &settings);
+                }
+                Wiwa::Resources::LoadMeta<Wiwa::Image>(m_CurrentPath.string().c_str(), &m_ImageSettings);
             }
-            Wiwa::Resources::LoadMeta<Wiwa::Image>(m_CurrentPath.string().c_str(), &m_ImageSettings);
         }
+        
         ImGui::EndDragDropTarget();
     }
     if (m_CurrentPath == "")
