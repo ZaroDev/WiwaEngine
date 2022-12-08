@@ -63,6 +63,7 @@ namespace Wiwa {
 
 		void RemoveEntity(EntityId eid);
 
+		void UpdateTransforms(EntityId eid);
 		void UpdateTransforms();
 	public:
 		EntityManager();

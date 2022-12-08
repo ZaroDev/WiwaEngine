@@ -333,14 +333,19 @@ namespace Wiwa {
 		size_t mesh_ind_size = h->meshIndexes.size();
 
 		file.Write(&mesh_ind_size, sizeof(size_t));
-		file.Write(h->meshIndexes.data(), mesh_ind_size);
+
+		if (mesh_ind_size > 0) {
+			file.Write(h->meshIndexes.data(), mesh_ind_size);
+		}
 
 		size_t child_size = h->children.size();
 
 		file.Write(&child_size, sizeof(size_t));
 
-		for (size_t i = 0; i < child_size; i++) {
-			SaveModelHierarchy(file, h->children[i]);
+		if (child_size > 0) {
+			for (size_t i = 0; i < child_size; i++) {
+				SaveModelHierarchy(file, h->children[i]);
+			}
 		}
 	}
 
@@ -357,17 +362,22 @@ namespace Wiwa {
 		size_t mesh_ind_size;
 
 		file.Read(&mesh_ind_size, sizeof(size_t));
-		h->meshIndexes.resize(mesh_ind_size);
-		file.Read(&h->meshIndexes[0], mesh_ind_size);
+
+		if (mesh_ind_size > 0) {
+			h->meshIndexes.resize(mesh_ind_size);
+			file.Read(&h->meshIndexes[0], mesh_ind_size);
+		}
 
 		size_t child_size;
 
 		file.Read(&child_size, sizeof(size_t));
 
-		h->children.reserve(child_size);
+		if (child_size > 0) {
+			h->children.reserve(child_size);
 
-		for (size_t i = 0; i < child_size; i++) {
-			h->children.push_back(LoadModelHierarchy(file));
+			for (size_t i = 0; i < child_size; i++) {
+				h->children.push_back(LoadModelHierarchy(file));
+			}
 		}
 
 		return h;

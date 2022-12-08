@@ -78,11 +78,33 @@ namespace Wiwa {
 		m_EntityChildren[eid].clear();
 	}
 
+	void EntityManager::UpdateTransforms(EntityId eid)
+	{
+		EntityId parent = m_EntityParent[eid];
+
+		if (parent != eid) {
+			Transform3D* t3d = GetComponent<Transform3D>(eid);
+
+			Transform3D* t3dparent = GetComponent<Transform3D>(parent);
+
+			t3d->position = t3dparent->position + t3d->localPosition;
+		}
+
+		std::vector<EntityId>& children = m_EntityChildren[eid];
+		size_t c_size = children.size();
+
+		for (size_t i = 0; i < c_size; i++) {
+			UpdateTransforms(children[i]);
+		}
+	}
+
 	void EntityManager::UpdateTransforms()
 	{
 		size_t p_ent_size = m_ParentEntitiesAlive.size();
 
-
+		for (size_t i = 0; i < p_ent_size; i++) {
+			UpdateTransforms(m_ParentEntitiesAlive[i]);
+		}
 	}
 
 	void EntityManager::Update()
@@ -95,6 +117,9 @@ namespace Wiwa {
 		}
 
 		m_EntitiesToDestroy.clear();
+
+		// Update transforms
+		UpdateTransforms();
 
 		// Update systems
 		size_t sysize = m_Systems.size();
