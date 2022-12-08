@@ -303,7 +303,7 @@ void ScenePanel::Draw()
             {
                 std::filesystem::path src = Wiwa::FileSystem::RemoveFolderFromPath("assets", pathS);
                 src.replace_extension();
-                CreateEntityWithModelHiearchy(src.string().c_str(), "resources/materials/default_material.wimaterial");
+                CreateEntityWithModelHierarchy(src.string().c_str(), "resources/materials/default_material.wimaterial");
             }
             if (p.extension() == ".wiscene")
             {

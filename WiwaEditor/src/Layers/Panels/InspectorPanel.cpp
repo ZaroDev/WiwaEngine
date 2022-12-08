@@ -22,9 +22,12 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 	{
 		std::string del_label = "Delete##comp";
 		del_label += name.c_str();
-		if (ImGui::Button(del_label.c_str()))
+		if (!(type->hash == (size_t)TypeHash::Transform3D))
 		{
-			return false;
+			if (ImGui::Button(del_label.c_str()))
+			{
+				return false;
+			}
 		}
 
 		byte* data = em.GetComponent(m_CurrentID, componentId, type->size);
