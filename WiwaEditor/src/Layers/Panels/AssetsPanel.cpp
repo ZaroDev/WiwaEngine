@@ -18,7 +18,7 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	: Panel("Assets", instance), m_CurrentPath("Assets")
 {
 	m_Directory.path = "Assets";
-
+	Update();
 	ResourceId folderId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
 	ResourceId fileId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/file_icon.png");
 	ResourceId backId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/back_icon.png");
@@ -91,17 +91,16 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 		dir->files.push_back(f);
 		if (ImageExtensionComp(p1.path()))
 		{
-
+			Wiwa::ImageSettings settings;
+			Wiwa::Resources::LoadMeta<Wiwa::Image>(p1.path().string().c_str(), &settings);
+			Wiwa::Resources::CreateMeta<Wiwa::Image>(p1.path().string().c_str(), &settings);
 			Wiwa::Resources::Import<Wiwa::Image>(p1.path().string().c_str());
 		}
-		else if (p1.path().extension() == ".fbx"
-			|| p1.path().extension() == ".FBX"
-			|| p1.path().extension() == ".obj"
-			|| p1.path().extension() == ".OBJ"
-			|| p1.path().extension() == ".blend"
-			|| p1.path().extension() == ".3d")
+		else if (ModelExtensionComp(p1.path()))
 		{
-
+			Wiwa::ModelSettings settings;
+			Wiwa::Resources::LoadMeta<Wiwa::Model>(p1.path().string().c_str(), &settings);
+			Wiwa::Resources::CreateMeta<Wiwa::Model>(p1.path().string().c_str(), &settings);
 			Wiwa::Resources::Import<Wiwa::Model>(p1.path().string().c_str());
 		}
 	}

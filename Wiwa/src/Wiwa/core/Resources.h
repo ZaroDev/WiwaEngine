@@ -38,7 +38,7 @@ namespace Wiwa {
 		bool BlurGausian = false;
 		bool BlurAverage = false;
 		bool Contrast = false;
-		uint16_t AmountOfContrast = 0;
+		int32_t AmountOfContrast = 0;
 		bool Alienify = false;
 		bool GammaCorrection = false;
 		bool Noise = false;
@@ -46,8 +46,8 @@ namespace Wiwa {
 		bool Negative = false;
 		bool Pixelize = false;
 		bool Sharpen = false;
-		uint16_t SharpenFactor = 0;
-		uint16_t SharpenIterations = 0;
+		int32_t SharpenFactor = 0;
+		int32_t SharpenIterations = 0;
 		bool Scale = 0;
 		ImageSettings() = default;
 	};
@@ -234,8 +234,8 @@ namespace Wiwa {
 	inline void Resources::LoadMeta<Image>(const char* file, ImageSettings* settings)
 	{
 		std::filesystem::path filePath = file;
-		filePath.replace_extension(".meta");
-		if (filePath.empty())
+		filePath += ".meta";
+		if (!std::filesystem::exists(filePath))
 			return;
 		JSONDocument doc(filePath.string().c_str());
 		if (!doc.HasMember("imageImportSettings"))
@@ -258,7 +258,7 @@ namespace Wiwa {
 		settings->Sharpen = doc["imageImportSettings"]["sharpen"].get<bool>();
 		settings->SharpenFactor = doc["imageImportSettings"]["sharpen_factor"].get<int>();
 		settings->SharpenIterations = doc["imageImportSettings"]["sharpen_iterations"].get<int>();
-		settings->Scale = doc["imageImportSettings"]["scale"].get<int>();
+		settings->Scale = doc["imageImportSettings"]["scale"].get<bool>();
 		doc.save_file(filePath.string().c_str());
 	}
 	template<>
@@ -267,7 +267,7 @@ namespace Wiwa {
 		if (!settings)
 			return;
 		std::filesystem::path filePath = file;
-		filePath.replace_extension(".meta");
+		filePath += ".meta";
 		JSONDocument doc;
 		doc.AddMember("fileFormatVersion", 1);
 		doc.AddMember("file", file);
@@ -348,8 +348,8 @@ namespace Wiwa {
 	inline void Resources::LoadMeta<Model>(const char* file, ModelSettings* settings)
 	{
 		std::filesystem::path filePath = file;
-		filePath.replace_extension(".meta");
-		if (filePath.empty())
+		filePath += ".meta";
+		if (!std::filesystem::exists(filePath))
 			return;
 		JSONDocument doc(filePath.string().c_str());
 		if (!doc.HasMember("modelImportSettings"))
@@ -360,7 +360,7 @@ namespace Wiwa {
 	inline void Resources::CreateMeta<Model>(const char* file, ModelSettings* settings)
 	{
 		std::filesystem::path filePath = file;
-		filePath.replace_extension(".meta");
+		filePath += ".meta";
 		JSONDocument doc;
 		doc.AddMember("fileFormatVersion", 1);
 		doc.AddMember("file", file);
@@ -369,6 +369,7 @@ namespace Wiwa {
 		doc.AddMember("timeCreated", std::ctime(&time));
 		JSONValue modelSettignsObject = doc.AddMemberObject("modelImportSettings");
 		modelSettignsObject.AddMember("pre_translated_vertices", settings->preTranslatedVertices);
+		doc.save_file(filePath.string().c_str());
 	}
 	template<>
 	inline ResourceId Resources::Load<Model>(const char* file)
@@ -411,7 +412,6 @@ namespace Wiwa {
 	inline void Resources::Import<Model>(const char* file)
 	{
 		std::filesystem::path import_file = file;
-
 		std::filesystem::path export_file = _assetToLibPath(file);
 		export_file.replace_extension(".wimodel");
 
