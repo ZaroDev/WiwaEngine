@@ -20,6 +20,13 @@ For now the engine has the following features.
 - WIP basic lighting
 - FBX model loading
 - PNG texture loading
+- Own custom file format
+- Scene manager
+- Camera manager
+- Scene serialization
+- Frustrum culling
+- Mouse picking
+- AABB support
 
 ## Authors
 
