@@ -95,13 +95,11 @@ void EditorLayer::OnAttach()
 	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
 	m_StopIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId();
 
-	
-
 	// Test
 	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
-	em.RegisterSystem<Wiwa::MeshRenderer>();	
+	em.RegisterSystem<Wiwa::MeshRenderer>();
 
-	CreateEntityWithModelHiearchy("assets/models/street2.fbx", "assets/street2_material.wimaterial");
+	CreateEntityWithModelHiearchy("models/street2", "assets/street2_material.wimaterial");
 
 	/*for (size_t i = 0; i < children_size; i++) {
 		const Wiwa::ModelHierarchy* child_h = model_h->children[i];

@@ -100,7 +100,6 @@ inline void CreateEntityWithModelHiearchy(const char* model_path, const char* ma
 
 	// Take root model
 	Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh.meshId);
-	Wiwa::Resources::Import<Wiwa::Model>(model_path);
 
 	// Create entity with model's hierarchy
 	const Wiwa::ModelHierarchy* model_h = model->getModelHierarchy();

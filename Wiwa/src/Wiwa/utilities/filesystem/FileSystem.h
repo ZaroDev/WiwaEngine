@@ -2,170 +2,177 @@
 #include <fstream>
 #include <string>
 
+#include <Wiwa/core/Core.h>
+
 typedef char sbyte;
 
-// Normal file
-class File {
-	friend class FileSystem;
-private:
-	std::fstream* fstream;
+namespace Wiwa {
+	// Normal file
+	class WI_API File {
+		friend class FileSystem;
+	private:
+		std::fstream* fstream;
 
-	bool is_open;
-public:
-	File();
-	~File();
+		bool is_open;
+	public:
+		File();
+		~File();
 
-	// Get line from file
-	bool GetLine(std::string& str) const;
+		// Get line from file
+		bool GetLine(std::string& str) const;
 
-	// Read bytes of memory from file
-	void Read(sbyte* memblock, size_t count);
+		// Read bytes of memory from file
+		void Read(sbyte* memblock, size_t count);
 
-	// Write bytes of memory to file
-	void Write(const sbyte* memblock, size_t count);
+		// Write bytes of memory to file
+		void Write(const sbyte* memblock, size_t count);
 
-	// Read bytes of memory from file
-	void Read(void* memblock, size_t count);
+		// Read bytes of memory from file
+		void Read(void* memblock, size_t count);
 
-	// Write bytes of memory to file
-	void Write(const void* memblock, size_t count);
+		// Write bytes of memory to file
+		void Write(const void* memblock, size_t count);
 
-	// Check whether a file is open
-	bool IsOpen() const { return is_open; }
+		// Check whether a file is open
+		bool IsOpen() const { return is_open; }
 
-	// Check if reached end of file
-	bool Eof() const;
+		// Check if reached end of file
+		bool Eof() const;
 
-	
+		// Check file size
+		size_t Size();
 
-	// Check file size
-	size_t Size();
+		// Close file
+		void Close();
 
-	// Close file
-	void Close();
+		friend File& operator<<(File& file, std::string& str);
+		friend File& operator<<(File& file, const char* str);
+		friend File& operator<<(File& file, char ch);
 
-	friend File& operator<<(File& file, std::string& str);
-	friend File& operator<<(File& file, const char* str);
-	friend File& operator<<(File& file, char ch);
-
-	friend void operator>>(File& file, std::string& str);
-	friend void operator>>(File& file, char& ch);
-};
-
-// Memory mapped file
-class FileMapping {
-	friend class FileSystem;
-private:
-	void* mapFile;
-	sbyte* mapView;
-
-	bool is_open;
-public:
-	// Write bytes of data into the memory mapped file
-	void Write(sbyte* data, size_t offset, size_t count);
-
-	// Read bytes of data from the memory mapped file
-	void Read(sbyte* data, size_t offset, size_t count);
-
-	// Take raw data from the memory mapped file
-	sbyte* data() { return mapView; }
-
-	// Check if the memory mapped file is open
-	bool IsOpen() const { return is_open; }
-
-	// Close memory mapped file
-	void Close();
-};
-
-// FileSystem
-class FileSystem
-{
-private:
-	FileSystem();
-public:
-	enum OpenMode {
-		OM_IN = 1,
-		OM_OUT = 2,
-		OM_ATE = 4,
-		OM_APP = 8,
-		OM_TRUNC = 16,
-		OM_BINARY = 32
+		friend void operator>>(File& file, std::string& str);
+		friend void operator>>(File& file, char& ch);
 	};
 
-	//======== File system utils ========
-	// Check whether the file or directory exists
-	static bool Exists(const char* path);
+	// Memory mapped file
+	class WI_API FileMapping {
+		friend class FileSystem;
+	private:
+		void* mapFile;
+		sbyte* mapView;
 
-	// Check last write time of a file or directory
-	static time_t LastWriteTime(const char* path);
+		bool is_open;
+	public:
+		// Write bytes of data into the memory mapped file
+		void Write(sbyte* data, size_t offset, size_t count);
 
-	// Take file size in bytes
-	static size_t FileSize(const char* file);
+		// Read bytes of data from the memory mapped file
+		void Read(sbyte* data, size_t offset, size_t count);
 
-	// Get current working directory
-	static std::string CurrentPath();
+		// Take raw data from the memory mapped file
+		sbyte* data() { return mapView; }
 
-	// Set current working directory
-	static void CurrentPath(const char* path);
+		// Check if the memory mapped file is open
+		bool IsOpen() const { return is_open; }
 
-	// Checks whether the given path refers to an empty file or directory
-	static bool IsEmpty(const char* path);
+		// Close memory mapped file
+		void Close();
+	};
 
-	// Checks whether the two paths refer to the same file system object
-	static bool IsEquivalent(const char* path1, const char* path2);
+	// FileSystem
+	class WI_API FileSystem
+	{
+	private:
+		static void _toLower(std::string& str);
 
-	// Create directory
-	static bool CreateDir(const char* path);
+		FileSystem();
+	public:
+		enum OpenMode {
+			OM_IN = 1,
+			OM_OUT = 2,
+			OM_ATE = 4,
+			OM_APP = 8,
+			OM_TRUNC = 16,
+			OM_BINARY = 32
+		};
 
-	// Create directories recursively
-	static bool CreateDirs(const char* path);
+		// Path utils
+		static std::string RemoveFolderFromPath(std::string folder, std::string path);
 
-	// Create directory symlink
-	static void CreateDirSymlink(const char* to, const char* symlink);
+		//======== File system utils ========
+		// Check whether the file or directory exists
+		static bool Exists(const char* path);
 
-	// Create directory hardlink
-	static void CreateHardlink(const char* to, const char* hardlink);
+		// Check last write time of a file or directory
+		static time_t LastWriteTime(const char* path);
 
-	// Create symlink
-	static void CreateSymlink(const char* to, const char* symlink);
+		// Take file size in bytes
+		static size_t FileSize(const char* file);
 
-	// Removes a file or an empty directory
-	static bool Remove(const char* path);
+		// Get current working directory
+		static std::string CurrentPath();
 
-	// Removes a file or a directory and all its contents, recursively
-	static bool RemoveAll(const char* path);
+		// Set current working directory
+		static void CurrentPath(const char* path);
 
-	//======== File management ========
-	/* Directly read all bytes from file
-	* Generates a buffer of size [read_bytes] into memblock pointer variable
-	* return read_bytes;
-	*/
-	static size_t ReadAll(const char* file, sbyte* memblock);
+		// Checks whether the given path refers to an empty file or directory
+		static bool IsEmpty(const char* path);
 
-	// Open file using OpenMode enums with bitwise operator (<<)
-	static File Open(const char* file, int openMode);
+		// Checks whether the two paths refer to the same file system object
+		static bool IsEquivalent(const char* path1, const char* path2);
 
-	// Open text file for input
-	static File OpenI(const char* file) { return Open(file, OM_IN); }
+		// Create directory
+		static bool CreateDir(const char* path);
 
-	// Open text file for output
-	static File OpenO(const char* file) { return Open(file, OM_OUT); }
+		// Create directories recursively
+		static bool CreateDirs(const char* path);
 
-	// Open text file for input and output
-	static File OpenIO(const char* file) { return Open(file, OM_IN | OM_OUT); }
+		// Create directory symlink
+		static void CreateDirSymlink(const char* to, const char* symlink);
 
-	// Open binary file for input
-	static File OpenIB(const char* file) { return Open(file, OM_IN | OM_BINARY); }
+		// Create directory hardlink
+		static void CreateHardlink(const char* to, const char* hardlink);
 
-	// Open binary file for output
-	static File OpenOB(const char* file) { return Open(file, OM_OUT | OM_BINARY); }
+		// Create symlink
+		static void CreateSymlink(const char* to, const char* symlink);
 
-	// Open binary file for input and output
-	static File OpenIOB(const char* file) { return Open(file, OM_IN | OM_OUT | OM_BINARY); }
+		// Removes a file or an empty directory
+		static bool Remove(const char* path);
 
-	// Create memory mapped file
-	static FileMapping CreateMemoryMappedFile(const char* name, size_t size);
+		// Removes a file or a directory and all its contents, recursively
+		static bool RemoveAll(const char* path);
 
-	// Open memory mapped file
-	static FileMapping OpenMemoryMappedFile(const char* name, size_t size);
-};
+		//======== File management ========
+		/* Directly read all bytes from file
+		* Generates a buffer of size [read_bytes] into memblock pointer variable
+		* return read_bytes;
+		*/
+		static size_t ReadAll(const char* file, sbyte* memblock);
+
+		// Open file using OpenMode enums with bitwise operator (<<)
+		static File Open(const char* file, int openMode);
+
+		// Open text file for input
+		static File OpenI(const char* file) { return Open(file, OM_IN); }
+
+		// Open text file for output
+		static File OpenO(const char* file) { return Open(file, OM_OUT); }
+
+		// Open text file for input and output
+		static File OpenIO(const char* file) { return Open(file, OM_IN | OM_OUT); }
+
+		// Open binary file for input
+		static File OpenIB(const char* file) { return Open(file, OM_IN | OM_BINARY); }
+
+		// Open binary file for output
+		static File OpenOB(const char* file) { return Open(file, OM_OUT | OM_BINARY); }
+
+		// Open binary file for input and output
+		static File OpenIOB(const char* file) { return Open(file, OM_IN | OM_OUT | OM_BINARY); }
+
+		// Create memory mapped file
+		static FileMapping CreateMemoryMappedFile(const char* name, size_t size);
+
+		// Open memory mapped file
+		static FileMapping OpenMemoryMappedFile(const char* name, size_t size);
+	};
+}

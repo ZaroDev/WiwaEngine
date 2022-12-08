@@ -17,11 +17,18 @@
 #include <glm/glm.hpp>
 
 #include <Wiwa/utilities/filesystem/FileSystem.h>
+#include <Wiwa/core/Resources.h>
 
 namespace Wiwa {
-	void Model::getMeshFromFile(const char* file, bool gen_buffers)
+	void Model::getMeshFromFile(const char* file, ModelSettings* settings, bool gen_buffers)
 	{
-		const aiScene* scene = aiImportFile(file, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_PreTransformVertices);
+		unsigned int flags = aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Triangulate | aiProcess_FlipUVs;
+
+		if (settings->preTranslatedVertices) {
+			flags |= aiProcess_PreTransformVertices;
+		}
+
+		const aiScene* scene = aiImportFile(file, flags);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			WI_ERROR("Couldn't load mesh file: {0}", file);
@@ -106,6 +113,8 @@ namespace Wiwa {
 				model->generateBuffers();
 				models.push_back(model);
 			}
+
+			model_hierarchy = LoadModelHierarchy(f);
 		}
 
 		f.Close();
@@ -314,6 +323,56 @@ namespace Wiwa {
 		generateBuffers();
 	}
 
+	void Model::SaveModelHierarchy(File file, ModelHierarchy* h)
+	{
+		size_t name_len = h->name.size();
+
+		file.Write(&name_len, sizeof(size_t));
+		file.Write(h->name.c_str(), name_len);
+
+		size_t mesh_ind_size = h->meshIndexes.size();
+
+		file.Write(&mesh_ind_size, sizeof(size_t));
+		file.Write(h->meshIndexes.data(), mesh_ind_size);
+
+		size_t child_size = h->children.size();
+
+		file.Write(&child_size, sizeof(size_t));
+
+		for (size_t i = 0; i < child_size; i++) {
+			SaveModelHierarchy(file, h->children[i]);
+		}
+	}
+
+	ModelHierarchy* Model::LoadModelHierarchy(File file)
+	{
+		ModelHierarchy* h = new ModelHierarchy();
+
+		size_t name_len;
+
+		file.Read(&name_len, sizeof(size_t));
+		h->name.resize(name_len);
+		file.Read(&h->name[0], name_len);
+
+		size_t mesh_ind_size;
+
+		file.Read(&mesh_ind_size, sizeof(size_t));
+		h->meshIndexes.resize(mesh_ind_size);
+		file.Read(&h->meshIndexes[0], mesh_ind_size);
+
+		size_t child_size;
+
+		file.Read(&child_size, sizeof(size_t));
+
+		h->children.reserve(child_size);
+
+		for (size_t i = 0; i < child_size; i++) {
+			h->children.push_back(LoadModelHierarchy(file));
+		}
+
+		return h;
+	}
+
 	void Model::generateBuffers()
 	{
 		if (is_root) return;
@@ -456,7 +515,8 @@ namespace Wiwa {
 			}
 			else
 			{
-				getMeshFromFile(file);
+				ModelSettings settings;
+				getMeshFromFile(file, &settings);
 			}
 		}
 		else {
@@ -467,7 +527,6 @@ namespace Wiwa {
 		{
 			boundingBox.extend(models[i]->boundingBox);
 		}
-
 	}
 
 	Model::~Model()
@@ -517,9 +576,9 @@ namespace Wiwa {
 		}
 	}
 
-	void Model::LoadMesh(const char* file)
+	void Model::LoadMesh(const char* file, ModelSettings* settings)
 	{
-		getMeshFromFile(file);
+		getMeshFromFile(file, settings);
 	}
 
 	void Model::LoadWiMesh(const char* file)
@@ -527,11 +586,11 @@ namespace Wiwa {
 		getWiMeshFromFile(file);
 	}
 
-	Model* Model::GetModelFromFile(const char* file)
+	Model* Model::GetModelFromFile(const char* file, ModelSettings* settings)
 	{
 		Model* model = new Model(NULL);
 
-		model->getMeshFromFile(file, false);
+		model->getMeshFromFile(file, settings, false);
 
 		return model;
 	}
@@ -559,6 +618,9 @@ namespace Wiwa {
 				f.Write(&ebo_size, sizeof(size_t));
 				f.Write(c_model->ebo_data.data(), ebo_size * sizeof(int));
 			}
+
+			// Model hierarchy
+			SaveModelHierarchy(f, model->model_hierarchy);
 		}
 
 		f.Close();

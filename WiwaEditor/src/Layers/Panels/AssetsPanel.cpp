@@ -101,7 +101,7 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 			Wiwa::ModelSettings settings;
 			Wiwa::Resources::LoadMeta<Wiwa::Model>(p1.path().string().c_str(), &settings);
 			Wiwa::Resources::CreateMeta<Wiwa::Model>(p1.path().string().c_str(), &settings);
-			Wiwa::Resources::Import<Wiwa::Model>(p1.path().string().c_str());
+			Wiwa::Resources::Import<Wiwa::Model>(p1.path().string().c_str(), &settings);
 		}
 	}
 }

@@ -29,6 +29,8 @@
 #include "../EditorLayer.h"
 #include "../../Entities.h"
 
+#include <Wiwa/utilities/filesystem/FileSystem.h>
+
 ScenePanel::ScenePanel(EditorLayer* instance)
     : Panel("Scene", instance)
 {
@@ -299,7 +301,9 @@ void ScenePanel::Draw()
             std::filesystem::path p = pathS;
             if (p.extension() == ".fbx" || p.extension() == ".FBX")
             {
-                CreateEntityWithModelHiearchy(pathS.c_str(), "resources/materials/default_material.wimaterial");
+                std::filesystem::path src = Wiwa::FileSystem::RemoveFolderFromPath("assets", pathS);
+                src.replace_extension();
+                CreateEntityWithModelHiearchy(src.string().c_str(), "resources/materials/default_material.wimaterial");
             }
             if (p.extension() == ".wiscene")
             {

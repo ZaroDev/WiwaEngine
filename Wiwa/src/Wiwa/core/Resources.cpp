@@ -90,9 +90,9 @@ namespace Wiwa {
 		stbi_image_free(image);
 	}
 
-	void Resources::_import_model_impl(const char* origin, const char* destination)
+	void Resources::_import_model_impl(const char* origin, const char* destination, ModelSettings* settings)
 	{
-		Model* model = Model::GetModelFromFile(origin);
+		Model* model = Model::GetModelFromFile(origin, settings);
 
 		Model::SaveModel(model, destination);
 

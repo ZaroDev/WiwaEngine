@@ -6,10 +6,14 @@
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/utilities/math/AABB.h>
 
+#include <Wiwa/utilities/filesystem/FileSystem.h>
+
 struct aiMesh;
 struct aiNode;
 
 namespace Wiwa {
+	struct ModelSettings;
+
 	struct ModelHierarchy {
 		std::string name;
 
@@ -52,7 +56,7 @@ namespace Wiwa {
 	private:
 		unsigned int vao, vbo, ebo, bbvao, bbvbo, bbebo;
 
-		void getMeshFromFile(const char* file, bool gen_buffers=true);
+		void getMeshFromFile(const char* file, ModelSettings* settings, bool gen_buffers=true);
 		void getWiMeshFromFile(const char* file);
 
 		Model* loadmesh(const aiMesh* mesh);
@@ -62,6 +66,9 @@ namespace Wiwa {
 		void CreatePlane();
 		void CreatePyramid();
 		void CreateSphere();
+
+		static void SaveModelHierarchy(File file, ModelHierarchy* h);
+		static ModelHierarchy* LoadModelHierarchy(File file);
 	public:
 		Model(const char* file);
 		~Model();
@@ -81,10 +88,10 @@ namespace Wiwa {
 		const ModelHierarchy* getModelHierarchy() { return model_hierarchy; }
 		std::string getModelName() { return model_name; }
 
-		void LoadMesh(const char* file);
+		void LoadMesh(const char* file, ModelSettings* settings);
 		void LoadWiMesh(const char* file);
 
-		static Model* GetModelFromFile(const char* file);
+		static Model* GetModelFromFile(const char* file, ModelSettings* settings);
 		static void SaveModel(Model* model, const char* file);
 	public:
 		bool showNormals = false;
