@@ -37,7 +37,7 @@ namespace Wiwa {
 		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
 
 		CameraManager& man = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
-		r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, man.editorCamera);
+		
 
 		size_t cameraCount = man.getCameraSize();
 		std::vector<CameraId>& cameras = man.getCameras();
@@ -49,6 +49,7 @@ namespace Wiwa {
 			if (camera->cull &&
 				!camera->frustrum.IsBoxVisible(mod->boundingBox.getMin(), mod->boundingBox.getMax())
 			) return;
+			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, man.editorCamera);
 
 			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, camera);
 		}
