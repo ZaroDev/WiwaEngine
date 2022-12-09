@@ -18,7 +18,9 @@ inline void CreateNew3DEnt()
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.localRotation = { 0.0f, 0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
+	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
@@ -34,7 +36,9 @@ inline void CreateNewChild(EntityId parentId)
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.localRotation = { 0.0f, 0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
+	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
@@ -51,7 +55,9 @@ inline void CreateCube()
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.localRotation = { 0.0f, 0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
+	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
@@ -76,7 +82,9 @@ inline void CreatePlane()
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.localRotation = { 0.0f, 0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
+	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
@@ -101,7 +109,9 @@ inline void CreatePyramid()
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.localRotation = { 0.0f, 0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
+	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
@@ -126,7 +136,9 @@ inline void CreateSphere()
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.localRotation = { 0.0f, 0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
+	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
@@ -156,7 +168,9 @@ inline void CreateEntityWithModelHierarchy(const char* model_path, const char* m
 	t3d.position = { 0.0f, 0.0f, 0.0f };
 	t3d.localPosition = { 0.0f, 0.0f, 0.0f };
 	t3d.rotation = { 0.0f,0.0f, 0.0f };
+	t3d.localRotation = { 0.0f, 0.0f, 0.0f };
 	t3d.scale = { 1.0f, 1.0f, 1.0f };
+	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	// Take root model
 	Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh.meshId);

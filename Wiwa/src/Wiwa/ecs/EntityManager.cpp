@@ -82,9 +82,12 @@ namespace Wiwa {
 	{
 		Transform3D* t3d = GetComponent<Transform3D>(eid);
 
-		// Update position
+		// Update transforms
 		t3d->position = t3dparent->position + t3d->localPosition;
+		t3d->rotation = t3dparent->rotation + t3d->localRotation;
+		t3d->scale = t3dparent->scale + t3d->localScale;
 
+		// Update children
 		std::vector<EntityId>& children = m_EntityChildren[eid];
 		size_t c_size = children.size();
 
@@ -102,6 +105,7 @@ namespace Wiwa {
 
 			Transform3D* t3d = GetComponent<Transform3D>(p_ent);
 
+			// Update children
 			std::vector<EntityId>& children = m_EntityChildren[p_ent];
 			size_t c_size = children.size();
 
