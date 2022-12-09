@@ -95,8 +95,7 @@ namespace Wiwa {
 	void EntityManager::UpdateChildTransforms(EntityId eid, Transform3D* t3dparent)
 	{
 		Transform3D* t3d = GetComponent<Transform3D>(eid);
-		if (!t3d)
-			return;
+		
 		// Update transforms
 		t3d->position = t3dparent->position + t3d->localPosition;
 		t3d->rotation = t3dparent->rotation + t3d->localRotation;
