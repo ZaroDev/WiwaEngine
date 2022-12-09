@@ -198,6 +198,5 @@ namespace Wiwa {
 		glBindVertexArray(0);
 
 		glLineWidth(1.0f);
-		
 	}
 }

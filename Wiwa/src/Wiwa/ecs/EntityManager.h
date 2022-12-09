@@ -21,6 +21,8 @@ typedef unsigned char byte;
 namespace Wiwa {
 	class System;
 
+	struct Transform3D;
+
 	class WI_API EntityManager
 	{
 	private:
@@ -63,7 +65,7 @@ namespace Wiwa {
 
 		void RemoveEntity(EntityId eid);
 
-		void UpdateTransforms(EntityId eid);
+		void UpdateChildTransforms(EntityId eid, Transform3D* t3dparent);
 		void UpdateTransforms();
 	public:
 		EntityManager();
@@ -82,6 +84,8 @@ namespace Wiwa {
 		EntityId CreateEntity(const char* name, EntityId parent);
 
 		void SetParent(EntityId entity, EntityId parent);
+
+		bool IsParent(EntityId entity) { return m_EntityParent[entity] == entity; }
 
 		// Remove entity
 		void DestroyEntity(EntityId entity);

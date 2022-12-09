@@ -78,23 +78,18 @@ namespace Wiwa {
 		m_EntityChildren[eid].clear();
 	}
 
-	void EntityManager::UpdateTransforms(EntityId eid)
+	void EntityManager::UpdateChildTransforms(EntityId eid, Transform3D* t3dparent)
 	{
-		EntityId parent = m_EntityParent[eid];
+		Transform3D* t3d = GetComponent<Transform3D>(eid);
 
-		if (parent != eid) {
-			Transform3D* t3d = GetComponent<Transform3D>(eid);
-
-			Transform3D* t3dparent = GetComponent<Transform3D>(parent);
-
-			t3d->position = t3dparent->position + t3d->localPosition;
-		}
+		// Update position
+		t3d->position = t3dparent->position + t3d->localPosition;
 
 		std::vector<EntityId>& children = m_EntityChildren[eid];
 		size_t c_size = children.size();
 
 		for (size_t i = 0; i < c_size; i++) {
-			UpdateTransforms(children[i]);
+			UpdateChildTransforms(children[i], t3d);
 		}
 	}
 
@@ -103,7 +98,16 @@ namespace Wiwa {
 		size_t p_ent_size = m_ParentEntitiesAlive.size();
 
 		for (size_t i = 0; i < p_ent_size; i++) {
-			UpdateTransforms(m_ParentEntitiesAlive[i]);
+			EntityId p_ent = m_ParentEntitiesAlive[i];
+
+			Transform3D* t3d = GetComponent<Transform3D>(p_ent);
+
+			std::vector<EntityId>& children = m_EntityChildren[p_ent];
+			size_t c_size = children.size();
+
+			for (size_t i = 0; i < c_size; i++) {
+				UpdateChildTransforms(children[i], t3d);
+			}
 		}
 	}
 
