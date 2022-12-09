@@ -152,15 +152,13 @@ inline void CreateSphere()
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
 }
 
-inline void CreateEntityWithModelHierarchy(const char* model_path, const char* material_path) {
+inline void CreateEntityWithModelHierarchy(const char* model_path) {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 	// Prepare mesh data
 	Wiwa::Mesh mesh;
 	sprintf(mesh.mesh_path, "%s", model_path);
-	sprintf(mesh.mat_path, "%s", material_path);
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
-	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	mesh.drawChildren = false;
 
 	// Prepare default transform
