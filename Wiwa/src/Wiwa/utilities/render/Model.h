@@ -43,6 +43,7 @@ namespace Wiwa {
 		bool is_root = false;
 
 		std::string model_name;
+		unsigned int model_mat;
 
 		std::vector<float> vbo_data;
 		std::vector<int> ebo_data;
@@ -50,6 +51,8 @@ namespace Wiwa {
 		std::vector<float> bbvbo_data;
 
 		std::vector<Model*> models;
+		std::vector<std::string> materials;
+
 		ModelHierarchy* model_hierarchy;
 
 		void generateBuffers();
@@ -84,6 +87,12 @@ namespace Wiwa {
 		bool IsRoot() const { return is_root; }
 
 		Model* getModelAt(size_t index) { return models[index]; }
+
+		std::string getMaterialAt(size_t index) { return materials[index]; }
+
+		size_t getMaterialCount() { return materials.size(); }
+
+		unsigned int getMaterialIndex() { return model_mat; }
 
 		const ModelHierarchy* getModelHierarchy() { return model_hierarchy; }
 		std::string getModelName() { return model_name; }

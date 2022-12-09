@@ -183,21 +183,11 @@ void AssetsPanel::Draw()
 				std::filesystem::path dir = buffer;
 				path /= dir;
 				std::string file = path.string() + ".wimaterial";
-				Wiwa::JSONDocument matFile;
-				matFile.AddMember("texture", "");
-				matFile.AddMember("colorR", 1.0f);
-				matFile.AddMember("colorG",1.0f);
-				matFile.AddMember("colorB",1.0f);
-				matFile.AddMember("colorA",1.0f);
-				matFile.AddMember("diffuseR", 1.0f);
-				matFile.AddMember("diffuseG", 1.0f);
-				matFile.AddMember("diffuseB", 1.0f);
-				matFile.AddMember("specularR", 1.0f);
-				matFile.AddMember("specularG", 1.0f);
-				matFile.AddMember("specularB", 1.0f);
-				matFile.AddMember("shininess", 0.1f);
-				matFile.AddMember("type", 0);
-				matFile.save_file(file.c_str());
+
+				Wiwa::Material material;
+
+				Wiwa::Material::SaveMaterial(file.c_str(), &material);
+
 				ImGui::CloseCurrentPopup();
 			}
 

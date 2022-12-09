@@ -37,9 +37,11 @@ void MaterialPanel::Draw()
                 std::wstring ws(path);
                 std::string pathS(ws.begin(), ws.end());
                 std::filesystem::path p = pathS;
-                if (p.extension() == ".png" && m_Material)
+                if (m_Material)
                 {  
-                    m_Material->setTexture(pathS.c_str());
+                    if (p.extension() == ".png" || p.extension() == ".tga") {
+                        m_Material->setTexture(pathS.c_str());
+                    }
                 }
 
             }
@@ -88,21 +90,7 @@ void MaterialPanel::Draw()
         }
         if (ImGui::Button("Save"))
         {
-            Wiwa::JSONDocument matFile;
-            matFile.AddMember("texture", m_Material->getTexturePath());
-            matFile.AddMember("colorR", m_Material->getColor().r);
-            matFile.AddMember("colorG", m_Material->getColor().g);
-            matFile.AddMember("colorB", m_Material->getColor().b);
-            matFile.AddMember("colorA", m_Material->getColor().a);
-            matFile.AddMember("diffuseR", m_Material->getSettings().diffuse.r);
-            matFile.AddMember("diffuseG", m_Material->getSettings().diffuse.g);
-            matFile.AddMember("diffuseB", m_Material->getSettings().diffuse.b);
-            matFile.AddMember("specularR", m_Material->getSettings().specular.r);
-            matFile.AddMember("specularG", m_Material->getSettings().specular.g);
-            matFile.AddMember("specularB", m_Material->getSettings().specular.b);
-            matFile.AddMember("shininess", m_Material->getSettings().shininess);
-            matFile.AddMember("type", (int)m_Material->getType());
-            matFile.save_file(s_Path.string().c_str());
+            Wiwa::Material::SaveMaterial(s_Path.string().c_str(), m_Material);
         }
 
     }

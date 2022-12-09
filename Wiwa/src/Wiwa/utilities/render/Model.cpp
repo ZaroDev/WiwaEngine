@@ -47,6 +47,12 @@ namespace Wiwa {
 
 		model_name = scene->mRootNode->mName.C_Str();
 
+		std::filesystem::path path = file;
+		path.remove_filename();
+
+		std::filesystem::path curr_path = std::filesystem::current_path();
+		
+
 		// Process materials
 		if (scene->HasMaterials()) {
 			for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
@@ -58,7 +64,51 @@ namespace Wiwa {
 				aiString texture_diffuse;
 				aiGetMaterialString(mat, AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), &texture_diffuse);
 
-				std::cout << "Mat " << i << ": " << name.C_Str() << " Texture: " << texture_diffuse.C_Str() << std::endl;
+				aiColor4D diffuse(1.0f, 1.0f, 1.0f, 1.0f);
+				aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuse);
+
+				aiColor4D specular(1.0f, 1.0f, 1.0f, 1.0f);
+				aiGetMaterialColor(mat, AI_MATKEY_COLOR_SPECULAR, &specular);
+
+				float shininess = 0.1f;
+				aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &shininess);
+
+				Material material; // Default settings
+				material.setColor({diffuse.r, diffuse.g, diffuse.b, diffuse.a});
+				Material::MaterialSettings& mat_settings = material.getSettings();
+				mat_settings.diffuse.r = diffuse.r;
+				mat_settings.diffuse.g = diffuse.g;
+				mat_settings.diffuse.b = diffuse.b;
+				mat_settings.specular.r = specular.r;
+				mat_settings.specular.g = specular.g;
+				mat_settings.specular.b = specular.b;
+				mat_settings.shininess = shininess;
+				
+				if (texture_diffuse.length > 0) {
+					material.setType(Wiwa::Material::MaterialType::textured);
+
+					std::filesystem::current_path(path);
+
+					std::filesystem::path texture_path = texture_diffuse.C_Str();
+					texture_path = std::filesystem::absolute(texture_path);
+
+					std::filesystem::current_path(curr_path);
+
+					texture_path = std::filesystem::relative(texture_path);
+
+					material.setTexture(texture_path.string().c_str());
+				}
+				else {
+					material.setType(Wiwa::Material::MaterialType::color);
+				}
+
+				std::filesystem::path mat_path = path;
+				mat_path += name.C_Str();
+				mat_path += ".wimaterial";
+
+				Material::SaveMaterial(mat_path.string().c_str(), &material);
+
+				materials.push_back(mat_path.string());
 			}
 		}
 
@@ -95,8 +145,28 @@ namespace Wiwa {
 
 			models.reserve(model_size);
 
+			// Material size
+			size_t mat_size;
+
+			f.Read(&mat_size, sizeof(size_t));
+
+			materials.resize(mat_size);
+
+			for (size_t i = 0; i < mat_size; i++) {
+				size_t name_size;
+
+				f.Read(&name_size, sizeof(size_t));
+				materials[i].resize(name_size);
+
+				f.Read(&materials[i][0], name_size);
+			}
+
+			// Children models
 			for (size_t i = 0; i < model_size; i++) {
 				Model* model = new Model(NULL);
+
+				// Read material index
+				f.Read(&model->model_mat, sizeof(size_t));
 
 				// Read vbo
 				size_t vbo_size;
@@ -123,6 +193,8 @@ namespace Wiwa {
 	Model* Model::loadmesh(const aiMesh* mesh)
 	{
 		Model* model = new Model(NULL);
+
+		model->model_mat = mesh->mMaterialIndex;
 
 		model->model_name = mesh->mName.C_Str();
 		for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
@@ -614,9 +686,24 @@ namespace Wiwa {
 			size_t model_size = model->models.size();
 			f.Write(&model_size, sizeof(size_t));
 
+			// Material size
+			size_t mat_size = model->materials.size();
+
+			f.Write(&mat_size, sizeof(size_t));
+			for (size_t i = 0; i < mat_size; i++) {
+				size_t name_size = model->materials[i].size();
+
+				f.Write(&name_size, sizeof(size_t));
+				f.Write(model->materials[i].c_str(), name_size);
+			}
+
 			// Model list
 			for (size_t i = 0; i < model_size; i++) {
 				Model* c_model = model->models[i];
+
+				// Material index
+				size_t mat_ind = c_model->getMaterialIndex();
+				f.Write(&mat_ind, sizeof(size_t));
 
 				// Model vbo
 				size_t vbo_size = c_model->vbo_data.size();

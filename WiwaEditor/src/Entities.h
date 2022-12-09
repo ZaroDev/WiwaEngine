@@ -192,6 +192,13 @@ inline void CreateEntityWithModelHierarchy(const char* model_path, const char* m
 
 		if (c_mesh_size > 0) {
 			mesh.modelIndex = m_h->meshIndexes[0];
+			
+			Wiwa::Model* c_model = model->getModelAt(mesh.modelIndex);
+			std::string mat_file = model->getMaterialAt(c_model->getMaterialIndex());
+			sprintf(mesh.mat_path, "%s", mat_file.c_str());
+
+			mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
+
 			em.AddComponent(e_child, mesh);
 			em.ApplySystem<Wiwa::MeshRenderer>(e_child);
 		}

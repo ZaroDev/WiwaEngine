@@ -43,6 +43,11 @@ namespace Wiwa {
 		inline void setSettings(const MaterialSettings& settings) { m_Settings = settings; }
 		inline Size2i &getTextureSize() { return m_TextureSize; }
 		inline MaterialSettings& getSettings() { return m_Settings; }
+
+		void Load(const char* path);
+
+		static void SaveMaterial(const char* path, Material* mat);
+		static Material* LoadMaterial(const char* path);
 	private:
 		ResourceId m_ResourceId;
 		std::string m_TexturePath;
