@@ -205,23 +205,35 @@ void ScenePanel::Draw()
                     translation[0] = m_SelectedTransform->position.x;
                     translation[1] = m_SelectedTransform->position.y;
                     translation[2] = m_SelectedTransform->position.z;
+
+                    rotation[0] = m_SelectedTransform->rotation.x;
+                    rotation[1] = m_SelectedTransform->rotation.y;
+                    rotation[2] = m_SelectedTransform->rotation.z;
+
+                    scale[0] = m_SelectedTransform->scale.x;
+                    scale[1] = m_SelectedTransform->scale.y;
+                    scale[2] = m_SelectedTransform->scale.z;
                 }
                 else
                 {
                     translation[0] = m_SelectedTransform->localPosition.x;
                     translation[1] = m_SelectedTransform->localPosition.y;
                     translation[2] = m_SelectedTransform->localPosition.z;
-                }
-                rotation[0] = m_SelectedTransform->rotation.x;
-                rotation[1] = m_SelectedTransform->rotation.y;
-                rotation[2] = m_SelectedTransform->rotation.z;
 
-                scale[0] = m_SelectedTransform->scale.x;
-                scale[1] = m_SelectedTransform->scale.y;
-                scale[2] = m_SelectedTransform->scale.z;
+                    rotation[0] = m_SelectedTransform->localRotation.x;
+                    rotation[1] = m_SelectedTransform->localRotation.y;
+                    rotation[2] = m_SelectedTransform->localRotation.z;
+
+                    scale[0] = m_SelectedTransform->localScale.x;
+                    scale[1] = m_SelectedTransform->localScale.y;
+                    scale[2] = m_SelectedTransform->localScale.z;
+                }
+                
+
+                
 
                 ImGuizmo::RecomposeMatrixFromComponents(translation, rotation, scale, tmpMatrix);
-
+                ImGuizmo::MODE mode = isParent ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
                 //Snaping
                 bool snap = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl);
                 float snapValue = 0.5f; //Snap to 0.5m for translation/scale
@@ -232,7 +244,7 @@ void ScenePanel::Draw()
                 float snapValues[3] = { snapValue, snapValue, snapValue };
 
                 ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                    (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, tmpMatrix,
+                    (ImGuizmo::OPERATION)m_GizmoType, mode, tmpMatrix,
                     nullptr, snap ? snapValues : nullptr);
 
                 if (ImGuizmo::IsUsing())
@@ -243,19 +255,24 @@ void ScenePanel::Draw()
                     {
                     case ImGuizmo::OPERATION::TRANSLATE: {
                         if (isParent)
-                        {
                             m_SelectedTransform->position = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
-                        }
                         else
-                        {
                             m_SelectedTransform->localPosition = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
-                        }
+
                     }break;
                     case ImGuizmo::OPERATION::ROTATE: {
-                        m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
+                        if (isParent)
+                            m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
+
+                        else
+                            m_SelectedTransform->localRotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
+
                     }break;
                     case ImGuizmo::OPERATION::SCALE: {
-                        m_SelectedTransform->rotation = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
+                        if (isParent)
+                            m_SelectedTransform->scale = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
+                        else
+                            m_SelectedTransform->localScale = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
                     }break;
                     default:
                         break;
