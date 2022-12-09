@@ -38,13 +38,27 @@ namespace Wiwa {
 			}
 		}
 		
+		EntityId p_ent = m_EntityParent[eid];
+
 		// Remove entity from parent alive entities vector
-		if (m_EntityParent[eid] == eid) {
+		if (p_ent == eid) {
 			size_t pealive = m_ParentEntitiesAlive.size();
 
 			for (size_t i = 0; i < pealive; i++) {
 				if (m_ParentEntitiesAlive[i] == eid) {
 					m_ParentEntitiesAlive.erase(m_ParentEntitiesAlive.begin() + i);
+					break;
+				}
+			}
+		}
+		// Remove entity from parent's child list
+		else {
+			std::vector<EntityId>& p_entities = m_EntityChildren[p_ent];
+			size_t p_entities_size = p_entities.size();
+
+			for (size_t i = 0; i < p_entities_size; i++) {
+				if (p_entities[i] == eid) {
+					p_entities.erase(p_entities.begin() + i);
 					break;
 				}
 			}
