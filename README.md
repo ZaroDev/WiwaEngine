@@ -76,6 +76,7 @@ Entities can have be parented and have local and global positions.
 ### Camera Manager
 
 To create a camera just open the ``Cameras`` panel from ``View->Cameras`` then ``Create Camera``. To make the camera frustum cull the option cull needs to be active.
+
 ![Cameras panel](images/cameraswindow.png)
 
 ### Resource Manager
@@ -83,9 +84,11 @@ To create a camera just open the ``Cameras`` panel from ``View->Cameras`` then `
 The resource manager automatically imports each ``Model`` or ``Texture`` from the ``Assets\`` folder, the result of that import can be seen in the generated ``Library\``.
 The resources once loaded they keep loaded until a new scene is loaded. This keeps the engine from loading and unloading assets in a middle of a scene.
 To see the loaded resources open the ``Resources`` window from ``View->Resources``.
+
 ![Resources window](images/resourceswinodw.png)
 
 To change the import options of an asset the ``Import`` window can be checked.
+
 ![Import window](images/importwindwo.png)
 
 ``Note: for now image import settings is WIP``
@@ -100,6 +103,7 @@ Assing a name to the material and click create.
 ![Create matWindow](images/creatematerialwindow.png)
 
 Open the material editor window and select a material you want to edit.
+
 ![Material window](images/materialwindow.png)
 
 ### Projects WIP
