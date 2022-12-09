@@ -36,9 +36,9 @@ namespace Wiwa {
 		float m_AspectRatio;
 		void updateView();
 
-		std::vector<int> indicies;
-		std::vector<float> vertices;
 		unsigned int vao, vbo, ebo;
+
+		glm::vec3 m_FrustumPoints[8];
 	public:
 		Camera();
 		~Camera();

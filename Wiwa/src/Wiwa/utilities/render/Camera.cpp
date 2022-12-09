@@ -7,6 +7,8 @@
 #include <gl/GL.h>
 
 namespace Wiwa {
+	const int IND_COUNT = 24;
+
 	Camera::Camera()
 	{
 		// Initialize camera transform
@@ -25,11 +27,33 @@ namespace Wiwa {
 
 		// Start camera as INVALID
 		m_CameraType = CameraType::INVALID;
-		indicies = {
+
+		int indicies[IND_COUNT] = {
 			0, 1, 1, 2, 2, 3, 3, 0, // Front
 			4, 5, 5, 6, 6, 7, 7, 4, // Back
 			0, 4, 1, 5, 2, 6, 3, 7
 		};
+
+		// Generate frustum opengl buffers
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &ebo);
+		glGenVertexArrays(1, &vao);
+
+		// Dynamic VAO to update frustum vertices
+		glBindVertexArray(vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(m_FrustumPoints), nullptr, GL_DYNAMIC_DRAW);
+
+		// Static indicies
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		// Unbind buffers
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 	}
 
 
@@ -155,38 +179,25 @@ namespace Wiwa {
 	}
 	void Camera::DrawFrustrum()
 	{
-		vertices.clear();
-		glm::vec3 points[8];
 		glLineWidth(5.0f);
-		GetCornerPoints(points);
-		for (size_t i = 0; i < 8; i++)
-		{
-			vertices.push_back(points[i].x);
-			vertices.push_back(points[i].y);
-			vertices.push_back(points[i].z);
-		}
-			glGenBuffers(1, &vbo);
-			glGenBuffers(1, &ebo);
-			glGenVertexArrays(1, &vao);
 
-			glBindVertexArray(vao);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_DYNAMIC_DRAW);
+		// Generate frustum data
+		GetCornerPoints(m_FrustumPoints);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicies.size() * sizeof(int), indicies.data(), GL_DYNAMIC_DRAW);
+		glBindVertexArray(vao);
 
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(0);
+		// Update frumstum data
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_FrustumPoints), m_FrustumPoints);
 
+		// Draw frustum
+		glDrawElements(GL_LINES, (GLsizei)IND_COUNT, GL_UNSIGNED_INT, 0);
 
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
+		// Unbind buffers
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
 
-			glBindVertexArray(vao);
-			glDrawElements(GL_LINES, (GLsizei)indicies.size(), GL_UNSIGNED_INT, 0);
-			glBindVertexArray(0);
-			glLineWidth(1.0f);
+		glLineWidth(1.0f);
 		
 	}
 }
