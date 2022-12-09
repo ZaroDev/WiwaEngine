@@ -394,8 +394,8 @@ void EditorLayer::OpenScene()
 	std::string filePath = Wiwa::FileDialogs::OpenFile("Wiwa Scene (*.wiscene)\0*.wiscene\0");
 	if (!filePath.empty())
 	{
-		SceneId scene_id = Wiwa::SceneManager::LoadScene(filePath.c_str());
-		Wiwa::SceneManager::SetScene(scene_id);
+		SceneId id = Wiwa::SceneManager::LoadScene(filePath.c_str());
+		Wiwa::SceneManager::SetScene(id);
 		WI_INFO("Succesfully opened scene at path {0}", filePath.c_str());
 	}
 }
