@@ -33,6 +33,8 @@ namespace Wiwa {
 
 		EntityManager& GetEntityManager() { return m_EntityManager; }
 		CameraManager& GetCameraManager() { return *m_CameraManager; }
+		inline const char* getName() { return m_Name.c_str(); }
+		inline void ChangeName(const char* name) { m_Name = name; }
 	protected:
 		virtual void ProcessInput() {}
 
@@ -52,5 +54,6 @@ namespace Wiwa {
 		State m_CurrentState = SCENE_ENTERING;
 		size_t m_TransitionTimer = 0;
 		size_t m_SceneToChange = 0;
+		std::string m_Name = "Default scene";
 	};
 }

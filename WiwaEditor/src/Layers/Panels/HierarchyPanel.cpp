@@ -56,7 +56,7 @@ void HierarchyPanel::Draw()
 	filter.Draw("##searchbar", 200.f);
 	ImGui::Separator();
 
-	ImGui::Text("%i", Wiwa::SceneManager::getActiveSceneId());
+	ImGui::Text(Wiwa::SceneManager::getActiveScene()->getName());
 	std::vector<EntityId>* entities = entityManager.GetParentEntitiesAlive();
 	size_t count = entities->size();
 	int id = 0;
