@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 
 #include <Wiwa/core/Application.h>
+#include <Wiwa/ecs/systems/MeshRenderer.h>
 
 namespace Wiwa {
 	Scene::Scene()
@@ -48,6 +49,7 @@ namespace Wiwa {
 
 	void Scene::Start()
 	{
+		m_EntityManager.RegisterSystem<MeshRenderer>();
 	}
 
 	void Scene::Load()
