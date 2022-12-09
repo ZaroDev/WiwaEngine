@@ -119,6 +119,154 @@ void ScenePanel::Draw()
     ImVec2 cpos = ImGui::GetCursorPos();
     cpos.x = (viewportPanelSize.x - isize.x) / 2;
     Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+    
+    //Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
+
+    ImTextureID tex = (ImTextureID)(intptr_t)m_Camera->frameBuffer->getColorBufferTexture();
+    ImGui::SetCursorPos(cpos);
+    //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
+    ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+        {
+            const wchar_t* path = (const wchar_t*)payload->Data;
+            std::wstring ws(path);
+            std::string pathS(ws.begin(), ws.end());
+            std::filesystem::path p = pathS;
+            if (p.extension() == ".fbx" || p.extension() == ".FBX")
+            {
+                std::filesystem::path src = Wiwa::FileSystem::RemoveFolderFromPath("assets", pathS);
+                src.replace_extension();
+                CreateEntityWithModelHierarchy(src.string().c_str(), "resources/materials/default_material.wimaterial");
+            }
+            if (p.extension() == ".wiscene")
+            {
+                SceneId id = Wiwa::SceneManager::LoadScene(pathS.c_str());
+                Wiwa::SceneManager::SetScene(id);
+            }
+
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+    ImVec2 rectPos = ImGui::GetItemRectMin();
+    //FPS widget
+
+    if (m_ShowFPS)
+    {
+        ImVec2 rectSize(rectPos.x + 150.0f, rectPos.y + 50.0f);
+        ImGui::GetWindowDrawList()->AddRectFilled(
+            ImVec2(rectPos.x, rectPos.y),
+            rectSize,
+            IM_COL32(30, 30, 30, 128)
+        );
+
+        ImGui::GetWindowDrawList()->AddRect(
+            ImVec2(rectPos.x, rectPos.y),
+            rectSize,
+            IM_COL32(255, 255, 255, 30)
+        );
+        float y = cpos.y + 5.0f;
+        float x = cpos.x + 5.0f;
+        ImGui::SetCursorPos(ImVec2(x, y));
+        ImGui::TextColored(ImColor(255, 255, 255, 128), "FPS");
+        ImGui::SetCursorPos(ImVec2(x + 60.0f, y));
+        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f FPS", ImGui::GetIO().Framerate);
+
+        ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
+        ImGui::TextColored(ImColor(255, 255, 255, 128), "Frame time");
+        ImGui::SetCursorPos(ImVec2(x + 70.0f, y + 20.0f));
+        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.3f ms", 1000 / ImGui::GetIO().Framerate);
+    }
+    //Gizmos
+    if (m_EntSelected != -1)
+    {
+        m_SelectedTransform = entityManager.GetComponent<Wiwa::Transform3D>(m_EntSelected);
+        m_GizmoType = instance->GetGizmo();
+        if (m_GizmoType != -1)
+        {
+            ImGuizmo::SetOrthographic(false);
+            ImVec2 winPos = ImGui::GetWindowPos();
+            ImVec2 cursorPos = ImGui::GetCursorPos();
+            ImGuizmo::SetDrawlist();
+            ImGuizmo::SetRect(rectPos.x, rectPos.y, isize.x, isize.y);
+
+            glm::mat4 cameraView = m_Camera->getView();
+            const glm::mat4& cameraProjection = m_Camera->getProjection();
+
+            if (m_SelectedTransform)
+            {
+                bool isParent = entityManager.GetEntityParent(m_EntSelected) == m_EntSelected;
+                float tmpMatrix[16];
+                float translation[3], rotation[3], scale[3];
+                if (isParent)
+                {
+                    translation[0] = m_SelectedTransform->position.x;
+                    translation[1] = m_SelectedTransform->position.y;
+                    translation[2] = m_SelectedTransform->position.z;
+                }
+                else
+                {
+                    translation[0] = m_SelectedTransform->localPosition.x;
+                    translation[1] = m_SelectedTransform->localPosition.y;
+                    translation[2] = m_SelectedTransform->localPosition.z;
+                }
+                rotation[0] = m_SelectedTransform->rotation.x;
+                rotation[1] = m_SelectedTransform->rotation.y;
+                rotation[2] = m_SelectedTransform->rotation.z;
+
+                scale[0] = m_SelectedTransform->scale.x;
+                scale[1] = m_SelectedTransform->scale.y;
+                scale[2] = m_SelectedTransform->scale.z;
+
+                ImGuizmo::RecomposeMatrixFromComponents(translation, rotation, scale, tmpMatrix);
+
+                //Snaping
+                bool snap = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl);
+                float snapValue = 0.5f; //Snap to 0.5m for translation/scale
+
+                if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+                    snapValue = 45.0f;
+
+                float snapValues[3] = { snapValue, snapValue, snapValue };
+
+                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+                    (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, tmpMatrix,
+                    nullptr, snap ? snapValues : nullptr);
+
+                if (ImGuizmo::IsUsing())
+                {
+                    ImGuizmo::DecomposeMatrixToComponents(tmpMatrix, translation, rotation, scale);
+
+                    switch (m_GizmoType)
+                    {
+                    case ImGuizmo::OPERATION::TRANSLATE: {
+                        if (isParent)
+                        {
+                            m_SelectedTransform->position = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
+                        }
+                        else
+                        {
+                            m_SelectedTransform->localPosition = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
+                        }
+                    }break;
+                    case ImGuizmo::OPERATION::ROTATE: {
+                        m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
+                    }break;
+                    case ImGuizmo::OPERATION::SCALE: {
+                        m_SelectedTransform->rotation = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
+                    }break;
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    
+
     if (ImGui::IsWindowHovered())
     {
         // Calculate mouse position in viewport (0 to 1)
@@ -154,17 +302,17 @@ void ScenePanel::Draw()
             m_Camera->setFOV(fov);
         }
 
-        if(Wiwa::Input::IsMouseButtonPressed(0) && !ImGuizmo::IsUsing())
+        if (Wiwa::Input::IsMouseButtonPressed(0) && !ImGuizmo::IsUsing())
         {
             glm::vec3 out_dir;
             glm::vec3 out_origin;
             rpos.y -= isize.y;
             rpos.y = glm::abs(rpos.y);
-            
-            Wiwa::Math::ScreenPosToWorldRay(rpos.x, rpos.y , isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
+
+            Wiwa::Math::ScreenPosToWorldRay(rpos.x, rpos.y, isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
             float minDist = FLT_MAX;
             int id = -1;
-            for (size_t i = 0; i < entityManager.GetEntityCount(); i++) 
+            for (size_t i = 0; i < entityManager.GetEntityCount(); i++)
             {
                 if (!entityManager.HasComponent<Wiwa::Mesh>(i))
                     continue;
@@ -182,7 +330,7 @@ void ScenePanel::Draw()
                     out_origin,
                     out_dir,
                     model->boundingBox.getMin() * scale,
-                    model->boundingBox.getMax() * scale, 
+                    model->boundingBox.getMax() * scale,
                     transform,
                     intersectDist
                 ))
@@ -247,7 +395,7 @@ void ScenePanel::Draw()
                 camFastSpeed = camSpeed * 2;
             else
                 camFastSpeed = camSpeed;
-            
+
             // Camera movement
             glm::vec3 campos = m_Camera->getPosition();
 
@@ -274,147 +422,10 @@ void ScenePanel::Draw()
             if (Wiwa::Input::IsKeyPressed(Wiwa::Key::E)) {
                 campos -= m_Camera->getUp() * camFastSpeed;
             }
-            m_Camera->setPosition({ campos.x, campos.y, campos.z }); 
+            m_Camera->setPosition({ campos.x, campos.y, campos.z });
         }
     }
-    
     m_Scroll = 0.0f;
-
-
-    static bool grid = true;
-
-    
-    //Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
-
-    ImTextureID tex = (ImTextureID)(intptr_t)m_Camera->frameBuffer->getColorBufferTexture();
-    ImGui::SetCursorPos(cpos);
-    //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
-    ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
-
-    if (ImGui::BeginDragDropTarget())
-    {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-        {
-            const wchar_t* path = (const wchar_t*)payload->Data;
-            std::wstring ws(path);
-            std::string pathS(ws.begin(), ws.end());
-            std::filesystem::path p = pathS;
-            if (p.extension() == ".fbx" || p.extension() == ".FBX")
-            {
-                std::filesystem::path src = Wiwa::FileSystem::RemoveFolderFromPath("assets", pathS);
-                src.replace_extension();
-                CreateEntityWithModelHierarchy(src.string().c_str(), "resources/materials/default_material.wimaterial");
-            }
-            if (p.extension() == ".wiscene")
-            {
-               SceneId id =  Wiwa::SceneManager::LoadScene(pathS.c_str());
-               Wiwa::SceneManager::SetScene(id);
-            }
-
-        }
-
-        ImGui::EndDragDropTarget();
-    }
-    //FPS widget
-    ImVec2 rectPos = ImGui::GetItemRectMin();
-    if (m_ShowFPS)
-    {
-        ImVec2 rectSize(rectPos.x + 150.0f, rectPos.y + 50.0f);
-        ImGui::GetWindowDrawList()->AddRectFilled(
-            ImVec2(rectPos.x, rectPos.y),
-            rectSize,
-            IM_COL32(30, 30, 30, 128)
-        );
-
-        ImGui::GetWindowDrawList()->AddRect(
-            ImVec2(rectPos.x, rectPos.y),
-            rectSize,
-            IM_COL32(255, 255, 255, 30)
-        );
-        float y = cpos.y + 5.0f;
-        float x = cpos.x + 5.0f;
-        ImGui::SetCursorPos(ImVec2(x, y));
-        ImGui::TextColored(ImColor(255, 255, 255, 128), "FPS");
-        ImGui::SetCursorPos(ImVec2(x + 60.0f, y));
-        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f FPS", ImGui::GetIO().Framerate);
-        
-        ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
-        ImGui::TextColored(ImColor(255, 255, 255, 128), "Frame time");
-        ImGui::SetCursorPos(ImVec2(x + 70.0f, y + 20.0f));
-        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.3f ms", 1000 / ImGui::GetIO().Framerate);
-    }
-    //Gizmos
-
-
-    if (m_EntSelected != -1)
-    {
-        m_SelectedTransform = entityManager.GetComponent<Wiwa::Transform3D>(m_EntSelected);
-        m_GizmoType = instance->GetGizmo();
-        if (m_GizmoType != -1)
-        {
-            ImGuizmo::SetOrthographic(false);
-            ImVec2 winPos = ImGui::GetWindowPos();
-            ImVec2 cursorPos = ImGui::GetCursorPos();
-            ImGuizmo::SetDrawlist();
-            ImGuizmo::SetRect(rectPos.x, rectPos.y, isize.x, isize.y);
-
-            glm::mat4 cameraView = m_Camera->getView();
-            const glm::mat4& cameraProjection = m_Camera->getProjection();
-
-            if (m_SelectedTransform)
-            {
-                float tmpMatrix[16];
-                float translation[3], rotation[3], scale[3];
-                translation[0] = m_SelectedTransform->position.x;
-                translation[1] = m_SelectedTransform->position.y;
-                translation[2] = m_SelectedTransform->position.z;
-
-                rotation[0] = m_SelectedTransform->rotation.x;
-                rotation[1] = m_SelectedTransform->rotation.y;
-                rotation[2] = m_SelectedTransform->rotation.z;
-
-                scale[0] = m_SelectedTransform->scale.x;
-                scale[1] = m_SelectedTransform->scale.y;
-                scale[2] = m_SelectedTransform->scale.z;
-
-                ImGuizmo::RecomposeMatrixFromComponents(translation, rotation, scale, tmpMatrix);
-
-                //Snaping
-                bool snap = Wiwa::Input::IsKeyPressed(Wiwa::Key::LeftControl);
-                float snapValue = 0.5f; //Snap to 0.5m for translation/scale
-
-                if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-                    snapValue = 45.0f;
-
-                float snapValues[3] = { snapValue, snapValue, snapValue };
-
-                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                    (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, tmpMatrix,
-                    nullptr, snap ? snapValues : nullptr);
-
-                if (ImGuizmo::IsUsing())
-                {
-                    ImGuizmo::DecomposeMatrixToComponents(tmpMatrix, translation, rotation, scale);
-                    
-                    switch (m_GizmoType)
-                    {
-                    case ImGuizmo::OPERATION::TRANSLATE: {
-                        m_SelectedTransform->position = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
-                    }break;
-                    case ImGuizmo::OPERATION::ROTATE: {
-                        m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
-                    }break;
-                    case ImGuizmo::OPERATION::SCALE: {
-                        m_SelectedTransform->rotation = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
-                    }break;
-                    default:
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     ImGui::End();
 }
 

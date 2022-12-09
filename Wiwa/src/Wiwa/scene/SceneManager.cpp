@@ -251,7 +251,6 @@ namespace Wiwa {
 		if (scene_file.IsOpen()) {
 			sceneid = CreateScene();
 			Scene* sc = m_Scenes[sceneid];
-
 			// Load cameras
 			CameraManager& cm = sc->GetCameraManager();
 			size_t camera_count;
@@ -336,6 +335,8 @@ namespace Wiwa {
 			for (size_t i = 0; i < p_entity_count; i++) {
 				LoadEntity(scene_file, i, em, true);
 			}
+			std::filesystem::path path = scene_path;
+			sc->ChangeName(path.filename().stem().string().c_str());
 
 			WI_CORE_INFO("Loaded scene in file \"{0}\" successfully!", scene_path);
 		}
