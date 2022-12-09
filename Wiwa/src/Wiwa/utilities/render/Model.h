@@ -91,6 +91,8 @@ namespace Wiwa {
 		void LoadMesh(const char* file, ModelSettings* settings);
 		void LoadWiMesh(const char* file);
 
+		void IsRoot(bool root) { is_root = root; }
+
 		static Model* GetModelFromFile(const char* file, ModelSettings* settings);
 		static void SaveModel(Model* model, const char* file);
 	public:

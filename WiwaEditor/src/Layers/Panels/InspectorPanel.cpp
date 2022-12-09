@@ -10,6 +10,8 @@
 #include <Wiwa/utilities/math/Vector2i.h>
 #include "../../Utils/EditorUtils.h"
 
+#include <Wiwa/ecs/components/Mesh.h>
+
 bool InspectorPanel::DrawComponent(size_t componentId)
 {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
@@ -141,14 +143,13 @@ void InspectorPanel::DrawField(unsigned char* data, const Field& field)
 
 void InspectorPanel::DrawMeshComponent(byte* data)
 {
-	ResourceId* mesh_id = (ResourceId*)(data);
-	ResourceId* mat_id = (ResourceId*)(data + sizeof(ResourceId));
+	Wiwa::Mesh* mesh = (Wiwa::Mesh*)data;
 
 	// Draw meshId field
 	ImGui::Text("Model");
 	ImGui::PushID("meshId");
 
-	Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(*mesh_id);
+	Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
 	AssetContainer(std::filesystem::path(mod->getModelPath()).stem().string().c_str());
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -161,7 +162,13 @@ void InspectorPanel::DrawMeshComponent(byte* data)
 			if (p.extension() == ".fbx" || p.extension() == ".FBX")
 			{
 				WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-				*mesh_id = Wiwa::Resources::Load<Wiwa::Model>(pathS.c_str());
+				p.replace_extension();
+				std::string src = Wiwa::FileSystem::RemoveFolderFromPath("assets", p.string());
+				mesh->meshId = Wiwa::Resources::Load<Wiwa::Model>(src.c_str());
+				mesh->modelIndex = 0;
+				mesh->drawChildren = true;
+
+				Wiwa::Model* m = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
 			}
 		}
 
@@ -177,7 +184,7 @@ void InspectorPanel::DrawMeshComponent(byte* data)
 
 	//Draw materialId field
 	ImGui::Text("Material");
-	Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(*mat_id);
+	Wiwa::Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
 	AssetContainer(std::filesystem::path(mat->getMaterialPath()).stem().string().c_str());
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -190,7 +197,7 @@ void InspectorPanel::DrawMeshComponent(byte* data)
 			if (p.extension() == ".wimaterial")
 			{
 				WI_INFO("Trying to load payload at path {0}", pathS.c_str());
-				*mat_id = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
+				mesh->materialId = Wiwa::Resources::Load<Wiwa::Material>(pathS.c_str());
 			}
 		}
 

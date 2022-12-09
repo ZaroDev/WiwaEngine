@@ -27,12 +27,11 @@ namespace Wiwa {
 		Renderer3D& r3d = Application::Get().GetRenderer3D();
 
 		Model* root_mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
-		Model* mod = NULL;
+		Model* mod = root_mod;
+
 		if (root_mod->IsRoot()) {
-			mod = root_mod->getModelAt(mesh->modelIndex);
-		}
-		else {
-			mod = root_mod;
+			if(!mesh->drawChildren)
+				mod = root_mod->getModelAt(mesh->modelIndex);
 		}
 		
 		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);

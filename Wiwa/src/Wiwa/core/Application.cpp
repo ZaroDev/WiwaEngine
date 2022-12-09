@@ -127,14 +127,13 @@ namespace Wiwa {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			//m_Renderer2D->Update();
+			// Update scene manager
 			SceneManager::Update();
 			
 			m_Renderer3D->Update();
 
 			// Update time
 			Time::Update();
-			
-			// Update scene manager
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

@@ -11,7 +11,6 @@ namespace Wiwa {
 	void SceneManager::Update()
 	{
 		m_Scenes[m_ActiveScene]->Update();
-
 	}
 
 	void SceneManager::CleanUp()
