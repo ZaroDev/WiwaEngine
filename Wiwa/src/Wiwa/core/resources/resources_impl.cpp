@@ -1,5 +1,5 @@
 #include <wipch.h>
-#include "Resources.h"
+#include "resources_impl.h"
 
 #include "../vendor/stb/stb_image.h"
 
@@ -24,7 +24,7 @@ namespace Wiwa {
 		WI_CORE_INFO(message.c_str());
 	}
 
-	ResourceId Resources::getResourcePosition(ResourceType rt, const char * file)
+	ResourceId Resources::getResourcePosition(ResourceType rt, const char* file)
 	{
 		size_t size = m_Resources[rt].size();
 
@@ -110,5 +110,5 @@ namespace Wiwa {
 			}
 		}*/
 	}
-	
+
 }
