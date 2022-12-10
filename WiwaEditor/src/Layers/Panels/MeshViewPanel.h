@@ -29,7 +29,7 @@ private:
 	std::vector<ShadingView *> m_Shadings;
 	Wiwa::Camera m_Camera;
 
-	Wiwa::Model *m_ActiveMesh;
+	Wiwa::Model *m_ActiveMesh = nullptr;
 
 	Wiwa::Vector3f m_MeshPosition;
 	Wiwa::Vector3f m_MeshRotation;
@@ -37,7 +37,7 @@ private:
 
 	Wiwa::Vector4f m_MeshColor;
 
-	Wiwa::Material* m_ActiveMaterial;
+	Wiwa::Material* m_ActiveMaterial = nullptr;
 
 	// Camera control
 	float camSpeed;

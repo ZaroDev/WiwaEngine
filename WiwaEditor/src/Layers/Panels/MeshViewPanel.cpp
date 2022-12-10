@@ -30,8 +30,8 @@ MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     float ar = res.w / (float)res.h;
     
 
-    m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
-    m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");
+   /* m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
+    m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");*/
 
     m_MeshPosition = { 0.0f, -1.0f, 0.0f };
     m_MeshRotation = { 0.0f, 0.0f, 0.0f };
@@ -63,6 +63,7 @@ void MeshViewPanel::Update()
 void MeshViewPanel::Draw()
 {
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
+
     
     // Calculate viewport aspect ratio
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -192,7 +193,9 @@ void MeshViewPanel::Draw()
     }
 
     // Render to frame buffer and imgui viewport
-    Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_Camera);
+    if(m_ActiveMaterial && m_ActiveMesh)
+        Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_Camera);
+
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
 
     //Drag and drop

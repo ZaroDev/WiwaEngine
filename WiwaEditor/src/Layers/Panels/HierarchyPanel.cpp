@@ -86,18 +86,18 @@ void HierarchyPanel::DrawAddMenu(Wiwa::EntityManager& entityManager)
 		{
 			CreateCube();
 		}
-		if (ImGui::MenuItem("Create plane"))
+		/*if (ImGui::MenuItem("Create plane"))
 		{
 			CreatePlane();
-		}
+		}*/
 		if (ImGui::MenuItem("Create sphere"))
 		{
 			CreateSphere();
 		}
-		if (ImGui::MenuItem("Create pyramid"))
+		/*if (ImGui::MenuItem("Create pyramid"))
 		{
 			CreatePyramid();
-		}
+		}*/
 		ImGui::EndMenu();
 	}
 	if (ImGui::MenuItem("Camera"))
