@@ -34,7 +34,7 @@
 #include <Wiwa/scripting/ScriptEngine.h>
 #include <Wiwa/core/Resources.h>
 
-const size_t TYPE_COUNT = __COUNTER__;
+USE_REFLECTION;
 
 namespace Wiwa {
 	Application* Application::s_Instance = nullptr;

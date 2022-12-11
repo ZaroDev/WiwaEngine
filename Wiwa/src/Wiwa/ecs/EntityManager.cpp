@@ -86,7 +86,7 @@ namespace Wiwa {
 		size_t chsize = m_EntityChildren[eid].size();
 
 		for (size_t i = 0; i < chsize; i++) {
-			RemoveEntity(m_EntityChildren[eid][i]);
+			RemoveEntity(m_EntityChildren[eid][0]);
 		}
 
 		m_EntityChildren[eid].clear();
