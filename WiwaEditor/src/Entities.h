@@ -63,7 +63,7 @@ inline void CreateCube()
 	Wiwa::Mesh mesh;
 	sprintf(mesh.mesh_path, "%s", "models/cube");
 	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
-	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
+	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("cube");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	mesh.modelIndex = 0;
 	mesh.drawChildren = false;
@@ -88,7 +88,7 @@ inline void CreatePlane()
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "models/plane");
+	sprintf(mesh.mesh_path, "%s", "plane");
 	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);

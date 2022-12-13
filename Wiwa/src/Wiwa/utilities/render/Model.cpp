@@ -604,11 +604,6 @@ namespace Wiwa {
 		else {
 			is_root = false;
 		}
-		size_t meshCount = models.size();
-		for (size_t i = 0; i < meshCount; i++) 
-		{
-			boundingBox.extend(models[i]->boundingBox);
-		}
 	}
 
 	Model::~Model()

@@ -203,8 +203,15 @@ bool HierarchyPanel::OnEntityChange(EntityChangeEvent& e)
 	return false;
 }
 
+bool HierarchyPanel::OnSceneChange(Wiwa::SceneChangeEvent& e)
+{
+	m_CurrentID = -1;
+	return false;
+}
+
 void HierarchyPanel::OnEvent(Wiwa::Event& e)
 {
 	Wiwa::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<EntityChangeEvent>({ &HierarchyPanel::OnEntityChange, this });
+	dispatcher.Dispatch<Wiwa::SceneChangeEvent>({ &HierarchyPanel::OnSceneChange, this });
 }

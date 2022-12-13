@@ -149,7 +149,9 @@ void InspectorPanel::DrawMeshComponent(byte* data)
 	ImGui::Text("Model");
 	ImGui::PushID("meshId");
 
+
 	Wiwa::Model* mod = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
+	mod = mod->getModelAt(mesh->modelIndex);
 	AssetContainer(std::filesystem::path(mod->getModelPath()).stem().string().c_str());
 	if (ImGui::BeginDragDropTarget())
 	{
@@ -177,6 +179,9 @@ void InspectorPanel::DrawMeshComponent(byte* data)
 	ImGui::Text("Model path: ");
 	ImGui::SameLine();
 	ImGui::Text(mod->getModelPath());
+	ImGui::Text("Bounding box");
+	ImGui::InputFloat3("Max", (float*)glm::value_ptr(mod->boundingBox.getMax()));
+	ImGui::InputFloat3("Min", (float*)glm::value_ptr(mod->boundingBox.getMin()));
 	static bool showNormals = false;
 	if (ImGui::Checkbox("Show normals", &showNormals))
 		mod->showNormals = showNormals;
@@ -334,11 +339,19 @@ void InspectorPanel::OnEvent(Wiwa::Event&e)
 {
 	Wiwa::EventDispatcher dispatcher(e);
 	dispatcher.Dispatch<EntityChangeEvent>({ &InspectorPanel::OnEntityChangeEvent, this });
+	dispatcher.Dispatch<Wiwa::SceneChangeEvent>({ &InspectorPanel::OnSceneChangeEvent, this });
 }
 
 bool InspectorPanel::OnEntityChangeEvent(EntityChangeEvent& e)
 {
 	m_CurrentID = e.GetResourceId();
 	m_EntitySet = true;
+	return false;
+}
+
+bool InspectorPanel::OnSceneChangeEvent(Wiwa::SceneChangeEvent& e)
+{
+	m_CurrentID = -1;
+	m_EntitySet = false;
 	return false;
 }

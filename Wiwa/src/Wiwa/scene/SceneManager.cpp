@@ -351,6 +351,9 @@ namespace Wiwa {
 
 	void SceneManager::ChangeScene(SceneId sceneId)
 	{
+		SceneChangeEvent event(sceneId);
+		Action<Wiwa::Event&> act = { &Application::OnEvent, &Application::Get()};
+		act(event);
 		m_Scenes[m_ActiveScene]->Unload();
 		m_ActiveScene = sceneId;
 		m_Scenes[m_ActiveScene]->Load();

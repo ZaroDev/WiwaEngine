@@ -7,6 +7,7 @@
 
 #include <Wiwa/utilities/math/Vector3f.h>
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/events/ApplicationEvent.h>
 
 class InspectorPanel : public Panel
 {
@@ -24,6 +25,7 @@ public:
 
 	void OnEvent(Wiwa::Event&) override;
 	bool OnEntityChangeEvent(EntityChangeEvent& e);
+	bool OnSceneChangeEvent(Wiwa::SceneChangeEvent& e);
 
 	inline bool GetCurrentEntity(int& id)
 	{

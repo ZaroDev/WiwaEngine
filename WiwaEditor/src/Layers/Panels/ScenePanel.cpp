@@ -333,7 +333,9 @@ void ScenePanel::Draw()
             {
                 if (!entityManager.HasComponent<Wiwa::Mesh>(i))
                     continue;
-                Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(entityManager.GetComponent<Wiwa::Mesh>(i)->meshId);
+                Wiwa::Mesh* mesh = entityManager.GetComponent<Wiwa::Mesh>(i);
+                Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
+                model = model->getModelAt(mesh->modelIndex);
                 Wiwa::Transform3D* trs = entityManager.GetComponent<Wiwa::Transform3D>(i);
                 glm::mat4 transform(1.0f);
                 glm::vec3 scale = glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z);
@@ -343,11 +345,14 @@ void ScenePanel::Draw()
                 transform = glm::rotate(transform, trs->rotation.z, { 0,0,1 });
                 transform = glm::scale(transform, scale);
                 float intersectDist = 0.0f;
+
+                Wiwa::AABB& AABB = model->boundingBox;
+                //AABB.scale(scale, AABB.getCenter());
                 if (Wiwa::Math::TestRayOBBIntersection(
                     out_origin,
                     out_dir,
-                    model->boundingBox.getMin(),
-                    model->boundingBox.getMax(),
+                    AABB.getMin(),
+                    AABB.getMax(),
                     transform,
                     intersectDist
                 ))
