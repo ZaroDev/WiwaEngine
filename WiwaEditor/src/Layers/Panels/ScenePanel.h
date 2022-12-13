@@ -51,4 +51,5 @@ private:
 	Wiwa::Transform3D* m_SelectedTransform;
 
 	int m_EntSelected = -1;
+	bool m_LocalMode;
 };

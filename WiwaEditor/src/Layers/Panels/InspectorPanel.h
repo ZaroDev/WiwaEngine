@@ -16,6 +16,7 @@ private:
 	void DrawField(unsigned char* data, const Field& field);
 
 	void DrawMeshComponent(byte* data);
+	void DrawTransform3dComponent(byte* data);
 public:
 	InspectorPanel(EditorLayer* instance);
 	virtual ~InspectorPanel();

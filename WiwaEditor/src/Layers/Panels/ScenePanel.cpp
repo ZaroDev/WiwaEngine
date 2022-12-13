@@ -34,6 +34,7 @@
 ScenePanel::ScenePanel(EditorLayer* instance)
     : Panel("Scene", instance)
 {
+    m_LocalMode = false;
     m_Shadings.push_back(new ShadingView("Depth Test", Wiwa::Renderer3D::Options::DEPTH_TEST, true));
     m_Shadings.push_back(new ShadingView("Cull face", Wiwa::Renderer3D::Options::CULL_FACE, true));
     m_Shadings.push_back(new ShadingView("Lighting", Wiwa::Renderer3D::Options::LIGHTING, false));
@@ -77,7 +78,7 @@ void ScenePanel::Draw()
             }
             ImGui::EndMenu();
         }
-        if(ImGui::BeginMenu("Options"))
+        if (ImGui::BeginMenu("Options"))
         {
             Wiwa::Vector4f color = Wiwa::Application::Get().GetRenderColor();
             glm::vec4 col = { color.r, color.g, color.b, color.a };
@@ -98,7 +99,7 @@ void ScenePanel::Draw()
                 m_Camera->setPlanes(nearPlane, farPlane);
             }
 
-            if(ImGui::InputFloat("Far Plane", &farPlane, 0.1f, 1.0f))
+            if (ImGui::InputFloat("Far Plane", &farPlane, 0.1f, 1.0f))
             {
                 m_Camera->setPlanes(nearPlane, farPlane);
             }
@@ -200,36 +201,22 @@ void ScenePanel::Draw()
                 bool isParent = entityManager.GetEntityParent(m_EntSelected) == m_EntSelected;
                 float tmpMatrix[16];
                 float translation[3], rotation[3], scale[3];
-                if (isParent)
-                {
-                    translation[0] = m_SelectedTransform->position.x;
-                    translation[1] = m_SelectedTransform->position.y;
-                    translation[2] = m_SelectedTransform->position.z;
 
-                    rotation[0] = m_SelectedTransform->rotation.x;
-                    rotation[1] = m_SelectedTransform->rotation.y;
-                    rotation[2] = m_SelectedTransform->rotation.z;
+                translation[0] = m_SelectedTransform->position.x;
+                translation[1] = m_SelectedTransform->position.y;
+                translation[2] = m_SelectedTransform->position.z;
 
-                    scale[0] = m_SelectedTransform->scale.x;
-                    scale[1] = m_SelectedTransform->scale.y;
-                    scale[2] = m_SelectedTransform->scale.z;
-                }
-                else
-                {
-                    translation[0] = m_SelectedTransform->localPosition.x;
-                    translation[1] = m_SelectedTransform->localPosition.y;
-                    translation[2] = m_SelectedTransform->localPosition.z;
+                rotation[0] = m_SelectedTransform->rotation.x;
+                rotation[1] = m_SelectedTransform->rotation.y;
+                rotation[2] = m_SelectedTransform->rotation.z;
 
-                    rotation[0] = m_SelectedTransform->localRotation.x;
-                    rotation[1] = m_SelectedTransform->localRotation.y;
-                    rotation[2] = m_SelectedTransform->localRotation.z;
+                scale[0] = m_SelectedTransform->scale.x;
+                scale[1] = m_SelectedTransform->scale.y;
+                scale[2] = m_SelectedTransform->scale.z;
 
-                    scale[0] = m_SelectedTransform->localScale.x;
-                    scale[1] = m_SelectedTransform->localScale.y;
-                    scale[2] = m_SelectedTransform->localScale.z;
-                }
+
                 
-
+                
                 
 
                 ImGuizmo::RecomposeMatrixFromComponents(translation, rotation, scale, tmpMatrix);
@@ -253,26 +240,26 @@ void ScenePanel::Draw()
 
                     switch (m_GizmoType)
                     {
-                    case ImGuizmo::OPERATION::TRANSLATE: {
+                    case ImGuizmo::OPERATION::TRANSLATE:
+                    {
                         if (isParent)
                             m_SelectedTransform->position = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
                         else
-                            m_SelectedTransform->localPosition = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
-
+                            m_SelectedTransform->localPosition += Wiwa::Vector3f(translation[0], translation[1], translation[2]) - m_SelectedTransform->position;
                     }break;
-                    case ImGuizmo::OPERATION::ROTATE: {
-                        if (isParent)
-                            m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
-
+                    case ImGuizmo::OPERATION::ROTATE: 
+                    {
+                        if(isParent)
+                            m_SelectedTransform->position = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
                         else
-                            m_SelectedTransform->localRotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
-
+                            m_SelectedTransform->localRotation += Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]) - m_SelectedTransform->rotation;
                     }break;
-                    case ImGuizmo::OPERATION::SCALE: {
+                    case ImGuizmo::OPERATION::SCALE: 
+                    {
                         if (isParent)
                             m_SelectedTransform->scale = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
                         else
-                            m_SelectedTransform->localScale = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
+                            m_SelectedTransform->localScale += Wiwa::Vector3f(scale[0], scale[1], scale[2]) - m_SelectedTransform->scale;
                     }break;
                     default:
                         break;
