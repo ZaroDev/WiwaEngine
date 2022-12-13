@@ -35,10 +35,10 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 		byte* data = em.GetComponent(m_CurrentID, componentId, type->size);
 
 		// Custom component interface
-		if (type->hash == FNV1A_HASH("Mesh")) {	DrawMeshComponent(data); } 
-		else if (type->hash == FNV1A_HASH("Transform3D")) { DrawTransform3dComponent(data); } 
+		if (type->hash == FNV1A_HASH("Mesh")) {	DrawMeshComponent(data); } else
+		if (type->hash == FNV1A_HASH("Transform3D")) { DrawTransform3dComponent(data); } else
 		// Basic component interface
-		else if (type->is_class) {
+		if (type->is_class) {
 			const Class* cl = (const Class*)type;
 
 			for (size_t i = 0; i < cl->fields.size(); i++)
@@ -248,15 +248,9 @@ void InspectorPanel::DrawMeshComponent(byte* data)
 void InspectorPanel::DrawTransform3dComponent(byte* data)
 {
 	Wiwa::Transform3D* transform = (Wiwa::Transform3D*)data;
-	Wiwa::Vector3f pos = transform->localPosition;
-	Wiwa::Vector3f rot = transform->localRotation;
-	Wiwa::Vector3f scl = transform->localScale;
-	DrawVec3Control("Position", pos, 0.0f, 100.0f);
-	DrawVec3Control("Rotation", rot, 0.0f, 100.0f);
-	DrawVec3Control("Scale", scl, 0.0f, 100.0f);
-	transform->localPosition = pos;
-	transform->localRotation = rot;
-	transform->localScale = scl;
+	DrawVec3Control("Position", &transform->localPosition, 0.0f, 100.0f);
+	DrawVec3Control("Rotation", &transform->localRotation, 0.0f, 100.0f);
+	DrawVec3Control("Scale", &transform->localScale, 0.0f, 100.0f);
 }
 
 InspectorPanel::InspectorPanel(EditorLayer* instance)

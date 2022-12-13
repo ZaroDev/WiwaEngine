@@ -99,7 +99,7 @@ namespace Wiwa {
 		// Update transforms
 		t3d->position = t3dparent->position + t3d->localPosition;
 		t3d->rotation = t3dparent->rotation + t3d->localRotation;
-		t3d->scale = t3dparent->scale + t3d->localScale;
+		t3d->scale = t3dparent->scale * t3d->localScale;
 
 		// Update children
 		std::vector<EntityId>& children = m_EntityChildren[eid];
@@ -118,6 +118,8 @@ namespace Wiwa {
 			EntityId p_ent = m_ParentEntitiesAlive[i];
 
 			Transform3D* t3d = GetComponent<Transform3D>(p_ent);
+
+			t3d->position = t3d->localPosition;
 
 			// Update children
 			std::vector<EntityId>& children = m_EntityChildren[p_ent];

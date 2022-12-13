@@ -45,7 +45,7 @@ inline void AssetContainer(const char* label)
 }
 void DrawVec3Control(const char* label, unsigned char* data, const Field field, float resetValue = 0.0f, float columnWidth = 100.0f);
 void DrawVec3Control(const std::string& label,float* values, float resetValue = 0.0f, float columnWidth = 100.0f);
-void DrawVec3Control(const std::string& label, Wiwa::Vector3f values, float resetValue = 0.0f, float columnWidth = 100.0f);
+void DrawVec3Control(const std::string& label, Wiwa::Vector3f* values, float resetValue = 0.0f, float columnWidth = 100.0f);
 void DrawVec2Control(const char* label, unsigned char* data, const Field field, float resetValue = 0.0f, float columnWidth = 100.0f);
 void DrawInt2Control(const char* label, unsigned char* data, const Field field, int resetValue = 0.0f, float columnWidth = 100.0f);
 void DrawRect2Control(const char* label, unsigned char* data, const Field field, int resetValue = 0.0f, float columnWidth = 100.0f);

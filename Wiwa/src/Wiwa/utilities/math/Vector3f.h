@@ -55,4 +55,8 @@ namespace Wiwa {
 	inline bool operator!=(const Vector3f v1, const Vector3f v2) {
 		return !(v1 == v2);
 	}
+
+	inline Vector3f operator*(const Vector3f v1, const Vector3f v2) {
+		return { v1.x * v2.x, v1.y * v2.y, v1.z * v2.z };
+	}
 }

@@ -22,10 +22,10 @@
 namespace Wiwa {
 	void Model::getMeshFromFile(const char* file, ModelSettings* settings, bool gen_buffers)
 	{
-		unsigned int flags = aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_FlipUVs;
+		unsigned int flags = aiProcess_Triangulate | aiProcess_FlipUVs;//aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_FlipUVs;
 
 		if (settings->preTranslatedVertices) {
-			flags |= aiProcess_PreTransformVertices;
+			//flags |= aiProcess_PreTransformVertices;
 		}
 
 		const aiScene* scene = aiImportFile(file, flags);
@@ -51,7 +51,6 @@ namespace Wiwa {
 		path.remove_filename();
 
 		std::filesystem::path curr_path = std::filesystem::current_path();
-		
 
 		// Process materials
 		if (scene->HasMaterials()) {
@@ -250,10 +249,21 @@ namespace Wiwa {
 
 		h->name = node->mName.C_Str();
 
+		// Node transform
+		aiVector3D translate, scale, rot;
+
+		node->mTransformation.Decompose(scale, rot, translate);
+
+		h->translation = { translate.x, translate.y, translate.z };
+		h->rotation = { rot.x * 180.0f / PI_F, rot.y * 180.0f / PI_F, rot.z * 180.0f / PI_F };
+		h->scale = { scale.x, scale.y, scale.z };
+
+		// Node meshes
 		for (int i = 0; i < node->mNumMeshes; i++) {
 			h->meshIndexes.push_back(node->mMeshes[i]);
 		}
 
+		// Node children
 		for (int i = 0; i < node->mNumChildren; i++) {
 			h->children.push_back(loadModelHierarchy(node->mChildren[i]));
 		}
@@ -402,6 +412,10 @@ namespace Wiwa {
 		file.Write(&name_len, sizeof(size_t));
 		file.Write(h->name.c_str(), name_len);
 
+		file.Write(&h->translation, sizeof(Vector3f));
+		file.Write(&h->rotation, sizeof(Vector3f));
+		file.Write(&h->scale, sizeof(Vector3f));
+
 		size_t mesh_ind_size = h->meshIndexes.size();
 
 		file.Write(&mesh_ind_size, sizeof(size_t));
@@ -430,6 +444,10 @@ namespace Wiwa {
 		file.Read(&name_len, sizeof(size_t));
 		h->name.resize(name_len);
 		file.Read(&h->name[0], name_len);
+
+		file.Read(&h->translation, sizeof(Vector3f));
+		file.Read(&h->rotation, sizeof(Vector3f));
+		file.Read(&h->scale, sizeof(Vector3f));
 
 		size_t mesh_ind_size;
 

@@ -23,6 +23,11 @@ namespace Wiwa {
 		// Model children
 		std::vector<ModelHierarchy*> children;
 
+		// Transformation
+		Vector3f translation;
+		Vector3f rotation;
+		Vector3f scale;
+
 		~ModelHierarchy() {
 			size_t len = children.size();
 

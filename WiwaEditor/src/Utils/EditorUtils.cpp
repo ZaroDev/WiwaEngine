@@ -373,7 +373,7 @@ void DrawVec3Control(const std::string& label, float* values, float resetValue, 
 	ImGui::PopID();
 }
 
-void DrawVec3Control(const std::string& label, Wiwa::Vector3f values, float resetValue, float columnWidth)
+void DrawVec3Control(const std::string& label, Wiwa::Vector3f* values, float resetValue, float columnWidth)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	auto boldFont = io.Fonts->Fonts[0];
@@ -392,12 +392,12 @@ void DrawVec3Control(const std::string& label, Wiwa::Vector3f values, float rese
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("X", buttonSize))
-		values.x = resetValue;
+		values->x = resetValue;
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##X", &values->x, 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
@@ -406,12 +406,12 @@ void DrawVec3Control(const std::string& label, Wiwa::Vector3f values, float rese
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Y", buttonSize))
-		values.y = resetValue;
+		values->y = resetValue;
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##Y", &values->y, 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
@@ -420,12 +420,12 @@ void DrawVec3Control(const std::string& label, Wiwa::Vector3f values, float rese
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Z", buttonSize))
-		values.z = resetValue;
+		values->z = resetValue;
 	ImGui::PopFont();
 	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
-	ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+	ImGui::DragFloat("##Z", &values->z, 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 
 	ImGui::PopStyleVar();
