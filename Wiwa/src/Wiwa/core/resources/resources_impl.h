@@ -72,16 +72,19 @@ namespace Wiwa {
 		struct Resource {
 			// Path to resource
 			std::string filePath;
-
+			bool isNative;
 			// Any type
 			void* resource;
+
+			Resource() = default;
 		};
 
 	private:
 		Resources();
 
 		static std::vector<Resource*> m_Resources[WRT_LAST];
-		static void PushResource(ResourceType rt, const char* file, void* rsc);
+
+		static void PushResource(ResourceType rt, const char* file, void* rsc, bool isNative = false);
 		static ResourceId getResourcePosition(ResourceType rt, const char* file);
 
 		// Resource path for importing
@@ -93,7 +96,9 @@ namespace Wiwa {
 		static void _import_model_impl(const char* origin, const char* destination, ModelSettings* settings);
 	public:
 		static void _toLower(std::string& path);
-		inline static std::vector<Resource*> GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
+		inline static std::vector<Resource*>& GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
+		static void UnloadSceneResources();
+
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static ResourceId LoadNative(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);

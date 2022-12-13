@@ -93,6 +93,28 @@ namespace Wiwa {
 		return resourceId;
 	}
 	template<>
+	inline ResourceId Resources::LoadNative<Image>(const char* file)
+	{
+		ResourceId position = getResourcePosition(WRT_IMAGE, file);
+		size_t size = m_Resources[WRT_IMAGE].size();
+		ImageSettings* settings = new ImageSettings();
+		ResourceId resourceId;
+
+		if (position == size) {
+			Image* image = new Image();
+			image->Init(file);
+
+			PushResource(WRT_IMAGE, file, image, true);
+
+			resourceId = size;
+		}
+		else {
+			resourceId = position;
+		}
+
+		return resourceId;
+	}
+	template<>
 	inline Image* Resources::GetResourceById<Image>(ResourceId id)
 	{
 		Image* image = NULL;

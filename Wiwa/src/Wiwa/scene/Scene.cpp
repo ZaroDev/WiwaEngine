@@ -52,11 +52,21 @@ namespace Wiwa {
 		m_EntityManager.RegisterSystem<MeshRenderer>();
 	}
 
+	void Scene::Init()
+	{
+		m_EntityManager.RegisterSystem<MeshRenderer>();
+	}
+
 	void Scene::Load()
 	{
 		m_TransitionTimer = 0;
 
 		m_CurrentState = SCENE_ENTERING;
+	}
+
+	void Scene::Unload()
+	{
+		Wiwa::Resources::UnloadSceneResources();
 	}
 
 	void Scene::ChangeScene(size_t scene)

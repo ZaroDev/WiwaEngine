@@ -23,9 +23,9 @@ namespace Wiwa {
 
 		void Start();
 
-		virtual void Init() {};
-		virtual void Load();
-		virtual void Unload() {}
+		void Init();
+		void Load();
+		void Unload();
 
 		State getState() { return m_CurrentState; }
 

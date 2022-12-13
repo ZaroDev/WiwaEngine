@@ -81,12 +81,12 @@ void EditorLayer::OnAttach()
 	m_Settings.push_back(m_ProjectPanel.get());
 	m_Settings.push_back(m_About.get());
 
-	ResourceId playId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/play_icon.png");
-	ResourceId pauseId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/pause_icon.png");
-	ResourceId infoId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/info_icon.png");
-	ResourceId warnId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/warning_icon.png");
-	ResourceId errorId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/error_icon.png");
-	ResourceId stopId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/stop_icon.png");
+	ResourceId playId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/play_icon.png");
+	ResourceId pauseId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/pause_icon.png");
+	ResourceId infoId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/info_icon.png");
+	ResourceId warnId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/warning_icon.png");
+	ResourceId errorId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/error_icon.png");
+	ResourceId stopId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/stop_icon.png");
 
 	m_PlayIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(playId)->GetTextureId();
 	m_PauseIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pauseId)->GetTextureId();
@@ -207,7 +207,7 @@ void EditorLayer::MainMenuBar()
 			if (ImGui::MenuItem("New scene", ""))
 			{
 				size_t id =Wiwa::SceneManager::CreateScene();
-				Wiwa::SceneManager::SetScene(id);
+				Wiwa::SceneManager::ChangeScene(id);
 			}
 			if (ImGui::MenuItem("Open scene", ""))
 			{

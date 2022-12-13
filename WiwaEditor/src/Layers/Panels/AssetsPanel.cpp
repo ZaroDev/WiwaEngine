@@ -19,10 +19,10 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 {
 	m_Directory.path = "Assets";
 	Update();
-	ResourceId folderId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/folder_icon.png");
-	ResourceId fileId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/file_icon.png");
-	ResourceId backId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/back_icon.png");
-	ResourceId matId = Wiwa::Resources::Load<Wiwa::Image>("resources/icons/material_icon.png");
+	ResourceId folderId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/folder_icon.png");
+	ResourceId fileId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/file_icon.png");
+	ResourceId backId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/back_icon.png");
+	ResourceId matId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/material_icon.png");
 
 	m_FolderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
 	m_FileIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
@@ -311,7 +311,17 @@ bool AssetsPanel::OnDragAndDrop(Wiwa::WindowDropEvent& e)
 		std::filesystem::path from = e.GetPaths()[i];
 		std::filesystem::path to = m_CurrentPath;
 		to /= from.filename();
-		std::filesystem::copy_file(from, to);
+		if(std::filesystem::is_directory(from))
+		{
+			if (_mkdir(from.string().c_str()) == -1)
+			{
+				WI_ERROR("Couldn't create directory at {0}", from.string().c_str());
+			}
+		}
+		else
+		{
+			std::filesystem::copy_file(from, to);
+		}
 	}
 	return true;
 }

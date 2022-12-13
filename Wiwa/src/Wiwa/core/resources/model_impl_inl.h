@@ -41,7 +41,7 @@ namespace Wiwa {
 		if (position == size) {
 			Model* model = new Model(file);
 
-			PushResource(WRT_MODEL, file, model);
+			PushResource(WRT_MODEL, file, model, true);
 
 			resourceId = size;
 		}

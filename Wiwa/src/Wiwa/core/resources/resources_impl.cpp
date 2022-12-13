@@ -10,10 +10,10 @@ namespace Wiwa {
 	{
 	}
 
-	void Resources::PushResource(ResourceType rt, const char* file, void* rsc)
+	void Resources::PushResource(ResourceType rt, const char* file, void* rsc, bool isNative)
 	{
 		Resource* resource = new Resource();
-
+		resource->isNative = isNative;
 		resource->filePath = file;
 		resource->resource = rsc;
 
@@ -71,6 +71,18 @@ namespace Wiwa {
 
 		for (size_t i = 0; i < len; i++) {
 			if (path[i] >= 'A' && path[i] <= 'Z') path[i] -= ('Z' - 'z');
+		}
+	}
+
+	void Resources::UnloadSceneResources()
+	{
+		for (size_t i = 0; i < WRT_LAST; i++)
+		{
+			for (size_t j = 0; j < m_Resources[i].size(); j++)
+			{
+				if (!m_Resources[i][j]->isNative)
+					m_Resources[i].erase(m_Resources[i].begin() + j);
+			}
 		}
 	}
 
