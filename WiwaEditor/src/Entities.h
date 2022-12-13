@@ -178,9 +178,9 @@ inline void CreateEntityWithModelHierarchy(const char* model_path) {
 	size_t children_size = model_h->children.size();
 
 	EntityId e_root = em.CreateEntity(model_h->name.c_str());
-	t3d.position = model_h->translation;
-	t3d.rotation = model_h->rotation;
-	t3d.scale = model_h->scale;
+	t3d.localPosition = model_h->translation;
+	t3d.localRotation = model_h->rotation;
+	t3d.localScale = model_h->scale;
 	em.AddComponent<Wiwa::Transform3D>(e_root, t3d);
 	em.ApplySystem<Wiwa::MeshRenderer>(e_root);
 

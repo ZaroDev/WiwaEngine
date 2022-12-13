@@ -7,20 +7,27 @@
 
 namespace Wiwa {
 	struct WI_API Transform3D {
+		// Read-only world position
 		Vector3f position;
-		Vector3f localPosition;
+		// Read-only world rotation
 		Vector3f rotation;
-		Vector3f localRotation;
+		// Read-only world scale
 		Vector3f scale;
+
+		// Local position
+		Vector3f localPosition;
+		// Local rotation
+		Vector3f localRotation;
+		// Local scale
 		Vector3f localScale;
 	};
 }
 
 REFLECTION_BEGIN(Wiwa::Transform3D)
 	REFLECT_MEMBER(position)
-	REFLECT_MEMBER(localPosition)
 	REFLECT_MEMBER(rotation)
-	REFLECT_MEMBER(localRotation)
 	REFLECT_MEMBER(scale)
+	REFLECT_MEMBER(localPosition)
+	REFLECT_MEMBER(localRotation)
 	REFLECT_MEMBER(localScale)
 REFLECTION_END;

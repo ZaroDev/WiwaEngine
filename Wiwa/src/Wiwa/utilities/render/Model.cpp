@@ -251,8 +251,33 @@ namespace Wiwa {
 
 		// Node transform
 		aiVector3D translate, scale, rot;
+		//aiQuaternion quat;
 
 		node->mTransformation.Decompose(scale, rot, translate);
+		//{
+		//	quat.Normalize();
+
+		//	double pole = quat.x * quat.y + quat.z * quat.w;
+
+		//	if (pole > 0.499) { // North pole
+		//		rot.x = 2 * atan2(quat.x, quat.w);
+		//		rot.y = PI / 2;
+		//		rot.z = 0;
+		//	}
+		//	else if (pole < -0.499) { // South pole
+		//		rot.x = -2 * atan2(quat.x, quat.w);
+		//		rot.y = -PI / 2;
+		//		rot.z = 0;
+		//	}
+		//	else {
+		//		double sqx = quat.x * quat.x;
+		//		double sqy = quat.y * quat.y;
+		//		double sqz = quat.z * quat.z;
+		//		rot.x = atan2(2 * quat.y * quat.w - 2 * quat.x * quat.z, 1 - 2 * sqy - 2 * sqz);
+		//		rot.y = asin(2 * pole);
+		//		rot.z = atan2(2 * quat.x * quat.w - 2 * quat.y * quat.z, 1 - 2 * sqx - 2 * sqz);
+		//	}
+		//}
 
 		h->translation = { translate.x, translate.y, translate.z };
 		h->rotation = { rot.x * 180.0f / PI_F, rot.y * 180.0f / PI_F, rot.z * 180.0f / PI_F };
