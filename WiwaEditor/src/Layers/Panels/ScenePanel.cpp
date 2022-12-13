@@ -347,7 +347,7 @@ void ScenePanel::Draw()
                 float intersectDist = 0.0f;
 
                 Wiwa::AABB& AABB = model->boundingBox;
-                //AABB.scale(scale, AABB.getCenter());
+                AABB.scale(scale, AABB.getCenter());
                 if (Wiwa::Math::TestRayOBBIntersection(
                     out_origin,
                     out_dir,
