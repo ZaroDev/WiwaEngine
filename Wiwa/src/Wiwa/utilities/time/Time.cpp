@@ -39,7 +39,7 @@ namespace Wiwa
 				return;
 			m_DeltaTime = (std::chrono::high_resolution_clock::now() - m_LastTime) * m_TimeScale;
 			m_LastTime = std::chrono::high_resolution_clock::now();
-			m_Time = std::chrono::high_resolution_clock::now() - m_GameClock;
+			m_Time = (std::chrono::high_resolution_clock::now() - m_GameClock) * m_TimeScale;
 		}
 
 	}

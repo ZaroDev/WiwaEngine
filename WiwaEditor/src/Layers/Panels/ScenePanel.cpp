@@ -346,8 +346,8 @@ void ScenePanel::Draw()
                 if (Wiwa::Math::TestRayOBBIntersection(
                     out_origin,
                     out_dir,
-                    model->boundingBox.getMin() * scale,
-                    model->boundingBox.getMax() * scale,
+                    model->boundingBox.getMin(),
+                    model->boundingBox.getMax(),
                     transform,
                     intersectDist
                 ))
