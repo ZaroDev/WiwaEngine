@@ -37,6 +37,7 @@ void ResourcesPanel::Draw()
 		{
 			ImGui::Text(models.at(i)->filePath.c_str());
 		}
+		ImGui::Text("%i bytes", (sizeof(Wiwa::Model) * models.size()));
 	}
 
 	if (ImGui::CollapsingHeader("Shaders"))
@@ -47,6 +48,7 @@ void ResourcesPanel::Draw()
 		{
 			ImGui::Text(shaders.at(i)->filePath.c_str());
 		}
+		ImGui::Text("%i bytes", (sizeof(Wiwa::Shader) * shaders.size()));
 	}
 
 
@@ -67,6 +69,7 @@ void ResourcesPanel::Draw()
 		{
 			ImGui::Text(materials.at(i)->filePath.c_str());
 		}
+		ImGui::Text("%i bytes", (sizeof(Wiwa::Material) * materials.size()));
 	}
 	ImGui::End();
 }
