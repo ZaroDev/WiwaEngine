@@ -172,12 +172,12 @@ void ScenePanel::Draw()
         ImGui::SetCursorPos(ImVec2(x, y));
         ImGui::TextColored(ImColor(255, 255, 255, 128), "FPS");
         ImGui::SetCursorPos(ImVec2(x + 60.0f, y));
-        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f FPS", ImGui::GetIO().Framerate);
+        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f FPS", 1000 / Wiwa::Time::GetRealDeltaTime());
 
         ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
         ImGui::TextColored(ImColor(255, 255, 255, 128), "Frame time");
         ImGui::SetCursorPos(ImVec2(x + 70.0f, y + 20.0f));
-        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.3f ms", 1000 / ImGui::GetIO().Framerate);
+        ImGui::TextColored(ImColor(255, 255, 255, 128), "%.3f ms", Wiwa::Time::GetRealDeltaTime());
     }
     //Gizmos
     if (m_EntSelected != -1)
