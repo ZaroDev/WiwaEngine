@@ -9,4 +9,6 @@ public:
 	virtual ~GamePanel();
 	void Draw() override;
 	void Update() override;
+private:
+	bool m_ShowStats = true;
 };

@@ -6,7 +6,7 @@ namespace Wiwa
 
 	std::chrono::time_point<std::chrono::steady_clock> Time::m_RealTimeClock = std::chrono::high_resolution_clock::now();
 	uint32_t Time::m_FrameCount = 0;
-	int Time::m_TimeScale = 1;
+	float Time::m_TimeScale = 1.0f;
 	bool Time::m_IsPlaying = false;
 	bool Time::m_IsPaused = false;
 	std::chrono::time_point<std::chrono::steady_clock> Time::m_GameClock;

@@ -62,8 +62,8 @@ void ConfigurationPanel::Draw()
 		{
 			ImGui::Text("Game time since startup %.2fs", Wiwa::Time::GetTime());
 			ImGui::Text("Game delta time %.2fms", Wiwa::Time::GetDeltaTime());
-			int timeScale = Wiwa::Time::GetTimeScale();
-			if (ImGui::DragInt("Time scale", &timeScale, 0.1f))
+			float timeScale = Wiwa::Time::GetTimeScale();
+			if (ImGui::SliderFloat("Time scale", &timeScale, -2.0f, 5.0f))
 			{
 				Wiwa::Time::SetTimeScale(timeScale);
 			}

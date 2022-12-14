@@ -65,7 +65,6 @@ void ScenePanel::Draw()
     m_Camera = Wiwa::SceneManager::getActiveScene()->GetCameraManager().editorCamera;
     if (ImGui::BeginMenuBar())
     {
-
         if (ImGui::BeginMenu("Render"))
         {
             for (auto c : m_Shadings)
@@ -158,18 +157,18 @@ void ScenePanel::Draw()
     {
         ImVec2 rectSize(rectPos.x + 150.0f, rectPos.y + 50.0f);
         ImGui::GetWindowDrawList()->AddRectFilled(
-            ImVec2(rectPos.x, rectPos.y),
+            ImVec2(rectPos.x + 10.0f, rectPos.y),
             rectSize,
             IM_COL32(30, 30, 30, 128)
         );
 
         ImGui::GetWindowDrawList()->AddRect(
-            ImVec2(rectPos.x, rectPos.y),
+            ImVec2(rectPos.x + 10.0f, rectPos.y),
             rectSize,
             IM_COL32(255, 255, 255, 30)
         );
         float y = cpos.y + 5.0f;
-        float x = cpos.x + 5.0f;
+        float x = cpos.x + 15.0f;
         ImGui::SetCursorPos(ImVec2(x, y));
         ImGui::TextColored(ImColor(255, 255, 255, 128), "FPS");
         ImGui::SetCursorPos(ImVec2(x + 60.0f, y));

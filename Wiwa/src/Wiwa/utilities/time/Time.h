@@ -13,7 +13,7 @@ namespace Wiwa
 		static std::chrono::time_point<std::chrono::steady_clock> m_RealTimeClock;
 		static uint32_t m_FrameCount;
 		static std::chrono::duration<float> m_Time;
-		static int m_TimeScale;
+		static float m_TimeScale;
 		static std::chrono::duration<float> m_DeltaTime;
 		static std::chrono::time_point<std::chrono::steady_clock> m_RealLastTime;
 		static std::chrono::time_point<std::chrono::steady_clock> m_LastTime;
@@ -31,7 +31,7 @@ namespace Wiwa
 
 		static inline uint32_t GetFrameCount() { return m_FrameCount; }
 		static inline float GetTime() { return m_Time.count(); }
-		static inline int GetTimeScale() { return m_TimeScale; }
+		static inline float GetTimeScale() { return m_TimeScale; }
 		static void SetTimeScale(const int value);
 		static inline float GetDeltaTime() { return m_DeltaTime.count() * 1000.0f; }
 		static inline float GetRealTimeSinceStartup() { return m_RealTimeSinceStartup.count(); }
