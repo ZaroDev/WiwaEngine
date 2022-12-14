@@ -4,7 +4,7 @@
 #include <Wiwa/core/Core.h>
 
 // Resources
-#include <Wiwa/utilities/render/Shader.h>
+#include <Wiwa/utilities/render/shaders/Shader.h>
 #include <Wiwa/utilities/render/Image.h>
 #include <Wiwa/utilities/render/Model.h>
 #include <Wiwa/utilities/render/Material.h>

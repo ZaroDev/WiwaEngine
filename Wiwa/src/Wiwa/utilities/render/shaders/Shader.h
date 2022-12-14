@@ -16,10 +16,13 @@ namespace Wiwa {
 		~Shader();
 
 		enum State {
-			Vertex
+			ToCompile,
+			Compiled,
+			Error
 		};
 
 		void Init(const char* filename);
+		void Compile(const char* filename);
 		uint32_t getID() { return m_IDprogram; }
 		void Bind();
 		void UnBind();
@@ -31,6 +34,7 @@ namespace Wiwa {
 
 		template<class T> void setUniform(unsigned int uniform_id, T value);
 
+		void setUniformInt(unsigned int uniform_id, int value);
 		void setUniformUInt(unsigned int uniform_id, unsigned int value);
 		void setUniformMat4(unsigned int uniform_id, glm::mat4 value);
 		void setUniformFloat(unsigned int uniform_id, float value);
@@ -40,10 +44,15 @@ namespace Wiwa {
 	private:
 		uint32_t m_IDprogram;
 		bool m_AllOk;
+		State m_CompileState;
 	};
 	template<>
+	inline void Shader::setUniform<int>(unsigned int uniform_id, int value) {
+		setUniformInt(uniform_id, value);
+	}
+	template<>
 	inline void Shader::setUniform<unsigned int>(unsigned int uniform_id, unsigned int value){
-	
+		setUniformUInt(uniform_id, value);
 	}
 	template<>
 	inline void Shader::setUniform<glm::mat4>(unsigned int uniform_id, glm::mat4 value) {
@@ -54,7 +63,10 @@ namespace Wiwa {
 	inline void Shader::setUniform<float>(unsigned int uniform_id, float value) {
 		setUniformFloat(uniform_id, value);
 	}
+	template<>
+	inline void Shader::setUniform<glm::vec2>(unsigned int uniform_id, glm::vec2 value){
 
+	}
 	template<>
 	inline void Shader::setUniform<glm::vec3>(unsigned int uniform_id, glm::vec3 value) {
 		setUniformVec3(uniform_id, value);
@@ -68,6 +80,6 @@ namespace Wiwa {
 	template<class T>
 	inline void Shader::setUniform(unsigned int uniform_id, T value)
 	{
-		WI_CORE_ASSERT_MSG("Setting uniform for a non existant specialization.");
+		WI_CORE_ERROR("Setting uniform for a non existant specialization.");
 	}
 }

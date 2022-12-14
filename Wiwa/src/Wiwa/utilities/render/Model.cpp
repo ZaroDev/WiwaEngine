@@ -284,12 +284,12 @@ namespace Wiwa {
 		h->scale = { scale.x, scale.y, scale.z };
 
 		// Node meshes
-		for (int i = 0; i < node->mNumMeshes; i++) {
+		for (size_t i = 0; i < node->mNumMeshes; i++) {
 			h->meshIndexes.push_back(node->mMeshes[i]);
 		}
 
 		// Node children
-		for (int i = 0; i < node->mNumChildren; i++) {
+		for (size_t i = 0; i < node->mNumChildren; i++) {
 			h->children.push_back(loadModelHierarchy(node->mChildren[i]));
 		}
 

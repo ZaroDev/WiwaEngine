@@ -1,6 +1,6 @@
 #include <wipch.h>
 
-#include <Wiwa/utilities/render/Shader.h>
+#include <Wiwa/utilities/render/shaders/Shader.h>
 
 #include <fstream>
 #include <string>
@@ -12,6 +12,7 @@ namespace Wiwa {
 	Shader::Shader()
 	{
 		m_AllOk = false;
+		m_CompileState = State::ToCompile;
 	}
 
 
@@ -20,6 +21,11 @@ namespace Wiwa {
 	}
 
 	void Shader::Init(const char* filename)
+	{
+		Compile(filename);
+	}
+
+	void Shader::Compile(const char* filename)
 	{
 		std::string vertexFile = filename;
 		vertexFile += ".vs";
@@ -38,7 +44,7 @@ namespace Wiwa {
 
 			WI_CORE_ASSERT_MSG(msg.c_str())
 
-			return;
+				return;
 		}
 
 		const char* vertexShaderSource = vertexShaderSourceStr->c_str();
@@ -51,7 +57,7 @@ namespace Wiwa {
 
 			WI_CORE_ASSERT_MSG(msg.c_str())
 
-			return;
+				return;
 		}
 
 		const char* fragmentShaderSource = fragmentShaderSourceStr->c_str();
@@ -74,8 +80,8 @@ namespace Wiwa {
 			std::string msg = "Vertex shader compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ASSERT_MSG(msg.c_str())
-
+			WI_CORE_ERROR(msg.c_str());
+			m_CompileState = State::Error;
 			return;
 		}
 
@@ -90,8 +96,8 @@ namespace Wiwa {
 			std::string msg = "Fragment shader compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ASSERT_MSG(msg.c_str())
-
+			WI_CORE_ERROR(msg.c_str());
+			m_CompileState = State::Error;
 			return;
 		}
 
@@ -115,9 +121,9 @@ namespace Wiwa {
 				std::string msg = "Geometry shader compile error: ";
 				msg += infoLog;
 
-				WI_CORE_ASSERT_MSG(msg.c_str())
-
-					return;
+				WI_CORE_ERROR(msg.c_str());
+				m_CompileState = State::Error;
+				return;
 			}
 			glAttachShader(m_IDprogram, geometryShader);
 		}
@@ -131,25 +137,27 @@ namespace Wiwa {
 			std::string msg = "Shader program compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ASSERT_MSG(msg.c_str())
-
+			WI_CORE_ERROR(msg.c_str());
+			m_CompileState = State::Error;
 			return;
 		}
 
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
-		if(hasGS)
+		if (hasGS)
 			glDeleteShader(geometryShader);
 
 		delete vertexShaderSourceStr;
 		delete fragmentShaderSourceStr;
 		delete geometryShaderSourceStr;
-
+		m_CompileState = State::Compiled;
 		m_AllOk = true;
 	}
 
 	void Shader::Bind()
 	{
+		if (m_CompileState != State::Compiled)
+			return;
 		glUseProgram(m_IDprogram);
 	}
 
@@ -168,10 +176,16 @@ namespace Wiwa {
 		return glGetUniformLocation(m_IDprogram, uniform_name);
 	}
 
-	void Shader::setUniformUInt(unsigned int uniform_id, unsigned int value)
+	void Shader::setUniformInt(unsigned int uniform_id, int value)
 	{
 		glUseProgram(m_IDprogram);
 		glUniform1i(uniform_id, value);
+	}
+
+	void Shader::setUniformUInt(unsigned int uniform_id, unsigned int value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform1ui(uniform_id, value);
 	}
 
 	void Shader::setUniformMat4(unsigned int uniform_id, glm::mat4 value)
