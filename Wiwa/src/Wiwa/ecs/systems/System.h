@@ -27,6 +27,7 @@ namespace Wiwa {
 		void AddEntity(EntityId entity);
 		void RemoveEntity(EntityId entity);
 
+		void Awake();
 		void Init();
 		void Update();
 	};

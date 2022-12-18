@@ -1,6 +1,7 @@
 #include <wipch.h>
 #include "ScriptGlue.h"
 #include "ScriptEngine.h"
+#include "ScriptClass.h"
 #include "SystemClass.h"
 
 #include <mono/metadata/object.h>
@@ -142,7 +143,7 @@ namespace Wiwa {
 		MonoType* compType = mono_reflection_type_get_type(type);
 		std::string typeName = mono_type_get_name(compType);
 		ClearName(typeName);
-		size_t typeHash = std::hash<std::string>{}(typeName);
+		size_t typeHash = FNV1A_HASH(typeName.c_str());
 
 		std::unordered_map<size_t, Type*>::iterator converted_type = s_ConvertedTypes.find(typeHash);
 
@@ -167,7 +168,7 @@ namespace Wiwa {
 		MonoArray* byteArray = NULL;
 
 		if (comp) {
-			SystemClass tmp = SystemClass("System", "Byte");
+			SystemClass tmp("System", "Byte");
 
 			byteArray = ScriptEngine::CreateArray(tmp.m_MonoClass, t->size);
 

@@ -204,6 +204,34 @@ namespace Wiwa {
 		if (!type) m_ComponentTypes.push_back(component);
 	}
 
+	const Type* Application::GetSystemTypeH(size_t hash) const
+	{
+		size_t size = m_SystemTypes.size();
+
+		const Type* type = NULL;
+
+		for (size_t i = 0; i < size; i++) {
+			if (m_SystemTypes[i]->hash == hash) {
+				type = m_SystemTypes[i];
+				break;
+			}
+		}
+
+		return type;
+	}
+
+	const Type* Application::GetSystemType(size_t index) const
+	{
+		return m_SystemTypes[index];
+	}
+
+	void Application::RegisterSystemType(const Type* system)
+	{
+		const Type* type = GetSystemTypeH(system->hash);
+
+		if (!type) m_SystemTypes.push_back(system);
+	}
+
 	void Application::OpenDir(const char* path)
 	{
 		ShellExecuteA(0, "open", path, NULL, NULL, SW_SHOWNORMAL);

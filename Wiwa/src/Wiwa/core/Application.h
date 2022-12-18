@@ -99,6 +99,10 @@ namespace Wiwa
 		const Type* GetComponentTypeH(size_t hash) const;
 		const Type* GetComponentType(size_t index) const;
 		void RegisterComponentType(const Type* component);
+		// System reflection
+		const Type* GetSystemTypeH(size_t hash) const;
+		const Type* GetSystemType(size_t index) const;
+		void RegisterSystemType(const Type* system);
 
 		inline void SetRenderColor(Vector4f color) { m_RenderColor = color; }
 		inline Vector4f GetRenderColor() { return m_RenderColor; }
@@ -111,6 +115,7 @@ namespace Wiwa
 		std::vector<std::string> m_Argv;
 
 		std::vector<const Type*> m_ComponentTypes;
+		std::vector<const Type*> m_SystemTypes;
 
 		Size2i m_TargetResolution;		
 
@@ -164,4 +169,4 @@ namespace Wiwa
 
 #define REFLECTION_REGISTER() \
 	const Wiwa::Array<const Type*, TYPE_COUNT>* types = GET_TYPES(); \
-	for(size_t i=0;i<TYPE_COUNT;i++){ RegisterComponentType(types->at(i)); }
+	for(size_t i=0;i<TYPE_COUNT;i++){ if(types->at(i)->custom_id == 0) RegisterComponentType(types->at(i)); else RegisterSystemType(types->at(i)); }
