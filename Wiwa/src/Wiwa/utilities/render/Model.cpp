@@ -254,6 +254,46 @@ namespace Wiwa {
 
 		h->name = node->mName.C_Str();
 
+		/*if (node->mMetaData) {
+			std::cout << h->name << std::endl;
+			for (int i = 0; i < node->mMetaData->mNumProperties; i++) {
+				std::cout << "k: " << node->mMetaData->mKeys[i].C_Str();
+				std::cout << " v: ";
+
+				aiMetadataType type = node->mMetaData->mValues[i].mType;
+				void* data = node->mMetaData->mValues[i].mData;
+
+				switch (type) {
+				case AI_BOOL:
+					std::cout << *(bool*)data << std::endl;
+					break;
+				case AI_INT32:
+					std::cout << *(int*)data << std::endl;
+					break;
+				case AI_UINT64:
+					std::cout << *(unsigned __int64*)data << std::endl;
+					break;
+				case AI_FLOAT:
+					std::cout << *(float*)data << std::endl;
+					break;
+				case AI_DOUBLE:
+					std::cout << *(double*)data << std::endl;
+					break;
+				case AI_AISTRING:
+				{
+					aiString* str = (aiString*)data;
+					std::cout << "\"" << str->data << "\"" << std::endl;
+				}
+					break;
+				case AI_AIVECTOR3D:
+					std::cout << "(" << ((aiVector3D*)data)->x << "," << ((aiVector3D*)data)->y << "," << ((aiVector3D*)data)->z << ")" << std::endl;
+					break;
+				case FORCE_32BIT:
+					break;
+				}
+			}
+		}*/
+
 		// Node transform
 		aiVector3D translate, scale, rot;
 		//aiQuaternion quat;
