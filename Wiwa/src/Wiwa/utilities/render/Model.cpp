@@ -22,13 +22,18 @@
 namespace Wiwa {
 	void Model::getMeshFromFile(const char* file, ModelSettings* settings, bool gen_buffers)
 	{
-		unsigned int flags = aiProcess_Triangulate | aiProcess_FlipUVs;//aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_FlipUVs;
+		unsigned int flags = aiProcess_Triangulate | aiProcess_FlipUVs;//aiProcessPreset_TargetRealtime_Quality | aiProcess_FlipUVs;//aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_FlipUVs;
 
 		if (settings->preTranslatedVertices) {
 			//flags |= aiProcess_PreTransformVertices;
 		}
 
-		const aiScene* scene = aiImportFile(file, flags);
+		sbyte* file_data = NULL;
+		size_t file_buf_size = FileSystem::ReadAll(file, &file_data);
+
+		const aiScene* scene = aiImportFileFromMemory(file_data, file_buf_size, flags, NULL);
+
+		delete[] file_data;
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			WI_ERROR("Couldn't load mesh file: {0}", file);

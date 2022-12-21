@@ -101,7 +101,7 @@ namespace Wiwa {
 		return std::filesystem::equivalent(path1, path2);
 	}
 
-	size_t FileSystem::ReadAll(const char* file, sbyte* memblock)
+	size_t FileSystem::ReadAll(const char* file, sbyte** memblock)
 	{
 		std::ifstream f(file, std::ios::in | std::ios::binary | std::ios::ate);
 
@@ -109,9 +109,9 @@ namespace Wiwa {
 
 		if (f.is_open()) {
 			size = f.tellg();
-			memblock = new sbyte[size];
+			*memblock = new sbyte[size];
 			f.seekg(0, std::ios::beg);
-			f.read(memblock, size);
+			f.read(*memblock, size);
 			f.close();
 		}
 
