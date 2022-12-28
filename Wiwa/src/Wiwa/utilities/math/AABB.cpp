@@ -2,7 +2,7 @@
 #include "AABB.h"
 #include <glm/gtx/component_wise.hpp>
 
-namespace Wiwa {
+namespace Wiwa::Math {
 
     AABB::AABB()
     {

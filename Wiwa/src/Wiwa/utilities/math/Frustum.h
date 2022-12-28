@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/matrix.hpp>
-namespace Wiwa {
+namespace Wiwa::Math {
 	class Frustum
 	{
 	public:

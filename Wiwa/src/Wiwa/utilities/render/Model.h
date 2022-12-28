@@ -111,6 +111,6 @@ namespace Wiwa {
 		static void SaveModel(Model* model, const char* file);
 	public:
 		bool showNormals = false;
-		AABB boundingBox;
+		Math::AABB boundingBox;
 	};
 }

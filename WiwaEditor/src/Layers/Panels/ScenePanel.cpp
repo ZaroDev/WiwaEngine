@@ -332,7 +332,7 @@ void ScenePanel::Draw()
                 transform = glm::scale(transform, scale);
                 float intersectDist = 0.0f;
 
-                Wiwa::AABB& AABB = model->boundingBox;
+                Wiwa::Math::AABB& AABB = model->boundingBox;
                 AABB.scale(scale, AABB.getCenter());
                 if (Wiwa::Math::TestRayOBBIntersection(
                     out_origin,

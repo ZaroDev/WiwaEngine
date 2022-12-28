@@ -164,7 +164,7 @@ namespace Wiwa {
 
 	void Camera::UpdateFrustrum()
 	{
-		frustrum = Frustum(m_Projection * m_View);
+		frustrum = Math::Frustum(m_Projection * m_View);
 	}
 
 	void Camera::SetOrthographic(const int width, const int height, const float nearPlaneDistance, const float farPlaneDistance)
@@ -182,7 +182,7 @@ namespace Wiwa {
 		glLineWidth(5.0f);
 
 		// Generate frustum data
-		GetCornerPoints(m_FrustumPoints);
+		
 
 		glBindVertexArray(vao);
 
