@@ -146,7 +146,7 @@ namespace Wiwa {
 		* Generates a buffer of size [read_bytes] into memblock pointer variable
 		* return read_bytes;
 		*/
-		static size_t ReadAll(const char* file, sbyte* memblock);
+		static size_t ReadAll(const char* file, sbyte** memblock);
 
 		// Open file using OpenMode enums with bitwise operator (<<)
 		static File Open(const char* file, int openMode);

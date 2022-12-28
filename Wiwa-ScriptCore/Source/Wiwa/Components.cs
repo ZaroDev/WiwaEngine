@@ -8,9 +8,16 @@
         public Vector3 Position;
         public Vector3 Rotation;
         public Vector3 Scale;
+        public Vector3 LocalPosition;
+        public Vector3 LocalRotation;
+        public Vector3 LocalScale;
 
         public Transform3D(Vector3 pos, Vector3 rot, Vector3 scl)
         {
+            LocalPosition = pos;
+            LocalRotation = rot;
+            LocalScale = scl;
+
             Position = pos;
             Rotation = rot;
             Scale = scl;

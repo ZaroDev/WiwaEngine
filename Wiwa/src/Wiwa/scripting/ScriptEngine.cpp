@@ -15,6 +15,8 @@
 #include <Wiwa/utilities/Reflection.h>
 #include <Wiwa/core/Application.h>
 
+#include "SystemScriptClass.h"
+
 namespace Wiwa {
 	ScriptEngine::ScriptEngineData* ScriptEngine::s_Data = nullptr;
 	
@@ -30,6 +32,8 @@ namespace Wiwa {
 		WI_CORE_WARN("Systems");
 		Utils::PrintReflectionTypes(s_Data->Systems);
 		ScriptGlue::RegisterFunctions();
+
+		Type* type = s_Data->Systems[FNV1A_HASH("EnemyController")];
 	}
 	void ScriptEngine::ShutDown()
 	{
@@ -83,11 +87,11 @@ namespace Wiwa {
 	{
 		return mono_array_new(s_Data->AppDomain, type, (uintptr_t)size);
 	}
-	std::unordered_map<size_t, Type*> ScriptEngine::getSystems()
+	std::unordered_map<size_t, Type*>& ScriptEngine::getSystems()
 	{
 		return s_Data->Systems;
 	}
-	std::unordered_map<size_t, Type*> ScriptEngine::getComponents()
+	std::unordered_map<size_t, Type*>& ScriptEngine::getComponents()
 	{
 		return s_Data->Components;
 	}
@@ -135,10 +139,13 @@ namespace Wiwa {
 
 			if (isSystem)
 			{
+				type->New = [nameSpace, name]() -> void* { return new SystemScriptClass(nameSpace, name); };
 				s_Data->Systems[type->hash] = type;
-				// TODO: Register systems
+
+				Application::Get().RegisterSystemType(type);
 				continue;
 			}
+
 			MonoCustomAttrInfo* attributes = mono_custom_attrs_from_class(monoClass);
 			if (attributes == nullptr)
 				continue;

@@ -49,6 +49,15 @@ namespace Wiwa {
 	}
 
 	//-------- Sub-system functions --------
+	void System::Awake()
+	{
+		size_t size = m_RegisteredEntities.size();
+
+		for (size_t i = 0; i < size; i++) {
+			OnAwake(m_RegisteredEntities[i]);
+		}
+	}
+
 	void System::Init()
 	{
 		size_t size = m_RegisteredEntities.size();

@@ -18,8 +18,9 @@ struct Type {
 	bool is_class;
 	bool is_enum;
 	bool is_array;
+	int custom_id;
 
-	void* (*New)();
+	std::function<void* ()> New;
 
 	bool operator==(const Type* other) const { return Equals(other); }
 
@@ -97,7 +98,8 @@ inline std::string ClearCppName(std::string cname)
 	type.is_class = false; \
 	type.is_enum = false; \
 	type.is_array = false; \
-	type.New = []() -> void* { return new T(); };
+	type.New = []() -> void* { return new T(); }; \
+	type.custom_id = 0;
 
 // FUNCTIONS
 template<class T> inline const Type* GetType_impl() {
@@ -130,6 +132,14 @@ const Type* GetCompileType() {
 
 #define REGISTER_TYPE(type) template<> inline const Type* GetCompileType<__COUNTER__>(){ \
 	return GetType<type>(); \
+}
+
+#define REGISTER_SYSTEM(rtype) REGISTER_TYPE(rtype); \
+template<> inline const Type* GetType_impl<rtype>(){ \
+	static Type type; \
+	BASE_TYPE_BODY(rtype); \
+	type.custom_id = 1; \
+	return &type; \
 }
 
 // REFLECT STRUCT / CLASS

@@ -22,6 +22,5 @@ namespace Wiwa {
 	private:
 		std::string m_ClassNamespace;
 		std::string m_ClassName;
-
 	};
 }

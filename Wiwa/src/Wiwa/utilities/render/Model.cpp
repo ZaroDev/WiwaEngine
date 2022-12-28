@@ -22,13 +22,18 @@
 namespace Wiwa {
 	void Model::getMeshFromFile(const char* file, ModelSettings* settings, bool gen_buffers)
 	{
-		unsigned int flags = aiProcess_Triangulate | aiProcess_FlipUVs;//aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_FlipUVs;
+		unsigned int flags = aiProcess_Triangulate | aiProcess_FlipUVs;//aiProcessPreset_TargetRealtime_Quality | aiProcess_FlipUVs;//aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_FlipUVs;
 
 		if (settings->preTranslatedVertices) {
 			//flags |= aiProcess_PreTransformVertices;
 		}
 
-		const aiScene* scene = aiImportFile(file, flags);
+		sbyte* file_data = NULL;
+		size_t file_buf_size = FileSystem::ReadAll(file, &file_data);
+
+		const aiScene* scene = aiImportFileFromMemory(file_data, file_buf_size, flags, NULL);
+
+		delete[] file_data;
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			WI_ERROR("Couldn't load mesh file: {0}", file);
@@ -249,38 +254,78 @@ namespace Wiwa {
 
 		h->name = node->mName.C_Str();
 
+		/*if (node->mMetaData) {
+			std::cout << h->name << std::endl;
+			for (int i = 0; i < node->mMetaData->mNumProperties; i++) {
+				std::cout << "k: " << node->mMetaData->mKeys[i].C_Str();
+				std::cout << " v: ";
+
+				aiMetadataType type = node->mMetaData->mValues[i].mType;
+				void* data = node->mMetaData->mValues[i].mData;
+
+				switch (type) {
+				case AI_BOOL:
+					std::cout << *(bool*)data << std::endl;
+					break;
+				case AI_INT32:
+					std::cout << *(int*)data << std::endl;
+					break;
+				case AI_UINT64:
+					std::cout << *(unsigned __int64*)data << std::endl;
+					break;
+				case AI_FLOAT:
+					std::cout << *(float*)data << std::endl;
+					break;
+				case AI_DOUBLE:
+					std::cout << *(double*)data << std::endl;
+					break;
+				case AI_AISTRING:
+				{
+					aiString* str = (aiString*)data;
+					std::cout << "\"" << str->data << "\"" << std::endl;
+				}
+					break;
+				case AI_AIVECTOR3D:
+					std::cout << "(" << ((aiVector3D*)data)->x << "," << ((aiVector3D*)data)->y << "," << ((aiVector3D*)data)->z << ")" << std::endl;
+					break;
+				case FORCE_32BIT:
+					break;
+				}
+			}
+		}*/
+
 		// Node transform
 		aiVector3D translate, scale, rot;
-		aiQuaternion quat;
+		//aiQuaternion quat;
 
-		node->mTransformation.Decompose(scale, quat, translate);
-		{
-			quat.Normalize();
+		node->mTransformation.Decompose(scale, rot, translate);
+		//{
+		//	quat.Normalize();
 
-			double pole = quat.x * quat.y + quat.z * quat.w;
+		//	double pole = quat.x * quat.y + quat.z * quat.w;
 
-			if (pole > 0.499) { // North pole
-				rot.x = 2 * atan2(quat.x, quat.w);
-				rot.y = PI / 2;
-				rot.z = 0;
-			}
-			else if (pole < -0.499) { // South pole
-				rot.x = -2 * atan2(quat.x, quat.w);
-				rot.y = -PI / 2;
-				rot.z = 0;
-			}
-			else {
-				double sqx = quat.x * quat.x;
-				double sqy = quat.y * quat.y;
-				double sqz = quat.z * quat.z;
-				rot.x = atan2(2 * quat.y * quat.w - 2 * quat.x * quat.z, 1 - 2 * sqy - 2 * sqz);
-				rot.y = asin(2 * pole);
-				rot.z = atan2(2 * quat.x * quat.w - 2 * quat.y * quat.z, 1 - 2 * sqx - 2 * sqz);
-			}
-		}
+		//	if (pole > 0.499) { // North pole
+		//		rot.x = 2 * atan2(quat.x, quat.w);
+		//		rot.y = PI / 2;
+		//		rot.z = 0;
+		//	}
+		//	else if (pole < -0.499) { // South pole
+		//		rot.x = -2 * atan2(quat.x, quat.w);
+		//		rot.y = -PI / 2;
+		//		rot.z = 0;
+		//	}
+		//	else {
+		//		double sqx = quat.x * quat.x;
+		//		double sqy = quat.y * quat.y;
+		//		double sqz = quat.z * quat.z;
+		//		rot.x = atan2(2 * quat.y * quat.w - 2 * quat.x * quat.z, 1 - 2 * sqy - 2 * sqz);
+		//		rot.y = asin(2 * pole);
+		//		rot.z = atan2(2 * quat.x * quat.w - 2 * quat.y * quat.z, 1 - 2 * sqx - 2 * sqz);
+		//	}
+		//}
 
 		h->translation = { translate.x, translate.y, translate.z };
-		h->rotation = { rot.z * 180.0f / PI_F, rot.y * 180.0f / PI_F, rot.x * 180.0f / PI_F };
+		h->rotation = { rot.x * 180.0f / PI_F, rot.y * 180.0f / PI_F, rot.z * 180.0f / PI_F };
 		h->scale = { scale.x, scale.y, scale.z };
 
 		// Node meshes
