@@ -30,6 +30,7 @@ IncludeDirs["Optick"] = "%{wks.location}/Wiwa/vendor/Optick/include"
 IncludeDirs["assimp"] = "%{wks.location}/Wiwa/vendor/assimp/include"
 IncludeDirs["ImGuizmo"] = "%{wks.location}/Wiwa/vendor/imguizmo"
 IncludeDirs["GLI"] = "%{wks.location}/Wiwa/vendor/gli/gli"
+IncludeDirs["MathGeoLib"] = "%{wks.location}/Wiwa/vendor/mathgeolib/src"
 
 LibraryDirs = {}
 LibraryDirs["mono"] = "%{wks.location}/Wiwa/vendor/mono/lib/%{cfg.buildcfg}"
@@ -48,6 +49,7 @@ group "Dependencies"
 	include "Wiwa/vendor/imgui"
 	include "Wiwa/vendor/Optick"
 	include "Wiwa/vendor/imguizmo"
+	include "Wiwa/vendor/mathgeolib"
 group ""
 
 group "Core"

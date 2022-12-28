@@ -410,6 +410,7 @@ public:
 	bool Intersects(const Capsule &capsule) const;
 	bool Intersects(const Frustum &frustum) const;
 	bool Intersects(const Polyhedron &polyhedron) const;
+	int ContainsABox(const AABB& refBox) const;
 
 #if defined(MATH_TINYXML_INTEROP) && defined(MATH_CONTAINERLIB_SUPPORT)
 	void DeserializeFromXml(TiXmlElement *e);
