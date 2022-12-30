@@ -276,7 +276,7 @@ void ScenePanel::Draw()
         ImVec2 mpos = ImGui::GetMousePos();
         ImVec2 cspos = ImGui::GetCursorScreenPos();
 
-        ImVec2 rpos = { mpos.x - cspos.x, mpos.y - cspos.y };
+        ImVec2 rpos = { mpos.x - rectPos.x, mpos.y - rectPos.y };
         CLAMP(rpos.x, 0.0f, isize.x);
         CLAMP(rpos.y, 0.0f, isize.y);
 

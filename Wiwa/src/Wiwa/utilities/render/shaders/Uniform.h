@@ -48,19 +48,21 @@ namespace Wiwa {
 		bool isArray;
 		int arraySize;
 		void* data;
+
 		Uniform(UniformType _type)
 			: type(_type) {}
 
-		template <class T> T getData();
+		template <class T> void getData(T* data)
+		{
+			data = (T*)this->data;
+		}
+		template <class T> T getData()
+		{
+			return *(T*)data;
+		}
+		template <class T> T* getPtrData()
+		{
+			return (T*)data;
+		}
 	};
-	template<>
-	inline bool Uniform::getData()
-	{
-		return (bool)data;
-	}
-	template<>
-	inline int Uniform::getData()
-	{
-		return (int)data;
-	}
 }
