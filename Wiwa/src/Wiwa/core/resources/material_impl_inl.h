@@ -1,6 +1,5 @@
 #pragma once
 #include "resources_impl.h"
-
 namespace Wiwa {
 	//--SPECIALIZATION FOR MATERIAL
 	template<>
@@ -44,5 +43,10 @@ namespace Wiwa {
 		}
 
 		return material;
+	}
+	template<>
+	inline const char* Resources::getResourcePathById<Material>(size_t id)
+	{
+		return m_Resources[WRT_MATERIAL][id]->filePath.c_str();
 	}
 }

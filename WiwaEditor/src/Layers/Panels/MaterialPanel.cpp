@@ -9,6 +9,7 @@
 
 #include <Wiwa/core/Renderer3D.h>
 #include <Wiwa/core/Application.h>
+#include <Wiwa/utilities/render/shaders/Uniform.h>
 
 
 MaterialPanel::MaterialPanel(EditorLayer* instance)
@@ -27,87 +28,62 @@ void MaterialPanel::Draw()
     
     if (m_Material)
     {
-        ImGui::Image((ImTextureID)(intptr_t)m_Material->getTextureId(), { 64, 64 });
+		std::string str = m_Material->getShader()->getPath();
+		if (ButtonCenteredOnLine("Shaders"))
+			ImGui::OpenPopup("Shaders");
 
-        if (ImGui::BeginDragDropTarget())
+		if (ImGui::BeginPopup("Shaders"))
+		{
+			static ImGuiTextFilter filter;
+			ImGui::Text("Search:");
+			filter.Draw("##searchbar", 340.f);
+			ImGui::BeginChild("listbox child", ImVec2(300, 200));
+			std::vector<Wiwa::Resources::Resource*>& shaders = Wiwa::Resources::GetResourcesOf(Wiwa::Resources::WRT_SHADER);
+			for (size_t i = 0; i < shaders.size(); i++)
+			{
+				if (filter.PassFilter(shaders[i]->filePath.c_str()))
+				{
+					std::string label = shaders[i]->filePath.c_str();
+
+					label += "##" + std::to_string(i);
+					if (ImGui::MenuItem(label.c_str()))
+					{
+						size_t id = Wiwa::Resources::Load<Wiwa::Shader>(shaders[i]->filePath.c_str());
+						m_Material->setShader(Wiwa::Resources::GetResourceById<Wiwa::Shader>(id), shaders[i]->filePath.c_str());
+						ImGui::CloseCurrentPopup();
+					}
+				}
+			}
+			ImGui::EndChild();
+			ImGui::EndPopup();
+		}
+        std::vector<Wiwa::Uniform>& uniforms = m_Material->getUniforms();
+        for (size_t i = 0; i < uniforms.size(); i++)
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-            {
-                const wchar_t* path = (const wchar_t*)payload->Data;
-                std::wstring ws(path);
-                std::string pathS(ws.begin(), ws.end());
-                std::filesystem::path p = pathS;
-                if (m_Material)
-                {  
-                    if (p.extension() == ".png" || p.extension() == ".tga") {
-                        m_Material->setTexture(pathS.c_str());
-                    }
-                }
-
-            }
-            ImGui::EndDragDropTarget();
-
+            RenderUniform(&uniforms[i]);
         }
-        ImGui::Text("Texture size: ");
-        ImGui::SameLine();
-        ImGui::Text("%i", m_Material->getTextureSize().x);
-        ImGui::SameLine();
-        ImGui::Text("x %i", m_Material->getTextureSize().y);
-        ImGui::Text("Texture path: %s", m_Material->getTexturePath());
-        glm::vec4 color = { m_Material->getColor().r, m_Material->getColor().g,m_Material->getColor().b , m_Material->getColor().a };
-        ImGui::ColorEdit4("Color", glm::value_ptr(color));
-        m_Material->setColor({ color.r, color.g, color.b, color.a });
-        const char* types[] = { "Color", "Textured" };
-        static const char* currentItem = m_Material->getType() == Wiwa::Material::MaterialType::color ? types[0] : types[1];
-        
-        Wiwa::Material::MaterialSettings& settings = m_Material->getSettings();
-        ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
-        ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
-        ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
-        m_Material->setSettings(settings);
-        if (ImGui::BeginCombo("Material Type", currentItem))
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                bool isSelected = (currentItem == types[i]);
-                if (ImGui::Selectable(types[i], isSelected))
-                {
-                    currentItem = types[i];
-                    if (i == 0)
-                    {
-                        m_Material->setType(Wiwa::Material::MaterialType::color);
-                    }
-                    if (i == 1) 
-                    {
-                        m_Material->setType(Wiwa::Material::MaterialType::textured);
-                    }
-                }
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            
-            ImGui::EndCombo();
-        }
+		if (ImGui::Button("Refresh"))
+			m_Material->Refresh();
+
+		ImGui::SameLine();
         if (ImGui::Button("Save"))
-        {
             Wiwa::Material::SaveMaterial(s_Path.string().c_str(), m_Material);
-        }
 
     }
     else
-    {
        TextCentered("Select a material to begin editing");
-    }
+
 
    
 	ImGui::End();
-    ImGui::Begin("Light Debugger");
-    Wiwa::DirectionalLight& directionalLight = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer()->getDirectionalLight();
-    ImGui::DragFloat3("Direction", glm::value_ptr(directionalLight.Direction));
-    ImGui::ColorEdit3("Ambient", glm::value_ptr(directionalLight.Ambient));
-    ImGui::ColorEdit3("Diffuse", glm::value_ptr(directionalLight.Diffuse));
-    ImGui::ColorEdit3("Specular", glm::value_ptr(directionalLight.Specular));
-    Wiwa::Application::Get().GetRenderer3D().getFrameBuffer()->setLight(directionalLight);
+
+	/* ImGui::Begin("Light Debugger");
+	 Wiwa::DirectionalLight& directionalLight = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer()->getDirectionalLight();
+	 ImGui::DragFloat3("Direction", glm::value_ptr(directionalLight.Direction));
+	 ImGui::ColorEdit3("Ambient", glm::value_ptr(directionalLight.Ambient));
+	 ImGui::ColorEdit3("Diffuse", glm::value_ptr(directionalLight.Diffuse));
+	 ImGui::ColorEdit3("Specular", glm::value_ptr(directionalLight.Specular));
+	 Wiwa::Application::Get().GetRenderer3D().getFrameBuffer()->setLight(directionalLight);*/
 
     //Wiwa::List<Wiwa::PointLight>* pLights = Wiwa::Application::Get().GetRenderer3D().getFrameBuffer().getPointLights();
     /*if (ImGui::Button("+"))
@@ -137,7 +113,7 @@ void MaterialPanel::Draw()
     }*/
 
 
-    ImGui::End();
+    //ImGui::End();
 }
 
 
@@ -152,9 +128,75 @@ void MaterialPanel::OnEvent(Wiwa::Event& e)
 bool MaterialPanel::OnMaterialChange(MaterialChangeEvent& e)
 {
     m_Material = Wiwa::Resources::GetResourceById<Wiwa::Material>(e.GetResourceId());
-    Wiwa::JSONDocument matFile(m_Material->getMaterialPath());
-    if (matFile.HasMember("texture"))
-        m_Material->setTexture(matFile["texture"].get<const char*>());
-    s_Path = m_Material->getMaterialPath();
+    
     return true;
+}
+
+void MaterialPanel::RenderUniform(Wiwa::Uniform* uniform)
+{
+	switch (uniform->getType())
+	{
+	case Wiwa::UniformType::Bool:
+		ImGui::Checkbox(uniform->name.c_str(), uniform->getPtrData<bool>());
+		break;
+	case Wiwa::UniformType::Int:
+		ImGui::InputInt(uniform->name.c_str(), uniform->getPtrData<int>());
+		break;
+	case Wiwa::UniformType::Uint:
+		ImGui::InputInt(uniform->name.c_str(), uniform->getPtrData<int>());
+		break;
+	case Wiwa::UniformType::Float:
+		ImGui::InputFloat(uniform->name.c_str(), uniform->getPtrData<float>());
+		break;
+	case Wiwa::UniformType::fVec2:
+		ImGui::InputFloat2(uniform->name.c_str(), uniform->getPtrData<float>());
+		break;
+	case Wiwa::UniformType::fVec3:
+		ImGui::InputFloat3(uniform->name.c_str(), uniform->getPtrData<float>());
+		break;
+	case Wiwa::UniformType::fVec4:
+		ImGui::ColorEdit4(uniform->name.c_str(), uniform->getPtrData<float>());
+		break;
+	case Wiwa::UniformType::Mat2:
+		break;
+	case Wiwa::UniformType::Mat3:
+		break;
+	case Wiwa::UniformType::Mat4:
+
+		break;
+	case Wiwa::UniformType::Sampler:
+
+		break;
+	case Wiwa::UniformType::Sampler2D:
+	{
+		ImGui::Text(uniform->name.c_str());
+		ImGui::SameLine();
+		ImGui::Image((ImTextureID)(intptr_t)uniform->getPtrData<glm::ivec2>()->x, { 64, 64 });
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				std::wstring ws(path);
+				std::string pathS(ws.begin(), ws.end());
+				std::filesystem::path p = pathS;
+				if (m_Material)
+				{
+					if (ImageExtensionComp(p)) 
+					{
+						size_t id = Wiwa::Resources::Load<Wiwa::Image>(p.string().c_str());
+						Wiwa::Image* img = Wiwa::Resources::GetResourceById<Wiwa::Image>(id);
+						uniform->setData(glm::ivec2(img->GetTextureId(), id), uniform->getType());
+					}
+				}
+
+			}
+			ImGui::EndDragDropTarget();
+
+		}
+	}break;
+	default:
+		break;
+	}
 }

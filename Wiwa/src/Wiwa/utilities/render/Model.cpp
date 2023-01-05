@@ -78,19 +78,11 @@ namespace Wiwa {
 				aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &shininess);
 
 				Material material; // Default settings
-				material.setColor({diffuse.r, diffuse.g, diffuse.b, diffuse.a});
-				Material::MaterialSettings& mat_settings = material.getSettings();
-				mat_settings.diffuse.r = diffuse.r;
-				mat_settings.diffuse.g = diffuse.g;
-				mat_settings.diffuse.b = diffuse.b;
-				mat_settings.specular.r = specular.r;
-				mat_settings.specular.g = specular.g;
-				mat_settings.specular.b = specular.b;
-				mat_settings.shininess = shininess;
+				size_t id;
 				
-				if (texture_diffuse.length > 0) {
-					material.setType(Wiwa::Material::MaterialType::textured);
-
+				if (texture_diffuse.length > 0)
+				{
+					
 					std::filesystem::current_path(path);
 
 					std::filesystem::path texture_path = texture_diffuse.C_Str();
@@ -100,12 +92,19 @@ namespace Wiwa {
 
 					texture_path = std::filesystem::relative(texture_path);
 
-					material.setTexture(texture_path.string().c_str());
+					id = Resources::Load<Shader>("resources/shaders/model_texture");
+					material.setShader(Resources::GetResourceById<Shader>(id), "resources/shaders/model_texture");
+					size_t imgId = Resources::Load<Image>(texture_path.string().c_str());
+					Image* img = Resources::GetResourceById<Image>(imgId);
+					material.SetUniformData("Tex", glm::ivec2(img->GetTextureId(), imgId));
 				}
-				else {
-					material.setType(Wiwa::Material::MaterialType::color);
+				else
+				{
+					//Set the color of the material
+					id = Resources::Load<Shader>("resources/shaders/model_color");
+					material.setShader(Resources::GetResourceById<Shader>(id),"resources/shaders/model_color");
+					material.SetUniformData("u_Color", glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a));
 				}
-
 				std::filesystem::path mat_path = path;
 				mat_path += name.C_Str();
 				mat_path += ".wimaterial";

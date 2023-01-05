@@ -46,12 +46,12 @@ namespace Wiwa {
 			CameraId cam_id = cameras[i];
 			Camera* camera = man.getCamera(cam_id);
 
-			if (camera->cull &&
-				!camera->frustrum.IsBoxVisible(mod->boundingBox.getMin(), mod->boundingBox.getMax())
-			) return;
-			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, man.editorCamera);
+			if (camera->cull && !camera->frustrum.IsBoxVisible(mod->boundingBox.getMin(), mod->boundingBox.getMax()))
+				return;
 
-			r3d.RenderMeshMaterial(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, camera);
+
+			r3d.RenderMesh(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, camera);
 		}
+		r3d.RenderMesh(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, man.editorCamera);
 	}
 }

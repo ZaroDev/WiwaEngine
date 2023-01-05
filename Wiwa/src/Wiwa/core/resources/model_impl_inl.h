@@ -100,4 +100,9 @@ namespace Wiwa {
 			_import_model_impl(import_file.string().c_str(), export_file.string().c_str(), settings);
 		}
 	}
+	template<>
+	inline const char* Resources::getResourcePathById<Model>(size_t id)
+	{
+		return m_Resources[WRT_MODEL][id]->filePath.c_str();
+	}
 }

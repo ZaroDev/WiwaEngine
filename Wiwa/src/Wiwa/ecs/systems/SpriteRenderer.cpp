@@ -2,7 +2,6 @@
 
 #include "SpriteRenderer.h"
 #include <Wiwa/utilities/Log.h>
-#include <Wiwa/core/Renderer2D.h>
 
 #include <Wiwa/ecs/EntityManager.h>
 

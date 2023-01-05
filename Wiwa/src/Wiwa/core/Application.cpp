@@ -17,7 +17,6 @@
 #define GL_GPU_MEM_INFO_TOTAL_AVAILABLE_MEM_NVX 0x9048
 #define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
 
-#include "Renderer2D.h"
 #include "Renderer3D.h"
 
 #include <Wiwa/ecs/systems/SpriteRenderer.h>

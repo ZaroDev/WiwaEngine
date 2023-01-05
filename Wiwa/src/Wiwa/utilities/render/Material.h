@@ -1,63 +1,65 @@
 #pragma once
 
 #include <Wiwa/core/Core.h>
+
 #include <Wiwa/utilities/math/Vector4f.h>
 #include <Wiwa/utilities/math/Vector3f.h>
 #include <Wiwa/utilities/math/Vector2i.h>
 
 #include <glm/glm.hpp>
+#include "shaders/Uniform.h"
 
 namespace Wiwa {
-	typedef size_t ResourceId;
-
+	using ResourceId = size_t;
+	class Shader;
 	class WI_API Material
 	{
 	public:
-		enum MaterialType
-		{
-			color,
-			textured
-		};
-		struct MaterialSettings
-		{
-			glm::vec3 diffuse;
-			glm::vec3 specular;
-			float shininess;
-		};
-
-		Material();
-		Material(Color4f color);
+		Material(Shader* shader = nullptr);
 		Material(const char* file);
 		~Material();
 
-		inline MaterialType getType() { return m_Type; }
-		inline uint32_t getTextureId() { return m_TextureId; }
-		inline uint32_t getResourceId() { return (uint32_t)m_ResourceId; }
-		inline Color4f getColor() { return m_Color; }
-		inline const char* getMaterialPath() { return m_MaterialPath.c_str(); }
-		inline const char* getTexturePath() { return m_TexturePath.c_str(); }
-
-		void setTexture(const char* file);
-		inline void setColor(Color4f color) { m_Color = color; }
-		inline void setType(MaterialType type) { m_Type = type; }
-		inline void setSettings(const MaterialSettings& settings) { m_Settings = settings; }
-		inline Size2i &getTextureSize() { return m_TextureSize; }
-		inline MaterialSettings& getSettings() { return m_Settings; }
+		void Bind();
+		void UnBind();
 
 		void Load(const char* path);
-
+		void Save(const char* path);
 		static void SaveMaterial(const char* path, Material* mat);
 		static Material* LoadMaterial(const char* path);
+
+		void Refresh();
+		inline Shader* getShader() const { return m_Shader; }
+		void setShader(Shader* shader, const char* path);
+		inline const char* getMaterialPath() { return m_MaterialPath.c_str(); }
+		inline const char* getShaderPath() { return m_ShaderPath.c_str(); }
+		template<class T>
+		void SetUniformData(const char* name, const T& value);
+		Uniform* getUniform(const char* name);
+		inline std::vector<Uniform>& getUniforms()
+		{
+			return m_Uniforms;
+		}
 	private:
-		ResourceId m_ResourceId;
-		std::string m_TexturePath;
+		ResourceId m_ResourceId = 0;
 		std::string m_MaterialPath;
-		
-		uint32_t m_TextureId;
-		Size2i m_TextureSize = { 0,0 };
-		
-		MaterialSettings m_Settings;
-		MaterialType m_Type;
-		Color4f m_Color;
+		std::string m_ShaderPath;
+
+		Shader* m_Shader = nullptr;
+		std::vector<Uniform> m_Uniforms;
 	};
+
+	template<class T>
+	void Wiwa::Material::SetUniformData(const char* name, const T& value)
+	{
+		Uniform* uniform = getUniform(name);
+		if(!uniform)
+		{
+			WI_CORE_CRITICAL("Uniform name {0} doesn't exist in the current material", name);
+			return;
+		}
+		WI_INFO("Material at {0} changed value", m_MaterialPath);
+		uniform->setData(value, uniform->getType());
+	}
+
+
 }

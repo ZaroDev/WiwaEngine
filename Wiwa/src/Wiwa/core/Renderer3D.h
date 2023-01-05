@@ -36,29 +36,6 @@ namespace Wiwa {
 			WIREFRAME
 		};
 	private:
-
-		// Color shader
-		ResourceId m_ColorShaderId;
-		Shader* m_ColorShader;
-		uint32_t m_CSColorUniformLocation;
-		DefaultLitUniforms m_CSUniforms;
-		DirLightUniforms m_CSDLUniforms;
-
-		ResourceId m_TextureShaderId;
-		Shader* m_TextureShader;
-		DefaultLitUniforms m_TSUniforms;
-		DirLightUniforms m_TSDLUniforms;
-		PointLightUniforms m_TSPLUniforms;
-
-		ResourceId m_NormalDisplayShaderId;
-		Shader* m_NormalDisplayShader;
-		DefaultUnlitUniforms m_NDSUniforms;
-
-		ResourceId m_BBDisplayShaderId;
-		Shader* m_BBDisplayShader;
-		DefaultUnlitUniforms m_BBDSUniforms;
-
-
 		glm::mat4 m_PersProj{ 0.0f };
 		glm::mat4 m_View{ 0.0f };
 		Camera* m_ActiveCamera;
@@ -76,8 +53,7 @@ namespace Wiwa {
 		}
 		void SetOption(Options option);
 		void DisableOption(Options option);
-		void RenderMeshColor(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, Camera* camera=NULL , bool cull = false);
-		void RenderMeshMaterial(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, Camera* camera=NULL, bool cull = false);
+		void RenderMesh(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear=false, Camera* camera=NULL, bool cull = false);
 		void Close();
 		void RenderFrustrums(Camera* camera = NULL);
 		inline void SetLight(const DirectionalLight& light) { m_ActiveCamera->frameBuffer->setLight(light); }

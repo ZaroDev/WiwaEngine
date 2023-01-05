@@ -59,6 +59,7 @@ void EditorLayer::OnAttach()
 	m_CamerasPanel = std::make_unique<CamerasPanel>(this);
 	m_ResourcesPanel = std::make_unique<ResourcesPanel>(this);
 	m_ImportPanel = std::make_unique<ImportPanel>(this);
+	m_ShaderPanel = std::make_unique<ShaderPanel>(this);
 
 
 	m_ProjectPanel = std::make_unique<ProjectPanel>(this);
@@ -77,6 +78,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_CamerasPanel.get());
 	m_Panels.push_back(m_ResourcesPanel.get());
 	m_Panels.push_back(m_ImportPanel.get());
+	m_Panels.push_back(m_ShaderPanel.get());
 
 	m_Settings.push_back(m_ProjectPanel.get());
 	m_Settings.push_back(m_About.get());
@@ -306,16 +308,23 @@ void EditorLayer::MainMenuBar()
 	if (ImGui::BeginViewportSideBar("##MainStatusBar", viewport, ImGuiDir_Down, height, window_flags)) {
 		if (ImGui::BeginMenuBar()) 
 		{
+			if (ImGui::Button("Assets browser"))
+			{
+				OpenCloseAssetsFolder();
+			}
+
+
 			float iconSize = 16.0f;
 			ImGuiLog log = Wiwa::Application::Get().GetImGuiLayer().GetConsole();
 
+			int pos = ImGui::GetCursorPosX();
 			ImGui::PushStyleColor(ImGuiCol_Button, { 0.0, 0, 0,0 });
 			ImGui::AlignTextToFramePadding();
 			if (ImGui::ImageButton(m_InfoIcon, { iconSize, iconSize }))
 			{
 
 			}
-			ImGui::SetCursorPosX(40.0f);
+			ImGui::SetCursorPosX(pos + 40.0f);
 			char buff[16];
 			sprintf_s(buff, 16, "%i", log.infoCount);
 			ImGui::Text(buff);
@@ -323,14 +332,14 @@ void EditorLayer::MainMenuBar()
 			{
 
 			}
-			ImGui::SetCursorPosX(102.0f);
+			ImGui::SetCursorPosX(pos + 102.0f);
 			sprintf_s(buff, 16, "%i", log.warnCount);
 			ImGui::Text(buff);
 			if (ImGui::ImageButton(m_ErrorIcon, { iconSize, iconSize }))
 			{
 				
 			}
-			ImGui::SetCursorPosX(162.0f);
+			ImGui::SetCursorPosX(pos + 162.0f);
 			sprintf_s(buff, 16, "%i", log.errorCount);
 			ImGui::Text(buff);
 			ImGui::PopStyleColor();
@@ -344,6 +353,11 @@ void EditorLayer::MainMenuBar()
 		ImGui::End();
 	}
 	
+}
+
+void EditorLayer::OpenCloseAssetsFolder()
+{
+	m_Assets->active = !m_Assets->active;
 }
 
 void EditorLayer::SaveProjectAs()
@@ -565,6 +579,11 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 			m_GizmoType = ImGuizmo::OPERATION::SCALE;
 		}
 		break;
+	}
+	case Wiwa::Key::Space:
+	{
+		if (control)
+			OpenCloseAssetsFolder();
 	}
 	}
 	return false;

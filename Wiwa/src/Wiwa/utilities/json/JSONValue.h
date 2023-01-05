@@ -16,6 +16,8 @@ namespace Wiwa {
 		template<class T> void operator=(T data);
 
 		template<class T> T get();
+		
+		rapidjson::Value* getValue() { return m_Value; }
 
 		template<class T> operator T();
 
@@ -45,7 +47,7 @@ namespace Wiwa {
 	{
 		return m_Value->GetString();
 	}
-
+	
 	template<class T>
 	inline void JSONValue::operator=(T data)
 	{
@@ -66,7 +68,7 @@ namespace Wiwa {
 
 		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
 
-		return JSONValue(&jval, m_Allocator);
+		return {&jval, m_Allocator};
 	}
 
 	template<>
@@ -77,7 +79,7 @@ namespace Wiwa {
 
 		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
 
-		return JSONValue(&jval, m_Allocator);
+		return {&jval, m_Allocator};
 	}
 
 	template<>
@@ -88,6 +90,6 @@ namespace Wiwa {
 
 		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
 
-		return JSONValue(&jval, m_Allocator);
+		return {&jval, m_Allocator};
 	}
 }

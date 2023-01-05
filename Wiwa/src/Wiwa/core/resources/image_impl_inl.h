@@ -137,4 +137,10 @@ namespace Wiwa {
 
 		_import_image_impl(file, import_path.string().c_str());
 	}
+
+	template<>
+	inline const char* Resources::getResourcePathById<Image>(size_t id)
+	{
+		return m_Resources[WRT_IMAGE][id]->filePath.c_str();
+	}
 }

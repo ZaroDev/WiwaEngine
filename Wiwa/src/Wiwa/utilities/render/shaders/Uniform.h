@@ -3,39 +3,16 @@
 namespace Wiwa {
 	enum class UniformType
 	{
-		None = 0,
-		Bool,
+		Bool = 0,
 		Int,
 		Uint,
 		Float,
-		Double,
-		bVec2,
-		bVec3,
-		bVec4,
-		iVec2,
-		iVec3,
-		iVec4,
-		uVec2,
-		uVec3,
-		uVec4,
 		fVec2,
 		fVec3,
 		fVec4,
-		dVec2,
-		dVec3,
-		dVec4,
 		Mat2,
 		Mat3,
 		Mat4,
-		Mat2x2,
-		Mat2x3,
-		Mat2x4,
-		Mat3x2,
-		Mat3x3,
-		Mat3x4,
-		Mat4x2,
-		Mat4x3,
-		Mat4x4,
 		Sampler,
 		Sampler2D
 	};
@@ -43,26 +20,57 @@ namespace Wiwa {
 	class Uniform
 	{
 	public:
-		UniformType type;
-
-		bool isArray;
-		int arraySize;
-		void* data;
-
-		Uniform(UniformType _type)
-			: type(_type) {}
-
-		template <class T> void getData(T* data)
+		Uniform() 
+			: m_Type(UniformType::Bool), name(), m_Data(nullptr), m_UniformID(NULL)
+		{}
+		
+		
+		Uniform(std::string name, UniformType type)
+			: m_Type(type), m_Data(nullptr), name(name), m_UniformID(NULL)
 		{
-			data = (T*)this->data;
+			setEmptyData();
 		}
-		template <class T> T getData()
+
+		void sendToShader(const uint16_t shaderProgram);
+
+		template <class T>
+		void setData(const T& value, const UniformType type)
 		{
-			return *(T*)data;
+			setType(type);
+
+			//If it's already a value we need to free the data
+			if (m_Data)
+				free(m_Data);
+
+			//Reserving memory and copy the value
+			m_Data = malloc(sizeof(T));
+			memcpy(m_Data, &value, sizeof(T));
 		}
-		template <class T> T* getPtrData()
+
+		void setEmptyData();
+
+		template <class T> 
+		void getData(T* data)
 		{
-			return (T*)data;
+			data = (T*)this->m_Data;
 		}
+		template <class T>
+		T getData()
+		{
+			return *(T*)m_Data;
+		}
+		template <class T>
+		T* getPtrData()
+		{
+			return (T*)m_Data;
+		}
+		inline UniformType getType() const { return m_Type; }
+		inline void setType(UniformType val) { m_Type = val; }
+	private:
+		UniformType m_Type;
+		void* m_Data;
+		uint16_t m_UniformID;
+	public:
+		std::string name;
 	};
 }

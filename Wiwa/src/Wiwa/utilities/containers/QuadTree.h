@@ -35,7 +35,7 @@ namespace Wiwa {
 		QuadTree();
 		~QuadTree();
 
-		void Create(AABB limits);
+		void Create(class AABB limits);
 		void Clear();
 		void Insert(EntityId entity);
 		void Remove(EntityId entity);

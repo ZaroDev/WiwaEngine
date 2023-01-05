@@ -1,12 +1,14 @@
 #include <wipch.h>
 
-#include <Wiwa/utilities/render/shaders/Shader.h>
+#include "Shader.h"
+#include <Wiwa/utilities/render/Material.h>
 
 #include <fstream>
 #include <string>
 #include <sstream>
-
+#include "Wiwa/core/Resources.h"
 #include <glew.h>
+#include <rapidjson.h>
 
 namespace Wiwa {
 	Shader::Shader()
@@ -23,6 +25,9 @@ namespace Wiwa {
 	void Shader::Init(const char* filename)
 	{
 		Compile(filename);
+		m_Model = glGetUniformLocation(m_IDprogram, "u_Model");
+		m_Proj = glGetUniformLocation(m_IDprogram, "u_Proj");
+		m_View = glGetUniformLocation(m_IDprogram, "u_View");
 	}
 
 	void Shader::Compile(const char* filename)
@@ -41,10 +46,9 @@ namespace Wiwa {
 		if (!vertexShaderSourceStr) {
 			std::string msg = "Couldn't open file: ";
 			msg += vertexFile;
-
-			WI_CORE_ASSERT_MSG(msg.c_str())
-
-				return;
+			WI_CORE_CRITICAL(msg.c_str());
+			m_CompileState = State::Error;
+			return;
 		}
 
 		const char* vertexShaderSource = vertexShaderSourceStr->c_str();
@@ -54,10 +58,9 @@ namespace Wiwa {
 		if (!fragmentShaderSourceStr) {
 			std::string msg = "Couldn't open file: ";
 			msg += fragmentFile;
-
-			WI_CORE_ASSERT_MSG(msg.c_str())
-
-				return;
+			WI_CORE_CRITICAL(msg.c_str());
+			m_CompileState = State::Error;
+			return;
 		}
 
 		const char* fragmentShaderSource = fragmentShaderSourceStr->c_str();
@@ -65,6 +68,21 @@ namespace Wiwa {
 		std::string* geometryShaderSourceStr = getFileData(geometryFile.c_str());
 		bool hasGS = geometryShaderSourceStr;
 
+		bool retflag;
+		CompileFiles(vertexShaderSource, fragmentShaderSource, hasGS, geometryShaderSourceStr, retflag);
+		if (retflag) return;
+
+		delete vertexShaderSourceStr;
+		delete fragmentShaderSourceStr;
+		delete geometryShaderSourceStr;
+
+		m_AllOk = true;
+		m_Path = filename;
+	}
+
+	void Shader::CompileFiles(const char* vertexShaderSource, const char* fragmentShaderSource, bool hasGS, std::string* geometryShaderSourceStr, bool& retflag)
+	{
+		retflag = true;
 		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 		glCompileShader(vertexShader);
@@ -80,7 +98,7 @@ namespace Wiwa {
 			std::string msg = "Vertex shader compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ERROR(msg.c_str());
+			WI_CORE_CRITICAL(msg.c_str());
 			m_CompileState = State::Error;
 			return;
 		}
@@ -96,7 +114,7 @@ namespace Wiwa {
 			std::string msg = "Fragment shader compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ERROR(msg.c_str());
+			WI_CORE_CRITICAL(msg.c_str());
 			m_CompileState = State::Error;
 			return;
 		}
@@ -121,7 +139,7 @@ namespace Wiwa {
 				std::string msg = "Geometry shader compile error: ";
 				msg += infoLog;
 
-				WI_CORE_ERROR(msg.c_str());
+				WI_CORE_CRITICAL(msg.c_str());
 				m_CompileState = State::Error;
 				return;
 			}
@@ -137,7 +155,7 @@ namespace Wiwa {
 			std::string msg = "Shader program compile error: ";
 			msg += infoLog;
 
-			WI_CORE_ERROR(msg.c_str());
+			WI_CORE_CRITICAL(msg.c_str());
 			m_CompileState = State::Error;
 			return;
 		}
@@ -146,12 +164,49 @@ namespace Wiwa {
 		glDeleteShader(fragmentShader);
 		if (hasGS)
 			glDeleteShader(geometryShader);
+		retflag = false;
 
-		delete vertexShaderSourceStr;
-		delete fragmentShaderSourceStr;
-		delete geometryShaderSourceStr;
 		m_CompileState = State::Compiled;
-		m_AllOk = true;
+	}
+
+	void Shader::LoadFromWiasset(const char* filename)
+	{
+		JSONDocument shaderFile;
+
+		if (!shaderFile.load_file(filename))
+			return;
+		std::string vertexShader;
+		std::string fragmentShader;
+		std::string geometryShader;
+
+		bool hasGeometry = false;
+
+		if (shaderFile.HasMember("vertex"))
+			vertexShader = shaderFile["vertex"].get<const char*>();
+		if (shaderFile.HasMember("fragment"))
+			fragmentShader = shaderFile["fragment"].get<const char*>();
+		if (shaderFile.HasMember("geometry"))
+			geometryShader = shaderFile["geometry"].get<const char*>();
+		
+		if (!geometryShader.empty())
+			hasGeometry = true;
+
+		bool ret = false;
+		CompileFiles(vertexShader.c_str(), fragmentShader.c_str(), hasGeometry, &geometryShader, ret);
+
+		m_Model = glGetUniformLocation(m_IDprogram, "u_Model");
+		m_Proj = glGetUniformLocation(m_IDprogram, "u_Proj");
+		m_View = glGetUniformLocation(m_IDprogram, "u_View");
+
+		if (shaderFile.HasMember("uniforms"))
+		{
+			JSONValue uniforms = shaderFile["uniforms"];
+			rapidjson::Value* val = uniforms.getValue();
+			for (rapidjson::Value::MemberIterator p = val->MemberBegin(); p != val->MemberEnd(); ++p)
+			{
+				addUniform(p->name.GetString(), (UniformType)p->value.GetInt());
+			}
+		}
 	}
 
 	void Shader::Bind()
@@ -171,48 +226,7 @@ namespace Wiwa {
 		glDeleteProgram(m_IDprogram);
 	}
 
-	unsigned int Shader::getUniformLocation(const char * uniform_name)
-	{
-		return glGetUniformLocation(m_IDprogram, uniform_name);
-	}
-
-	void Shader::setUniformInt(unsigned int uniform_id, int value)
-	{
-		glUseProgram(m_IDprogram);
-		glUniform1i(uniform_id, value);
-	}
-
-	void Shader::setUniformUInt(unsigned int uniform_id, unsigned int value)
-	{
-		glUseProgram(m_IDprogram);
-		glUniform1ui(uniform_id, value);
-	}
-
-	void Shader::setUniformMat4(unsigned int uniform_id, glm::mat4 value)
-	{
-		glUseProgram(m_IDprogram);
-		glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(value));
-	}
-
-	void Shader::setUniformFloat(unsigned int uniform_id, float value)
-	{
-		glUseProgram(m_IDprogram);
-		glUniform1f(uniform_id, value);
-	}
-
-	void Shader::setUniformVec3(unsigned int uniform_id, glm::vec3 value)
-	{
-		glUseProgram(m_IDprogram);
-		glUniform3f(uniform_id, value.x, value.y, value.z);
-	}
-
-	void Shader::setUniformVec4(unsigned int uniform_id, glm::vec4 value)
-	{
-		glUseProgram(m_IDprogram);
-		glUniform4f(uniform_id, value.r, value.g, value.b, value.a);
-	}
-
-	std::string* Shader::getFileData(const char * file)
+	std::string* Shader::getFileData(const char* file)
 	{
 		std::fstream shaderFile;
 
@@ -228,4 +242,78 @@ namespace Wiwa {
 
 		return new std::string(buffer.str());
 	}
+
+	void Shader::addUniform(const char* name, const UniformType type)
+	{
+		UniformField field;
+		field.name = name;
+		field.type = type;
+		field.location = glGetUniformLocation(m_IDprogram, name);
+
+		m_Uniforms.emplace_back(field);
+	}
+
+	void Shader::deleteUniform(const char* name)
+	{
+		for (size_t i = 0; i < m_Uniforms.size(); i++)
+		{
+			if (m_Uniforms[i].name == name)
+			{
+				m_Uniforms.erase(m_Uniforms.begin() + i);
+				i--;
+			}
+		}
+	}
+
+	void Shader::setUniformType(const char* name, const UniformType type)
+	{
+		UniformField* uniform = getUniform(name);
+		if (!uniform)
+		{
+			WI_CORE_ERROR("Uniform name can't be find");
+			return;
+		}
+		uniform->type = type;
+	}
+
+	void Shader::setUniformName(const char* oldName, const char* newName)
+	{
+		UniformField* uniform = getUniform(oldName);
+		if (!uniform)
+		{
+			WI_CORE_ERROR("Uniform name can't be find");
+			return;
+		}
+		uniform->name = newName;
+	}
+
+	void Shader::SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj)
+	{
+		glUniformMatrix4fv(m_Model, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(m_View, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(m_Proj, 1, GL_FALSE, glm::value_ptr(proj));
+	}
+
+	Wiwa::UniformField* Shader::getUniform(const char* name)
+	{
+		if (m_Uniforms.empty())
+			return nullptr;
+		for (size_t i = 0; i < m_Uniforms.size(); i++)
+		{
+			if (m_Uniforms[i].name == name)
+			{
+				return &m_Uniforms[i];
+			}
+		}
+	}
+
+	void Shader::Save()
+	{
+		for (const auto& mat : m_MatRefs)
+		{
+			mat->Refresh();
+		}
+		Resources::Import<Shader>(m_Path.c_str(), this);
+	}
+
 }

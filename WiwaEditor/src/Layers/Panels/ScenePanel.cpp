@@ -8,7 +8,6 @@
 
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/core/Application.h>
-#include <Wiwa/core/Renderer2D.h>
 #include <Wiwa/core/Renderer3D.h>
 #include <Wiwa/ecs/EntityManager.h>
 #include <Wiwa/core/Input.h>

@@ -20,6 +20,7 @@
 
 #include "Wiwa/utilities/Log.h"
 
+
 #ifdef WI_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif // ZO_PLATFORM_WINDOWS

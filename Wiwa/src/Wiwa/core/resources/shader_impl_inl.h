@@ -11,11 +11,12 @@ namespace Wiwa {
 	template<>
 	inline void Resources::CreateMeta<Shader>(const char* file)
 	{
-		std::string filePath = file;
+		std::filesystem::path filePath = file;
 		filePath += ".meta";
-		std::ofstream metaFile(filePath.c_str(), std::ios::out | std::ios::binary);
-		metaFile.write(file, filePath.size());
-		metaFile.close();
+		if (!std::filesystem::exists(filePath))
+			return;
+		JSONDocument doc;
+		doc.save_file(filePath.string().c_str());
 	}
 	template<>
 	inline ResourceId Resources::Load<Shader>(const char* file) {
@@ -26,8 +27,10 @@ namespace Wiwa {
 
 		if (position == size) {
 			Shader* shader = new Shader();
-			shader->Init(file);
-
+			std::string file_path = "library/";
+			file_path += file;
+			file_path += ".wiasset";
+			shader->LoadFromWiasset(file_path.c_str());
 			PushResource(WRT_SHADER, file, shader);
 
 			resourceId = size;
@@ -49,8 +52,9 @@ namespace Wiwa {
 		return resource;
 	}
 	template<>
-	inline void Resources::Import<Shader>(const char* file)
+	inline void Resources::Import<Shader>(const char* file, Shader* shader)
 	{
+		JSONDocument document;
 		std::string filePath = file;
 		filePath += ".vs";
 		std::string* vertexShader = getFileData(filePath.c_str());
@@ -63,35 +67,35 @@ namespace Wiwa {
 		filePath += ".gs";
 		std::string* geometryShader = getFileData(filePath.c_str());
 
-		std::string shaderFile;
-
 		if (vertexShader)
-		{
-			shaderFile += "SV\n";
-			shaderFile += vertexShader->c_str();
-			shaderFile += "\nEV\n";
-		}
+			document.AddMember("vertex", vertexShader->c_str());
 		if (fragmentShader)
-		{
-			shaderFile += "SF\n";
-			shaderFile += fragmentShader->c_str();
-			shaderFile += "\nEF\n";
-		}
+			document.AddMember("fragment", fragmentShader->c_str());
 		if (geometryShader)
+			document.AddMember("geometry", geometryShader->c_str());
+		JSONValue uniformObj = document.AddMemberObject("uniforms");
+		if (!shader->getUniforms().empty())
 		{
-			shaderFile += "SG\n";
-			shaderFile += geometryShader->c_str();
-			shaderFile += "\nEG\n";
+			std::vector<UniformField>& uniforms = shader->getUniforms();
+			for(UniformField& uniform : uniforms)
+			{
+				uniformObj.AddMember(uniform.name.c_str(), (int)uniform.type);
+			}
 		}
-
 
 		delete vertexShader;
 		delete fragmentShader;
 		delete geometryShader;
 
-		if (shaderFile.empty())
-			return;
-		SaveFile(file, shaderFile);
-		CreateMeta<Shader>(file, NULL);
+
+		std::string path = SetLibraryPath(file);
+
+		document.save_file(path.c_str());
+		CreateMeta<Shader>(file);
+	}
+	template<>
+	inline const char* Resources::getResourcePathById<Shader>(size_t id)
+	{
+		return m_Resources[WRT_SHADER][id]->filePath.c_str();
 	}
 }

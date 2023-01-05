@@ -24,6 +24,7 @@
 #include "Panels/CamerasPanel.h"
 #include "Panels/ResourcesPanel.h"
 #include "Panels/ImportPanel.h"
+#include "Panels/ShaderPanel.h"
 
 #include <Wiwa/scene/SceneManager.h>
 
@@ -48,6 +49,7 @@ public:
 	inline int GetGizmo() { return m_GizmoType; }
 private:
 	void MainMenuBar();
+	void OpenCloseAssetsFolder();
 	void SaveProjectAs();
 	void OpenProject();
 	void NewProject();
@@ -86,6 +88,7 @@ private:
 	std::unique_ptr<Panel>	m_CamerasPanel;
 	std::unique_ptr<Panel>	m_ResourcesPanel;
 	std::unique_ptr<Panel>	m_ImportPanel;
+	std::unique_ptr<Panel>	m_ShaderPanel;
 
 	std::vector<Panel*> m_Panels;
 	std::vector<Panel*> m_Settings;

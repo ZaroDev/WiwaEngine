@@ -205,43 +205,9 @@ void InspectorPanel::DrawMeshComponent(byte* data)
 		ImGui::EndDragDropTarget();
 	}
 	ImGui::PushID("materialId");
-
 	ImGui::Text("Material at: ");
 	ImGui::SameLine();
 	ImGui::Text(mat->getMaterialPath());
-	ImGui::Image((ImTextureID)(intptr_t)mat->getTextureId(), { 64, 64 });
-	ImGui::Text("Texture size: ");
-	ImGui::SameLine();
-	ImGui::Text("%i", mat->getTextureSize().x);
-	ImGui::SameLine();
-	ImGui::Text("x %i", mat->getTextureSize().y);
-	const char* types[] = { "Color", "Textured" };
-	const char* currentItem = mat->getType() == Wiwa::Material::MaterialType::color ? types[0] : types[1];
-	ImGui::Text("Texture path: %s", mat->getTexturePath());
-	ImGui::Text("Type");
-
-	ImGui::SameLine();
-	ImGui::Text(currentItem);
-	static glm::vec4 color = { mat->getColor().r, mat->getColor().g,mat->getColor().b , mat->getColor().a };
-	ImGui::ColorEdit4("Color", glm::value_ptr(color));
-
-	Wiwa::Material::MaterialSettings& settings = mat->getSettings();
-	ImGui::ColorEdit3("Diffuse", glm::value_ptr(settings.diffuse));
-	ImGui::ColorEdit3("Specular", glm::value_ptr(settings.specular));
-	ImGui::DragFloat("Shininess", &settings.shininess, 0.1f, 0, 1);
-	ImGui::Text(mat->getTexturePath());
-	static bool checker = false;
-	if (ImGui::Checkbox("Set Checker", &checker))
-	{
-		mat->setTexture("checker");
-		if (!checker)
-		{
-			mat->setTexture(mat->getTexturePath());
-		}
-	}
-
-	const char* type = mat->getType() == 0 ? "Type: Color" : "Type: Texture";
-	ImGui::Text(type);
 	ImGui::PopID();
 }
 

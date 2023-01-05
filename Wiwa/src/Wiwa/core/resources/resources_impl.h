@@ -99,6 +99,7 @@ namespace Wiwa {
 		inline static std::vector<Resource*>& GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
 		static void UnloadSceneResources();
 
+		template<class T> static const char* getResourcePathById(size_t id);
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static ResourceId LoadNative(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
@@ -107,6 +108,15 @@ namespace Wiwa {
 		template<class T, class... T2> static void LoadMeta(const char* file, T2... settings);
 
 		inline static void SaveFile(const char* file, std::string& shaderFile)
+		{
+			std::string path = SetLibraryPath(file);
+
+			std::ofstream outFile(path.c_str(), std::ios::out | std::ios::binary);
+			outFile.write(shaderFile.c_str(), shaderFile.size());
+			outFile.close();
+		}
+
+		static std::string SetLibraryPath(const char* file)
 		{
 			std::string path = "Library/";
 			path += file;
@@ -120,10 +130,10 @@ namespace Wiwa {
 			path = "Library/";
 			path += file;
 			path += ".wiasset";
-			std::ofstream outFile(path.c_str(), std::ios::out | std::ios::binary);
-			outFile.write(shaderFile.c_str(), shaderFile.size());
-			outFile.close();
+
+			return path;
 		}
+
 		inline static std::string* getFileData(const char* file)
 		{
 			std::fstream shaderFile;
