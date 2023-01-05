@@ -83,19 +83,9 @@ namespace Wiwa {
 	}
 
 	template<>
-	inline JSONValue JSONValue::AddMember(const char* mem, int value)
-	{
-		rapidjson::Value key(mem, *m_Allocator);
-		rapidjson::Value v(value);
-
-		rapidjson::Value& jval = m_Value->AddMember(key, v, *m_Allocator);
-
-		return JSONValue(&jval, m_Allocator);
-	}
-
-	template<>
 	inline JSONValue JSONValue::AddMember<const char*>(const char* mem, const char* value) {
-		rapidjson::Value key(mem, strlen(mem));
+		rapidjson::Value key;
+		key.SetString(mem, *m_Allocator);
 		rapidjson::Value v;
 		v.SetString(value, *m_Allocator);
 
