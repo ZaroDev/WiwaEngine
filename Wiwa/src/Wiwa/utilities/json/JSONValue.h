@@ -15,8 +15,20 @@ namespace Wiwa {
 		template<class T> void set(T data);
 		template<class T> void operator=(T data);
 
+		// Get value
 		template<class T> T get();
 
+		// Get value as
+		const char* as_string() { return get<const char*>(); }
+		int as_int() { return get<int>(); }
+		unsigned int as_uint() { return get<unsigned int>(); }
+		float as_float() { return get<float>(); }
+		bool as_bool() { return get<bool>(); }
+		double as_double() { return get<double>(); }
+		int64_t as_int64() { return get<int64_t>(); }
+		uint64_t as_uint64() { return get<uint64_t>(); }
+
+		// Cast operator
 		template<class T> operator T();
 
 		template<class T>
@@ -40,6 +52,7 @@ namespace Wiwa {
 	{
 		return m_Value->Get<T>();
 	}
+
 	template<>
 	inline const char* JSONValue::get()
 	{
