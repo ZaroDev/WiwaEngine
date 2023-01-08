@@ -7,6 +7,7 @@
 #include <Wiwa/core/Resources.h>
 #include <Wiwa/utilities/render/Model.h>
 #include <Wiwa/utilities/render/Image.h>
+#include <Wiwa/utilities/render/shaders/Shader.h>
 #include <Wiwa/utilities/json/JSONDocument.h>
 #include "MaterialPanel.h"
 #include "../EditorLayer.h"
@@ -128,79 +129,10 @@ void AssetsPanel::Draw()
 		ImGui::TableNextColumn();
 
 		//Back button
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		if (ImGui::ImageButton((ImTextureID)m_BackIcon, { 16, 16 }))
-		{
-			if (m_CurrentPath != std::filesystem::path(m_Directory.path))
-				m_CurrentPath = m_CurrentPath.parent_path();
-		}
-		ImGui::PopStyleColor();
+		TopBar();
 
-		ImGui::SameLine();
-		ImGui::AlignTextToFramePadding();
-		ImGui::Text(m_CurrentPath.string().c_str());
-		ImGui::SameLine();
-		//Create a folder button
-		if (ImGui::Button("Create a folder"))
-		{
-			ImGui::OpenPopup("Creating a folder##folder");
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Create a material"))
-		{
-			ImGui::OpenPopup("Creating a material##material");
-		}
-		bool open = true;
-		if (ImGui::BeginPopupModal("Creating a folder##folder", &open))
-		{
-			static char buffer[64] = { 0 };
-			ImGui::Text("Folder name");
-			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
-			if (ImGui::Button("Create"))
-			{
-				std::filesystem::path path = m_CurrentPath;
-				std::filesystem::path dir = buffer;
-				path /= dir;
-				if (_mkdir(path.string().c_str()) == -1)
-					WI_ERROR("Folder can't be created");
-				ImGui::CloseCurrentPopup();
-			}
 
-			ImGui::SameLine();
-			if (ImGui::Button("Close"))
-				ImGui::CloseCurrentPopup();
-			ImGui::EndPopup();
-		}
-		open = true;
-		if (ImGui::BeginPopupModal("Creating a material##material", &open))
-		{
-			static char buffer[64] = { 0 };
-			ImGui::Text("Material name");
-			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
-			if (ImGui::Button("Create"))
-			{
-				std::filesystem::path path = m_CurrentPath;
-				std::filesystem::path dir = buffer;
-				path /= dir;
-				std::string file = path.string() + ".wimaterial";
 
-				Wiwa::Material material;
-
-				Wiwa::Material::SaveMaterial(file.c_str(), &material);
-
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::SameLine();
-			if (ImGui::Button("Close"))
-				ImGui::CloseCurrentPopup();
-			ImGui::EndPopup();
-		}
-		ImGui::SameLine();
-		ImGui::PushItemWidth(200.0f);
-		ImGui::SliderFloat("##size", &m_ButtonSize, 0.5f, 2.0f);
-		ImGui::PopItemWidth();
-		ImGui::Separator();
 		//Assets display
 		float padding = 16.0f * m_ButtonSize;
 		float thumbnailSize = 64.0f * m_ButtonSize;
@@ -296,6 +228,102 @@ void AssetsPanel::Draw()
 
 	//Assets context window
 	ImGui::End();
+}
+
+void AssetsPanel::TopBar()
+{
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+	if (ImGui::ImageButton((ImTextureID)m_BackIcon, { 16, 16 }))
+	{
+		if (m_CurrentPath != std::filesystem::path(m_Directory.path))
+			m_CurrentPath = m_CurrentPath.parent_path();
+	}
+	ImGui::PopStyleColor();
+
+	ImGui::SameLine();
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text(m_CurrentPath.string().c_str());
+	ImGui::SameLine();
+
+	if (ImGui::Button("Create"))
+		ImGui::OpenPopup("Create");
+	int id = 0;
+	if (ImGui::BeginPopup("Create"))
+	{
+		{
+			ImGui::PushID(id++);
+			ImGui::Text("Folder");
+			static char buffer[64] = { 0 };
+			ImGui::Text("Folder name");
+			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
+			ImGui::SameLine();
+			if (ImGui::Button("Create"))
+			{
+				std::filesystem::path path = m_CurrentPath;
+				std::filesystem::path dir = buffer;
+				path /= dir;
+				if (_mkdir(path.string().c_str()) == -1)
+					WI_ERROR("Folder can't be created");
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::Separator();
+			ImGui::PopID();
+		}
+		{
+			ImGui::PushID(id++);
+			static char buffer[64] = { 0 };
+			ImGui::Text("Material");
+			ImGui::Text("Material name");
+			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
+			ImGui::SameLine();
+			if (ImGui::Button("Create"))
+			{
+				std::filesystem::path path = m_CurrentPath;
+				std::filesystem::path dir = buffer;
+				path /= dir;
+				std::string file = path.string() + ".wimaterial";
+
+				Wiwa::Material material;
+
+				Wiwa::Material::SaveMaterial(file.c_str(), &material);
+
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::Separator();
+			ImGui::PopID();
+		}
+		{
+			ImGui::PushID(id++);
+			static char buffer[64] = { 0 };
+			ImGui::Text("Shader");
+			ImGui::Text("Shader name");
+			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
+			ImGui::SameLine();
+			if (ImGui::Button("Create"))
+			{
+				std::filesystem::path path = m_CurrentPath;
+				std::filesystem::path dir = buffer;
+				path /= dir;
+				std::string file = path.string();
+				
+				Wiwa::Shader::CreateDefault(file.c_str());
+				Wiwa::Shader* shader = new Wiwa::Shader();
+				shader->setPath(file.c_str());
+				Wiwa::Resources::Import<Wiwa::Shader>(file.c_str(), shader);
+				Wiwa::Resources::Load<Wiwa::Shader>(file.c_str());
+				
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::PopID();
+		}
+		ImGui::EndPopup();
+	}
+
+	ImGui::SameLine();
+	ImGui::PushItemWidth(200.0f);
+	ImGui::SliderFloat("##size", &m_ButtonSize, 0.5f, 2.0f);
+	ImGui::PopItemWidth();
+	ImGui::Separator();
 }
 
 void AssetsPanel::OnEvent(Wiwa::Event& e)

@@ -7,6 +7,7 @@
 #include <Wiwa/utilities/render/shaders/Shader.h>
 
 #include "rapidjson.h"
+#include "glew.h"
 
 namespace Wiwa {
 
@@ -37,7 +38,9 @@ namespace Wiwa {
     {
         JSONDocument matFile(path);
 
-		m_ShaderPath = matFile["shader"].get<const char*>();
+		if(matFile.HasMember("shader"))
+			m_ShaderPath = matFile["shader"].get<const char*>();
+		
 		size_t shaderId = Resources::Load<Shader>(m_ShaderPath.c_str());
 		setShader(Resources::GetResourceById<Shader>(shaderId), m_ShaderPath.c_str());
 
@@ -275,7 +278,7 @@ namespace Wiwa {
 				break;
 			case Wiwa::UniformType::Sampler2D:
 			{
-				size_t id = uniform.getData<glm::ivec2>().y;
+				size_t id = uniform.getPtrData<glm::ivec2>()->y;
 				std::string string = Resources::getResourcePathById<Image>(id);
 
 				uniforms.AddMember(name, string.c_str());
@@ -302,7 +305,36 @@ namespace Wiwa {
 		std::vector<UniformField>& fields = m_Shader->getUniforms();
 		for (UniformField& field : fields)
 		{
-			m_Uniforms.emplace_back(field.name, field.type);
+			
+			Uniform* uniform = getUniform(field.name.c_str());
+			if (uniform)
+			{
+				if (uniform->getType() != field.type)
+				{
+					m_Uniforms.erase(m_Uniforms.begin() + getUniformIndex(uniform->name.c_str()));
+					m_Uniforms.emplace_back(field.name, field.type);
+				}
+			}
+			else
+			{
+				m_Uniforms.emplace_back(field.name, field.type);
+			}
+		}
+
+		for (size_t i = 0; i < m_Uniforms.size(); i++)
+		{
+			size_t j = 0;
+			for (; j < fields.size(); j++)
+			{
+				if (m_Uniforms[i].name == fields[j].name
+					&& m_Uniforms[i].getType() == fields[j].type)	
+					break;
+			}
+			if (j == fields.size())
+			{
+				m_Uniforms.erase(m_Uniforms.begin() + i);
+				i--;
+			}
 		}
     }
 
@@ -333,9 +365,10 @@ namespace Wiwa {
 
 	void Material::Bind()
 	{
+		int texureId = GL_TEXTURE0;
 		for(size_t i = 0; i < m_Uniforms.size(); i++)
 		{
-			m_Uniforms[i].sendToShader(m_Shader->getID());
+			m_Uniforms[i].sendToShader(m_Shader->getID(), texureId);
 		}
 	}
 

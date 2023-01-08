@@ -121,12 +121,14 @@ void ShaderPanel::Draw()
 		std::vector<Wiwa::UniformField>& fields = m_Shader->getUniforms();
 		ImGui::Separator();
 		int id = 0;
+		const char* nameToDelete = nullptr;
 		for (Wiwa::UniformField& field : fields)
 		{	
 			ImGui::PushID(id++);
-			DrawField(&field);
+			DrawField(&field, nameToDelete);
 			ImGui::PopID();
 		}
+		
 		if (ImGui::Button("Save##shader"))
 		{
 			m_Shader->Compile(m_ShaderPath.c_str());
@@ -136,11 +138,16 @@ void ShaderPanel::Draw()
 		{
 			m_Shader->Compile(m_ShaderPath.c_str());
 		}
+		if (nameToDelete)
+		{
+			m_Shader->deleteUniform(nameToDelete);
+		}
 	}
 	ImGui::End();
+
 }
 
-void ShaderPanel::DrawField(Wiwa::UniformField* field)
+void ShaderPanel::DrawField(Wiwa::UniformField* field, const char*&nameToDelete)
 {
 	static char uName[64];
 	memcpy(uName, field->name.c_str(), field->name.size() + 1);
@@ -173,6 +180,7 @@ void ShaderPanel::DrawField(Wiwa::UniformField* field)
 			{
 				currentItem = types[i];
 				type = (Wiwa::UniformType)(i);
+				m_Shader->setUniformType(field->name.c_str(), type);
 			}
 			if (isSelected)
 				ImGui::SetItemDefaultFocus();
@@ -180,20 +188,15 @@ void ShaderPanel::DrawField(Wiwa::UniformField* field)
 
 		ImGui::EndCombo();
 	}
-	if (ImGui::Button("Save"))
-	{
-		m_Shader->setUniformType(field->name.c_str(), type);
-	}
+	m_Shader->setUniformName(field->name.c_str(), uName);
 	ImGui::SameLine();
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
 	if (ImGui::Button("Delete"))
 	{
-		m_Shader->deleteUniform(uName);
-		return;
+		nameToDelete = uName;
 	}
 	ImGui::PopStyleColor(3);
-	m_Shader->setUniformName(field->name.c_str(), uName);
 	ImGui::Separator();
 }

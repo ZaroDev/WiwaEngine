@@ -10,10 +10,10 @@ in vec3 color;
 in vec2 texCoord;
 
 // Gets the Texture Unit from the main function
-uniform sampler2D Tex;
+uniform sampler2D u_Tex0;
 
 
 void main()
 {
-	FragColor = texture(Tex, texCoord);
+	FragColor = texture(u_Tex0, texCoord);
 }

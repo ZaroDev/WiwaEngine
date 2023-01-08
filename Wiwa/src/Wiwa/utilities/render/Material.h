@@ -39,6 +39,18 @@ namespace Wiwa {
 		{
 			return m_Uniforms;
 		}
+		inline size_t getUniformIndex(const char* name)
+		{
+			for (size_t i = 0; i < m_Uniforms.size(); i++)
+			{
+				if (m_Uniforms[i].name == name)
+				{
+					return i;
+				}
+			}
+			WI_CORE_ERROR("Can't find uniform with name {0}", name);
+			return -1;
+		}
 	private:
 		ResourceId m_ResourceId = 0;
 		std::string m_MaterialPath;
@@ -57,7 +69,6 @@ namespace Wiwa {
 			WI_CORE_CRITICAL("Uniform name {0} doesn't exist in the current material", name);
 			return;
 		}
-		WI_INFO("Material at {0} changed value", m_MaterialPath);
 		uniform->setData(value, uniform->getType());
 	}
 

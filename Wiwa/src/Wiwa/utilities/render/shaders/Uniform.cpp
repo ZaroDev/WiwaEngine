@@ -7,7 +7,7 @@
 
 namespace Wiwa {
 	//Sampler2D x : OpenGL id y: ResourceId to retrieve the path when saving
-	void Uniform::sendToShader(uint16_t shaderProgram)
+	void Uniform::sendToShader(uint16_t shaderProgram, int& textureId)
 	{
 		if(m_UniformID == NULL)
 			m_UniformID = glGetUniformLocation(shaderProgram, name.c_str());
@@ -48,8 +48,10 @@ namespace Wiwa {
 			glUniform1ui(m_UniformID, *static_cast<unsigned int*>(m_Data));
 			break;
 		case Wiwa::UniformType::Sampler2D:
-			glUniform1ui(m_UniformID, static_cast<unsigned int>(((glm::ivec2*)m_Data)->x));
-			break;
+		{
+			glActiveTexture(textureId++);
+			glBindTexture(GL_TEXTURE_2D, ((glm::ivec2*)m_Data)->x);
+		}break;
 		default:
 			break;
 		}

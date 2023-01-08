@@ -12,7 +12,7 @@ public:
 
 	void Draw() override;
 
-	void DrawField(Wiwa::UniformField* field);
+	void DrawField(Wiwa::UniformField* field, const char*& nameToDelete);
 private:
 	Wiwa::Shader* m_Shader = nullptr;
 	std::string m_ShaderPath;

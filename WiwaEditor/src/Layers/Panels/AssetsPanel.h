@@ -32,6 +32,7 @@ public:
 	bool OnDragAndDrop(Wiwa::WindowDropEvent& e);
 private:
 	void DisplayNode(DirectorySpecs* directoryEntry);
+	void TopBar();
 
 private:
 	ImTextureID m_FileIcon;

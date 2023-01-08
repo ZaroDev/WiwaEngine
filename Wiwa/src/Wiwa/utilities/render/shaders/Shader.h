@@ -29,6 +29,8 @@ namespace Wiwa {
 			Error
 		};
 
+		static void CreateDefault(const char* path);
+
 		void Init(const char* filename);
 		void Compile(const char* filename);
 
@@ -52,7 +54,9 @@ namespace Wiwa {
 		void setUniformName(const char* oldName, const char* newName);
 		void SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj);
 		UniformField* getUniform(const char* name);
-		const char* getPath() { return m_Path.c_str(); }
+		
+		inline const char* getPath() { return m_Path.c_str(); }
+		inline void setPath(const char* path) { m_Path = path; }
 
 		void Save();
 		inline void AddRef(Material* ref)

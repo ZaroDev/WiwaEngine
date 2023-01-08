@@ -16,7 +16,15 @@ namespace Wiwa {
 		Sampler,
 		Sampler2D
 	};
+	//struct SamplerData
+	//{
+	//	uint32_t textureId;
+	//	std::string path;
 
+	//	SamplerData(){}
+	//	SamplerData(uint32_t id, const char* _path)
+	//		: textureId(id), path(_path){}
+	//};
 	class Uniform
 	{
 	public:
@@ -31,7 +39,7 @@ namespace Wiwa {
 			setEmptyData();
 		}
 
-		void sendToShader(const uint16_t shaderProgram);
+		void sendToShader(const uint16_t shaderProgram, int& textureId);
 
 		template <class T>
 		void setData(const T& value, const UniformType type)

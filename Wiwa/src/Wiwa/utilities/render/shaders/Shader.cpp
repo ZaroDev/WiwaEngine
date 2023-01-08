@@ -22,12 +22,28 @@ namespace Wiwa {
 	{
 	}
 
+	void Shader::CreateDefault(const char* path)
+	{
+		std::string file = path;
+		file += ".vs";
+
+		std::ofstream vertexFile(file.c_str());
+		vertexFile << 
+			"#version 330 core\n\n// Positions/Coordinates\nlayout (location = 0) in vec3 aPos;\n// Colors\nlayout (location = 1) in vec3 aColor;\n// Texture Coordinates\nlayout (location = 2) in vec2 aTex;\n\n\n// Outputs the color for the Fragment Shader\nout vec3 color;\n// Outputs the texture coordinates to the fragment shader\nout vec2 texCoord;\n\n\n//Necesary to render the model DON'T touch\nuniform mat4 u_Model;\nuniform mat4 u_Proj;\nuniform mat4 u_View;\n\n\n\n\nvoid main()\n{\n\tgl_Position = u_Proj * u_View * u_Model * vec4(aPos, 1.0);\n\n\t// Assigns the colors from the Vertex Data to \"color\"\n\tcolor = aColor;\n\t// Assigns the texture coordinates from the Vertex Data to \"texCoord\"\n\ttexCoord = aTex;\n}";
+		vertexFile.close();
+		
+		file = path;
+		file += ".fs";
+		std::ofstream fragmentFile(file.c_str());
+		fragmentFile <<
+			"#version 330 core\n\n// Outputs colors in RGBA\nout vec4 FragColor;\n\n\n// Inputs the color from the Vertex Shader\nin vec3 color;\n// Inputs the texture coordinates from the Vertex Shader\nin vec2 texCoord;\n\n// Gets the Texture Unit from the main function\nuniform sampler2D u_Tex0;\n\n\nvoid main()\n{\n\tFragColor = texture(u_Tex0, texCoord);\n}";
+		fragmentFile.close();
+
+	}
+
 	void Shader::Init(const char* filename)
 	{
 		Compile(filename);
-		m_Model = glGetUniformLocation(m_IDprogram, "u_Model");
-		m_Proj = glGetUniformLocation(m_IDprogram, "u_Proj");
-		m_View = glGetUniformLocation(m_IDprogram, "u_View");
 	}
 
 	void Shader::Compile(const char* filename)
@@ -78,6 +94,8 @@ namespace Wiwa {
 
 		m_AllOk = true;
 		m_Path = filename;
+
+		
 	}
 
 	void Shader::CompileFiles(const char* vertexShaderSource, const char* fragmentShaderSource, bool hasGS, std::string* geometryShaderSourceStr, bool& retflag)
@@ -167,6 +185,10 @@ namespace Wiwa {
 		retflag = false;
 
 		m_CompileState = State::Compiled;
+
+		m_Model = glGetUniformLocation(m_IDprogram, "u_Model");
+		m_Proj = glGetUniformLocation(m_IDprogram, "u_Proj");
+		m_View = glGetUniformLocation(m_IDprogram, "u_View");
 	}
 
 	void Shader::LoadFromWiasset(const char* filename)
@@ -193,10 +215,6 @@ namespace Wiwa {
 
 		bool ret = false;
 		CompileFiles(vertexShader.c_str(), fragmentShader.c_str(), hasGeometry, &geometryShader, ret);
-
-		m_Model = glGetUniformLocation(m_IDprogram, "u_Model");
-		m_Proj = glGetUniformLocation(m_IDprogram, "u_Proj");
-		m_View = glGetUniformLocation(m_IDprogram, "u_View");
 
 		if (shaderFile.HasMember("uniforms"))
 		{
