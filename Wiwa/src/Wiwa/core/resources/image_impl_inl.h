@@ -46,7 +46,9 @@ namespace Wiwa {
 		doc.AddMember("file", file);
 		doc.AddMember("folderAsset", false);
 		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-		doc.AddMember("timeCreated", std::ctime(&time));
+		char buff[64];
+		ctime_s(buff, sizeof(buff), &time);
+		doc.AddMember("timeCreated", buff);
 		JSONValue imageSettingsObj = doc.AddMemberObject("imageImportSettings");
 		imageSettingsObj.AddMember("compression", (int)settings->Compression);
 		imageSettingsObj.AddMember("interlaced", settings->Interlaced);
@@ -141,6 +143,6 @@ namespace Wiwa {
 	template<>
 	inline const char* Resources::getResourcePathById<Image>(size_t id)
 	{
-		return m_Resources[WRT_IMAGE][id]->filePath.c_str();
+		return getPathById(WRT_IMAGE, id);
 	}
 }

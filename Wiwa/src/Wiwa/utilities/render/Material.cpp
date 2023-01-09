@@ -278,7 +278,7 @@ namespace Wiwa {
 				break;
 			case Wiwa::UniformType::Sampler2D:
 			{
-				size_t id = uniform.getPtrData<glm::ivec2>()->y;
+				size_t id = uniform.getData<glm::ivec2>().y;
 				std::string string = Resources::getResourcePathById<Image>(id);
 
 				uniforms.AddMember(name, string.c_str());

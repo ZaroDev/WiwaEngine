@@ -16,6 +16,10 @@ namespace Wiwa {
 		if (!std::filesystem::exists(filePath))
 			return;
 		JSONDocument doc;
+		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char buff[64];
+		ctime_s(buff, sizeof(buff), &time);
+		doc.AddMember("timeCreated", time);
 		doc.save_file(filePath.string().c_str());
 	}
 	template<>
@@ -96,6 +100,6 @@ namespace Wiwa {
 	template<>
 	inline const char* Resources::getResourcePathById<Shader>(size_t id)
 	{
-		return m_Resources[WRT_SHADER][id]->filePath.c_str();
+		return getPathById(WRT_SHADER, id);
 	}
 }

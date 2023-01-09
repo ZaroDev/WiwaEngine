@@ -323,6 +323,7 @@ namespace Wiwa {
 				return &m_Uniforms[i];
 			}
 		}
+		return nullptr;
 	}
 
 	void Shader::Save()

@@ -16,6 +16,7 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
+#include <time.h>
 
 typedef size_t ResourceId;
 
@@ -91,6 +92,13 @@ namespace Wiwa {
 		static std::string _assetToLibPath(std::string path);
 		static bool _preparePath(std::string path);
 
+		inline static const char* getPathById(ResourceType type, size_t id)
+		{
+			if (id >= m_Resources[type].size())
+				return "";
+			
+			return m_Resources[type][id]->filePath.c_str();
+		}
 		// Implementations
 		static void _import_image_impl(const char* origin, const char* destination);
 		static void _import_model_impl(const char* origin, const char* destination, ModelSettings* settings);
@@ -100,6 +108,7 @@ namespace Wiwa {
 		static void UnloadSceneResources();
 
 		template<class T> static const char* getResourcePathById(size_t id);
+
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static ResourceId LoadNative(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);

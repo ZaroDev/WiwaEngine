@@ -47,6 +47,6 @@ namespace Wiwa {
 	template<>
 	inline const char* Resources::getResourcePathById<Material>(size_t id)
 	{
-		return m_Resources[WRT_MATERIAL][id]->filePath.c_str();
+		return getPathById(WRT_MATERIAL, id);
 	}
 }
