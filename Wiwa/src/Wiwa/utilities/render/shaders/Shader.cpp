@@ -263,10 +263,22 @@ namespace Wiwa {
 
 	void Shader::addUniform(const char* name, const UniformType type)
 	{
+		UniformField* uniform = getUniform(name);
+		//Checking if we are
+		if (uniform)
+		{
+			if (uniform->type == type)
+				return;
+			
+			uniform->type = type;
+			uniform->location = glGetUniformLocation(m_IDprogram, name);
+			return;
+		}
 		UniformField field;
 		field.name = name;
 		field.type = type;
 		field.location = glGetUniformLocation(m_IDprogram, name);
+
 
 		m_Uniforms.emplace_back(field);
 	}
