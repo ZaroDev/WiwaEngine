@@ -18,6 +18,9 @@ namespace Wiwa {
 		virtual void OnInit(EntityId eid) {}
 
 		virtual void OnUpdate(EntityId eid) {}
+
+		virtual void OnEntityAdded(EntityId entity) {}
+		virtual void OnEntityRemoved(EntityId entity) {}
 	public:
 		System();
 		virtual ~System(); // Virtual destructor, so that child destructor is called

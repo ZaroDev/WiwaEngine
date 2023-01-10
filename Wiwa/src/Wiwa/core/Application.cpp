@@ -33,6 +33,7 @@
 
 #include <Wiwa/scripting/ScriptEngine.h>
 #include <Wiwa/core/Resources.h>
+#include <Wiwa/audio/Audio.h>
 
 USE_REFLECTION;
 
@@ -81,8 +82,14 @@ namespace Wiwa {
 		PushOverlay(m_ImGuiLayer);
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+
+		bool res = Audio::Init();
+
+		if (!res) {
+			WI_CORE_ERROR("Audio engine error: [{}]", Audio::GetLastError());
+		}
+
 		ScriptEngine::Init();
-		
 	}
 
 	void Application::SetHwInfo()
@@ -115,7 +122,7 @@ namespace Wiwa {
 	{
 		SceneManager::CleanUp();
 		ScriptEngine::ShutDown();
-		
+		Audio::Terminate();
 	}
 
 	void Application::Run()

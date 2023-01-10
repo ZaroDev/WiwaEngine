@@ -31,16 +31,20 @@ namespace Wiwa {
 	{
 		size_t index = getEntityPos(entity);
 
-		if (index == m_RegisteredEntities.size())
+		if (index == m_RegisteredEntities.size()) {
 			m_RegisteredEntities.emplace_back(entity);
+			OnEntityAdded(entity);
+		}
 	}
 
 	void System::RemoveEntity(EntityId eid)
 	{
 		size_t index = getEntityPos(eid);
 
-		if(index < m_RegisteredEntities.size())
+		if (index < m_RegisteredEntities.size()) {
 			m_RegisteredEntities.erase(m_RegisteredEntities.begin() + index);
+			OnEntityRemoved(eid);
+		}
 	}
 
 	void System::Reserve(size_t amount)
