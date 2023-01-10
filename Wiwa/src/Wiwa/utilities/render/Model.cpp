@@ -94,7 +94,7 @@ namespace Wiwa {
 
 					id = Resources::Load<Shader>("resources/shaders/model_texture");
 					material.setShader(Resources::GetResourceById<Shader>(id), "resources/shaders/model_texture");
-					uint32_t imgId = Resources::Load<Image>(texture_path.string().c_str());
+					size_t imgId = Resources::Load<Image>(texture_path.string().c_str());
 					Image* img = Resources::GetResourceById<Image>(imgId);
 					material.SetUniformData("u_Tex0", glm::ivec2(img->GetTextureId(), imgId));
 				}
