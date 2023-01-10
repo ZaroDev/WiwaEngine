@@ -18,8 +18,7 @@ project "WiwaEditor"
 		"%{IncludeDirs.GLM}",
 		"%{IncludeDirs.Wiwa}",
 		"%{IncludeDirs.Optick}",
-		"%{IncludeDirs.ImGuizmo}",
-		"%{IncludeDirs.MathGeoLib}"
+		"%{IncludeDirs.ImGuizmo}"
 	}
 
 	links
@@ -27,8 +26,7 @@ project "WiwaEditor"
 		"Wiwa",
 		"ImGui",
 		"Optick",
-		"ImGuizmo",
-		"MathGeoLib"
+		"ImGuizmo"
 	}
 
 	debugdir "%{wks.location}/Editor"

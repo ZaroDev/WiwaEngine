@@ -34,8 +34,7 @@ project "Wiwa"
 		"%{IncludeDirs.XML}",
 		"%{IncludeDirs.Optick}",
 		"%{IncludeDirs.assimp}",
-		"%{IncludeDirs.ImGuizmo}",
-		"%{IncludeDirs.MathGeoLib}"
+		"%{IncludeDirs.ImGuizmo}"
 	}
 
 	links
@@ -47,7 +46,6 @@ project "Wiwa"
 		"%{wks.location}/Wiwa/vendor/Glew/lib/glew32.lib",
 		"Optick",
 		"ImGuizmo",
-		"MathGeoLib",
 		"%{Library.mono}",
 		"%{wks.location}/Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
 	}

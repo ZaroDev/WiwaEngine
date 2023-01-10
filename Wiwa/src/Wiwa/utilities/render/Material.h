@@ -48,7 +48,7 @@ namespace Wiwa {
 					return i;
 				}
 			}
-			WI_CORE_ERROR("Can't find uniform with name {0}", name);
+			WI_CORE_ERROR("Can't find uniform with name {0} in material", name);
 			return -1;
 		}
 	private:

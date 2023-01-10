@@ -29,6 +29,20 @@ namespace Wiwa {
 		WI_CORE_INFO("Renderer3D initialized");
 		SetOption(Options::DEPTH_TEST);
 		SetOption(Options::CULL_FACE);
+
+		//Init default shaders with uniforms
+		ResourceId textShaderId = Wiwa::Resources::Load<Shader>("resources/shaders/model_texture");
+		Shader* textShader = Wiwa::Resources::GetResourceById<Shader>(textShaderId);
+		textShader->addUniform("u_Tex0", UniformType::Sampler2D);
+		textShader->Compile("resources/shaders/model_texture");
+		Wiwa::Resources::Import<Shader>("resources/shaders/model_texture", textShader);
+
+		ResourceId colorShaderId = Wiwa::Resources::Load<Shader>("resources/shaders/model_color");
+		Shader* colorShader = Wiwa::Resources::GetResourceById<Shader>(colorShaderId);
+		colorShader->addUniform("u_Color", UniformType::fVec4);
+		colorShader->Compile("resources/shaders/model_texture");
+		Wiwa::Resources::Import<Shader>("resources/shaders/model_color", colorShader);
+
 		return true;
 	}
 

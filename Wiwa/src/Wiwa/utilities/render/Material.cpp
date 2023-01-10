@@ -359,7 +359,6 @@ namespace Wiwa {
 				return &m_Uniforms[i];
 			}
 		}
-		WI_CORE_ERROR("Can't find uniform with name {0}", name);
 		return nullptr;
 	}
 

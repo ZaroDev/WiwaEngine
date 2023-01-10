@@ -67,7 +67,7 @@ void MaterialPanel::Draw()
 
 		ImGui::SameLine();
         if (ImGui::Button("Save"))
-            Wiwa::Material::SaveMaterial(s_Path.string().c_str(), m_Material);
+            m_Material->Save(s_Path.string().c_str());
 
     }
     else
@@ -185,7 +185,7 @@ void MaterialPanel::RenderUniform(Wiwa::Uniform* uniform)
 				{
 					if (ImageExtensionComp(p)) 
 					{
-						size_t id = Wiwa::Resources::Load<Wiwa::Image>(p.string().c_str());
+						uint32_t id = Wiwa::Resources::Load<Wiwa::Image>(p.string().c_str());
 						Wiwa::Image* img = Wiwa::Resources::GetResourceById<Wiwa::Image>(id);
 						uniform->setData(glm::ivec2(img->GetTextureId(), id), uniform->getType());
 					}

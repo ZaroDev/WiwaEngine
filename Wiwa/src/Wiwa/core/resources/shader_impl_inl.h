@@ -35,6 +35,7 @@ namespace Wiwa {
 			file_path += file;
 			file_path += ".wiasset";
 			shader->LoadFromWiasset(file_path.c_str());
+			shader->Compile(file);
 			PushResource(WRT_SHADER, file, shader);
 
 			resourceId = size;
