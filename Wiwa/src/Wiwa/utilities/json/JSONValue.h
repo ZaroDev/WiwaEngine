@@ -19,14 +19,14 @@ namespace Wiwa {
 		template<class T> T get();
 
 		// Get value as
-		const char* as_string() { return get<const char*>(); }
-		int as_int() { return get<int>(); }
-		unsigned int as_uint() { return get<unsigned int>(); }
-		float as_float() { return get<float>(); }
-		bool as_bool() { return get<bool>(); }
-		double as_double() { return get<double>(); }
-		int64_t as_int64() { return get<int64_t>(); }
-		uint64_t as_uint64() { return get<uint64_t>(); }
+		const char* as_string() { return m_Value->Get<const char*>(); }
+		int as_int() { return m_Value->Get<int>(); }
+		unsigned int as_uint() { return m_Value->Get<unsigned int>(); }
+		float as_float() { return m_Value->Get<float>(); }
+		bool as_bool() { return m_Value->Get<bool>(); }
+		double as_double() { return m_Value->Get<double>(); }
+		int64_t as_int64() { return m_Value->Get<int64_t>(); }
+		uint64_t as_uint64() { return m_Value->Get<uint64_t>(); }
 
 		// Cast operator
 		template<class T> operator T();
