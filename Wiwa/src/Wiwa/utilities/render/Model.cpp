@@ -91,7 +91,7 @@ namespace Wiwa {
 					std::filesystem::current_path(curr_path);
 
 					texture_path = std::filesystem::relative(texture_path);
-
+					
 					id = Resources::Load<Shader>("resources/shaders/model_texture");
 					material.setShader(Resources::GetResourceById<Shader>(id), "resources/shaders/model_texture");
 					uint32_t imgId = Resources::Load<Image>(texture_path.string().c_str());

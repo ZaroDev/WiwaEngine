@@ -177,6 +177,7 @@ namespace Wiwa {
 	void Material::Save(const char* path)
 	{
         Wiwa::JSONDocument doc;
+		Wiwa::Resources::standarizePath(m_ShaderPath);
 		doc.AddMember("shader", m_ShaderPath.c_str());
         Wiwa::JSONValue uniforms = doc.AddMemberObject("uniforms");
 		for (Wiwa::Uniform uniform : m_Uniforms)
@@ -283,7 +284,7 @@ namespace Wiwa {
 			{
 				size_t id = uniform.getData<glm::ivec2>().y;
 				std::string string = Resources::getResourcePathById<Image>(id);
-
+				Wiwa::Resources::standarizePath(string);
 				uniforms.AddMember(name, string.c_str());
 			}break;
 			default:

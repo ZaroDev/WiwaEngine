@@ -97,33 +97,33 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 }
 void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 {
+	std::string p = path.path().string().c_str();
+	Wiwa::Resources::standarizePath(p);
 	if (ImageExtensionComp(path.path()))
 	{
 		Wiwa::ImageSettings settings;
-		Wiwa::Resources::LoadMeta<Wiwa::Image>(path.path().string().c_str(), &settings);
-		Wiwa::Resources::CreateMeta<Wiwa::Image>(path.path().string().c_str(), &settings);
-		Wiwa::Resources::Import<Wiwa::Image>(path.path().string().c_str());
+		Wiwa::Resources::LoadMeta<Wiwa::Image>(p.c_str(), &settings);
+		Wiwa::Resources::CreateMeta<Wiwa::Image>(p.c_str(), &settings);
+		Wiwa::Resources::Import<Wiwa::Image>(p.c_str());
 	}
 	else if (ModelExtensionComp(path.path()))
 	{
 		Wiwa::ModelSettings settings;
-		Wiwa::Resources::LoadMeta<Wiwa::Model>(path.path().string().c_str(), &settings);
-		Wiwa::Resources::CreateMeta<Wiwa::Model>(path.path().string().c_str(), &settings);
-		Wiwa::Resources::Import<Wiwa::Model>(path.path().string().c_str(), &settings);
+		Wiwa::Resources::LoadMeta<Wiwa::Model>(p.c_str(), &settings);
+		Wiwa::Resources::CreateMeta<Wiwa::Model>(p.c_str(), &settings);
+		Wiwa::Resources::Import<Wiwa::Model>(p.c_str(), &settings);
 	}
 	else if (ShaderExtensionComp(path.path()))
 	{
-		std::string p = path.path().string();
 		p = p.substr(0, p.size() - 3);
-		Wiwa::Resources::standarizePath(p);
 		Wiwa::ResourceId id = Wiwa::Resources::Load<Wiwa::Shader>(p.c_str());
 		Wiwa::Resources::CreateMeta<Wiwa::Shader>(p.c_str());
 		Wiwa::Resources::Import<Wiwa::Shader>(p.c_str(), Wiwa::Resources::GetResourceById<Wiwa::Shader>(id));
 	}
 	else if (MaterialExtensionComp(path.path()))
 	{
-		Wiwa::Resources::CreateMeta<Wiwa::Material>(path.path().string().c_str());
-		Wiwa::Resources::Import<Wiwa::Material>(path.path().string().c_str());
+		Wiwa::Resources::CreateMeta<Wiwa::Material>(p.c_str());
+		Wiwa::Resources::Import<Wiwa::Material>(p.c_str());
 	}
 }
 void AssetsPanel::Draw()

@@ -82,9 +82,18 @@ namespace Wiwa {
 
 		if (position == size) {
 			Image* image = new Image();
-			image->Init(file);
+			/*std::string file_path = "library/";
+			file_path += file;
+			std::filesystem::path path = file_path;
+			path.replace_extension(".dds");
+			file_path = path.string().c_str();
+			standarizePath(file_path);
+			image->InitDDS(file_path.c_str());*/
+			std::string path = file;
+			standarizePath(path);
+			image->Init(path.c_str());
 
-			PushResource(WRT_IMAGE, file, image);
+			PushResource(WRT_IMAGE, path.c_str(), image);
 
 			resourceId = size;
 		}
