@@ -3,12 +3,12 @@
 namespace Wiwa {
 	//--SPECIALIZATION FOR MATERIAL
 	template<>
-	inline void Resources::LoadMeta<Material>(const char* file, ModelSettings* settings)
+	inline void Resources::LoadMeta<Material>(const char* file)
 	{
 
 	}
 	template<>
-	inline void Resources::CreateMeta<Material>(const char* file, ImageSettings* settings)
+	inline void Resources::CreateMeta<Material>(const char* file)
 	{
 
 	}
@@ -21,6 +21,9 @@ namespace Wiwa {
 		ResourceId resourceId;
 
 		if (position == size) {
+			std::string file_path = "library/";
+			file_path += file;
+			standarizePath(file_path);
 			Material* material = new Material(file);
 
 			PushResource(WRT_MATERIAL, file, material);
@@ -43,6 +46,19 @@ namespace Wiwa {
 		}
 
 		return material;
+	}
+	template<>
+	inline void Resources::Import<Material>(const char* file)
+	{
+		std::string file_path = "library/";
+		file_path += file;
+		std::ifstream source(file, std::ios::binary);
+		std::ofstream dest(file_path.c_str(), std::ios::binary);
+
+		dest << source.rdbuf();
+
+		source.close();
+		dest.close();
 	}
 	template<>
 	inline const char* Resources::getResourcePathById<Material>(size_t id)

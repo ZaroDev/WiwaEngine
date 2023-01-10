@@ -66,6 +66,7 @@ namespace Wiwa {
 			std::string file_path = "library/";
 			file_path += file;
 			file_path += ".wimodel";
+			standarizePath(file_path);
 			model->LoadWiMesh(file_path.c_str());
 
 			PushResource(WRT_MODEL, file, model);

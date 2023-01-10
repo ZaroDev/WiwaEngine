@@ -94,8 +94,6 @@ namespace Wiwa {
 
 		m_AllOk = true;
 		m_Path = filename;
-
-		
 	}
 
 	void Shader::CompileFiles(const char* vertexShaderSource, const char* fragmentShaderSource, bool hasGS, std::string* geometryShaderSourceStr, bool& retflag)
@@ -193,6 +191,7 @@ namespace Wiwa {
 
 	void Shader::LoadFromWiasset(const char* filename)
 	{
+
 		JSONDocument shaderFile;
 
 		if (!shaderFile.load_file(filename))
@@ -261,6 +260,47 @@ namespace Wiwa {
 		return new std::string(buffer.str());
 	}
 
+	unsigned int Shader::getUniformLocation(const char* uniform_name)
+	{
+		return glGetUniformLocation(m_IDprogram, uniform_name);
+	}
+
+	void Shader::setUniformInt(unsigned int uniform_id, int value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform1i(uniform_id, value);
+	}
+
+	void Shader::setUniformUInt(unsigned int uniform_id, unsigned int value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform1ui(uniform_id, value);
+	}
+
+	void Shader::setUniformMat4(unsigned int uniform_id, glm::mat4 value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void Shader::setUniformFloat(unsigned int uniform_id, float value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform1f(uniform_id, value);
+	}
+
+	void Shader::setUniformVec3(unsigned int uniform_id, glm::vec3 value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform3f(uniform_id, value.x, value.y, value.z);
+	}
+
+	void Shader::setUniformVec4(unsigned int uniform_id, glm::vec4 value)
+	{
+		glUseProgram(m_IDprogram);
+		glUniform4f(uniform_id, value.r, value.g, value.b, value.a);
+	}
+
 	void Shader::addUniform(const char* name, const UniformType type)
 	{
 		UniformField* uniform = getUniform(name);
@@ -311,7 +351,7 @@ namespace Wiwa {
 		UniformField* uniform = getUniform(oldName);
 		if (!uniform)
 		{
-			WI_CORE_ERROR("Uniform name can't be find");
+			WI_CORE_ERROR("Uniform name can't be find in shader");
 			return;
 		}
 		uniform->name = newName;

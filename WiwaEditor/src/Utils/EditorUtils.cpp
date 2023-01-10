@@ -313,6 +313,29 @@ bool ModelExtensionComp(const std::filesystem::path file)
 
 	return false;
 }
+bool ShaderExtensionComp(const std::filesystem::path file)
+{
+	std::string path = file.string();
+	Wiwa::Resources::_toLower(path);
+	std::filesystem::path formatedFile = path.c_str();
+
+	if (formatedFile.extension() == ".vs")
+		return true;
+
+	return false;
+}
+
+bool MaterialExtensionComp(const std::filesystem::path file)
+{
+	std::string path = file.string();
+	Wiwa::Resources::_toLower(path);
+	std::filesystem::path formatedFile = path.c_str();
+
+	if (formatedFile.extension() == ".wimaterial")
+		return true;
+
+	return false;
+}
 
 void DrawVec3Control(const std::string& label, float* values, float resetValue, float columnWidth)
 {

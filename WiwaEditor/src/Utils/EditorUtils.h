@@ -52,3 +52,5 @@ void DrawRect2Control(const char* label, unsigned char* data, const Field field,
 
 bool ImageExtensionComp(const std::filesystem::path file);
 bool ModelExtensionComp(const std::filesystem::path file);
+bool ShaderExtensionComp(const std::filesystem::path file);
+bool MaterialExtensionComp(const std::filesystem::path file);

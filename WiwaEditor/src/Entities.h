@@ -61,8 +61,8 @@ inline void CreateCube()
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "models/cube");
-	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	sprintf_s(mesh.mesh_path, "%s", "models/cube");
+	sprintf_s(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("cube");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	mesh.modelIndex = 0;
@@ -88,8 +88,8 @@ inline void CreatePlane()
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "plane");
-	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	sprintf_s(mesh.mesh_path, "%s", "plane");
+	sprintf_s(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	mesh.modelIndex = 0;
@@ -115,8 +115,8 @@ inline void CreatePyramid()
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "models/pyramid");
-	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	sprintf_s(mesh.mesh_path, "%s", "models/pyramid");
+	sprintf_s(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	mesh.modelIndex = 0;
@@ -142,8 +142,8 @@ inline void CreateSphere()
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", "models/sphere");
-	sprintf(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
+	sprintf_s(mesh.mesh_path, "%s", "models/sphere");
+	sprintf_s(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 	mesh.modelIndex = 0;
@@ -157,7 +157,7 @@ inline void CreateEntityWithModelHierarchy(const char* model_path) {
 
 	// Prepare mesh data
 	Wiwa::Mesh mesh;
-	sprintf(mesh.mesh_path, "%s", model_path);
+	sprintf_s(mesh.mesh_path, "%s", model_path);
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.drawChildren = false;
 
@@ -200,7 +200,7 @@ inline void CreateEntityWithModelHierarchy(const char* model_path) {
 			
 			Wiwa::Model* c_model = model->getModelAt(mesh.modelIndex);
 			std::string mat_file = model->getMaterialAt(c_model->getMaterialIndex());
-			sprintf(mesh.mat_path, "%s", mat_file.c_str());
+			sprintf_s(mesh.mat_path, "%s", mat_file.c_str());
 
 			mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);
 

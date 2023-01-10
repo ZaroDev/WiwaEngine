@@ -24,6 +24,7 @@ namespace Wiwa {
 	}
 	template<>
 	inline ResourceId Resources::Load<Shader>(const char* file) {
+
 		ResourceId position = getResourcePosition(WRT_SHADER, file);
 		size_t size = m_Resources[WRT_SHADER].size();
 
@@ -34,6 +35,7 @@ namespace Wiwa {
 			std::string file_path = "library/";
 			file_path += file;
 			file_path += ".wiasset";
+			standarizePath(file_path);
 			shader->LoadFromWiasset(file_path.c_str());
 			//shader->Compile(file);
 			PushResource(WRT_SHADER, file, shader);
@@ -46,6 +48,8 @@ namespace Wiwa {
 
 		return resourceId;
 	}
+
+
 	template<>
 	inline Shader* Resources::GetResourceById<Shader>(ResourceId id) {
 		Shader* resource = NULL;

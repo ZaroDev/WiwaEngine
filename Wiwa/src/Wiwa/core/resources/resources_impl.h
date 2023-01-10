@@ -91,7 +91,6 @@ namespace Wiwa {
 		// Resource path for importing
 		static std::string _assetToLibPath(std::string path);
 		static bool _preparePath(std::string path);
-
 		inline static const char* getPathById(ResourceType type, size_t id)
 		{
 			if (id >= m_Resources[type].size())
@@ -103,6 +102,15 @@ namespace Wiwa {
 		static void _import_image_impl(const char* origin, const char* destination);
 		static void _import_model_impl(const char* origin, const char* destination, ModelSettings* settings);
 	public:
+		static inline void standarizePath(std::string& file_path)
+		{
+			size_t index = 0;
+
+			while ((index = file_path.find('\\', index)) != std::string::npos) {
+				file_path.replace(index, 1, "/");
+				index++;
+			}
+		}
 		static void _toLower(std::string& path);
 		inline static std::vector<Resource*>& GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
 		static void UnloadSceneResources();
@@ -127,7 +135,7 @@ namespace Wiwa {
 
 		static std::string SetLibraryPath(const char* file)
 		{
-			std::string path = "Library/";
+			std::string path = "library/";
 			path += file;
 			size_t index = path.rfind('/');
 			path = path.substr(0, index);

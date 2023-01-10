@@ -46,8 +46,19 @@ namespace Wiwa {
 		bool getAllOk() { return m_AllOk; }
 		std::string* getFileData(const char* file);
 
-		inline std::vector<UniformField>& getUniforms() { return m_Uniforms; }
+		//Old shader functions required for 2D renderer
+		unsigned int getUniformLocation(const char* uniform_name);
 
+		template<class T> void setUniform(unsigned int uniform_id, T value);
+		void setUniformInt(unsigned int uniform_id, int value);
+		void setUniformUInt(unsigned int uniform_id, unsigned int value);
+		void setUniformMat4(unsigned int uniform_id, glm::mat4 value);
+		void setUniformFloat(unsigned int uniform_id, float value);
+		void setUniformVec3(unsigned int uniform_id, glm::vec3 value);
+		void setUniformVec4(unsigned int uniform_id, glm::vec4 value);
+
+		inline std::vector<UniformField>& getUniforms() { return m_Uniforms; }
+		// Dynamic shader functions
 		void addUniform(const char* name, const UniformType type);
 		void deleteUniform(const char* name);
 		void setUniformType(const char* name, const UniformType type);
@@ -92,4 +103,41 @@ namespace Wiwa {
 		uint32_t m_View;
 		uint32_t m_Proj;
 	};
+
+	template<>
+	inline void Shader::setUniform<int>(unsigned int uniform_id, int value) {
+		setUniformInt(uniform_id, value);
+	}
+	template<>
+	inline void Shader::setUniform<unsigned int>(unsigned int uniform_id, unsigned int value) {
+		setUniformUInt(uniform_id, value);
+	}
+	template<>
+	inline void Shader::setUniform<glm::mat4>(unsigned int uniform_id, glm::mat4 value) {
+		setUniformMat4(uniform_id, value);
+	}
+
+	template<>
+	inline void Shader::setUniform<float>(unsigned int uniform_id, float value) {
+		setUniformFloat(uniform_id, value);
+	}
+	template<>
+	inline void Shader::setUniform<glm::vec2>(unsigned int uniform_id, glm::vec2 value) {
+
+	}
+	template<>
+	inline void Shader::setUniform<glm::vec3>(unsigned int uniform_id, glm::vec3 value) {
+		setUniformVec3(uniform_id, value);
+	}
+
+	template<>
+	inline void Shader::setUniform<glm::vec4>(unsigned int uniform_id, glm::vec4 value) {
+		setUniformVec4(uniform_id, value);
+	}
+
+	template<class T>
+	inline void Shader::setUniform(unsigned int uniform_id, T value)
+	{
+		WI_CORE_ERROR("Setting uniform for a non existant specialization.");
+	}
 }

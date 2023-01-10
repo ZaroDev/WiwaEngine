@@ -42,7 +42,10 @@ namespace Wiwa {
 			m_ShaderPath = matFile["shader"].get<const char*>();
 		
 		size_t shaderId = Resources::Load<Shader>(m_ShaderPath.c_str());
-		setShader(Resources::GetResourceById<Shader>(shaderId), m_ShaderPath.c_str());
+		Shader* shader = Resources::GetResourceById<Shader>(shaderId);
+
+
+		setShader(shader, m_ShaderPath.c_str());
 
 		if (matFile.HasMember("uniforms"))
 		{
