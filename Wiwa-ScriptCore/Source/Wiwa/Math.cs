@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace Wiwa
 {
     public static class Math
