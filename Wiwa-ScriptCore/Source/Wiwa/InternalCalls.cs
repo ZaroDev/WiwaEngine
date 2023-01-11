@@ -13,7 +13,7 @@ namespace Wiwa
         #endregion
         #region ECS
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static byte[] GetComponent(EntityId id, System.Type type);
+        internal extern static ref T GetComponent<T>(EntityId id, System.Type type);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static byte[] AddComponent(EntityId id, System.Type type, byte[] data);
         #endregion
