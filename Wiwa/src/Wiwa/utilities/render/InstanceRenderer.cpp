@@ -172,10 +172,10 @@ namespace Wiwa {
 		size_t texSize = m_Textures.size();
 
 
-		WI_ASSERT_MSG(texSize > MAX_INSTANCE_TEXTURES)
+		
 
 
-			int index = static_cast<int>(texSize);
+		int index = static_cast<int>(texSize);
 
 		for (size_t i = 0; i < texSize; i++) {
 			if (m_Textures[i] == texture) {

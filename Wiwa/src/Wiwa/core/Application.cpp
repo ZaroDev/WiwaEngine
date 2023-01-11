@@ -18,6 +18,7 @@
 #define GL_GPU_MEM_INFO_CURRENT_AVAILABLE_MEM_NVX 0x9049
 
 #include "Renderer3D.h"
+#include "Renderer2D.h"
 
 #include <Wiwa/ecs/systems/SpriteRenderer.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
@@ -76,6 +77,9 @@ namespace Wiwa {
 		m_Renderer3D = new Renderer3D();
 		m_Renderer3D->Init();
 
+		m_Renderer2D = new Renderer2D();
+		m_Renderer2D->Init();
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
@@ -130,6 +134,8 @@ namespace Wiwa {
 			SceneManager::Update();
 			
 			m_Renderer3D->Update();
+
+			m_Renderer2D->Update();
 
 			// Update time
 			Time::Update();
