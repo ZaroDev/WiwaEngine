@@ -40,6 +40,15 @@ namespace Wiwa {
 		glm::mat4 m_View{ 0.0f };
 		Camera* m_ActiveCamera;
 
+
+		ResourceId m_BBDisplayShaderId;
+		Shader* m_BBDisplayShader;
+		DefaultUnlitUniforms m_BBDSUniforms;
+
+		ResourceId m_NormalDisplayShaderId;
+		Shader* m_NormalDisplayShader;
+		DefaultUnlitUniforms m_NDSUniforms;
+
 	public:
 		Renderer3D();
 		~Renderer3D();

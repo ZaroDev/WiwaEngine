@@ -61,7 +61,6 @@ inline void CreateCube()
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	Wiwa::Mesh mesh;
-	sprintf_s(mesh.mesh_path, "%s", "models/cube");
 	sprintf_s(mesh.mat_path, "%s", "resources/materials/default_material.wimaterial");
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>("cube");
 	mesh.materialId = Wiwa::Resources::Load<Wiwa::Material>(mesh.mat_path);

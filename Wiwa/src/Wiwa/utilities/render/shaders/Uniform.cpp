@@ -1,6 +1,6 @@
 #include "wipch.h"
 #include "Uniform.h"
-
+#include <Wiwa/utilities/time/Time.h>
 #include <glew.h>
 
 #include <glm/glm.hpp>
@@ -44,9 +44,11 @@ namespace Wiwa {
 		case Wiwa::UniformType::Mat4:
 			glUniformMatrix4fv(m_UniformID, 1, GL_FALSE, static_cast<float*>(m_Data));
 			break;
-		case Wiwa::UniformType::Sampler:
-			glUniform1ui(m_UniformID, *static_cast<unsigned int*>(m_Data));
-			break;
+		case Wiwa::UniformType::Time:
+		{
+			glUniform1f(m_UniformID, Wiwa::Time::GetRealTimeSinceStartup());
+			setData(Wiwa::Time::GetRealTimeSinceStartup(), m_Type);
+		}break;
 		case Wiwa::UniformType::Sampler2D:
 		{
 			glActiveTexture(textureId++);
@@ -91,8 +93,8 @@ namespace Wiwa {
 		case Wiwa::UniformType::Mat4:
 			setData(glm::mat4(), m_Type);
 			break;
-		case Wiwa::UniformType::Sampler:
-			setData(0, m_Type);
+		case Wiwa::UniformType::Time:
+			setData(0.0f, m_Type);
 			break;
 		case Wiwa::UniformType::Sampler2D:
 			setData(glm::ivec2(), m_Type);

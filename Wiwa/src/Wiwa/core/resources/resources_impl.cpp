@@ -93,6 +93,29 @@ namespace Wiwa {
 		}
 	}
 
+	Resources::MetaResult Resources::CheckMeta(const char* filename)
+	{
+		std::filesystem::path metaPath = filename;
+		metaPath.replace_extension(".meta");
+		
+
+		if (!std::filesystem::exists(filename))
+		{
+			std::filesystem::remove(metaPath);
+			return DELETED;
+		}
+
+		JSONDocument metaFile;
+		if (!metaFile.load_file(metaPath.string().c_str()))
+			return NOTFOUND;
+
+		if (metaFile.HasMember("timeCreated"))
+		{
+
+		}
+		return TOUPDATE;
+	}
+
 	void Resources::_import_image_impl(const char* origin, const char* destination)
 	{
 		int w, h, ch;
@@ -118,16 +141,29 @@ namespace Wiwa {
 		delete model;
 	}
 
+	void Resources::SetAssetPath(std::string& path)
+	{
+		_toLower(path);
+
+		size_t a_ind = path.find("library");
+
+		if (a_ind != path.npos) {
+			path.replace(a_ind, 7, "assets");
+		}
+	}
+
 	void Resources::Clear()
 	{
-		/*for (int i = 0; i < RT_LAST; i++) {
-			size_t rsize = mResources[i].size();
+		for (int i = 0; i < WRT_LAST; i++) {
+			size_t rsize = m_Resources[i].size();
 
 			for (size_t j = 0; j < rsize; j++) {
-				delete mResources[i][j]->resource;
-				delete mResources[i][j];
+				delete m_Resources[i][j]->resource;
+				delete m_Resources[i][j];
+				j--;
+				i--;
 			}
-		}*/
+		}
 	}
 
 }

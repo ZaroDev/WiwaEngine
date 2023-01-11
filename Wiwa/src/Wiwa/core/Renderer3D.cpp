@@ -43,6 +43,23 @@ namespace Wiwa {
 		colorShader->addUniform("u_Color", UniformType::fVec4);
 		Wiwa::Resources::Import<Shader>("resources/shaders/model_color", colorShader);
 
+
+		//Normal Display Shader
+		m_NormalDisplayShaderId = Resources::Load<Shader>("resources/shaders/normal_display");
+		m_NormalDisplayShader = Resources::GetResourceById<Shader>(m_NormalDisplayShaderId);
+		m_NormalDisplayShader->Compile("resources/shaders/normal_display");
+
+		m_NDSUniforms.Model = m_NormalDisplayShader->getUniformLocation("u_Model");
+		m_NDSUniforms.View = m_NormalDisplayShader->getUniformLocation("u_View");
+		m_NDSUniforms.Projection = m_NormalDisplayShader->getUniformLocation("u_Projection");
+		//Bounding box
+		m_BBDisplayShaderId = Resources::Load<Shader>("resources/shaders/boundingbox_display");
+		m_BBDisplayShader = Resources::GetResourceById<Shader>(m_BBDisplayShaderId);
+		m_BBDisplayShader->Compile("resources/shaders/boundingbox_display");
+		m_BBDSUniforms.Model = m_BBDisplayShader->getUniformLocation("u_Model");
+		m_BBDSUniforms.View = m_BBDisplayShader->getUniformLocation("u_View");
+		m_BBDSUniforms.Projection = m_BBDisplayShader->getUniformLocation("u_Proj");
+
 		return true;
 	}
 
@@ -70,9 +87,7 @@ namespace Wiwa {
 		model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
 		model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
-
 		material->getShader()->Bind();
-		
 		material->getShader()->SetMVP(model, camera->getView(), camera->getProjection());
 		
 		material->Bind();
@@ -80,6 +95,27 @@ namespace Wiwa {
 		mesh->Render();
 
 		material->UnBind();
+
+
+		if (mesh->showNormals)
+		{
+			m_NormalDisplayShader->Bind();
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
+
+			mesh->Render();
+			m_NormalDisplayShader->UnBind();
+		}
+		if (camera->drawBoundingBoxes)
+		{
+			m_BBDisplayShader->Bind();
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, model);
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
+			mesh->DrawBoudingBox();
+			m_BBDisplayShader->UnBind();
+		}
 		
 		camera->frameBuffer->Unbind();
 	}
@@ -154,7 +190,7 @@ namespace Wiwa {
 		camera->frameBuffer->Bind(false);
 		size_t cameraCount = cameraManager.getCameraSize();
 		std::vector<CameraId>& cameras = cameraManager.getCameras();
-		/*for (size_t i = 0; i < cameraCount; i++)
+		for (size_t i = 0; i < cameraCount; i++)
 		{
 			CameraId cam_id = cameras[i];
 			Camera* cam = cameraManager.getCamera(cam_id);
@@ -175,7 +211,7 @@ namespace Wiwa {
 			cam->DrawFrustrum();
 
 			m_BBDisplayShader->UnBind();
-		}*/
+		}
 		camera->frameBuffer->Unbind();
 	}
 }

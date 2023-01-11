@@ -100,9 +100,9 @@ void EditorLayer::OnAttach()
 	// Test
 	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
 	em.RegisterSystem<Wiwa::MeshRenderer>();
-
 	CreateEntityWithModelHierarchy("models/street2");
-
+	SceneId scene = Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
+	Wiwa::SceneManager::SetScene(scene);
 	/*for (size_t i = 0; i < children_size; i++) {
 		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
 

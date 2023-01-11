@@ -141,19 +141,19 @@ void MaterialPanel::RenderUniform(Wiwa::Uniform* uniform)
 		ImGui::Checkbox(uniform->name.c_str(), uniform->getPtrData<bool>());
 		break;
 	case Wiwa::UniformType::Int:
-		ImGui::InputInt(uniform->name.c_str(), uniform->getPtrData<int>());
+		ImGui::DragInt(uniform->name.c_str(), uniform->getPtrData<int>());
 		break;
 	case Wiwa::UniformType::Uint:
-		ImGui::InputInt(uniform->name.c_str(), uniform->getPtrData<int>());
+		ImGui::DragInt(uniform->name.c_str(), uniform->getPtrData<int>());
 		break;
 	case Wiwa::UniformType::Float:
-		ImGui::InputFloat(uniform->name.c_str(), uniform->getPtrData<float>());
+		ImGui::DragFloat(uniform->name.c_str(), uniform->getPtrData<float>());
 		break;
 	case Wiwa::UniformType::fVec2:
-		ImGui::InputFloat2(uniform->name.c_str(), uniform->getPtrData<float>());
+		ImGui::DragFloat2(uniform->name.c_str(), uniform->getPtrData<float>());
 		break;
 	case Wiwa::UniformType::fVec3:
-		ImGui::InputFloat3(uniform->name.c_str(), uniform->getPtrData<float>());
+		ImGui::DragFloat3(uniform->name.c_str(), uniform->getPtrData<float>());
 		break;
 	case Wiwa::UniformType::fVec4:
 		ImGui::ColorEdit4(uniform->name.c_str(), uniform->getPtrData<float>());
@@ -165,9 +165,12 @@ void MaterialPanel::RenderUniform(Wiwa::Uniform* uniform)
 	case Wiwa::UniformType::Mat4:
 
 		break;
-	case Wiwa::UniformType::Sampler:
-
-		break;
+	case Wiwa::UniformType::Time:
+	{
+		ImGui::Text(uniform->name.c_str());
+		ImGui::SameLine();
+		ImGui::Text("%f", uniform->getPtrData<float>());
+	}break;
 	case Wiwa::UniformType::Sampler2D:
 	{
 		ImGui::Text(uniform->name.c_str());

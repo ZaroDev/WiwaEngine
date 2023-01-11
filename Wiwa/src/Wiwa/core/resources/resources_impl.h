@@ -69,7 +69,13 @@ namespace Wiwa {
 			WRT_MATERIAL,
 			WRT_LAST
 		};
-
+		enum MetaResult
+		{
+			NOTFOUND,
+			DELETED,
+			UPDATED,
+			TOUPDATE
+		};
 		struct Resource {
 			// Path to resource
 			std::string filePath;
@@ -115,6 +121,13 @@ namespace Wiwa {
 		inline static std::vector<Resource*>& GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
 		static void UnloadSceneResources();
 
+		// Returns the state of the meta file
+		// Deleted: the meta file is deleted due to the reference file not existing
+		// Updated: the meta files are up to date
+		// ToUpdate: the meta last updated doesnt equal the file reference
+		// Not found: there's no meta file for the reference
+		static MetaResult CheckMeta(const char* filename);
+
 		template<class T> static const char* getResourcePathById(size_t id);
 
 		template<class T> static ResourceId Load(const char* file);
@@ -133,7 +146,7 @@ namespace Wiwa {
 			outFile.close();
 		}
 
-		static std::string SetLibraryPath(const char* file)
+		inline static std::string SetLibraryPath(const char* file)
 		{
 			std::string path = "library/";
 			path += file;
@@ -150,7 +163,7 @@ namespace Wiwa {
 
 			return path;
 		}
-
+		static void SetAssetPath(std::string& path);
 		inline static std::string* getFileData(const char* file)
 		{
 			std::fstream shaderFile;

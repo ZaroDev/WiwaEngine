@@ -93,6 +93,36 @@ namespace Wiwa {
 		delete geometryShaderSourceStr;
 
 		m_AllOk = true;
+
+		m_Path = filename;
+	}
+
+	void Shader::CompileWishader(const char* filename)
+	{
+		std::string file = filename;
+		file += ".wishader";
+		JSONDocument shaderFile;
+
+		if (!shaderFile.load_file(file.c_str()))
+			return;
+		std::string vertexShader;
+		std::string fragmentShader;
+		std::string geometryShader;
+
+		bool hasGeometry = false;
+
+		if (shaderFile.HasMember("vertex"))
+			vertexShader = shaderFile["vertex"].get<const char*>();
+		if (shaderFile.HasMember("fragment"))
+			fragmentShader = shaderFile["fragment"].get<const char*>();
+		if (shaderFile.HasMember("geometry"))
+			geometryShader = shaderFile["geometry"].get<const char*>();
+
+		if (!geometryShader.empty())
+			hasGeometry = true;
+
+		bool ret = false;
+		CompileFiles(vertexShader.c_str(), fragmentShader.c_str(), hasGeometry, &geometryShader, ret);
 		m_Path = filename;
 	}
 
@@ -385,7 +415,9 @@ namespace Wiwa {
 		{
 			mat->Refresh();
 		}
-		Resources::Import<Shader>(m_Path.c_str(), this);
+		std::string assetPath = m_Path;
+		Resources::SetAssetPath(assetPath);
+		Resources::Import<Shader>(assetPath.c_str(), this);
 	}
 
 }

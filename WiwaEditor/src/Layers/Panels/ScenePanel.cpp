@@ -45,9 +45,10 @@ ScenePanel::ScenePanel(EditorLayer* instance)
     m_Camera = Wiwa::SceneManager::getActiveScene()->GetCameraManager().editorCamera;
    
     // Camera control
-    camSpeed = 0.005f;
-    sensitivity = 0.5f;
-
+    camSpeed = 0.085f;
+    sensitivity = 0.8f;
+    nearPlane = m_Camera->getNear();
+    farPlane = m_Camera->getFar();
     m_ScrollSpeed = 10.0f;
 
     yaw = -90.0f;

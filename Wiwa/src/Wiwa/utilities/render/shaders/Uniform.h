@@ -13,7 +13,7 @@ namespace Wiwa {
 		Mat2,
 		Mat3,
 		Mat4,
-		Sampler,
+		Time,
 		Sampler2D
 	};
 	//struct SamplerData

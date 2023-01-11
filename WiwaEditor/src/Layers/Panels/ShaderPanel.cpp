@@ -90,7 +90,7 @@ void ShaderPanel::Draw()
 				"Mat2",
 				"Mat3",
 				"Mat4",
-				"Sampler",
+				"Time",
 				"Sampler2D"
 			};
 			static const char* currentItem = types[0];
@@ -129,15 +129,12 @@ void ShaderPanel::Draw()
 			ImGui::PopID();
 		}
 		
-		if (ImGui::Button("Save##shader"))
+		if (ImGui::Button("Compile"))
 		{
-			m_Shader->Compile(m_ShaderPath.c_str());
 			m_Shader->Save();
+			m_Shader->CompileWishader(m_ShaderPath.c_str());
 		}
-		if (ButtonCenteredOnLine("Compile"))
-		{
-			m_Shader->Compile(m_ShaderPath.c_str());
-		}
+
 		if (nameToDelete)
 		{
 			m_Shader->deleteUniform(nameToDelete);
@@ -166,7 +163,7 @@ void ShaderPanel::DrawField(Wiwa::UniformField* field, const char*&nameToDelete)
 		"Mat2",
 		"Mat3",
 		"Mat4",
-		"Sampler",
+		"Time",
 		"Sampler2D"
 	};
 	const char* currentItem = types[(int)field->type];
