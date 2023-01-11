@@ -136,7 +136,8 @@ namespace Wiwa {
 		WI_CORE_TRACE("Value of X:{0}, Y:{1}, Z{2}", parameter->x, parameter->y, parameter->z);
 		*outParam = glm::normalize(*parameter);
 	}
-	MonoArray* GetComponent(EntityId id, MonoReflectionType* type)
+
+	/*MonoArray* GetComponent(EntityId id, MonoReflectionType* type)
 	{
 		static std::unordered_map<size_t, Type*> s_ConvertedTypes;
 
@@ -179,7 +180,39 @@ namespace Wiwa {
 		}
 		
 		return byteArray;
+	}*/
+
+	byte* GetComponent(EntityId id, MonoReflectionType* type) {
+		static std::unordered_map<size_t, Type*> s_ConvertedTypes;
+
+		MonoType* compType = mono_reflection_type_get_type(type);
+		std::string typeName = mono_type_get_name(compType);
+		ClearName(typeName);
+		size_t typeHash = FNV1A_HASH(typeName.c_str());
+
+		std::unordered_map<size_t, Type*>::iterator converted_type = s_ConvertedTypes.find(typeHash);
+
+		Type* t = NULL;
+
+		if (converted_type == s_ConvertedTypes.end()) {
+			t = ConvertType(compType);
+
+			s_ConvertedTypes[typeHash] = t;
+		}
+		else {
+			t = converted_type->second;
+		}
+
+		int alingment;
+
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+		ComponentId compID = em.GetComponentId(t);
+		byte* comp = em.GetComponent(id, compID, t->size);
+
+		return comp;
 	}
+
 	bool IsKeyDownIntr(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -191,10 +224,15 @@ namespace Wiwa {
 
 	void ScriptGlue::RegisterFunctions()
 	{
+		// Logging
 		WI_ADD_INTERNAL_CALL(NativeLog);
 		WI_ADD_INTERNAL_CALL(NativeLogVector);
-		WI_ADD_INTERNAL_CALL(GetComponent);
+
+		// Input
 		WI_ADD_INTERNAL_CALL(IsKeyDownIntr);
 		WI_ADD_INTERNAL_CALL(IsMouseButtonPressedIntr);
+
+		// ECS
+		WI_ADD_INTERNAL_CALL(GetComponent);
 	}
 }
