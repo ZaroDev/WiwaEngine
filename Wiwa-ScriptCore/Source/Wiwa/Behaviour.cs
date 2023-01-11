@@ -1,4 +1,9 @@
-﻿namespace Wiwa
+﻿using System;
+using System.Runtime;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+
+namespace Wiwa
 {
     using EntityId = System.UInt64;
 
