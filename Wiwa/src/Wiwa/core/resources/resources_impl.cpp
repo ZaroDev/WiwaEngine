@@ -49,7 +49,14 @@ namespace Wiwa {
 		if (a_ind != path.npos) {
 			path.replace(a_ind, 6, "library");
 		}
-
+		else //resources path impl
+		{
+			if (path.find("library") != path.npos)
+				return path;
+			std::string res_path = "library/";
+			res_path += path;
+			path = res_path;
+		}
 		return path;
 	}
 

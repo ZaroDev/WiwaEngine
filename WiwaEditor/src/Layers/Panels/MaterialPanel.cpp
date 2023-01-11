@@ -28,6 +28,7 @@ void MaterialPanel::Draw()
     
     if (m_Material)
     {
+		ImGui::Text(m_Material->getMaterialPath());
 		std::string str = m_Material->getShader()->getPath();
 		if (ButtonCenteredOnLine("Shaders"))
 			ImGui::OpenPopup("Shaders");
@@ -128,7 +129,7 @@ void MaterialPanel::OnEvent(Wiwa::Event& e)
 bool MaterialPanel::OnMaterialChange(MaterialChangeEvent& e)
 {
     m_Material = Wiwa::Resources::GetResourceById<Wiwa::Material>(e.GetResourceId());
-    
+	s_Path = m_Material->getMaterialPath();
     return true;
 }
 

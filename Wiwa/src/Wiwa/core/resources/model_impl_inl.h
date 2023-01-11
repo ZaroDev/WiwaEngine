@@ -56,20 +56,21 @@ namespace Wiwa {
 	template<>
 	inline ResourceId Resources::Load<Model>(const char* file)
 	{
-		ResourceId position = getResourcePosition(WRT_MODEL, file);
+		std::string file_path = "library/";
+		file_path += file;
+		file_path += ".wimodel";
+		standarizePath(file_path);
+		ResourceId position = getResourcePosition(WRT_MODEL, file_path.c_str());
 		size_t size = m_Resources[WRT_MODEL].size();
 
 		ResourceId resourceId;
 
 		if (position == size) {
 			Model* model = new Model(NULL);
-			std::string file_path = "library/";
-			file_path += file;
-			file_path += ".wimodel";
-			standarizePath(file_path);
+			
 			model->LoadWiMesh(file_path.c_str());
 
-			PushResource(WRT_MODEL, file, model);
+			PushResource(WRT_MODEL, file_path.c_str(), model);
 
 			resourceId = size;
 		}

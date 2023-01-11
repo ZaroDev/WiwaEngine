@@ -191,10 +191,11 @@ namespace Wiwa {
 
 	void Shader::LoadFromWiasset(const char* filename)
 	{
-
+		std::string file_name = filename;
+		file_name += ".wishader";
 		JSONDocument shaderFile;
 
-		if (!shaderFile.load_file(filename))
+		if (!shaderFile.load_file(file_name.c_str()))
 			return;
 		std::string vertexShader;
 		std::string fragmentShader;

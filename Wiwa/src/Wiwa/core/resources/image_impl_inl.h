@@ -74,7 +74,9 @@ namespace Wiwa {
 	template<>
 	inline ResourceId Resources::Load<Image>(const char* file)
 	{
-		ResourceId position = getResourcePosition(WRT_IMAGE, file);
+		std::string path = file;
+		standarizePath(path);
+		ResourceId position = getResourcePosition(WRT_IMAGE, path.c_str());
 		size_t size = m_Resources[WRT_IMAGE].size();
 		ImageSettings* settings = new ImageSettings();
 		//CreateMeta<Image>(file, settings);
@@ -89,8 +91,7 @@ namespace Wiwa {
 			file_path = path.string().c_str();
 			standarizePath(file_path);
 			image->InitDDS(file_path.c_str());*/
-			std::string path = file;
-			standarizePath(path);
+
 			image->Init(path.c_str());
 
 			PushResource(WRT_IMAGE, path.c_str(), image);
@@ -106,16 +107,18 @@ namespace Wiwa {
 	template<>
 	inline ResourceId Resources::LoadNative<Image>(const char* file)
 	{
-		ResourceId position = getResourcePosition(WRT_IMAGE, file);
+		std::string path = file;
+		standarizePath(path);
+		ResourceId position = getResourcePosition(WRT_IMAGE, path.c_str());
 		size_t size = m_Resources[WRT_IMAGE].size();
 		ImageSettings* settings = new ImageSettings();
 		ResourceId resourceId;
 
 		if (position == size) {
 			Image* image = new Image();
-			image->Init(file);
+			image->Init(path.c_str());
 
-			PushResource(WRT_IMAGE, file, image, true);
+			PushResource(WRT_IMAGE, path.c_str(), image, true);
 
 			resourceId = size;
 		}

@@ -293,6 +293,7 @@ namespace Wiwa {
 		}
         doc.save_file(path);
 		m_MaterialPath = path;
+		Resources::Import<Material>(m_MaterialPath.c_str());
 	}
 
 	void Material::SaveMaterial(const char* path, Material* mat)

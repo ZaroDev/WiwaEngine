@@ -15,18 +15,21 @@ namespace Wiwa {
 	template<>
 	inline ResourceId Resources::Load<Material>(const char* file)
 	{
-		ResourceId position = getResourcePosition(WRT_MATERIAL, file);
+		std::filesystem::path library_file = _assetToLibPath(file);
+
+		std::string file_path = library_file.string();
+		standarizePath(file_path);
+
+		ResourceId position = getResourcePosition(WRT_MATERIAL, file_path.c_str());
 		size_t size = m_Resources[WRT_MATERIAL].size();
 
 		ResourceId resourceId;
 
 		if (position == size) {
-			std::string file_path = "library/";
-			file_path += file;
-			standarizePath(file_path);
-			Material* material = new Material(file);
 
-			PushResource(WRT_MATERIAL, file, material);
+			Material* material = new Material(file_path.c_str());
+
+			PushResource(WRT_MATERIAL, file_path.c_str(), material);
 
 			resourceId = size;
 		}
@@ -50,15 +53,21 @@ namespace Wiwa {
 	template<>
 	inline void Resources::Import<Material>(const char* file)
 	{
-		std::string file_path = "library/";
-		file_path += file;
-		std::ifstream source(file, std::ios::binary);
-		std::ofstream dest(file_path.c_str(), std::ios::binary);
+		std::filesystem::path import_file = file;
+		std::filesystem::path export_file = _assetToLibPath(file);
+		export_file.replace_extension(".wimaterial");
 
-		dest << source.rdbuf();
+		std::filesystem::path export_path = export_file.parent_path();
 
-		source.close();
-		dest.close();
+		if (_preparePath(export_path.string())) {
+			std::ifstream source(file, std::ios::binary);
+			std::ofstream dest(export_file.c_str(), std::ios::binary);
+
+			dest << source.rdbuf();
+
+			source.close();
+			dest.close();
+		}
 	}
 	template<>
 	inline const char* Resources::getResourcePathById<Material>(size_t id)
