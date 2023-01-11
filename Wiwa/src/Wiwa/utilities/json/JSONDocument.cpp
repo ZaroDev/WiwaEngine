@@ -38,6 +38,18 @@ namespace Wiwa {
 		return m_Buffer.GetString();
 	}
 
+	JSONValue JSONDocument::AddMemberObject(const char* mem)
+	{
+		rapidjson::Value key(mem, m_Document.GetAllocator());
+		rapidjson::Value v(rapidjson::kObjectType);
+
+		m_Document.AddMember(key, v, m_Document.GetAllocator());
+
+		rapidjson::Value& jval = m_Document[mem];
+
+		return JSONValue(&jval, &m_Document.GetAllocator());
+	}
+
 	bool JSONDocument::HasMember(const char* mem)
 	{
 		return m_Document.HasMember(mem);
@@ -56,7 +68,6 @@ namespace Wiwa {
 		m_Document.ParseStream(is);
 
 		fclose(fp);
-
 		return true;
 	}
 
@@ -80,6 +91,6 @@ namespace Wiwa {
 
 	JSONValue JSONDocument::operator[](const char * key)
 	{
-		return JSONValue(&m_Document[key]);
+		return JSONValue(&m_Document[key], &m_Document.GetAllocator());
 	}
 }

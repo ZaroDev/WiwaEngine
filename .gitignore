@@ -27,11 +27,22 @@
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+*.csproj
+*.csproj.user
+
+# User content
 *.ini
 /Editor/WiwaEditor.exe
 /Editor/Assets
 /Editor/Wiwa.dll
+/Editor/Library
+
+# VA config
+
+/JSON/
+
 # Temp
 bin
 bin-int
 /.vs
+Intermediates/

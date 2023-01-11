@@ -34,7 +34,33 @@ namespace Wiwa
 		EVENT_CLASS_TYPE(WindowClose)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
+	class WindowDropEvent : public Event
+	{
+	public:
+		WindowDropEvent(int count, const char** paths)
+			: m_Count(count), m_Paths(paths){}
+		int GetCount() const { return m_Count; }
+		const char** GetPaths() const { return m_Paths; }
 
+		EVENT_CLASS_TYPE(WindowDrop)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	private:
+		int m_Count;
+		const char** m_Paths;
+	};
+	class SceneChangeEvent : public Event 
+	{
+	public:
+		SceneChangeEvent(size_t id) 
+			: m_Id(id){}
+
+		size_t GetID() const { return m_Id; }
+
+		EVENT_CLASS_TYPE(SceneChange)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	private:
+		size_t m_Id;
+	};
 	class AppTickEvent : public Event
 	{
 	public:
@@ -61,6 +87,7 @@ namespace Wiwa
 		EVENT_CLASS_TYPE(AppRender)
 			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
+	
 
 	class OnLoadEvent : public Event
 	{

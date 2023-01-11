@@ -1,20 +1,18 @@
 #pragma once
 #include <cstdlib>
+#include <Wiwa/core/Core.h>
 
 namespace Wiwa {
 	// Allocation metrics
-	struct AllocationMetrics {
+	struct WI_API AllocationMetrics {
 		static size_t allocation_count;
 		static size_t bytes_allocated;
 	};
-
-	size_t AllocationMetrics::allocation_count = 0;
-	size_t AllocationMetrics::bytes_allocated = 0;
 }
 
 // Allocation overloads
-void* operator new(size_t size) {
-	//size > 0 ? return 0 : 1;
+inline void* operator new(size_t size) {
+	if (size <= 0) return NULL;
 
 	Wiwa::AllocationMetrics::allocation_count++;
 	Wiwa::AllocationMetrics::bytes_allocated += size;
@@ -22,7 +20,7 @@ void* operator new(size_t size) {
 	return malloc(size);
 }
 
-void operator delete(void* memory, size_t size) {
+inline void operator delete(void* memory, size_t size) {
 	Wiwa::AllocationMetrics::allocation_count--;
 	Wiwa::AllocationMetrics::bytes_allocated -= size;
 

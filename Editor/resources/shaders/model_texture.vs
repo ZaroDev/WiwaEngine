@@ -14,10 +14,11 @@ out vec3 color;
 out vec2 texCoord;
 
 
-
+//Necesary to render the model DON'T touch
 uniform mat4 u_Model;
 uniform mat4 u_Proj;
 uniform mat4 u_View;
+
 
 
 

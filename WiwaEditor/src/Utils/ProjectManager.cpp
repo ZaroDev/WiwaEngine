@@ -1,7 +1,8 @@
 #include <wipch.h>
 #include "ProjectManager.h"
 #include <Wiwa/utilities/json/JSONDocument.h>
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
+#include <Wiwa/scene/Scene.h>
 
 namespace Utils
 {
@@ -13,7 +14,13 @@ namespace Utils
 		doc.AddMember("name", Wiwa::Application::Get().GetProjectName());
 		doc.AddMember("version", Wiwa::Application::Get().GetProjectVersion());
 		doc.AddMember("company", Wiwa::Application::Get().GetProjectCompany());
-		doc.AddMember("scenes", NULL);
+		std::vector<Wiwa::Scene*> ref = Wiwa::SceneManager::getScenes();
+		
+		for (int i = 0; i < ref.size(); i++)
+		{
+			std::string name = "scene" + i;
+			//doc.AddMember(name, ref[i].);
+		}
 		std::string path = file;
 		path += ".wiproject";
 		doc.save_file(path.c_str());
@@ -62,7 +69,7 @@ namespace Utils
 	{
 	}
 
-	void ProjectManager::LoadScene()
+	void ProjectManager::LoadScene(const char* file)
 	{
 	}
 }

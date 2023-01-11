@@ -1,7 +1,7 @@
 #include "wipch.h"
 #include "WindowsWindow.h"
 
-#include "Wiwa/Log.h"
+#include <Wiwa/utilities/Log.h>
 
 #include "Wiwa/Events/ApplicationEvent.h"
 #include "Wiwa/Events/MouseEvent.h"
@@ -156,7 +156,12 @@ namespace Wiwa {
 			MouseMovedEvent event((float)xPos, (float)yPos);
 			data.EventCallback(event);
 		});
-
+		glfwSetDropCallback(m_Window, [](GLFWwindow* window, int count, const char** paths) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			
+			WindowDropEvent event(count, paths);
+			data.EventCallback(event);
+		});
 		int w, h, ch;
 
 		unsigned char* image = stbi_load("resources/icons/wiwa_icon.png", &w, &h, &ch, STBI_rgb_alpha);

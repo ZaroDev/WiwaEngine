@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Wiwa/Layer.h>
+#include <Wiwa/core/Layer.h>
 #include <Wiwa/utilities/containers/List.h>
 
 #include "Panels/Panel.h"
-#include <Wiwa/utilities/Action.h>
+#include <Wiwa/utilities/functions/Action.h>
 #include <Wiwa/Events/Event.h>
 
 #include "../Events/PanelEvents.h"
@@ -19,6 +19,14 @@
 #include "Panels/MeshViewPanel.h"
 #include "Panels/MaterialPanel.h"
 #include "Panels/ProjectPanel.h"
+#include "Panels/SystemsPanel.h"
+#include "Panels/GamePanel.h"
+#include "Panels/CamerasPanel.h"
+#include "Panels/ResourcesPanel.h"
+#include "Panels/ImportPanel.h"
+#include "Panels/ShaderPanel.h"
+
+#include <Wiwa/scene/SceneManager.h>
 
 #include <memory>
 
@@ -41,10 +49,15 @@ public:
 	inline int GetGizmo() { return m_GizmoType; }
 private:
 	void MainMenuBar();
+	void OpenCloseAssetsFolder();
 	void SaveProjectAs();
 	void OpenProject();
 	void NewProject();
 	void DockSpace();
+
+	// Scene functions
+	void SaveSceneAs();
+	void OpenScene();
 
 	void LoadPanelConfig();
 	void SavePanelConfig();
@@ -66,10 +79,16 @@ private:
 	std::unique_ptr<Panel>	m_Scene;
 	std::unique_ptr<Panel>	m_Hierarchy;
 	std::unique_ptr<Panel>	m_Assets;
-	std::unique_ptr<Panel>	m_Inspector ;
+	std::unique_ptr<Panel>	m_Inspector;
 	std::unique_ptr<Panel>	m_MeshView;
 	std::unique_ptr<Panel>	m_MaterialEditor;
 	std::unique_ptr<Panel>	m_ProjectPanel;
+	std::unique_ptr<Panel>	m_SystemsPanel;
+	std::unique_ptr<Panel>	m_GamePanel;
+	std::unique_ptr<Panel>	m_CamerasPanel;
+	std::unique_ptr<Panel>	m_ResourcesPanel;
+	std::unique_ptr<Panel>	m_ImportPanel;
+	std::unique_ptr<Panel>	m_ShaderPanel;
 
 	std::vector<Panel*> m_Panels;
 	std::vector<Panel*> m_Settings;
@@ -79,8 +98,12 @@ private:
 	ImTextureID m_InfoIcon = 0;
 	ImTextureID m_WarningIcon = 0;
 	ImTextureID m_ErrorIcon = 0;
+	ImTextureID m_StopIcon = 0;
 
 	Action<Wiwa::Event&> m_EventCallback;
+
+	SceneId m_EditorSceneId;
+	Wiwa::Scene* m_EditorScene;
 
 	int m_GizmoType = -1;
 };

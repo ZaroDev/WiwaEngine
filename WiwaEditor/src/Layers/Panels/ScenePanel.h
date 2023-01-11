@@ -4,10 +4,10 @@
 
 #include <Wiwa/utilities/math/Math.h>
 #include <Wiwa/utilities/render/Camera.h>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <Wiwa/Events/MouseEvent.h>
 #include <Wiwa/ecs/components/Transform3D.h> 
-
+#include <Wiwa/utilities/render/CameraManager.h>
 
 struct ShadingView;
 
@@ -18,17 +18,16 @@ public:
 	virtual ~ScenePanel();
 
 	void Draw() override;
-
+	void Update() override;
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e);
 	bool OnEntityChange(EntityChangeEvent& e);
 private:
-
-
 	std::vector<ShadingView*> m_Shadings;
 
-	Wiwa::Camera m_Camera = {};
-
+	Wiwa::Camera* m_Camera;
+	CameraId m_CameraId = -1;
+	
 	bool m_ShowFPS = true;
 
 	Wiwa::Vector4f m_MeshColor = {};
@@ -52,4 +51,5 @@ private:
 	Wiwa::Transform3D* m_SelectedTransform;
 
 	int m_EntSelected = -1;
+	bool m_LocalMode;
 };

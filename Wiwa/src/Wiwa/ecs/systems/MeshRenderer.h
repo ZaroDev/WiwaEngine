@@ -4,17 +4,17 @@
 #include "../components/Transform3D.h"
 #include "../components/Mesh.h"
 
-#include <Wiwa/Reflection.h>
+#include <Wiwa/utilities/Reflection.h>
 
 namespace Wiwa {
-	class WI_API MeshRenderer : public System<Transform3D, Mesh> {
+	class WI_API MeshRenderer : public System {
 	private:
 
 	public:
 		MeshRenderer();
 		~MeshRenderer();
 
-		void OnUpdate() override;
+		void OnUpdate(EntityId eid) override;
 	};
 }
 

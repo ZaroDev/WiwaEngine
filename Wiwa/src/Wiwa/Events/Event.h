@@ -1,17 +1,18 @@
 #pragma once
 
 #include "wipch.h"
-#include "Wiwa/Core.h"
+#include <Wiwa/core/Core.h>
 
 namespace Wiwa {
 	enum class EventType
 	{
 		None = 0,
-		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
+		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved, WindowDrop,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
-		OnLoad, OnSave, OnMaterialChange, OnEntityChange
+		OnLoad, OnSave, OnMaterialChange, OnEntityChange,
+		SceneChange,
 	};
 
 	enum EventCategory

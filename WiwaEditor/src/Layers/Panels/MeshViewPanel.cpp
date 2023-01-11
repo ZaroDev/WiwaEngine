@@ -7,31 +7,30 @@
 #include <ImGuizmo.h>
 
 #include <Wiwa/utilities/math/Math.h>
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
-#include <Wiwa/Renderer2D.h>
-#include <Wiwa/Renderer3D.h>
+#include <Wiwa/core/Renderer3D.h>
 
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
 #include <Wiwa/ecs/components/Mesh.h>
 
-#include <Wiwa/Input.h>
-#include <Wiwa/KeyCodes.h>
+#include <Wiwa/core/Input.h>
+#include <Wiwa/core/KeyCodes.h>
 
 #include <Wiwa/ecs/EntityManager.h>
-#include <gtc/quaternion.hpp>
+#include <Wiwa/scene/SceneManager.h>
+#include <glm/gtc/quaternion.hpp>
 
 MeshViewPanel::MeshViewPanel(EditorLayer* instance)
     : Panel("Mesh view", instance)
 {
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
+    
 
-    m_FrameBuffer.Init(res.w, res.h);    
-
-    m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
-    m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");
+   /* m_ActiveMesh = new Wiwa::Model("resources/meshes/BakerHouse.fbx");
+    m_ActiveMaterial = new Wiwa::Material("resources/materials/bakerhouse_material.wimaterial");*/
 
     m_MeshPosition = { 0.0f, -1.0f, 0.0f };
     m_MeshRotation = { 0.0f, 0.0f, 0.0f };
@@ -57,11 +56,13 @@ MeshViewPanel::~MeshViewPanel()
 
 void MeshViewPanel::Update()
 {
+    m_Camera.frameBuffer->Clear();
 }
 
 void MeshViewPanel::Draw()
 {
     ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
+
     
     // Calculate viewport aspect ratio
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
@@ -73,7 +74,7 @@ void MeshViewPanel::Draw()
 
     ImVec2 isize = { resolution.w * scale, resolution.h * scale };
 
-    ImTextureID tex = (ImTextureID)(intptr_t)m_FrameBuffer.getColorBufferTexture();
+    ImTextureID tex = (ImTextureID)(intptr_t)m_Camera.frameBuffer->getColorBufferTexture();
 
     // Horizontal-align viewport
     ImVec2 cpos = ImGui::GetCursorPos();
@@ -191,39 +192,10 @@ void MeshViewPanel::Draw()
     }
 
     // Render to frame buffer and imgui viewport
-    Wiwa::Application::Get().GetRenderer3D().RenderMeshMaterial(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_FrameBuffer, &m_Camera);
+    if(m_ActiveMaterial && m_ActiveMesh)
+        Wiwa::Application::Get().GetRenderer3D().RenderMesh(m_ActiveMesh, m_MeshPosition, m_MeshRotation, m_MeshScale, m_ActiveMaterial, true, &m_Camera);
+
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));
-
-    /*ImVec2 rectPos = ImGui::GetItemRectMin();
-    ImVec2 rectSize(rectPos.x + 150.0f, rectPos.y + 50.0f);
-    ImGui::GetWindowDrawList()->AddRectFilled(
-        ImVec2(rectPos.x, rectPos.y),
-        rectSize,
-        IM_COL32(30, 30, 30, 128)
-    );
-
-    ImGui::GetWindowDrawList()->AddRect(
-        ImVec2(rectPos.x, rectPos.y),
-        rectSize,
-        IM_COL32(255, 255, 255, 30)
-    );
-    float y = cpos.y + 5.0f;
-    float x = cpos.x + 5.0f;
-    ImGui::SetCursorPos(ImVec2(x, y));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Camera Pos");
-    ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f x", m_Camera.getPosition().x);
-    ImGui::SameLine();
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f y", m_Camera.getPosition().y);
-    ImGui::SameLine();
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "%.f z", m_Camera.getPosition().z);
-
-    ImGui::SetCursorPos(ImVec2(x, y + 30.0f));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Angles");
-    ImGui::SetCursorPos(ImVec2(x, y + 50.0f));
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Pitch: %.3f ", pitch);
-    ImGui::SameLine();
-    ImGui::TextColored(ImColor(255, 255, 255, 128), "Yaw: %.3f ", yaw);*/
 
     //Drag and drop
     if (ImGui::BeginDragDropTarget())
@@ -266,7 +238,9 @@ void MeshViewPanel::OnEvent(Wiwa::Event& e)
 
 bool MeshViewPanel::EntityChange(EntityChangeEvent& e)
 {
-    Wiwa::Mesh* mesh = Wiwa::Application::Get().GetEntityManager().GetComponent<Wiwa::Mesh>(e.GetResourceId());
+    Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+    Wiwa::Mesh* mesh = em.GetComponent<Wiwa::Mesh>(e.GetResourceId());
     if (!mesh)
         return false;
 

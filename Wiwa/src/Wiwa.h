@@ -3,10 +3,11 @@
 #pragma warning(disable : 4311)
 //For use by Wiwa applications
 
-#include "Wiwa/Application.h"
-#include "Wiwa/Layer.h"
-#include "Wiwa/Log.h"
+#include <Wiwa/core/Application.h>
+#include <Wiwa/core/Layer.h>
+#include <Wiwa/utilities/Log.h>
 #include "Wiwa/ImGui/ImGuiLayer.h"
 // -- Entry Point --------------------
-#include "Wiwa/EntryPoint.h"
+#include <Wiwa/core/KeyCodes.h>
+#include <Wiwa/core/EntryPoint.h>
 // -----------------------------------

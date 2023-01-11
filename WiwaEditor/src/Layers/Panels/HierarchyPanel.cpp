@@ -2,19 +2,20 @@
 
 #include <imgui.h>
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/EntityManager.h>
+#include <Wiwa/scene/SceneManager.h>
 #include "InspectorPanel.h"
 
 #include "../../Entities.h"
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Resources.h>
 
 #include <Wiwa/ecs/systems/SpriteRenderer.h>
 
 #include "ScenePanel.h"
 #include "../EditorLayer.h"
 
-#include "../../Utils/ImGuiWidgets.h"
+#include "../../Utils/EditorUtils.h"
 
 HierarchyPanel::HierarchyPanel(EditorLayer* instance)
 	: Panel("Hierarchy", instance)
@@ -28,58 +29,24 @@ HierarchyPanel::~HierarchyPanel()
 
 void HierarchyPanel::Draw()
 {
-	Wiwa::EntityManager& entityManager = Wiwa::Application::Get().GetEntityManager();
+	Wiwa::EntityManager& entityManager = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
 	ImGui::Begin(name, &active);
 	if (ImGui::BeginPopupContextWindow("Context Menu"))
 	{
-		if (ImGui::MenuItem("Create New Entity"))
-		{
-			entityManager.CreateEntity("New entity");
-		}
-		ImGui::Separator();
-		if (ImGui::BeginMenu("Primitives"))
-		{
-			if (ImGui::MenuItem("Create cube"))
-			{
-				CreateCube();
-			}
-			if (ImGui::MenuItem("Create plane"))
-			{
-				CreatePlane();
-			}
-			if (ImGui::MenuItem("Create sphere"))
-			{
-				CreateSphere();
-			}
-			if (ImGui::MenuItem("Create pyramid"))
-			{
-				CreatePyramid();
-			}
-			ImGui::EndMenu();
-		}
-		if (m_CurrentID >= 0)
-		{
-			ImGui::Separator();
-			ImGui::TextDisabled(entityManager.GetEntityName(m_CurrentID));
-			if (ImGui::MenuItem("Create child"))
-			{
-				EntityId id = entityManager.CreateEntity("New entity", m_CurrentID);
-				
-			}
-
-			if (ImGui::MenuItem("Delete"))
-			{
-				entityManager.DestroyEntity(m_CurrentID);
-				m_CurrentID = -1;
-			}
-		}
+		DrawAddMenu(entityManager);
 		ImGui::EndPopup();
 	}
 
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 	if (ImGui::Button("+"))
 	{
-		Wiwa::Application::Get().GetEntityManager().CreateEntity();
+		ImGui::OpenPopup("Add menu");
+	}
+	if (ImGui::BeginPopup("Add menu"))
+	{
+		DrawAddMenu(entityManager);
+		ImGui::EndPopup();
 	}
 	ImGui::PopStyleColor();
 
@@ -89,6 +56,7 @@ void HierarchyPanel::Draw()
 	filter.Draw("##searchbar", 200.f);
 	ImGui::Separator();
 
+	ImGui::Text(Wiwa::SceneManager::getActiveScene()->getName());
 	std::vector<EntityId>* entities = entityManager.GetParentEntitiesAlive();
 	size_t count = entities->size();
 	int id = 0;
@@ -102,8 +70,77 @@ void HierarchyPanel::Draw()
 		}
 		ImGui::PopID();
 	}
-
 	ImGui::End();
+}
+
+void HierarchyPanel::DrawAddMenu(Wiwa::EntityManager& entityManager)
+{
+	if (ImGui::MenuItem("Create New Entity"))
+	{
+		CreateNew3DEnt();
+	}
+	ImGui::Separator();
+	if (ImGui::BeginMenu("Primitives"))
+	{
+		if (ImGui::MenuItem("Create cube"))
+		{
+			CreateCube();
+		}
+		/*if (ImGui::MenuItem("Create plane"))
+		{
+			CreatePlane();
+		}*/
+		if (ImGui::MenuItem("Create sphere"))
+		{
+			CreateSphere();
+		}
+		/*if (ImGui::MenuItem("Create pyramid"))
+		{
+			CreatePyramid();
+		}*/
+		ImGui::EndMenu();
+	}
+	if (ImGui::MenuItem("Camera"))
+	{
+		Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
+		float ar = res.w / (float)res.h;
+		Wiwa::SceneManager::getActiveScene()->GetCameraManager().CreatePerspectiveCamera(60, ar);
+	}
+	if (m_CurrentID >= 0)
+	{
+		ImGui::Separator();
+		ImGui::TextDisabled(entityManager.GetEntityName(m_CurrentID));
+		if (ImGui::MenuItem("Create child"))
+		{
+			CreateNewChild(m_CurrentID);
+		}
+		if (entityManager.GetEntityParent(m_CurrentID) != m_CurrentID)
+		{
+			if (ImGui::MenuItem("Unparent"))
+			{
+				entityManager.SetParent(m_CurrentID, m_CurrentID);
+			}
+		}
+		if (ImGui::BeginMenu("Reparent to"))
+		{
+			for(size_t i = 0; i < entityManager.GetEntitiesAlive()->size(); i++)
+			{
+				if (i == m_CurrentID)
+					continue;
+				const char* name = entityManager.GetEntityName(i);
+				if (ImGui::MenuItem(name))
+				{
+					entityManager.SetParent(m_CurrentID, i);
+				}
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::MenuItem("Delete"))
+		{
+			entityManager.DestroyEntity(m_CurrentID);
+			m_CurrentID = -1;
+		}
+	}
 }
 
 void HierarchyPanel::CreateNode(const EntityId& eid, const char* entName, ImGuiTextFilter& filter, Wiwa::EntityManager& entityManager)
@@ -158,4 +195,23 @@ void HierarchyPanel::CreateNode(const EntityId& eid, const char* entName, ImGuiT
 		}
 	}
 
+}
+
+bool HierarchyPanel::OnEntityChange(EntityChangeEvent& e)
+{
+	m_CurrentID = (int)e.GetResourceId();
+	return false;
+}
+
+bool HierarchyPanel::OnSceneChange(Wiwa::SceneChangeEvent& e)
+{
+	m_CurrentID = -1;
+	return false;
+}
+
+void HierarchyPanel::OnEvent(Wiwa::Event& e)
+{
+	Wiwa::EventDispatcher dispatcher(e);
+	dispatcher.Dispatch<EntityChangeEvent>({ &HierarchyPanel::OnEntityChange, this });
+	dispatcher.Dispatch<Wiwa::SceneChangeEvent>({ &HierarchyPanel::OnSceneChange, this });
 }

@@ -1,32 +1,45 @@
 #pragma once
 
+#include <Wiwa/core/Core.h>
+
 #include "Scene.h"
 
 #include <Wiwa/ecs/EntityManager.h>
-#include <Wiwa/Layer.h>
+#include <Wiwa/utilities/filesystem/FileSystem.h>
 
 #include <vector>
 
+typedef size_t SceneId;
+
 namespace Wiwa {
-	class SceneManager : public Layer {
+	class WI_API SceneManager {
 	private:
-		std::vector<Scene*> m_Scenes;
-		size_t m_SceneSize;
-		size_t m_ActiveScene;
-	public:
+		static std::vector<Scene*> m_Scenes;
+		static SceneId m_ActiveScene;
+
+		static void LoadEntity(File& scene_file, EntityId parent, EntityManager& em, bool is_parent);
+		static void SaveEntity(File& scene_file, EntityId eid, EntityManager& em);
+
 		SceneManager();
-		~SceneManager();
+	public:
+		static void Update();
+		static void CleanUp();
+		
+		static void SetScene(SceneId sceneId) { m_ActiveScene = sceneId; m_Scenes[sceneId]->Start(); }
+		static void ChangeScene(SceneId sceneId);
 
-		void Update();
+		static void StartChangeScene(SceneId sceneId);
 
-		void ChangeScene(size_t sceneId);
+		static SceneId getActiveSceneId() { return m_ActiveScene; }
+		static Scene* getActiveScene() { return m_Scenes[m_ActiveScene]; }
 
-		void StartChangeScene(size_t sceneId);
+		static size_t getSceneSize() { return m_Scenes.size(); }
 
-		size_t getActiveScene() { return m_ActiveScene; }
+		static size_t CreateScene();
+		static Scene* getScene(SceneId sceneId) { return m_Scenes[sceneId]; }
+		static std::vector<Scene*>& getScenes() { return m_Scenes; }
 
-		inline size_t getSceneSize() { return m_SceneSize; }
-
-		size_t CreateScene();
+		static void SaveScene(SceneId scene_id, const char* scene_path);
+		static SceneId LoadScene(const char* scene_path);
 	};
 }

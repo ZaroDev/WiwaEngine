@@ -20,6 +20,14 @@ For now the engine has the following features.
 - WIP basic lighting
 - FBX model loading
 - PNG texture loading
+- Own custom file format
+- Scene manager
+- Camera manager
+- Scene serialization
+- Frustrum culling
+- Mouse picking
+- AABB support
+- WIP scriting ECS
 
 ## Authors
 
@@ -49,9 +57,11 @@ Advise: the project only supports Windows
 
 ### Entities
 
-To create an entity left click on the Hierarchy window and select an option. You can create either a blank entity or a primitive. (Disclaimer: empty entities do not include any component and they must be added as desired)
+To create an entity left click on the Hierarchy window and select an option. You can create either a blank entity or a primitive.
 
-### Camera
+Entities can have be parented and have local and global positions.
+
+### Editor Camera
 
 - Hold right click to look  
 - Right click + WASD to move
@@ -60,8 +70,28 @@ To create an entity left click on the Hierarchy window and select an option. You
 - Alt + Q to quit the app
 - Q to unselect the current gizmo
 - W to move an object
-- E to rotate an object (WIP)
+- E to rotate an object
 - R to scale
+
+### Camera Manager
+
+To create a camera just open the ``Cameras`` panel from ``View->Cameras`` then ``Create Camera``. To make the camera frustum cull the option cull needs to be active.
+
+![Cameras panel](images/cameraswindow.png)
+
+### Resource Manager
+
+The resource manager automatically imports each ``Model`` or ``Texture`` from the ``Assets\`` folder, the result of that import can be seen in the generated ``Library\``.
+The resources once loaded they keep loaded until a new scene is loaded. This keeps the engine from loading and unloading assets in a middle of a scene.
+To see the loaded resources open the ``Resources`` window from ``View->Resources``.
+
+![Resources window](images/resourceswinodw.png)
+
+To change the import options of an asset the ``Import`` window can be checked.
+
+![Import window](images/importwindwo.png)
+
+``Note: for now image import settings is WIP``
 
 ### Materials
 
@@ -73,7 +103,18 @@ Assing a name to the material and click create.
 ![Create matWindow](images/creatematerialwindow.png)
 
 Open the material editor window and select a material you want to edit.
+
 ![Material window](images/materialwindow.png)
+
+### Projects WIP
+
+For now projects only contain info about the project such as the company and project name.
+In the future this tab will allow the user to select the scenes from the project to build the game.
+
+### Time
+
+The play and pause buttons allow the user to enter play mode. This allows the ``deltaTime`` to be updated each frame, and in the future will make the scripting work. The time variables and time scale can be seen under the ``Time`` tab at ``View->Configuration``
+![Time window](images/timewindow.png)
 
 ## MIT License
 

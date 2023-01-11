@@ -5,13 +5,13 @@
 #include "Wiwa/Platform/OpenGL/imgui_impl_opengl3.h"
 #include "Wiwa/Platform/OpenGL/imgui_impl_glfw.h"
 
-#include "Wiwa/Application.h"
-#include "Wiwa/KeyCodes.h"
+#include <Wiwa/core/Application.h>
+#include <Wiwa/core/KeyCodes.h>
 
 //Temp
 #include <glew.h>
 #include <GLFW/glfw3.h>
-#include <Wiwa/Resources.h>
+#include <Wiwa/core/Resources.h>
 #include <ImGuizmo.h>
 
 namespace Wiwa {

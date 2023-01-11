@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-#include "Wiwa/MouseCodes.h"
+#include <Wiwa/core/MouseCodes.h>
 
 
 namespace Wiwa {

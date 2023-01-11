@@ -2,10 +2,10 @@
 
 #include "InstanceRenderer.h"
 
-#include <Wiwa/Resources.h>
-#include <Wiwa/Renderer2D.h>
+#include <Wiwa/core/Resources.h>
+#include <Wiwa/core/Renderer2D.h>
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
 #include <glew.h>
 
@@ -27,7 +27,7 @@ namespace Wiwa {
 		m_InstanceShaderId = Resources::Load<Shader>(shader_path);
 		m_InstanceShader = Resources::GetResourceById<Shader>(m_InstanceShaderId);
 
-		m_InstanceShader->Use();
+		m_InstanceShader->Bind();
 		uint32_t texs_id = glGetUniformLocation(m_InstanceShader->getID(), "u_Textures");
 
 		// Set samplers id
@@ -119,7 +119,7 @@ namespace Wiwa {
 
 	void InstanceRenderer::Render()
 	{
-		m_InstanceShader->Use();
+		m_InstanceShader->Bind();
 		m_InstanceShader->setUniform(m_OrthoLocation, Application::Get().GetRenderer2D().GetOrthoProjection());
 		m_InstanceShader->setUniform(m_ViewLocation, Application::Get().GetRenderer2D().GetView());
 
@@ -175,7 +175,7 @@ namespace Wiwa {
 		WI_ASSERT_MSG(texSize > MAX_INSTANCE_TEXTURES)
 
 
-		int index = static_cast<int>(texSize);
+			int index = static_cast<int>(texSize);
 
 		for (size_t i = 0; i < texSize; i++) {
 			if (m_Textures[i] == texture) {

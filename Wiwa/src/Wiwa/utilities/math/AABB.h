@@ -1,9 +1,9 @@
-#include <glm.hpp>
+#include <glm/glm.hpp>
 
-namespace Wiwa {
+namespace Wiwa::Math {
 
     /// Standalone axis aligned bounding box implemented built on top of GLM.
-    class AABB
+    class WI_API AABB
     {
     public:
         /// Builds a null AABB.

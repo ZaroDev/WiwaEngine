@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 
-#include <Wiwa/Application.h>
+#include <Wiwa/core/Application.h>
 
 AboutPanel::AboutPanel(EditorLayer* instance) : Panel("About", instance)
 {

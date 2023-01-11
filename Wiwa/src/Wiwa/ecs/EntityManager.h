@@ -1,23 +1,28 @@
 #pragma once
 #pragma warning(disable : 4251)
-#include <Wiwa/Core.h>
-#include <Wiwa/Layer.h>
+#include <Wiwa/core/Core.h>
+#include <Wiwa/core/Layer.h>
 
 #include <vector>
 #include <map>
 #include <unordered_map>
 
-#include <Wiwa/Reflection.h>
-#include <Wiwa/utilities/Action.h>
+#include <Wiwa/utilities/Reflection.h>
+#include <Wiwa/utilities/functions/Action.h>
 
 typedef size_t EntityId;
 typedef size_t ComponentId;
 typedef size_t ComponentHash;
 typedef size_t SystemId;
+typedef size_t SystemHash;
 
 typedef unsigned char byte;
 
 namespace Wiwa {
+	class System;
+
+	struct Transform3D;
+
 	class WI_API EntityManager
 	{
 	private:
@@ -56,11 +61,12 @@ namespace Wiwa {
 		std::unordered_map<size_t, SystemId> m_SystemIds;
 		size_t m_SystemIdCount;
 
-		std::vector<void*> m_Systems;
+		std::vector<System*> m_Systems;
 
 		void RemoveEntity(EntityId eid);
 
-		void OnEntityComponentAdded(EntityId eid);
+		void UpdateChildTransforms(EntityId eid, Transform3D* t3dparent);
+		void UpdateTransforms();
 	public:
 		EntityManager();
 		~EntityManager();
@@ -68,6 +74,7 @@ namespace Wiwa {
 		// System registration functions
 		//Action<> registrations[10];
 
+		// Update entity manager
 		void Update();
 
 		// Create entity
@@ -75,6 +82,10 @@ namespace Wiwa {
 		EntityId CreateEntity(const char* name);
 		EntityId CreateEntity(EntityId parent);
 		EntityId CreateEntity(const char* name, EntityId parent);
+
+		void SetParent(EntityId entity, EntityId parent);
+
+		bool IsParent(EntityId entity) { return m_EntityParent[entity] == entity; }
 
 		// Remove entity
 		void DestroyEntity(EntityId entity);
@@ -96,14 +107,23 @@ namespace Wiwa {
 
 		size_t GetComponentIndex(EntityId entityId, ComponentId componentId, size_t componentSize);
 
-		// Component add functions
+		// Add component by hash
 		byte* AddComponent(EntityId entity, ComponentHash hash, byte* value=NULL);
+
+		// Add component by type
 		byte* AddComponent(EntityId entity, const Type* type, byte* value = NULL);
+
+		// Add component by template
 		template<class T> T* AddComponent(EntityId entity, T value = {});
 
 		template<class T> void AddComponents(EntityId entity, T arg = {});
 		template<class T, class T2, class... TArgs> void AddComponents(EntityId entity, T arg1, T2 arg2, TArgs... args);
 		template<class T, class T2, class... TArgs> void AddComponents(EntityId entity);
+
+		void RemoveComponent(EntityId entity, ComponentHash hash);
+		void RemoveComponentById(EntityId entity, ComponentId componentId);
+
+		template<class T> void RemoveComponent(EntityId entity);
 
 		// Component get functions
 		byte* GetComponent(EntityId entityId, ComponentId componentId, size_t componentSize);
@@ -125,7 +145,8 @@ namespace Wiwa {
 
 		// Reserve functions
 		void ReserveEntities(size_t amount);
-		template<class T> void ReserveComponent(size_t amount);		
+		void ReserveComponent(ComponentHash hash, size_t amount);
+		template<class T> void ReserveComponent(size_t amount);
 
 		// Component utilities
 		template<class T> bool HasComponent(EntityId entityId);
@@ -141,8 +162,13 @@ namespace Wiwa {
 		bool HasSystem(EntityId eid, SystemId sid);
 
 		template<class T> SystemId GetSystemId();
+		SystemId GetSystemId(SystemHash system_hash);
+		SystemId GetSystemId(const Type* type);
 
 		// Register systems
+		template<class T> void ApplySystem(EntityId eid);
+		void ApplySystem(EntityId eid, SystemHash system_hash);
+
 		template<class T> void RegisterSystem();
 		template<class T> void ReserveSystem(size_t amount);
 	};
@@ -151,21 +177,9 @@ namespace Wiwa {
 	template<class T>
 	inline SystemId EntityManager::GetSystemId()
 	{
-		size_t system_id = 0;
-
 		const Type* stype = GetType<T>();
-		std::unordered_map<size_t, SystemId>::iterator sid = m_SystemIds.find(stype->hash);
-
-		if (sid == m_SystemIds.end()) {
-			system_id = m_SystemIdCount++;
-
-			m_SystemIds[stype->hash] = system_id;
-		}
-		else {
-			system_id = sid->second;
-		}
-
-		return system_id;
+		
+		return GetSystemId(stype->hash);
 	}
 
 	// Get component ID using Reflection
@@ -303,6 +317,14 @@ namespace Wiwa {
 	}
 
 	template<class T>
+	inline void EntityManager::RemoveComponent(EntityId entity)
+	{
+		const Type* t = GetType<T>();
+
+		RemoveComponent(entity, t->hash);
+	}
+
+	template<class T>
 	inline T* EntityManager::GetComponent(EntityId entityId)
 	{
 		T* c = NULL;
@@ -346,6 +368,14 @@ namespace Wiwa {
 	inline bool EntityManager::HasComponents(EntityId entityId)
 	{
 		return HasComponents<T>(entityId) && HasComponents<T2, TArgs...>(entityId);
+	}
+
+	template<class T>
+	inline void EntityManager::ApplySystem(EntityId eid)
+	{
+		const Type* stype = GetType<T>();
+
+		ApplySystem(eid, stype->hash);
 	}
 
 	template<class T>
