@@ -46,3 +46,9 @@ bin
 bin-int
 /.vs
 Intermediates/
+*.vsidx
+*.lock
+*.com%002Ffwlink%002F%003Flinkid%003D835884
+Editor/.vs/AppAssembly/v17/.suo
+Editor/.vs/AppAssembly/v17/.suo
+*.pdb
