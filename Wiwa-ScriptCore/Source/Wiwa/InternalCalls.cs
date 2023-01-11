@@ -25,5 +25,12 @@ namespace Wiwa
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool IsMouseButtonPressedIntr(int button);
         #endregion
+        #region Time
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float GetDeltaTimeIntr();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float GetTimeIntr();
+        #endregion
     }
 }

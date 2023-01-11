@@ -38,10 +38,12 @@
         }
     }
     #endregion
+    #region Utils
     [Component]
     public struct TestComponent
     {
         public int val1;
         public float val2;
     }
+    #endregion
 }

@@ -90,6 +90,7 @@ namespace Wiwa {
 				size_t matpath_size = strlen(mesh->mat_path);
 				if(matpath_size > 0) mesh->materialId = Resources::Load<Material>(mesh->mat_path);
 			}
+
 		}
 
 		if (em.HasComponents<Transform3D, Mesh>(eid)) {
