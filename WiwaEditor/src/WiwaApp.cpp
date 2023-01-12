@@ -31,9 +31,6 @@ public:
 			WI_CORE_ERROR("Audio load bank error: [{}]", Audio::GetLastError());
 		}
 
-		Audio::PostEvent("Ruido", 25);
-		Audio::Update();
-
 		const Type* type = Wiwa::ScriptEngine::getSystems()[FNV1A_HASH("EnemyController")];
 
 		Wiwa::System* system = (Wiwa::System*)type->New();

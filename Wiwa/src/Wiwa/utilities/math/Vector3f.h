@@ -37,9 +37,6 @@ namespace Wiwa {
 		}
 	};
 
-	typedef Vector3f Size3f;
-	typedef Vector3f Color3f;
-
 	inline Vector3f operator-(const Vector3f v1, const Vector3f v2) {
 		return { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
 	}
@@ -58,5 +55,13 @@ namespace Wiwa {
 
 	inline Vector3f operator*(const Vector3f v1, const Vector3f v2) {
 		return { v1.x * v2.x, v1.y * v2.y, v1.z * v2.z };
+	}
+
+	typedef Vector3f Size3f;
+	typedef Vector3f Color3f;
+
+	namespace Vector3F {
+		const Vector3f FRONT = { 0.0f, 0.0f, 1.0f };
+		const Vector3f UP = { 0.0f, 1.0f, 0.0f };
 	}
 }

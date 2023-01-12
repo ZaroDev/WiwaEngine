@@ -22,6 +22,7 @@
 
 #include <Wiwa/ecs/systems/SpriteRenderer.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
+#include <Wiwa/ecs/systems/AudioSystem.h>
 
 #include <Wiwa/ecs/components/Transform3D.h>
 
@@ -136,6 +137,7 @@ namespace Wiwa {
 			//m_Renderer2D->Update();
 			// Update scene manager
 			SceneManager::Update();
+			Audio::Update();
 			
 			m_Renderer3D->Update();
 

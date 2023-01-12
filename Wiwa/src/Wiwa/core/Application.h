@@ -17,7 +17,6 @@
 
 namespace Wiwa
 {
-
 	class SceneManager;
 	class Renderer2D;
 	class Renderer3D;

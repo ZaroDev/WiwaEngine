@@ -21,7 +21,7 @@ uint32_t Audio::m_InitBank = 0;
 std::vector<uint32_t> Audio::m_LoadedBanks;
 bool Audio::m_LoadedProject = false;
 std::string Audio::m_LastErrorMsg = "None";
-uint32_t Audio::m_DefaultListener = 0;
+uint64_t Audio::m_DefaultListener = 0;
 
 CAkFilePackageLowLevelIOBlocking g_lowLevelIO;
 
@@ -353,13 +353,24 @@ bool Audio::Init()
     AKRESULT gres = AK::SoundEngine::RegisterGameObj(m_DefaultListener);
 
     if (gres != AK_Success) {
-        m_LastErrorMsg = "Error creating default gameobject";
+        setLastError(gres);
     }
 
-    gres = AK::SoundEngine::AddDefaultListener(m_DefaultListener);
+    AK::SoundEngine::SetDefaultListeners(&m_DefaultListener, 1);
+    //gres = AK::SoundEngine::AddDefaultListener(m_DefaultListener);
 
     if (gres != AK_Success) {
-        m_LastErrorMsg = "Error setting default listener";
+        setLastError(gres);
+    }
+
+    AkSoundPosition position;
+    position.SetPosition(0.0f, 0.0f, 0.0f);
+    position.SetOrientation(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+
+    gres = AK::SoundEngine::SetPosition(m_DefaultListener, position);
+
+    if (gres != AK_Success) {
+        setLastError(gres);
     }
 
     return true;
@@ -457,7 +468,7 @@ bool Audio::UnloadEvent(const char* event_name)
     return true;
 }
 
-bool Audio::PostEvent(const char* event_name, uint32_t game_object)
+bool Audio::PostEvent(const char* event_name, uint64_t game_object)
 {
     AkPlayingID play_id = AK::SoundEngine::PostEvent(event_name, game_object);
 
@@ -471,7 +482,7 @@ bool Audio::PostEvent(const char* event_name, uint32_t game_object)
     return true;
 }
 
-bool Audio::RegisterGameObject(uint32_t go_id)
+bool Audio::RegisterGameObject(uint64_t go_id)
 {
     AKRESULT res = AK::SoundEngine::RegisterGameObj(go_id);
 
@@ -483,9 +494,25 @@ bool Audio::RegisterGameObject(uint32_t go_id)
     return true;
 }
 
-bool Audio::UnregisterGameObject(uint32_t go_id)
+bool Audio::UnregisterGameObject(uint64_t go_id)
 {
     AKRESULT res = AK::SoundEngine::UnregisterGameObj(go_id);
+
+    if (res != AK_Success) {
+        setLastError(res);
+        return false;
+    }
+
+    return true;
+}
+
+bool Audio::SetPosition(uint64_t go_id, const Wiwa::Vector3f& position, const Wiwa::Vector3f& front, const Wiwa::Vector3f& up)
+{
+    AkSoundPosition soundposition;
+    soundposition.SetPosition(position.x, position.y, position.z);
+    soundposition.SetOrientation(front.x, front.y, front.z, up.x, up.y, up.z);
+
+    AKRESULT res = AK::SoundEngine::SetPosition(go_id, soundposition);
 
     if (res != AK_Success) {
         setLastError(res);

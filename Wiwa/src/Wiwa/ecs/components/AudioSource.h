@@ -9,6 +9,7 @@ namespace Wiwa {
 		uint32_t radius;
 		uint32_t volume;
 		Vector3f direction;
+		bool posted;
 	};
 }
 

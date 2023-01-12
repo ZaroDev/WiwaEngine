@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Wiwa/core/Core.h>
+#include <Wiwa/utilities/math/Vector3f.h>
 
 #include <vector>
 #include <string>
@@ -29,7 +30,7 @@ private:
 	static uint32_t m_InitBank;
 
 	// Default gameobject listener
-	static uint32_t m_DefaultListener;
+	static uint64_t m_DefaultListener;
 public:
 	// Init audio engine
 	static bool Init();
@@ -58,13 +59,16 @@ public:
 	static bool UnloadEvent(const char* event_name);
 
 	// Post an event into the audio engine for a specific gameobject
-	static bool PostEvent(const char* event_name, uint32_t game_object);
+	static bool PostEvent(const char* event_name, uint64_t game_object);
 
 	// Register a gameobject
-	static bool RegisterGameObject(uint32_t go_id);
+	static bool RegisterGameObject(uint64_t go_id);
 
 	// Unregister a gameobject
-	static bool UnregisterGameObject(uint32_t go_id);
+	static bool UnregisterGameObject(uint64_t go_id);
+
+	// Set gameobject's position
+	static bool SetPosition(uint64_t go_id, const Wiwa::Vector3f& position, const Wiwa::Vector3f& front, const Wiwa::Vector3f& up);
 
 	// Unregister all gameobjects
 	static bool UnregisterAllGameObjects();

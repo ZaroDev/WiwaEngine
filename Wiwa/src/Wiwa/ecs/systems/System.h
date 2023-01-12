@@ -20,6 +20,7 @@ namespace Wiwa {
 		virtual void OnUpdate(EntityId eid) {}
 
 		virtual void OnEntityAdded(EntityId entity) {}
+
 		virtual void OnEntityRemoved(EntityId entity) {}
 	public:
 		System();

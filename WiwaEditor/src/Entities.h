@@ -7,6 +7,7 @@
 #include <Wiwa/ecs/components/Transform3D.h>
 #include <Wiwa/ecs/components/Mesh.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
+#include <Wiwa/ecs/systems/AudioSystem.h>
 
 inline void CreateNew3DEnt()
 {
@@ -183,6 +184,7 @@ inline void CreateEntityWithModelHierarchy(const char* model_path) {
 	t3d.localScale = model_h->scale;
 	em.AddComponent<Wiwa::Transform3D>(e_root, t3d);
 	em.ApplySystem<Wiwa::MeshRenderer>(e_root);
+	em.ApplySystem<Wiwa::AudioSystem>(e_root);
 
 	auto process_h = [&](const Wiwa::ModelHierarchy* m_h, EntityId parent, auto&& process_h) -> void {
 		EntityId e_child = em.CreateEntity(m_h->name.c_str(), parent);
@@ -206,6 +208,7 @@ inline void CreateEntityWithModelHierarchy(const char* model_path) {
 
 			em.AddComponent(e_child, mesh);
 			em.ApplySystem<Wiwa::MeshRenderer>(e_child);
+			em.ApplySystem<Wiwa::AudioSystem>(e_child);
 		}
 
 		if (c_child_size > 0) {
