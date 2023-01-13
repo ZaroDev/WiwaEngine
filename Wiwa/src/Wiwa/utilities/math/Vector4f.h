@@ -13,6 +13,6 @@ namespace Wiwa {
 	typedef Vector4f Color4f;
 
 	namespace Color {
-		const Color4f WHITE = { 1.0f, 1.0f, 1.0f };
+		const Color4f WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
 	}
 }

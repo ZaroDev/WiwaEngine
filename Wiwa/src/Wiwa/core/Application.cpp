@@ -73,8 +73,8 @@ namespace Wiwa {
 
 		SetHwInfo();
 
-		/*m_Renderer2D = new Renderer2D();
-		m_Renderer2D->Init();*/
+		m_Renderer2D = new Renderer2D();
+		m_Renderer2D->Init();
 		
 		m_Renderer3D = new Renderer3D();
 		m_Renderer3D->Init();
@@ -134,11 +134,11 @@ namespace Wiwa {
 			glClearColor(m_RenderColor.r, m_RenderColor.g, m_RenderColor.b, m_RenderColor.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			//m_Renderer2D->Update();
 			// Update scene manager
 			SceneManager::Update();
 			Audio::Update();
 			
+			m_Renderer2D->Update();
 			m_Renderer3D->Update();
 
 			// Update time
