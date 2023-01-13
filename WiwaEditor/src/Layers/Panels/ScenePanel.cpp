@@ -126,6 +126,7 @@ void ScenePanel::Draw()
 
     //ImTextureID tex = (ImTextureID)(intptr_t)m_Camera->frameBuffer->getColorBufferTexture();
     ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer2D().getColorBufferTexture();
+
     ImGui::SetCursorPos(cpos);
     //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
     ImGui::Image(tex, isize, ImVec2(0, 1), ImVec2(1, 0));

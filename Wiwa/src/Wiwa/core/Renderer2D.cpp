@@ -122,6 +122,7 @@ namespace Wiwa {
 		Image* spr = Resources::GetResourceById<Image>(textureId);
 		Size2i spsize = spr->GetSize();
 		TextureClip tclip = CalculateTextureClip(clip, spsize);
+
 		return instanceRenderer->AddInstance(textureId, position, size, color, tclip, pivot);
 	}
 

@@ -42,8 +42,10 @@ public:
 
 		Wiwa::Vector2i pos = { 0, 0 };
 		Wiwa::Size2i size = img->GetSize();
+		Wiwa::Rect2i rect = { 0, 0, size.w, size.h };
+		Wiwa::Color4f color = Wiwa::Color::WHITE;
 
-		r2d.CreateInstancedQuadTex(imgid, pos, size);
+		r2d.CreateInstancedQuadTex(imgid, pos, size, color, rect, Wiwa::Renderer2D::Pivot::CENTER);
 
 		const Type* type = Wiwa::ScriptEngine::getSystems()[FNV1A_HASH("EnemyController")];
 

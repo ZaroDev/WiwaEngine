@@ -24,8 +24,10 @@ namespace Wiwa {
 		Application& app = Application::Get();
 
 		// Load shader
-		m_InstanceShaderId = Resources::Load<Shader>(shader_path);
-		m_InstanceShader = Resources::GetResourceById<Shader>(m_InstanceShaderId);
+		// TODO: Use shader pipeline
+		//m_InstanceShaderId = Resources::Load<Shader>(shader_path);
+		m_InstanceShader = new Shader();//Resources::GetResourceById<Shader>(m_InstanceShaderId);
+		m_InstanceShader->Init(shader_path);
 
 		m_InstanceShader->Bind();
 		uint32_t texs_id = glGetUniformLocation(m_InstanceShader->getID(), "u_Textures");
