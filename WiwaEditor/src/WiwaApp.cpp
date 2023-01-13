@@ -32,6 +32,7 @@ public:
 			WI_CORE_ERROR("Audio load bank error: [{}]", Audio::GetLastError());
 		}
 		
+
 		// Test sprite render
 
 		ResourceId imgid = Wiwa::Resources::Load<Wiwa::Image>("assets/samuel.jpg");

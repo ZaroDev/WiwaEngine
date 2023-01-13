@@ -28,6 +28,8 @@
 #include "../EditorLayer.h"
 #include "../../Entities.h"
 
+#include <Wiwa/core/Renderer2D.h>
+
 #include <Wiwa/utilities/filesystem/FileSystem.h>
 
 ScenePanel::ScenePanel(EditorLayer* instance)

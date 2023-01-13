@@ -105,12 +105,11 @@ void EditorLayer::OnAttach()
 	em.RegisterSystem<Wiwa::MeshRenderer>();
 	em.RegisterSystem<Wiwa::AudioSystem>();
 	CreateEntityWithModelHierarchy("models/street2");
-	SceneId scene = Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
+	SceneId scene = Wiwa::SceneManager::CreateScene();//Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
 	Wiwa::SceneManager::SetScene(scene);
 	Wiwa::Vector2i pos = Wiwa::Vector2i{ 0, 0 };
 	Wiwa::Size2i size = Wiwa::Size2i{ 20, 20 };
-	uint32_t id = Wiwa::Application::Get().GetRenderer2D().CreateInstancedQuadTex(
-		Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId(), pos, size, Wiwa::Renderer2D::Pivot::CENTER);
+	uint32_t id = Wiwa::Application::Get().GetRenderer2D().CreateInstancedQuadTex(stopId, pos, size, Wiwa::Renderer2D::Pivot::CENTER);
 
 	/*for (size_t i = 0; i < children_size; i++) {
 		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
