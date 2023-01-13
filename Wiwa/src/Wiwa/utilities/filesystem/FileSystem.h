@@ -97,6 +97,9 @@ namespace Wiwa {
 
 		// Path utils
 		static std::string RemoveFolderFromPath(std::string folder, std::string path);
+		
+		// Get filename from path
+		static std::string GetFileName(std::string path);
 
 		//======== File system utils ========
 		// Check whether the file or directory exists

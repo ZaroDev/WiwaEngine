@@ -63,6 +63,7 @@ void EditorLayer::OnAttach()
 	m_ResourcesPanel = std::make_unique<ResourcesPanel>(this);
 	m_ImportPanel = std::make_unique<ImportPanel>(this);
 	m_ShaderPanel = std::make_unique<ShaderPanel>(this);
+	m_AudioPanel = std::make_unique<AudioPanel>(this);
 
 
 	m_ProjectPanel = std::make_unique<ProjectPanel>(this);
@@ -82,6 +83,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_ResourcesPanel.get());
 	m_Panels.push_back(m_ImportPanel.get());
 	m_Panels.push_back(m_ShaderPanel.get());
+	m_Panels.push_back(m_AudioPanel.get());
 
 	m_Settings.push_back(m_ProjectPanel.get());
 	m_Settings.push_back(m_About.get());
@@ -105,8 +107,8 @@ void EditorLayer::OnAttach()
 	em.RegisterSystem<Wiwa::MeshRenderer>();
 	em.RegisterSystem<Wiwa::AudioSystem>();
 	CreateEntityWithModelHierarchy("models/street2");
-	SceneId scene = Wiwa::SceneManager::CreateScene();//Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
-	Wiwa::SceneManager::SetScene(scene);
+	//SceneId scene = Wiwa::SceneManager::CreateScene();//Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
+	//Wiwa::SceneManager::SetScene(scene);
 	Wiwa::Vector2i pos = Wiwa::Vector2i{ 0, 0 };
 	Wiwa::Size2i size = Wiwa::Size2i{ 20, 20 };
 	//uint32_t id = Wiwa::Application::Get().GetRenderer2D().CreateInstancedQuadTex(stopId, pos, size, Wiwa::Renderer2D::Pivot::CENTER);

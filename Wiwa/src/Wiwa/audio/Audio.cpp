@@ -17,10 +17,14 @@
 
 #include <AK/SoundEngine/Common/AkTypes.h>
 
+#include <Wiwa/utilities/filesystem/FileSystem.h>
+
 uint32_t Audio::m_InitBank = 0;
-std::vector<uint32_t> Audio::m_LoadedBanks;
+std::vector<Audio::BankData> Audio::m_LoadedBanks;
+std::vector<Audio::EventData> Audio::m_LoadedEvents;
 bool Audio::m_LoadedProject = false;
 std::string Audio::m_LastErrorMsg = "None";
+std::string Audio::m_InitBankPath = "";
 uint64_t Audio::m_DefaultListener = 0;
 
 CAkFilePackageLowLevelIOBlocking g_lowLevelIO;
@@ -411,7 +415,70 @@ bool Audio::LoadProject(const char* init_bnk)
         return false;
     }
 
+    m_LoadedBanks.clear();
+    m_LoadedEvents.clear();
+
+    m_InitBankPath = init_bnk;
     m_LoadedProject = true;
+
+    return true;
+}
+
+bool Audio::ReloadProject()
+{
+    if (!UnloadAllBanks()) return false;
+
+    AKRESULT res = AK::SoundEngine::LoadBank(m_InitBankPath.c_str(), m_InitBank);
+
+    if (res != AK_Success) {
+        setLastError(res);
+        return false;
+    }
+
+    ReloadBanks();
+
+    m_LoadedProject = true;
+
+    return true;
+}
+
+bool Audio::ReloadBanks() {
+    size_t bnk_size = m_LoadedBanks.size();
+
+    for (size_t i = 0; i < bnk_size; i++) {
+        uint32_t id = 0;
+        AKRESULT res = AK::SoundEngine::LoadBank(m_LoadedBanks[i].path.c_str(), id);
+
+        if (res != AK_Success) {
+            setLastError(res);
+
+            // Remove from list
+            m_LoadedBanks.erase(m_LoadedBanks.begin() + i);
+            i--;
+            bnk_size--;
+        }
+    }
+
+    ReloadEvents();
+
+    return true;
+}
+
+bool Audio::ReloadEvents() {
+    size_t event_size = m_LoadedEvents.size();
+
+    for (size_t i = 0; i < event_size; i++) {
+        bool ret = PostEvent(m_LoadedEvents[i].name.c_str());
+
+        if (!ret) {
+            m_LoadedEvents.erase(m_LoadedEvents.begin() + i);
+            i--;
+            event_size--;
+        }
+        else {
+            StopEvent(m_LoadedEvents[i].name.c_str());
+        }
+    }
 
     return true;
 }
@@ -427,43 +494,92 @@ bool Audio::LoadBank(const char* bank)
         return false;
     }
 
-    m_LoadedBanks.push_back(bank_id);
+    std::string filename = Wiwa::FileSystem::GetFileName(bank);
+
+    m_LoadedBanks.emplace_back(BankData{ filename, bank_id, bank });
 
     return true;
 }
 
 bool Audio::UnloadBank(const char* bank)
 {
-    AKRESULT res = AK::SoundEngine::UnloadBank(bank, NULL);
+    uint32_t b_id = FindBank(bank);
+
+    if (b_id == INVALID_ID) return true;
+
+    AKRESULT res = AK::SoundEngine::UnloadBank(m_LoadedBanks[b_id].path.c_str(), NULL);
 
     if (res != AK_Success) {
         setLastError(res);
         return false;
     }
+
+    m_LoadedBanks.erase(m_LoadedBanks.begin() + b_id);
+
+    ReloadEvents();
 
     return true;
 }
 
+uint32_t Audio::FindEvent(const char* event_name)
+{
+    uint32_t index = INVALID_ID;
+
+    size_t event_size = m_LoadedEvents.size();
+
+    for (size_t i = 0; i < event_size; i++) {
+        if (m_LoadedEvents[i].name == event_name) {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
+
+uint32_t Audio::FindBank(const char* bank_name)
+{
+    uint32_t index = INVALID_ID;
+
+    size_t bank_size = m_LoadedBanks.size();
+
+    for (size_t i = 0; i < bank_size; i++) {
+        if (m_LoadedBanks[i].name == bank_name) {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
+
 bool Audio::LoadEvent(const char* event_name)
 {
-    AKRESULT res = AK::SoundEngine::PrepareEvent(AK::SoundEngine::PreparationType::Preparation_Load, &event_name, 1);
-    
+    uint32_t ev_id = FindEvent(event_name);
+
+    if (ev_id != INVALID_ID) return true;
+
+    bool res = PostEvent(event_name);
+
     if (res != AK_Success) {
         setLastError(res);
         return false;
     }
+
+    StopEvent(event_name);
+
+    m_LoadedEvents.emplace_back(EventData{ event_name, AK::SoundEngine::GetIDFromString(event_name) });
 
     return true;
 }
 
 bool Audio::UnloadEvent(const char* event_name)
 {
-    AKRESULT res = AK::SoundEngine::PrepareEvent(AK::SoundEngine::PreparationType::Preparation_Unload, &event_name, 1);
+    uint32_t ev_id = FindEvent(event_name);
 
-    if (res != AK_Success) {
-        setLastError(res);
-        return false;
-    }
+    if (ev_id == INVALID_ID) return true;
+
+    m_LoadedEvents.erase(m_LoadedEvents.begin() + ev_id);
 
     return true;
 }
@@ -476,6 +592,18 @@ bool Audio::PostEvent(const char* event_name, uint64_t game_object)
         m_LastErrorMsg = "Couldn't post event [";
         m_LastErrorMsg += event_name;
         m_LastErrorMsg += "]";
+        return false;
+    }
+
+    return true;
+}
+
+bool Audio::StopEvent(const char* event_name, uint64_t game_object)
+{
+    AKRESULT res = AK::SoundEngine::ExecuteActionOnEvent(event_name, AK::SoundEngine::AkActionOnEventType::AkActionOnEventType_Stop, game_object);
+
+    if (res != AK_Success) {
+        setLastError(res);
         return false;
     }
 
@@ -546,24 +674,6 @@ bool Audio::UnloadAllBanks()
     }
 
     m_LoadedProject = false;
-
-    /*AKRESULT res = AK::SoundEngine::UnloadBank(m_InitBank, NULL);
-
-    if (res != AK_Success) {
-        setLastError(res);
-        return false;
-    }
-
-    size_t b_size = m_LoadedBanks.size();
-
-    for (size_t i = 0; i < b_size; i++) {
-        res = AK::SoundEngine::UnloadBank(m_LoadedBanks[i], NULL);
-
-        if (res != AK_Success) { 
-            setLastError(res);
-            return false; 
-        }
-    }*/
 
     return true;
 }

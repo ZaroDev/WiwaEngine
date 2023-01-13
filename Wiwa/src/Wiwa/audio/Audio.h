@@ -8,6 +8,15 @@
 
 class WI_API Audio
 {
+public:
+	struct EventData {
+		std::string name;
+		uint32_t hash;
+	};
+
+	struct BankData : public EventData {
+		std::string path;
+	};
 private:
 	// Private constructor = default
 	Audio();
@@ -17,11 +26,17 @@ private:
 
 	// =========== Variables ===========
 
+	// Init bank path
+	static std::string m_InitBankPath;
+
 	// Last error message
 	static std::string m_LastErrorMsg;
 
 	// Loaded banks
-	static std::vector<uint32_t> m_LoadedBanks;
+	static std::vector<BankData> m_LoadedBanks;
+
+	// Loaded events
+	static std::vector<EventData> m_LoadedEvents;
 
 	// Determines if a project has been loaded
 	static bool m_LoadedProject;
@@ -41,16 +56,40 @@ public:
 	// Terminate audio engine
 	static bool Terminate();
 
+	// Get loaded bank list
+	static const std::vector<BankData>& GetLoadedBankList() { return m_LoadedBanks; }
+
+	// Get loaded event list
+	static const std::vector<EventData>& GetLoadedEventList() { return m_LoadedEvents; }
+
+	// Check if a project has been loaded
+	static bool LoadedProject() { return m_LoadedProject; }
+
 	/* Load project init.bnk
 	 * All banks are unloaded when loading a new project
 	*/
 	static bool LoadProject(const char* init_bnk);
 
-	// Load bank into audio engine
+	// Reload project, banks and events
+	static bool ReloadProject();
+
+	// Reload banks and events
+	static bool ReloadBanks();
+
+	// Reload events
+	static bool ReloadEvents();
+
+	// Load bank into audio engine with name
 	static bool LoadBank(const char* bank);
 
 	// Unload bank
 	static bool UnloadBank(const char* bank);
+
+	// Find event name in loaded events list
+	static uint32_t FindEvent(const char* event_name);
+
+	// Find bank name in loaded banks list
+	static uint32_t FindBank(const char* bank_name);
 
 	// Load event
 	static bool LoadEvent(const char* event_name);
@@ -60,6 +99,15 @@ public:
 
 	// Post an event into the audio engine for a specific gameobject
 	static bool PostEvent(const char* event_name, uint64_t game_object);
+
+	// Post an event into the default gameobject
+	static bool PostEvent(const char* event_name) { return PostEvent(event_name, m_DefaultListener); }
+
+	// Stop event for a specific gameobject
+	static bool StopEvent(const char* event_name, uint64_t game_object);
+
+	// Stop event for the default gameobject
+	static bool StopEvent(const char* event_name) { return StopEvent(event_name, m_DefaultListener); }
 
 	// Register a gameobject
 	static bool RegisterGameObject(uint64_t go_id);
@@ -80,4 +128,6 @@ public:
 
 	// Returns last error
 	static const char* GetLastError() { return m_LastErrorMsg.c_str(); }
+
+	static const uint32_t INVALID_ID = -1;
 };

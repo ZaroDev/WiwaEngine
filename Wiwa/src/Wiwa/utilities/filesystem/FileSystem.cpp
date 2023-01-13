@@ -29,6 +29,13 @@ namespace Wiwa {
 		return path;
 	}
 
+	std::string FileSystem::GetFileName(std::string path)
+	{
+		std::filesystem::path p = path;
+
+		return p.filename().string();
+	}
+
 	bool FileSystem::Exists(const char* file)
 	{
 		return std::filesystem::exists(file);

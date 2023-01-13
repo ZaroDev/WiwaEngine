@@ -124,8 +124,8 @@ void ScenePanel::Draw()
     
     //Wiwa::Application::Get().GetRenderer3D().SetActiveCamera(m_Camera);
 
-    //ImTextureID tex = (ImTextureID)(intptr_t)m_Camera->frameBuffer->getColorBufferTexture();
-    ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer2D().getColorBufferTexture();
+    ImTextureID tex = (ImTextureID)(intptr_t)m_Camera->frameBuffer->getColorBufferTexture();
+    //ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::Application::Get().GetRenderer2D().getColorBufferTexture();
 
     ImGui::SetCursorPos(cpos);
     //Wiwa::Application::Get().GetRenderer3D().RenderGrid();
@@ -285,6 +285,7 @@ void ScenePanel::Draw()
         CLAMP(rpos.y, 0.0f, isize.y);
 
         Wiwa::Vector2f v2f = { rpos.x / (float)isize.x, rpos.y / (float)isize.y };
+
         Wiwa::Vector2f rel2f = lastPos - v2f;
         rel2f.x /= rel2f.x == 0.0f ? 1.0f : abs(rel2f.x);
         rel2f.y /= rel2f.y == 0.0f ? 1.0f : abs(rel2f.y);

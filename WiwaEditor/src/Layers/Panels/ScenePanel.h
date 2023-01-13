@@ -22,6 +22,8 @@ public:
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnMouseScrollEvent(Wiwa::MouseScrolledEvent& e);
 	bool OnEntityChange(EntityChangeEvent& e);
+
+	Wiwa::Vector2f GetMousePosition() { return lastPos; }
 private:
 	std::vector<ShadingView*> m_Shadings;
 
