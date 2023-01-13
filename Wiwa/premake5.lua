@@ -34,7 +34,8 @@ project "Wiwa"
 		"%{IncludeDirs.XML}",
 		"%{IncludeDirs.Optick}",
 		"%{IncludeDirs.assimp}",
-		"%{IncludeDirs.ImGuizmo}"
+		"%{IncludeDirs.ImGuizmo}",
+		"%{IncludeDirs.Wwise}"
 	}
 
 	links
@@ -47,7 +48,12 @@ project "Wiwa"
 		"Optick",
 		"ImGuizmo",
 		"%{Library.mono}",
-		"%{wks.location}/Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib"
+		"%{wks.location}/Wiwa/vendor/assimp/lib/x64/release/assimp-vc143-mt.lib",
+		"%{Library.Wwise_SE}",
+		"%{Library.Wwise_MMgr}",
+		"%{Library.Wwise_SMgr}",
+		"%{Library.Wwise_ME}",
+		"%{Library.Wwise_SA}"
 	}
 
 	filter "files:vendor/imguizmo/**.cpp"

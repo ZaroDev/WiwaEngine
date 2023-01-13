@@ -30,12 +30,20 @@ IncludeDirs["Optick"] = "%{wks.location}/Wiwa/vendor/Optick/include"
 IncludeDirs["assimp"] = "%{wks.location}/Wiwa/vendor/assimp/include"
 IncludeDirs["ImGuizmo"] = "%{wks.location}/Wiwa/vendor/imguizmo"
 IncludeDirs["GLI"] = "%{wks.location}/Wiwa/vendor/gli/gli"
+IncludeDirs["Wwise"] = "%{wks.location}/Wiwa/vendor/Wwise/include"
 
 LibraryDirs = {}
 LibraryDirs["mono"] = "%{wks.location}/Wiwa/vendor/mono/lib/%{cfg.buildcfg}"
+LibraryDirs["Wwise"] = "%{wks.location}/Wiwa/vendor/Wwise/lib/x64_vc170/Debug(StaticCRT)/lib/"
 
 Library = {}
 Library["mono"] = "%{LibraryDirs.mono}/libmono-static-sgen.lib"
+
+Library["Wwise_SE"] = "%{LibraryDirs.Wwise}/AkSoundEngine.lib"
+Library["Wwise_MMgr"] = "%{LibraryDirs.Wwise}/AkMemoryMgr.lib"
+Library["Wwise_SMgr"] = "%{LibraryDirs.Wwise}/AkStreamMgr.lib"
+Library["Wwise_ME"] = "%{LibraryDirs.Wwise}/AkMusicEngine.lib"
+Library["Wwise_SA"] = "%{LibraryDirs.Wwise}/AkSpatialAudio.lib"
 
 Library["WinSock"] = "Ws2_32.lib"
 Library["WinMM"] = "Winmm.lib"

@@ -22,6 +22,7 @@
 
 #include <Wiwa/ecs/systems/SpriteRenderer.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
+#include <Wiwa/ecs/systems/AudioSystem.h>
 
 #include <Wiwa/ecs/components/Transform3D.h>
 
@@ -33,6 +34,7 @@
 
 #include <Wiwa/scripting/ScriptEngine.h>
 #include <Wiwa/core/Resources.h>
+#include <Wiwa/audio/Audio.h>
 
 USE_REFLECTION;
 
@@ -71,8 +73,8 @@ namespace Wiwa {
 
 		SetHwInfo();
 
-		/*m_Renderer2D = new Renderer2D();
-		m_Renderer2D->Init();*/
+		m_Renderer2D = new Renderer2D();
+		m_Renderer2D->Init();
 		
 		m_Renderer3D = new Renderer3D();
 		m_Renderer3D->Init();
@@ -84,8 +86,14 @@ namespace Wiwa {
 		PushOverlay(m_ImGuiLayer);
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+
+		bool res = Audio::Init();
+
+		if (!res) {
+			WI_CORE_ERROR("Audio engine error: [{}]", Audio::GetLastError());
+		}
+
 		ScriptEngine::Init();
-		
 	}
 
 	void Application::SetHwInfo()
@@ -118,7 +126,7 @@ namespace Wiwa {
 	{
 		SceneManager::CleanUp();
 		ScriptEngine::ShutDown();
-		
+		Audio::Terminate();
 	}
 
 	void Application::Run()
@@ -129,10 +137,11 @@ namespace Wiwa {
 			glClearColor(m_RenderColor.r, m_RenderColor.g, m_RenderColor.b, m_RenderColor.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			//m_Renderer2D->Update();
 			// Update scene manager
 			SceneManager::Update();
+			Audio::Update();
 			
+			m_Renderer2D->Update();
 			m_Renderer3D->Update();
 
 			m_Renderer2D->Update();

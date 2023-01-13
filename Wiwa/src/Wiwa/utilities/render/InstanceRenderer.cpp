@@ -134,7 +134,7 @@ namespace Wiwa {
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_InstanceCount);
 	}
 
-	uint32_t InstanceRenderer::AddInstance(uint32_t textureId, Vector2i& position, Size2i& size, Color4f& color, TextureClip& clip, Renderer2D::Pivot pivot)
+	uint32_t InstanceRenderer::AddInstance(uint32_t textureId, const Vector2i& position, const Size2i& size, const Color4f& color, const TextureClip& clip, Renderer2D::Pivot pivot)
 	{
 		if (m_InstanceCount == m_MaxInstances)
 			return -1;
@@ -154,14 +154,14 @@ namespace Wiwa {
 		return m_InstanceCount++;
 	}
 
-	void InstanceRenderer::UpdateInstance(uint32_t id, Vector2i& position, Size2i& size, Color4f& color, Renderer2D::Pivot pivot)
+	void InstanceRenderer::UpdateInstance(uint32_t id, const Vector2i& position, const  Size2i& size, const Color4f& color, Renderer2D::Pivot pivot)
 	{
 		m_InstanceVertex[id].position = Renderer2D::CalculateScreenGlPos(position, size, pivot);
 		m_InstanceVertex[id].scale = { static_cast<float>(size.x), static_cast<float>(size.y) };
 		m_InstanceVertex[id].color = color;
 	}
 
-	void InstanceRenderer::UpdateInstance(uint32_t id, Vector2i& position, Renderer2D::Pivot pivot)
+	void InstanceRenderer::UpdateInstance(uint32_t id, const Vector2i& position, Renderer2D::Pivot pivot)
 	{
 		Vector2i s = { (int)m_InstanceVertex[id].scale.w, (int)m_InstanceVertex->scale.h };
 		m_InstanceVertex[id].position = Renderer2D::CalculateScreenGlPos(position, s, pivot);
@@ -171,9 +171,9 @@ namespace Wiwa {
 	{
 		size_t texSize = m_Textures.size();
 
-
-		
-
+		if (texSize > MAX_INSTANCE_TEXTURES) {
+			WI_ASSERT_MSG("Trying to add more textures than MAX_INSTANCE_TEXTURES.\n");
+		}
 
 		int index = static_cast<int>(texSize);
 

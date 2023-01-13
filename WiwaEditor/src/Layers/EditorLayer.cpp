@@ -16,6 +16,7 @@
 #include "../Utils/ProjectManager.h"
 #include <Wiwa/Platform/Windows/WindowsPlatformUtils.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
+#include <Wiwa/ecs/systems/AudioSystem.h>
 #include <Wiwa/ecs/components/Sprite.h>
 
 #include <Wiwa/core/Renderer2D.h>
@@ -102,6 +103,7 @@ void EditorLayer::OnAttach()
 	// Test
 	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
 	em.RegisterSystem<Wiwa::MeshRenderer>();
+	em.RegisterSystem<Wiwa::AudioSystem>();
 	CreateEntityWithModelHierarchy("models/street2");
 	SceneId scene = Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
 	Wiwa::SceneManager::SetScene(scene);
