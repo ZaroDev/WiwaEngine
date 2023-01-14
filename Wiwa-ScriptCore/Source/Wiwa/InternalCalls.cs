@@ -22,11 +22,14 @@ namespace Wiwa
         internal extern static bool IsKeyDownIntr(KeyCode key);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool IsMouseButtonPressedIntr(int button);
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static int GetMouseXIntr();
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static int GetMouseYIntr();
         #endregion
         #region Time
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static float GetDeltaTimeIntr();
-
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static float GetTimeIntr();
         #endregion

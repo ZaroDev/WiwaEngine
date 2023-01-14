@@ -10,5 +10,13 @@
         {
             return InternalCalls.IsMouseButtonPressedIntr(button);
         }
+        public static int GetMouseX()
+        {
+            return InternalCalls.GetMouseXIntr();
+        }
+        public static int GetMouseY()
+        {
+            return InternalCalls.GetMouseYIntr();
+        }
     }
 }

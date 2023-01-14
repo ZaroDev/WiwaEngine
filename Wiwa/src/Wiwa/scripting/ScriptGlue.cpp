@@ -212,7 +212,7 @@ namespace Wiwa {
 
 		return comp;
 	}
-
+	//Input
 	bool IsKeyDownIntr(KeyCode keycode)
 	{
 		return Input::IsKeyPressed(keycode);
@@ -221,6 +221,15 @@ namespace Wiwa {
 	{
 		return Input::IsMouseButtonPressed(button);
 	}
+	int GetMouseXIntr()
+	{
+		return Input::GetMouseX();
+	}
+	int GetMouseYIntr()
+	{
+		return Input::GetMouseY();
+	}
+	
 
 	void ScriptGlue::RegisterFunctions()
 	{
@@ -231,6 +240,8 @@ namespace Wiwa {
 		// Input
 		WI_ADD_INTERNAL_CALL(IsKeyDownIntr);
 		WI_ADD_INTERNAL_CALL(IsMouseButtonPressedIntr);
+		WI_ADD_INTERNAL_CALL(GetMouseXIntr);
+		WI_ADD_INTERNAL_CALL(GetMouseYIntr);
 
 		// ECS
 		WI_ADD_INTERNAL_CALL(GetComponent);

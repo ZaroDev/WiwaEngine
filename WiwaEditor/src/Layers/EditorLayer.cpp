@@ -26,12 +26,10 @@
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
-
 }
 
 EditorLayer::~EditorLayer()
 {
-
 }
 
 void EditorLayer::OnAttach()
@@ -42,12 +40,12 @@ void EditorLayer::OnAttach()
 
 	Wiwa::SceneManager::SetScene(m_EditorSceneId);
 
-	Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
+	Wiwa::Size2i &res = Wiwa::Application::Get().GetTargetResolution();
 	float ar = res.w / (float)res.h;
 	CameraId cam_id = m_EditorScene->GetCameraManager().CreatePerspectiveCamera(45, ar, 0.1f, 131.0f);
-	Wiwa::Camera* cam = m_EditorScene->GetCameraManager().getCamera(cam_id);
-	cam->setPosition({ -52.5f, 30.2f, 26.2f });
-	cam->setRotation({ -26.0f, -30.2f, 0.0f });
+	Wiwa::Camera *cam = m_EditorScene->GetCameraManager().getCamera(cam_id);
+	cam->setPosition({-52.5f, 30.2f, 26.2f});
+	cam->setRotation({-26.0f, -30.2f, 0.0f});
 
 	m_Configuration = std::make_unique<ConfigurationPanel>(this);
 	m_Console = std::make_unique<ConsolePanel>(this);
@@ -63,8 +61,8 @@ void EditorLayer::OnAttach()
 	m_ResourcesPanel = std::make_unique<ResourcesPanel>(this);
 	m_ImportPanel = std::make_unique<ImportPanel>(this);
 	m_ShaderPanel = std::make_unique<ShaderPanel>(this);
+	m_UIPanel = std::make_unique<UIPanel>(this);
 	m_AudioPanel = std::make_unique<AudioPanel>(this);
-
 
 	m_ProjectPanel = std::make_unique<ProjectPanel>(this);
 	m_About = std::make_unique<AboutPanel>(this);
@@ -83,6 +81,7 @@ void EditorLayer::OnAttach()
 	m_Panels.push_back(m_ResourcesPanel.get());
 	m_Panels.push_back(m_ImportPanel.get());
 	m_Panels.push_back(m_ShaderPanel.get());
+	m_Panels.push_back(m_UIPanel.get());
 	m_Panels.push_back(m_AudioPanel.get());
 
 	m_Settings.push_back(m_ProjectPanel.get());
@@ -103,15 +102,15 @@ void EditorLayer::OnAttach()
 	m_StopIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId();
 
 	// Test
-	Wiwa::EntityManager& em = m_EditorScene->GetEntityManager();
+	Wiwa::EntityManager &em = m_EditorScene->GetEntityManager();
 	em.RegisterSystem<Wiwa::MeshRenderer>();
 	em.RegisterSystem<Wiwa::AudioSystem>();
 	CreateEntityWithModelHierarchy("models/street2");
-	//SceneId scene = Wiwa::SceneManager::CreateScene();//Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
-	//Wiwa::SceneManager::SetScene(scene);
-	Wiwa::Vector2i pos = Wiwa::Vector2i{ 0, 0 };
-	Wiwa::Size2i size = Wiwa::Size2i{ 20, 20 };
-	//uint32_t id = Wiwa::Application::Get().GetRenderer2D().CreateInstancedQuadTex(stopId, pos, size, Wiwa::Renderer2D::Pivot::CENTER);
+	// SceneId scene = Wiwa::SceneManager::CreateScene();//Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
+	// Wiwa::SceneManager::SetScene(scene);
+	Wiwa::Vector2i pos = Wiwa::Vector2i{0, 0};
+	Wiwa::Size2i size = Wiwa::Size2i{20, 20};
+	// uint32_t id = Wiwa::Application::Get().GetRenderer2D().CreateInstancedQuadTex(stopId, pos, size, Wiwa::Renderer2D::Pivot::CENTER);
 
 	/*for (size_t i = 0; i < children_size; i++) {
 		const Wiwa::ModelHierarchy* child_h = model_h->children[i];
@@ -129,7 +128,7 @@ void EditorLayer::OnAttach()
 		}
 	}*/
 
-	m_EventCallback = { &Wiwa::Application::OnEvent, &Wiwa::Application::Get()};
+	m_EventCallback = {&Wiwa::Application::OnEvent, &Wiwa::Application::Get()};
 
 	LoadCallback();
 
@@ -144,12 +143,12 @@ void EditorLayer::OnDetach()
 
 void EditorLayer::OnUpdate()
 {
-	for (auto& p : m_Panels)
+	for (auto &p : m_Panels)
 	{
 		if (p->active)
 			p->Update();
 	}
-	for (auto& p : m_Settings)
+	for (auto &p : m_Settings)
 	{
 		if (p->active)
 			p->Update();
@@ -158,17 +157,17 @@ void EditorLayer::OnUpdate()
 
 void EditorLayer::OnImGuiRender()
 {
-	ImGuiContext* ctx = Wiwa::Application::Get().GetImGuiContext();
+	ImGuiContext *ctx = Wiwa::Application::Get().GetImGuiContext();
 	ImGui::SetCurrentContext(ctx);
 
 	MainMenuBar();
 	DockSpace();
-	for (auto& p : m_Panels)
+	for (auto &p : m_Panels)
 	{
 		if (p->active)
 			p->Draw();
 	}
-	for (auto& p : m_Settings)
+	for (auto &p : m_Settings)
 	{
 		if (p->active)
 			p->Draw();
@@ -177,13 +176,13 @@ void EditorLayer::OnImGuiRender()
 		ImGui::ShowDemoWindow(&m_ShowDemo);
 }
 
-void EditorLayer::OnEvent(Wiwa::Event& e)
+void EditorLayer::OnEvent(Wiwa::Event &e)
 {
 	Wiwa::EventDispatcher dispatcher(e);
-	dispatcher.Dispatch<Wiwa::KeyPressedEvent>({ &EditorLayer::OnKeyPressed, this });
-	dispatcher.Dispatch<Wiwa::OnLoadEvent>({ &EditorLayer::EditorLayer::OnLoad, this });
-	dispatcher.Dispatch<Wiwa::OnSaveEvent>({ &EditorLayer::EditorLayer::OnSave, this });
-	dispatcher.Dispatch<Wiwa::WindowCloseEvent>({ &EditorLayer::EditorLayer::OnWindowClose, this });
+	dispatcher.Dispatch<Wiwa::KeyPressedEvent>({&EditorLayer::OnKeyPressed, this});
+	dispatcher.Dispatch<Wiwa::OnLoadEvent>({&EditorLayer::EditorLayer::OnLoad, this});
+	dispatcher.Dispatch<Wiwa::OnSaveEvent>({&EditorLayer::EditorLayer::OnSave, this});
+	dispatcher.Dispatch<Wiwa::WindowCloseEvent>({&EditorLayer::EditorLayer::OnWindowClose, this});
 
 	for (auto it = m_Panels.end(); it != m_Panels.begin();)
 	{
@@ -218,7 +217,7 @@ void EditorLayer::MainMenuBar()
 			ImGui::Separator();
 			if (ImGui::MenuItem("New scene", ""))
 			{
-				size_t id =Wiwa::SceneManager::CreateScene();
+				size_t id = Wiwa::SceneManager::CreateScene();
 				Wiwa::SceneManager::ChangeScene(id);
 			}
 			if (ImGui::MenuItem("Open scene", ""))
@@ -231,7 +230,7 @@ void EditorLayer::MainMenuBar()
 			}
 			if (ImGui::MenuItem("Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
-			
+
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
@@ -245,7 +244,7 @@ void EditorLayer::MainMenuBar()
 		if (ImGui::BeginMenu("View"))
 		{
 			int i = 1;
-			for (auto& p : m_Panels)
+			for (auto &p : m_Panels)
 			{
 				if (ImGui::MenuItem(p->GetName(), "", p->active))
 					p->SwitchActive();
@@ -274,14 +273,15 @@ void EditorLayer::MainMenuBar()
 		}
 		ImGui::EndMainMenuBar();
 	}
-	ImGuiViewportP* viewport = (ImGuiViewportP*)(void*)ImGui::GetMainViewport();
+	ImGuiViewportP *viewport = (ImGuiViewportP *)(void *)ImGui::GetMainViewport();
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
 	float height = ImGui::GetFrameHeight();
 
-	if (ImGui::BeginViewportSideBar("##SecondaryMenuBar", viewport, ImGuiDir_Up, height, window_flags)) {
-		if (ImGui::BeginMenuBar()) 
+	if (ImGui::BeginViewportSideBar("##SecondaryMenuBar", viewport, ImGuiDir_Up, height, window_flags))
+	{
+		if (ImGui::BeginMenuBar())
 		{
-			if(ImGui::Button("None"))
+			if (ImGui::Button("None"))
 				m_GizmoType = -1;
 
 			if (ImGui::Button("Trns"))
@@ -293,10 +293,10 @@ void EditorLayer::MainMenuBar()
 			if (ImGui::Button("Scl"))
 				m_GizmoType = ImGuizmo::OPERATION::SCALE;
 
-			ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+			ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
 			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
 			ImTextureID play = Wiwa::Time::IsPlaying() ? m_StopIcon : m_PlayIcon;
-			if (ImGui::ImageButton(play, { 15, 15 }))
+			if (ImGui::ImageButton(play, {15, 15}))
 			{
 				if (!Wiwa::Time::IsPlaying())
 					Wiwa::Time::Play();
@@ -304,7 +304,7 @@ void EditorLayer::MainMenuBar()
 					Wiwa::Time::Stop();
 			}
 
-			if (ImGui::ImageButton(m_PauseIcon, { 15, 15 }))
+			if (ImGui::ImageButton(m_PauseIcon, {15, 15}))
 			{
 				Wiwa::Time::PauseUnPause();
 			}
@@ -315,54 +315,48 @@ void EditorLayer::MainMenuBar()
 		ImGui::End();
 	}
 
-	if (ImGui::BeginViewportSideBar("##MainStatusBar", viewport, ImGuiDir_Down, height, window_flags)) {
-		if (ImGui::BeginMenuBar()) 
+	if (ImGui::BeginViewportSideBar("##MainStatusBar", viewport, ImGuiDir_Down, height, window_flags))
+	{
+		if (ImGui::BeginMenuBar())
 		{
 			if (ImGui::Button("Assets browser"))
 			{
 				OpenCloseAssetsFolder();
 			}
 
-
 			float iconSize = 16.0f;
 			ImGuiLog log = Wiwa::Application::Get().GetImGuiLayer().GetConsole();
 
 			int pos = ImGui::GetCursorPosX();
-			ImGui::PushStyleColor(ImGuiCol_Button, { 0.0, 0, 0,0 });
+			ImGui::PushStyleColor(ImGuiCol_Button, {0.0, 0, 0, 0});
 			ImGui::AlignTextToFramePadding();
-			if (ImGui::ImageButton(m_InfoIcon, { iconSize, iconSize }))
+			if (ImGui::ImageButton(m_InfoIcon, {iconSize, iconSize}))
 			{
-
 			}
 			ImGui::SetCursorPosX(pos + 40.0f);
 			char buff[16];
 			sprintf_s(buff, 16, "%i", log.infoCount);
 			ImGui::Text(buff);
-			if (ImGui::ImageButton(m_WarningIcon, { iconSize, iconSize }))
+			if (ImGui::ImageButton(m_WarningIcon, {iconSize, iconSize}))
 			{
-
 			}
 			ImGui::SetCursorPosX(pos + 102.0f);
 			sprintf_s(buff, 16, "%i", log.warnCount);
 			ImGui::Text(buff);
-			if (ImGui::ImageButton(m_ErrorIcon, { iconSize, iconSize }))
+			if (ImGui::ImageButton(m_ErrorIcon, {iconSize, iconSize}))
 			{
-				
 			}
 			ImGui::SetCursorPosX(pos + 162.0f);
 			sprintf_s(buff, 16, "%i", log.errorCount);
 			ImGui::Text(buff);
 			ImGui::PopStyleColor();
-			const char* beg = log.Buf.begin() + log.LineOffsets[log.LineOffsets.Size - 2];
+			const char *beg = log.Buf.begin() + log.LineOffsets[log.LineOffsets.Size - 2];
 			ImGui::TextUnformatted(beg, log.Buf.end());
-			
-
 
 			ImGui::EndMenuBar();
 		}
 		ImGui::End();
 	}
-	
 }
 
 void EditorLayer::OpenCloseAssetsFolder()
@@ -405,7 +399,8 @@ void EditorLayer::SaveSceneAs()
 	std::string filePath = Wiwa::FileDialogs::SaveFile("Wiwa Scene (*.wiscene)\0*.wiscene\0");
 	if (!filePath.empty())
 	{
-		if (filePath.find(".wiscene") == filePath.npos) {
+		if (filePath.find(".wiscene") == filePath.npos)
+		{
 			filePath += ".wiscene";
 		}
 		Wiwa::SceneManager::SaveScene(Wiwa::SceneManager::getActiveSceneId(), filePath.c_str());
@@ -429,7 +424,7 @@ void EditorLayer::DockSpace()
 	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode;
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoBackground;
 
-	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+	const ImGuiViewport *viewport = ImGui::GetMainViewport();
 	ImGui::SetNextWindowPos(viewport->WorkPos);
 	ImGui::SetNextWindowSize(viewport->WorkSize);
 	ImGui::SetNextWindowViewport(viewport->ID);
@@ -444,7 +439,7 @@ void EditorLayer::DockSpace()
 	ImGui::PopStyleVar();
 	ImGui::PopStyleVar(2);
 	// Submit the DockSpace
-	ImGuiIO& io = ImGui::GetIO();
+	ImGuiIO &io = ImGui::GetIO();
 	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 	{
 		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
@@ -460,10 +455,12 @@ void EditorLayer::LoadPanelConfig()
 
 	size_t psize = m_Panels.size();
 
-	for (size_t i = 0; i < psize; i++) {
-		const auto& p = m_Panels[i];
+	for (size_t i = 0; i < psize; i++)
+	{
+		const auto &p = m_Panels[i];
 
-		if (config.HasMember(p->GetName())) {
+		if (config.HasMember(p->GetName()))
+		{
 			p->active = config[p->GetName()];
 		}
 	}
@@ -475,8 +472,9 @@ void EditorLayer::SavePanelConfig()
 
 	size_t psize = m_Panels.size();
 
-	for (size_t i = 0; i < psize; i++) {
-		const auto& p = m_Panels[i];
+	for (size_t i = 0; i < psize; i++)
+	{
+		const auto &p = m_Panels[i];
 
 		config.AddMember(p->GetName(), p->active);
 	}
@@ -496,7 +494,7 @@ void EditorLayer::SaveCallback()
 	m_EventCallback(event);
 }
 
-bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
+bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent &e)
 {
 	// Shortcuts
 	if (e.IsRepeat())
@@ -514,7 +512,7 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		if (control)
 		{
 			NewProject();
-		}	//NewScene();
+		} // NewScene();
 
 		break;
 	}
@@ -523,7 +521,7 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		if (control)
 		{
 			OpenProject();
-		}	//OpenScene();
+		} // OpenScene();
 
 		break;
 	}
@@ -546,7 +544,7 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 		if (control)
 		{
 
-		}	//OnDuplicateEntity();
+		} // OnDuplicateEntity();
 
 		break;
 	}
@@ -599,21 +597,21 @@ bool EditorLayer::OnKeyPressed(Wiwa::KeyPressedEvent& e)
 	return false;
 }
 
-bool EditorLayer::OnLoad(Wiwa::OnLoadEvent& e)
+bool EditorLayer::OnLoad(Wiwa::OnLoadEvent &e)
 {
 	LoadPanelConfig();
 
 	return false;
 }
 
-bool EditorLayer::OnSave(Wiwa::OnSaveEvent& e)
+bool EditorLayer::OnSave(Wiwa::OnSaveEvent &e)
 {
 	SavePanelConfig();
 
 	return false;
 }
 
-bool EditorLayer::OnWindowClose(Wiwa::WindowCloseEvent& e)
+bool EditorLayer::OnWindowClose(Wiwa::WindowCloseEvent &e)
 {
 	SaveCallback();
 	return false;
