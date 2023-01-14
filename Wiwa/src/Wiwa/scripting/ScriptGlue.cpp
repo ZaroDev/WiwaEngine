@@ -212,6 +212,39 @@ namespace Wiwa {
 
 		return comp;
 	}
+
+	byte* AddComponent(EntityId id, MonoReflectionType* type) {
+		static std::unordered_map<size_t, Type*> s_ConvertedTypes;
+
+		MonoType* compType = mono_reflection_type_get_type(type);
+		std::string typeName = mono_type_get_name(compType);
+		ClearName(typeName);
+		size_t typeHash = FNV1A_HASH(typeName.c_str());
+
+		std::unordered_map<size_t, Type*>::iterator converted_type = s_ConvertedTypes.find(typeHash);
+
+		Type* t = NULL;
+
+		if (converted_type == s_ConvertedTypes.end()) {
+			t = ConvertType(compType);
+
+			s_ConvertedTypes[typeHash] = t;
+		}
+		else {
+			t = converted_type->second;
+		}
+
+		int alingment;
+
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+		ComponentId compID = em.GetComponentId(t);
+		
+		byte* comp = em.AddComponent(id, t, NULL);
+
+		return comp;
+	}
+
 	//Input
 	bool IsKeyDownIntr(KeyCode keycode)
 	{
@@ -245,5 +278,6 @@ namespace Wiwa {
 
 		// ECS
 		WI_ADD_INTERNAL_CALL(GetComponent);
+		WI_ADD_INTERNAL_CALL(AddComponent);
 	}
 }

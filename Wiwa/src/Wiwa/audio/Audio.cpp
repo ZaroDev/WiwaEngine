@@ -479,7 +479,7 @@ bool Audio::ReloadEvents() {
             StopEvent(m_LoadedEvents[i].name.c_str());
         }
     }
-
+    
     return true;
 }
 
