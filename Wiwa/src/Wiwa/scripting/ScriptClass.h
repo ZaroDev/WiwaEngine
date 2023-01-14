@@ -6,6 +6,7 @@ extern "C" {
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoArray MonoArray;
+	typedef struct _MonoClassField MonoClassField;
 }
 
 namespace Wiwa {
@@ -16,8 +17,13 @@ namespace Wiwa {
 		ScriptClass(const std::string& classNamespace, const std::string& className);
 
 		MonoObject* Instantiate();
+
 		MonoMethod* GetMethod(const std::string& name, int parameterCount);
 		MonoObject* InvokeMethod(MonoObject* instance, MonoMethod* method, void** params = nullptr);
+
+		MonoClassField* GetField(const std::string& name);
+		void SetFieldValue(MonoObject* instance, MonoClassField* field, void* value);
+
 		MonoClass* m_MonoClass = nullptr;
 	private:
 		std::string m_ClassNamespace;

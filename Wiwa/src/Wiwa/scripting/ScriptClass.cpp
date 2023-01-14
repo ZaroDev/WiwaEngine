@@ -27,4 +27,14 @@ namespace Wiwa {
 	{
 		return mono_runtime_invoke(method, instance, params, nullptr);
 	}
+
+	MonoClassField* ScriptClass::GetField(const std::string& name)
+	{
+		return mono_class_get_field_from_name(m_MonoClass, name.c_str());
+	}
+
+	void ScriptClass::SetFieldValue(MonoObject* instance, MonoClassField* field, void* value)
+	{
+		mono_field_set_value(instance, field, value);
+	}
 }

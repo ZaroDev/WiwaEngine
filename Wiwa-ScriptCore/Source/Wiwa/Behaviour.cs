@@ -9,14 +9,15 @@ namespace Wiwa
 
     public class Behaviour
     {
-        public ref T GetComponent<T>(EntityId id) where T : unmanaged
+        protected EntityId m_EntityId;
+        public ref T GetComponent<T>() where T : unmanaged
         {
-            return ref InternalCalls.GetComponent<T>(id, typeof(T));
+            return ref InternalCalls.GetComponent<T>(m_EntityId, typeof(T));
         }
 
-        public ref T AddComponent<T>(EntityId id) where T : unmanaged
+        public ref T AddComponent<T>() where T : unmanaged
         {
-            return ref InternalCalls.AddComponent<T>(id, typeof(T));
+            return ref InternalCalls.AddComponent<T>(m_EntityId, typeof(T));
         }
     }
 }

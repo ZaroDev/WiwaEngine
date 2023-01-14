@@ -5,11 +5,11 @@ namespace Wiwa
     using EntityId = System.UInt64;
     class EnemyController : Behaviour
     {
-        void Awake(EntityId entityId)
+        void Awake()
         {
-            Console.WriteLine("Awaking: {0}", entityId.ToString());
+            Console.WriteLine("Awaking: {0}", m_EntityId.ToString());
 
-            ref Transform3D t3d = ref GetComponent<Transform3D>(entityId);
+            ref Transform3D t3d = ref GetComponent<Transform3D>();
 
             Console.WriteLine("Transform3D -> Position: ({0},{1},{2}) Rotation: ({3},{4},{5}), Scale: ({6},{7},{8})",
                 t3d.LocalPosition.x, t3d.LocalPosition.y, t3d.LocalPosition.z,
@@ -19,16 +19,16 @@ namespace Wiwa
 
             t3d.LocalPosition.x += 1;
 
-            ref TestComponent tc = ref AddComponent<TestComponent>(entityId);
+            ref TestComponent tc = ref AddComponent<TestComponent>();
 
             tc.val1 = 3;
         }
 
-        void Init(EntityId entityId)
+        void Init()
         {
-            Console.WriteLine("Init: {0}", entityId.ToString());
+            Console.WriteLine("Init: {0}", m_EntityId.ToString());
 
-            ref Transform3D t3d = ref GetComponent<Transform3D>(entityId);
+            ref Transform3D t3d = ref GetComponent<Transform3D>();
 
             Console.WriteLine("Transform3D -> Position: ({0},{1},{2}) Rotation: ({3},{4},{5}), Scale: ({6},{7},{8})",
                 t3d.LocalPosition.x, t3d.LocalPosition.y, t3d.LocalPosition.z,
@@ -39,11 +39,11 @@ namespace Wiwa
             t3d.LocalPosition.x += 1;
         }
 
-        void Update(EntityId entityId)
+        void Update()
         {
-            Console.WriteLine("Updating: {0}", entityId.ToString());
+            Console.WriteLine("Updating: {0}", m_EntityId.ToString());
 
-            ref Transform3D t3d = ref GetComponent<Transform3D>(entityId);
+            ref Transform3D t3d = ref GetComponent<Transform3D>();
 
             Console.WriteLine("Transform3D -> Position: ({0},{1},{2}) Rotation: ({3},{4},{5}), Scale: ({6},{7},{8})",
                 t3d.LocalPosition.x, t3d.LocalPosition.y, t3d.LocalPosition.z,

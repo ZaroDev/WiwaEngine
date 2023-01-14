@@ -7,41 +7,40 @@
 namespace Wiwa {
 	class WI_API System {
 	private:
-		std::vector<EntityId> m_RegisteredEntities;
-
-		size_t getEntityPos(EntityId eid);
+		
 	protected:
-		template<class T> T* GetComponent(EntityId eid);
+		EntityId m_EntityId;
 
-		virtual void OnAwake(EntityId eid){}
+		template<class T> T* GetComponent();
 
-		virtual void OnInit(EntityId eid) {}
+		virtual void OnAwake(){}
 
-		virtual void OnUpdate(EntityId eid) {}
+		virtual void OnInit() {}
 
-		virtual void OnEntityAdded(EntityId entity) {}
+		virtual void OnUpdate() {}
 
-		virtual void OnEntityRemoved(EntityId entity) {}
+		virtual void OnDestroy(){}
+
+		virtual void OnEntitySet() {}
 	public:
 		System();
 		virtual ~System(); // Virtual destructor, so that child destructor is called
 
-		void Reserve(size_t amount);
-
-		void AddEntity(EntityId entity);
-		void RemoveEntity(EntityId entity);
+		void SetEntity(EntityId entity) { m_EntityId = entity; OnEntitySet(); }
 
 		void Awake();
 		void Init();
 		void Update();
+
+		void Destroy();
 	};
 
 	template<class T>
-	inline T* System::GetComponent(EntityId eid)
+	inline T* System::GetComponent()
 	{
 		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
-		T* component = em.GetComponent<T>(eid);
+		T* component = em.GetComponent<T>(m_EntityId);
 
 		return component;
 	}

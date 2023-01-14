@@ -9,19 +9,15 @@
 #include <Wiwa/core/Renderer3D.h>
 
 namespace Wiwa {
+	
 	EntityManager::EntityManager()
 	{
 		m_ComponentIdCount = 0;
-		m_SystemIdCount = 0;
 	}
 
 	EntityManager::~EntityManager()
 	{
-		size_t size = m_Systems.size();
 
-		for (size_t i = 0; i < size; i++) {
-			delete m_Systems[i];
-		}
 	}
 
 	void EntityManager::RemoveEntity(EntityId eid)
@@ -65,12 +61,16 @@ namespace Wiwa {
 		}
 
 		// Callback for systems
-		size_t systems = m_EntitySystems[eid].size();
+		size_t systems_size = m_EntitySystems[eid].size();
 
-		for (size_t i = 0; i < systems; i++) {
-			m_Systems[i]->RemoveEntity(eid);
+		for (size_t i = 0; i < systems_size; i++) {
+			System* system = m_EntitySystems[eid][i];
+			system->Destroy();
+
+			delete system;
 		}
 
+		m_EntitySystemIds[eid].clear();
 		m_EntitySystems[eid].clear();
 
 		// Add to removed component indexes
@@ -147,11 +147,17 @@ namespace Wiwa {
 		// Update transforms
 		UpdateTransforms();
 
-		// Update systems
-		size_t sysize = m_Systems.size();
+		// Update entity systems
+		size_t entitySize = m_EntitySystems.size();
 
-		for (size_t i = 0; i < sysize; i++) {
-			m_Systems[i]->Update();
+		for (size_t i = 0; i < entitySize; i++) {
+			size_t system_size = m_EntitySystems[i].size();
+
+			for (size_t j = 0; j < system_size; j++) {
+				System* s = m_EntitySystems[i][j];
+
+				s->Update();
+			}
 		}
 	}
 
@@ -170,6 +176,7 @@ namespace Wiwa {
 			eid = m_EntityComponents.size();
 
 			m_EntityComponents.emplace_back();
+			m_EntitySystemIds.emplace_back();
 			m_EntitySystems.emplace_back();
 			m_EntityNames.emplace_back();
 			m_EntityParent.emplace_back();
@@ -263,7 +270,7 @@ namespace Wiwa {
 	void EntityManager::ReserveEntities(size_t amount)
 	{
 		m_EntityComponents.reserve(amount);
-		m_EntitySystems.reserve(amount);
+		m_EntitySystemIds.reserve(amount);
 		m_EntityParent.reserve(amount);
 		m_EntityChildren.reserve(amount);
 		m_EntitiesAlive.reserve(amount);
@@ -524,45 +531,56 @@ namespace Wiwa {
 
 		return hasComponents;
 	}
-	bool EntityManager::HasSystem(EntityId eid, SystemId sid)
+
+	bool EntityManager::HasSystem(EntityId eid, SystemHash system_hash)
 	{
-		size_t size = m_EntitySystems[eid].size();
+		size_t size = m_EntitySystemIds[eid].size();
 
 		for (size_t i = 0; i < size; i++) {
-			if (m_EntitySystems[eid][i] == sid)
+			if (m_EntitySystemIds[eid][i] == system_hash)
 				return true;
 		}
 
 		return false;
 	}
 
-	SystemId EntityManager::GetSystemId(SystemHash system_hash)
+	size_t EntityManager::getSystemIndex(EntityId entityId, SystemHash system_hash)
 	{
-		SystemId system_id = -1;
-		std::unordered_map<size_t, SystemId>::iterator sid = m_SystemIds.find(system_hash);
+		size_t index = INVALID_INDEX;
 
-		if (sid == m_SystemIds.end()) {
-			system_id = m_SystemIdCount++;
+		size_t size = m_EntitySystemIds[entityId].size();
 
-			m_SystemIds[system_hash] = system_id;
+		for (size_t i = 0; i < size; i++) {
+			if (m_EntitySystemIds[entityId][i] == system_hash)
+			{
+				index = i;
+				break;
+			}
 		}
-		else {
-			system_id = sid->second;
-		}
 
-		return system_id;
-	}
-
-	SystemId EntityManager::GetSystemId(const Type* type)
-	{
-		return GetSystemId(type->hash);
+		return index;
 	}
 
 	void EntityManager::ApplySystem(EntityId eid, SystemHash system_hash)
 	{
-		SystemId sid = GetSystemId(system_hash);
+		if (HasSystem(eid, system_hash)) return;
 
-		m_Systems[sid]->AddEntity(eid);
-		m_EntitySystems[eid].push_back(sid);
+		const Type* stype = Application::Get().GetSystemTypeH(system_hash);
+
+		if (stype) {
+			System* system = (System*)stype->New();
+			system->SetEntity(eid);
+
+			m_EntitySystems[eid].push_back(system);
+			m_EntitySystemIds[eid].push_back(system_hash);
+		}
+		else {
+			WI_CORE_ERROR("System hash not found [{}]", system_hash);
+		}
+	}
+
+	void EntityManager::ApplySystem(EntityId eid, const Type* system_type)
+	{
+		ApplySystem(eid, system_type->hash);
 	}
 }

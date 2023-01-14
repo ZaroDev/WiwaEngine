@@ -321,7 +321,6 @@ namespace Wiwa {
 
 			// Load entities
 			EntityManager& em = sc->GetEntityManager();
-			em.RegisterSystem<MeshRenderer>();
 
 			size_t entity_count;
 			size_t p_entity_count;

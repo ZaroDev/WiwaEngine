@@ -23,7 +23,7 @@ public:
 		const Type* type = Wiwa::ScriptEngine::getSystems()[FNV1A_HASH("EnemyController")];
 
 		Wiwa::System* system = (Wiwa::System*)type->New();
-		system->AddEntity(0);
+		system->SetEntity(0);
 		system->Awake();
 		system->Init();
 		system->Update();

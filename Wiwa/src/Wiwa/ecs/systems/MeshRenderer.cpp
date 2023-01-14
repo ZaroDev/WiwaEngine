@@ -17,10 +17,10 @@ namespace Wiwa {
 
 	}
 
-	void MeshRenderer::OnUpdate(EntityId eid)
+	void MeshRenderer::OnUpdate()
 	{
-		Transform3D* t3d = GetComponent<Transform3D>(eid);
-		Mesh* mesh = GetComponent<Mesh>(eid);
+		Transform3D* t3d = GetComponent<Transform3D>();
+		Mesh* mesh = GetComponent<Mesh>();
 
 		if (!mesh) return;
 

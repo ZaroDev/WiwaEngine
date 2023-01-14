@@ -14,8 +14,8 @@ namespace Wiwa {
 		MeshRenderer();
 		~MeshRenderer();
 
-		void OnUpdate(EntityId eid) override;
+		void OnUpdate() override;
 	};
 }
 
-//REGISTER_TYPE(Wiwa::MeshRenderer);
+REGISTER_SYSTEM(Wiwa::MeshRenderer);

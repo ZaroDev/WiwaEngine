@@ -103,8 +103,6 @@ void EditorLayer::OnAttach()
 
 	// Test
 	Wiwa::EntityManager &em = m_EditorScene->GetEntityManager();
-	em.RegisterSystem<Wiwa::MeshRenderer>();
-	em.RegisterSystem<Wiwa::AudioSystem>();
 	CreateEntityWithModelHierarchy("models/street2");
 	// SceneId scene = Wiwa::SceneManager::CreateScene();//Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
 	// Wiwa::SceneManager::SetScene(scene);

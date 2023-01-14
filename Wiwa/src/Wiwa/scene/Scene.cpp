@@ -49,12 +49,12 @@ namespace Wiwa {
 
 	void Scene::Start()
 	{
-		m_EntityManager.RegisterSystem<MeshRenderer>();
+		
 	}
 
 	void Scene::Init()
 	{
-		m_EntityManager.RegisterSystem<MeshRenderer>();
+		
 	}
 
 	void Scene::Load()

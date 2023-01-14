@@ -13,10 +13,14 @@ namespace Wiwa {
 		AudioSystem();
 		~AudioSystem();
 
-		void OnEntityAdded(EntityId eid) override;
+		void OnAwake() override;
 
-		void OnEntityRemoved(EntityId eid) override;
+		void OnInit() override;
 
-		void OnUpdate(EntityId eid) override;
+		void OnUpdate() override;
+
+		void OnDestroy() override;
 	};
 }
+
+REGISTER_SYSTEM(Wiwa::AudioSystem);
