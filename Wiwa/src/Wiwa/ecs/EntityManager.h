@@ -33,7 +33,7 @@ namespace Wiwa {
 		// Entity management
 		std::vector<std::string> m_EntityNames;
 		std::vector<std::map<ComponentId, size_t>> m_EntityComponents;
-		std::vector<std::vector<SystemHash>> m_EntitySystemIds;
+		std::vector<std::vector<SystemHash>> m_EntitySystemHashes;
 		std::vector<std::vector<System*>> m_EntitySystems;
 		std::vector<EntityId> m_EntityParent;
 		std::vector<std::vector<EntityId>> m_EntityChildren;
@@ -101,6 +101,8 @@ namespace Wiwa {
 		inline std::vector<EntityId>* GetEntityChildren(EntityId eid) { return &m_EntityChildren[eid]; }
 
 		inline std::map<ComponentId, size_t>& GetEntityComponents(EntityId id) { return m_EntityComponents[id]; }
+
+		inline std::vector<SystemHash>& GetEntitySystemHashes(EntityId id) { return m_EntitySystemHashes[id]; }
 		
 		inline const Type* GetComponentType(ComponentId id) { return m_ComponentTypes[id]; }
 

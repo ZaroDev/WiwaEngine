@@ -70,7 +70,7 @@ namespace Wiwa {
 			delete system;
 		}
 
-		m_EntitySystemIds[eid].clear();
+		m_EntitySystemHashes[eid].clear();
 		m_EntitySystems[eid].clear();
 
 		// Add to removed component indexes
@@ -176,7 +176,7 @@ namespace Wiwa {
 			eid = m_EntityComponents.size();
 
 			m_EntityComponents.emplace_back();
-			m_EntitySystemIds.emplace_back();
+			m_EntitySystemHashes.emplace_back();
 			m_EntitySystems.emplace_back();
 			m_EntityNames.emplace_back();
 			m_EntityParent.emplace_back();
@@ -270,7 +270,7 @@ namespace Wiwa {
 	void EntityManager::ReserveEntities(size_t amount)
 	{
 		m_EntityComponents.reserve(amount);
-		m_EntitySystemIds.reserve(amount);
+		m_EntitySystemHashes.reserve(amount);
 		m_EntityParent.reserve(amount);
 		m_EntityChildren.reserve(amount);
 		m_EntitiesAlive.reserve(amount);
@@ -313,7 +313,7 @@ namespace Wiwa {
 	}
 
 	byte* EntityManager::AddComponent(EntityId entityId, ComponentHash hash, byte* value) {
-		const Type* ctype = Application::Get().getCoreTypeH(hash);
+		const Type* ctype = Application::Get().GetComponentTypeH(hash);
 
 		return AddComponent(entityId, ctype, value);
 	}
@@ -534,10 +534,10 @@ namespace Wiwa {
 
 	bool EntityManager::HasSystem(EntityId eid, SystemHash system_hash)
 	{
-		size_t size = m_EntitySystemIds[eid].size();
+		size_t size = m_EntitySystemHashes[eid].size();
 
 		for (size_t i = 0; i < size; i++) {
-			if (m_EntitySystemIds[eid][i] == system_hash)
+			if (m_EntitySystemHashes[eid][i] == system_hash)
 				return true;
 		}
 
@@ -548,10 +548,10 @@ namespace Wiwa {
 	{
 		size_t index = INVALID_INDEX;
 
-		size_t size = m_EntitySystemIds[entityId].size();
+		size_t size = m_EntitySystemHashes[entityId].size();
 
 		for (size_t i = 0; i < size; i++) {
-			if (m_EntitySystemIds[entityId][i] == system_hash)
+			if (m_EntitySystemHashes[entityId][i] == system_hash)
 			{
 				index = i;
 				break;
@@ -570,10 +570,9 @@ namespace Wiwa {
 		if (stype) {
 			System* system = (System*)stype->New();
 			system->SetEntity(eid);
-			system->Awake();
 
 			m_EntitySystems[eid].push_back(system);
-			m_EntitySystemIds[eid].push_back(system_hash);
+			m_EntitySystemHashes[eid].push_back(system_hash);
 		}
 		else {
 			WI_CORE_ERROR("System hash not found [{}]", system_hash);

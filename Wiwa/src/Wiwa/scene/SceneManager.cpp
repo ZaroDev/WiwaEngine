@@ -65,6 +65,7 @@ namespace Wiwa {
 		// Read component count
 		scene_file.Read(&component_size, sizeof(size_t));
 
+		// For each component in entity
 		for (size_t i = 0; i < component_size; i++) {
 			ComponentHash c_hash;
 			size_t c_size;
@@ -90,12 +91,23 @@ namespace Wiwa {
 				size_t matpath_size = strlen(mesh->mat_path);
 				if(matpath_size > 0) mesh->materialId = Resources::Load<Material>(mesh->mat_path);
 			}
-
 		}
 
-		if (em.HasComponents<Transform3D, Mesh>(eid)) {
-			
-			em.ApplySystem<MeshRenderer>(eid);
+		size_t system_count;
+		
+		// Read system count
+		scene_file.Read(&system_count, sizeof(size_t));
+		
+		if (system_count > 0) {
+			std::vector<SystemHash> system_hashes;
+			system_hashes.resize(system_count);
+
+			// Read system hashes
+			scene_file.Read(&system_hashes[0], system_count * sizeof(SystemHash));
+
+			for (size_t i = 0; i < system_count; i++) {
+				em.ApplySystem(eid, system_hashes[i]);
+			}
 		}
 
 		// Check for child entities
@@ -138,6 +150,18 @@ namespace Wiwa {
 			scene_file.Write(c_data, c_size);
 		}
 
+		// Save entity systems
+		const std::vector<SystemHash>& system_list = em.GetEntitySystemHashes(eid);
+		size_t system_count = system_list.size();
+
+		// Save system count
+		scene_file.Write(&system_count, sizeof(size_t));
+
+		if (system_count > 0) {
+			// Save system hashes
+			scene_file.Write(system_list.data(), system_count * sizeof(SystemHash));
+		}
+
 		// Check for child entities
 		std::vector<EntityId>* children = em.GetEntityChildren(eid);
 		size_t children_size = children->size();
@@ -161,6 +185,8 @@ namespace Wiwa {
 			// Save scene data
 			// TODO: Save scene info??
 			// Scene name, etc
+
+			// Save cameras
 			CameraManager& cm = sc->GetCameraManager();
 			std::vector<CameraId>& cameras = cm.getCameras();
 			size_t camera_count = cameras.size();
