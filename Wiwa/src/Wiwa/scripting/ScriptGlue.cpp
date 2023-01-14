@@ -245,6 +245,23 @@ namespace Wiwa {
 		return comp;
 	}
 
+	void ApplySystem(EntityId id, MonoReflectionType* type) {
+		MonoType* compType = mono_reflection_type_get_type(type);
+		std::string typeName = mono_type_get_name(compType);
+		ClearName(typeName);
+		size_t typeHash = FNV1A_HASH(typeName.c_str());
+
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+		em.ApplySystem(id, typeHash);
+	}
+
+	EntityId CreateEntity() {
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+		return em.CreateEntity();
+	}
+
 	//Input
 	bool IsKeyDownIntr(KeyCode keycode)
 	{
@@ -279,5 +296,7 @@ namespace Wiwa {
 		// ECS
 		WI_ADD_INTERNAL_CALL(GetComponent);
 		WI_ADD_INTERNAL_CALL(AddComponent);
+		WI_ADD_INTERNAL_CALL(ApplySystem);
+		WI_ADD_INTERNAL_CALL(CreateEntity);
 	}
 }

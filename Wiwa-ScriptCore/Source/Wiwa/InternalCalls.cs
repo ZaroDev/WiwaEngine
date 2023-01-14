@@ -16,6 +16,10 @@ namespace Wiwa
         internal extern static ref T GetComponent<T>(EntityId id, System.Type type);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static ref T AddComponent<T>(EntityId id, System.Type type);
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void ApplySystem(EntityId id, System.Type type);
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static EntityId CreateEntity();
         #endregion
         #region Input
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

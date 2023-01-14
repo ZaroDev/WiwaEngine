@@ -99,6 +99,7 @@ namespace Wiwa
 		const Type* GetComponentType(size_t index) const;
 		void RegisterComponentType(const Type* component);
 		// System reflection
+		size_t GetSystemTypeCount() const { return m_SystemTypes.size(); }
 		const Type* GetSystemTypeH(size_t hash) const;
 		const Type* GetSystemType(size_t index) const;
 		void RegisterSystemType(const Type* system);

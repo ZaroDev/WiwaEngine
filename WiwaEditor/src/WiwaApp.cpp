@@ -20,15 +20,7 @@ public:
 
 		PushOverlay(new EditorLayer());
 
-		const Type* type = Wiwa::ScriptEngine::getSystems()[FNV1A_HASH("EnemyController")];
-
-		Wiwa::System* system = (Wiwa::System*)type->New();
-		system->SetEntity(0);
-		system->Awake();
-		system->Init();
-		system->Update();
-
-		delete system;
+		Wiwa::SceneManager::getActiveScene()->GetEntityManager().ApplySystem(0, FNV1A_HASH("EnemyController"));
 	}
 
 	~WiwaApp()

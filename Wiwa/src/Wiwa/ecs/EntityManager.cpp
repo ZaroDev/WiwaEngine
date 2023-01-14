@@ -570,6 +570,7 @@ namespace Wiwa {
 		if (stype) {
 			System* system = (System*)stype->New();
 			system->SetEntity(eid);
+			system->Awake();
 
 			m_EntitySystems[eid].push_back(system);
 			m_EntitySystemIds[eid].push_back(system_hash);

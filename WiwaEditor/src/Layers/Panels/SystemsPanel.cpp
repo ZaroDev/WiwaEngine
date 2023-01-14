@@ -3,14 +3,17 @@
 #include <unordered_map>
 #include <Wiwa/utilities/Reflection.h>
 #include <Wiwa/scripting/ScriptEngine.h>
+#include <Wiwa/core/Application.h>
+
 SystemsPanel::SystemsPanel(EditorLayer* instance) 
 	: Panel("Systems", instance)
 {
-}
 
+}
 
 SystemsPanel::~SystemsPanel()
 {
+
 }
 
 void SystemsPanel::Draw()
@@ -19,10 +22,16 @@ void SystemsPanel::Draw()
 	ImGui::Text("Active Systems:");
 	ImGui::Separator();
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-	std::unordered_map<size_t, Type*> systems = Wiwa::ScriptEngine::getSystems();
-	for (auto system = systems.begin(); system != systems.end(); system++)
+	
+	Wiwa::Application& app = Wiwa::Application::Get();
+
+	size_t system_count = app.GetSystemTypeCount();
+
+	for (size_t i=0;i<system_count;i++)
 	{
-		ImGui::TreeNodeEx(system->second->name.c_str(), flags);
+		const Type* s_type = app.GetSystemType(i);
+
+		ImGui::TreeNodeEx(s_type->name.c_str(), flags);
 	}
 
 	ImGui::End();
