@@ -1,15 +1,11 @@
-﻿using System;
-using System.Runtime;
-using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-
-namespace Wiwa
+﻿namespace Wiwa
 {
     using EntityId = System.UInt64;
 
     public class Behaviour
     {
         protected EntityId m_EntityId;
+
         public ref T GetComponent<T>(EntityId entity) where T : unmanaged
         {
             return ref InternalCalls.GetComponent<T>(entity, typeof(T));
