@@ -23,7 +23,7 @@
 #include <Wiwa/core/Renderer2D.h>
 
 #include "../Entities.h"
-
+EditorLayer* EditorLayer::s_Instance = nullptr;
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -35,6 +35,9 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
+	WI_CORE_ASSERT(!s_Instance, "Application already exists!");
+
+	s_Instance = this;
 	// Editor scene
 	m_EditorSceneId = Wiwa::SceneManager::CreateScene();
 	Wiwa::SceneManager::StopScene();
@@ -135,10 +138,13 @@ void EditorLayer::OnAttach()
 	LoadCallback();
 
 	WI_TRACE("Editor layer attached!");
+
+	Wiwa::SceneManager::getActiveScene()->GetEntityManager().ApplySystem(0, FNV1A_HASH("TankController"));
 }
 
 void EditorLayer::OnDetach()
 {
+	s_Instance = nullptr;
 	m_Panels.clear();
 	m_Settings.clear();
 }
@@ -192,6 +198,13 @@ void EditorLayer::OnEvent(Wiwa::Event &e)
 		if (e.Handled)
 			break;
 	}
+}
+
+void EditorLayer::SubmitToMainThread(const std::function<void()> func)
+{
+	std::scoped_lock<std::mutex> lock(m_EditorThreadMutex);
+
+	m_EditorThreadQueue.emplace_back(func);
 }
 
 void EditorLayer::MainMenuBar()
@@ -670,4 +683,12 @@ bool EditorLayer::OnWindowClose(Wiwa::WindowCloseEvent &e)
 {
 	SaveCallback();
 	return false;
+}
+
+void EditorLayer::ExecuteMainThreadQueue()
+{
+	for (auto& func : m_EditorThreadQueue)
+		func();
+
+	m_EditorThreadQueue.clear();
 }

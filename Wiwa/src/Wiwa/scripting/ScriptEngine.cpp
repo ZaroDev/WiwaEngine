@@ -119,7 +119,7 @@ namespace Wiwa {
 		mono_domain_set(mono_get_root_domain(), false);
 
 		mono_domain_unload(s_Data->AppDomain);
-
+		ClearAssemblyTypes();
 		LoadAssembly(s_Data->CoreAssemblyFilePath);
 		LoadAppAssembly(s_Data->AppAssemblyFilePath);
 
@@ -145,16 +145,6 @@ namespace Wiwa {
 	}
 	void ScriptEngine::LoadAssemblyTypes(MonoAssembly* assembly)
 	{
-		for (auto& [Key, Type] : s_Data->Systems)
-		{
-			Application::Get().DeleteSystemType(Type);
-		}
-		for (auto& [Key, Type] : s_Data->Components)
-		{
-			Application::Get().DeleteComponentType(Type);
-		}
-		s_Data->Systems.clear();
-		s_Data->Components.clear();
 		MonoImage* image = mono_assembly_get_image(assembly);
 		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
@@ -191,7 +181,7 @@ namespace Wiwa {
 
 			if (isSystem)
 			{
-				type->New = [nameSpace, name]() -> void* { return new SystemScriptClass(nameSpace, name); };
+				type->New = [assembly, nameSpace, name]() -> void* { return new SystemScriptClass(assembly, nameSpace, name); };
 				s_Data->Systems[type->hash] = type;
 
 				Application::Get().RegisterSystemType(type);
@@ -210,5 +200,18 @@ namespace Wiwa {
 				Application::Get().RegisterComponentType(type);
 			}
 		}
+	}
+	void ScriptEngine::ClearAssemblyTypes()
+	{
+		for (auto& [Key, Type] : s_Data->Systems)
+		{
+			Application::Get().DeleteSystemType(Type);
+		}
+		for (auto& [Key, Type] : s_Data->Components)
+		{
+			Application::Get().DeleteComponentType(Type);
+		}
+		s_Data->Systems.clear();
+		s_Data->Components.clear();
 	}
 }

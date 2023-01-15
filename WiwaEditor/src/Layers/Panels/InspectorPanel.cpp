@@ -216,7 +216,7 @@ void InspectorPanel::DrawTransform3dComponent(byte* data)
 	Wiwa::Transform3D* transform = (Wiwa::Transform3D*)data;
 	DrawVec3Control("Position", &transform->localPosition, 0.0f, 100.0f);
 	DrawVec3Control("Rotation", &transform->localRotation, 0.0f, 100.0f);
-	DrawVec3Control("Scale", &transform->localScale, 0.0f, 100.0f);
+	DrawVec3Control("Scale", &transform->localScale, 1.0f, 100.0f);
 }
 
 InspectorPanel::InspectorPanel(EditorLayer* instance)

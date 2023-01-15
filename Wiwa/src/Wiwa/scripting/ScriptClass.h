@@ -6,6 +6,7 @@ extern "C" {
 	typedef struct _MonoObject MonoObject;
 	typedef struct _MonoMethod MonoMethod;
 	typedef struct _MonoArray MonoArray;
+	typedef struct _MonoAssembly MonoAssembly;
 	typedef struct _MonoClassField MonoClassField;
 }
 
@@ -14,7 +15,7 @@ namespace Wiwa {
 	{
 	public:
 		ScriptClass() = default;
-		ScriptClass(const std::string& classNamespace, const std::string& className);
+		ScriptClass(MonoAssembly* assembly,const std::string& classNamespace, const std::string& className);
 
 		MonoObject* Instantiate();
 

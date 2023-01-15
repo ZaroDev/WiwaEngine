@@ -7,8 +7,8 @@
 #include <mono/metadata/object.h>
 
 namespace Wiwa {
-	SystemScriptClass::SystemScriptClass(const std::string& classNamespace, const std::string& className) :
-		scriptClass(classNamespace, className)
+	SystemScriptClass::SystemScriptClass(MonoAssembly* assembly, const std::string& classNamespace, const std::string& className) :
+		scriptClass(assembly, classNamespace, className)
 	{
 		m_SystemObject = scriptClass.Instantiate();
 

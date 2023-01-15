@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdlib>
 #include <Wiwa/core/Core.h>
-
+#pragma warning(disable : 4595)
 namespace Wiwa {
 	// Allocation metrics
 	struct WI_API AllocationMetrics {

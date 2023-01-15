@@ -13,7 +13,7 @@ namespace Wiwa {
 		SystemScriptClass() = default;
 		~SystemScriptClass() = default;
 
-		SystemScriptClass(const std::string& classNamespace, const std::string& className);
+		SystemScriptClass(MonoAssembly* assembly,const std::string& classNamespace, const std::string& className);
 
 		void OnAwake() override;
 

@@ -36,8 +36,8 @@ namespace Wiwa {
 	
 		struct ScriptEngineData
 		{
-			MonoDomain* RootDomain;
-			MonoDomain* AppDomain;
+			MonoDomain* RootDomain = nullptr;
+			MonoDomain* AppDomain = nullptr;
 
 			MonoAssembly* CoreAssembly = nullptr;
 			MonoAssembly* SystemAssembly = nullptr;
@@ -61,6 +61,8 @@ namespace Wiwa {
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
 
 		static void LoadAssemblyTypes(MonoAssembly* assembly);
+
+		static void ClearAssemblyTypes();
 
 		friend class ScriptClass;
 		friend class SystemClass;

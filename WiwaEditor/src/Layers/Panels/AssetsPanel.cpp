@@ -13,6 +13,7 @@
 #include "../EditorLayer.h"
 #include "../../Utils/EditorUtils.h"
 
+static DirectorySpecs m_Directory;
 
 static const std::filesystem::path s_AssetsPath = "Assets";
 AssetsPanel::AssetsPanel(EditorLayer* instance)
@@ -29,9 +30,6 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	m_FileIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
 	m_BackIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(backId)->GetTextureId();
 	m_MaterialIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(matId)->GetTextureId();
-
-
-	
 }
 
 AssetsPanel::~AssetsPanel()
@@ -46,7 +44,6 @@ void AssetsPanel::Update()
 	if (lastWriteTime != lastAbsoluteDirTime)
 	{
 		m_Directory.directories.clear();
-		m_Directory.files.clear();
 		for (auto &p : std::filesystem::directory_iterator(m_Directory.path))
 		{
 			if (p.is_directory())
@@ -54,6 +51,7 @@ void AssetsPanel::Update()
 				DirectorySpecs*dir = new DirectorySpecs();
 				dir->path = p.path();
 				m_Directory.directories.push_back(dir);
+				m_Directory.folderFileWatcher = std::make_unique<filewatch::FileWatch<std::string>>(p.path().string(), OnFSEvent);
 				for (auto &p1 : std::filesystem::directory_iterator(dir->path))
 				{
 					UpdateDir(p1, dir);
@@ -97,7 +95,7 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 }
 void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 {
-	std::string p = path.path().string().c_str();
+	std::string p = path.path().string();
 	Wiwa::Resources::standarizePath(p);
 	if (ImageExtensionComp(path.path()))
 	{
@@ -129,8 +127,6 @@ void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 void AssetsPanel::Draw()
 {
 	ImGui::Begin(name, &active);
-
-	
 
 	if (ImGui::BeginTable("##content_browser", 2, ImGuiTableFlags_Resizable))
 	{
@@ -230,7 +226,10 @@ void AssetsPanel::Draw()
 						if (ImGui::MenuItem("Delete"))
 						{
 							if (m_SelectedEntry.is_directory())
-								_rmdir(m_SelectedEntry.path().string().c_str());
+							{
+								if (_rmdir(m_SelectedEntry.path().string().c_str()) != 0)
+									WI_ERROR("Can't remove directory at {}", m_SelectedEntry.path().string().c_str());
+							}
 							else
 								remove(m_SelectedEntry.path().string().c_str());
 						}
@@ -248,6 +247,32 @@ void AssetsPanel::Draw()
 
 	//Assets context window
 	ImGui::End();
+}
+
+void AssetsPanel::OnFSEvent(const std::string& path, const filewatch::Event change_type)
+{
+	switch (change_type)
+	{
+	case filewatch::Event::modified:
+		{
+		EditorLayer::Get().SubmitToMainThread([]() {
+			WI_TRACE("File modified");
+		});
+		}break;
+	case filewatch::Event::added:
+	{
+		EditorLayer::Get().SubmitToMainThread([]() {
+			WI_TRACE("File modified");
+			});
+	}break;
+	case filewatch::Event::removed:
+	{
+		EditorLayer::Get().SubmitToMainThread([]() {
+			WI_TRACE("File modified");
+		});
+	}break;
+	}
+	
 }
 
 void AssetsPanel::TopBar()

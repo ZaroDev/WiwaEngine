@@ -5,6 +5,8 @@
 #include <filesystem>
 #include <Wiwa/events/Event.h>
 #include <Wiwa/events/ApplicationEvent.h>
+#include <FileWatch.h>
+#include <memory>
 
 typedef void* ImTextureID;
 struct FileSpecs
@@ -17,6 +19,7 @@ struct DirectorySpecs
 	std::filesystem::path path;
 	std::vector<DirectorySpecs*> directories;
 	std::vector<FileSpecs> files;
+	std::unique_ptr<filewatch::FileWatch<std::string>> folderFileWatcher;
 };
 
 class AssetsPanel : public Panel
@@ -32,6 +35,7 @@ public:
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnDragAndDrop(Wiwa::WindowDropEvent& e);
 private:
+	static void OnFSEvent(const std::string& path, const filewatch::Event change_type);
 	void DisplayNode(DirectorySpecs* directoryEntry);
 	void TopBar();
 
@@ -40,7 +44,7 @@ private:
 	ImTextureID m_FolderIcon;
 	ImTextureID m_BackIcon;
 	ImTextureID m_MaterialIcon;
-	DirectorySpecs m_Directory;
+	 
 	std::filesystem::path m_CurrentPath;
 	std::filesystem::directory_entry m_SelectedEntry;
 	std::filesystem::file_time_type lastWriteTime;

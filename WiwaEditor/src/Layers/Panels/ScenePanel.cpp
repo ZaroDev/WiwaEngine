@@ -148,6 +148,7 @@ void ScenePanel::Draw()
             {
                 SceneId id = Wiwa::SceneManager::LoadScene(pathS.c_str());
                 Wiwa::SceneManager::SetScene(id);
+                Wiwa::SceneManager::getActiveScene()->GetEntityManager().AddSystemToWhitelist(FNV1_HASH("MeshRenderer"));
             }
 
         }
@@ -253,7 +254,7 @@ void ScenePanel::Draw()
                     case ImGuizmo::OPERATION::ROTATE: 
                     {
                         if(isParent)
-                            m_SelectedTransform->position = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
+                            m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
                         else
                             m_SelectedTransform->localRotation += Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]) - m_SelectedTransform->rotation;
                     }break;

@@ -258,8 +258,6 @@ namespace Wiwa
 			t = converted_type->second;
 		}
 
-		int alingment;
-
 		Wiwa::EntityManager &em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 		ComponentId compID = em.GetComponentId(t);

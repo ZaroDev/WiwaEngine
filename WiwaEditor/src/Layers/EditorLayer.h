@@ -38,6 +38,9 @@ class EditorLayer : public Wiwa::Layer
 	typedef std::function<void(Wiwa::Event &)> EventCallbackFn;
 
 public:
+
+	static EditorLayer& Get() { return *s_Instance; }
+
 	EditorLayer();
 	~EditorLayer();
 
@@ -49,6 +52,7 @@ public:
 
 	inline int GetGizmo() { return m_GizmoType; }
 
+	void SubmitToMainThread(const std::function<void()> func);
 private:
 	void MainMenuBar();
 	void OpenCloseAssetsFolder();
@@ -73,6 +77,7 @@ private:
 	bool OnSave(Wiwa::OnSaveEvent &e);
 	bool OnWindowClose(Wiwa::WindowCloseEvent &e);
 
+	void ExecuteMainThreadQueue();
 private:
 	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
@@ -99,12 +104,12 @@ private:
 	std::vector<Panel *> m_Panels;
 	std::vector<Panel *> m_Settings;
 
-	ImTextureID m_PlayIcon = 0;
-	ImTextureID m_PauseIcon = 0;
-	ImTextureID m_InfoIcon = 0;
-	ImTextureID m_WarningIcon = 0;
-	ImTextureID m_ErrorIcon = 0;
-	ImTextureID m_StopIcon = 0;
+	ImTextureID m_PlayIcon = nullptr;
+	ImTextureID m_PauseIcon = nullptr;
+	ImTextureID m_InfoIcon = nullptr;
+	ImTextureID m_WarningIcon = nullptr;
+	ImTextureID m_ErrorIcon = nullptr;
+	ImTextureID m_StopIcon = nullptr;
 
 	Action<Wiwa::Event &> m_EventCallback;
 
@@ -117,4 +122,9 @@ private:
 	Wiwa::Scene *m_EditorScene;
 
 	int m_GizmoType = -1;
+
+	std::vector<std::function<void()>> m_EditorThreadQueue;
+	std::mutex m_EditorThreadMutex;
+private:
+	static EditorLayer* s_Instance;
 };
