@@ -248,24 +248,27 @@ void ScenePanel::Draw()
                     {
                     case ImGuizmo::OPERATION::TRANSLATE:
                     {
-                        if (isParent)
+                        /*if (isParent)
                             m_SelectedTransform->position = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
                         else
-                            m_SelectedTransform->localPosition += Wiwa::Vector3f(translation[0], translation[1], translation[2]) - m_SelectedTransform->position;
+                            m_SelectedTransform->localPosition += Wiwa::Vector3f(translation[0], translation[1], translation[2]) - m_SelectedTransform->position;*/
+                        m_SelectedTransform->localPosition += Wiwa::Vector3f(translation[0], translation[1], translation[2]) - m_SelectedTransform->position;
                     }break;
                     case ImGuizmo::OPERATION::ROTATE: 
                     {
-                        if(isParent)
+                        /*if(isParent)
                             m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
                         else
-                            m_SelectedTransform->localRotation += Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]) - m_SelectedTransform->rotation;
+                            m_SelectedTransform->localRotation += Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]) - m_SelectedTransform->rotation;*/
+                        m_SelectedTransform->localRotation += Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]) - m_SelectedTransform->rotation;
                     }break;
                     case ImGuizmo::OPERATION::SCALE: 
                     {
-                        if (isParent)
+                        /*if (isParent)
                             m_SelectedTransform->scale = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
                         else
-                            m_SelectedTransform->localScale += Wiwa::Vector3f(scale[0], scale[1], scale[2]) - m_SelectedTransform->scale;
+                            m_SelectedTransform->localScale += Wiwa::Vector3f(scale[0], scale[1], scale[2]) - m_SelectedTransform->scale;*/
+                        m_SelectedTransform->localScale += Wiwa::Vector3f(scale[0], scale[1], scale[2]) - m_SelectedTransform->scale;
                     }break;
                     default:
                         break;
