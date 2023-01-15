@@ -21,11 +21,24 @@ namespace Wiwa {
 		static void SaveEntity(File& scene_file, EntityId eid, EntityManager& em);
 
 		SceneManager();
+
+		static bool m_PlayScene;
 	public:
+		static void Awake();
+		static void Init();
 		static void Update();
+
+		static void ModuleUpdate();
+
+		static void PlayScene() { m_PlayScene = true; }
+
+		static void StopScene() { m_PlayScene = false; }
+
+		static bool IsPlaying() { return m_PlayScene; }
+
 		static void CleanUp();
 		
-		static void SetScene(SceneId sceneId) { m_ActiveScene = sceneId; m_Scenes[sceneId]->Start(); }
+		static void SetScene(SceneId sceneId);
 		static void ChangeScene(SceneId sceneId);
 
 		static void StartChangeScene(SceneId sceneId);

@@ -7,7 +7,7 @@
 namespace Wiwa {
 	class WI_API System {
 	private:
-		
+
 	protected:
 		EntityId m_EntityId;
 

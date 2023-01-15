@@ -60,6 +60,7 @@ private:
 
 	// Scene functions
 	void SaveSceneAs();
+	void SaveScene();
 	void OpenScene();
 
 	void LoadPanelConfig();
@@ -109,6 +110,11 @@ private:
 	Action<Wiwa::Event &> m_EventCallback;
 
 	SceneId m_EditorSceneId;
+
+	SceneId m_SimulationSceneId;
+
+	std::string m_OpenedScenePath;
+
 	Wiwa::Scene *m_EditorScene;
 
 	int m_GizmoType = -1;

@@ -18,9 +18,23 @@ namespace Wiwa {
 		
 	}
 
+	void Scene::Start()
+	{
+		
+	}
+
+	void Scene::Awake()
+	{
+		m_EntityManager.SystemsAwake();
+	}
+
+	void Scene::Init()
+	{
+		m_EntityManager.SystemsInit();
+	}
+
 	void Scene::Update()
 	{
-		m_CameraManager->Update();
 		switch (m_CurrentState)
 		{
 		case Scene::SCENE_ENTERING:
@@ -30,7 +44,7 @@ namespace Wiwa {
 			RenderEnter();
 			break;
 		case Scene::SCENE_LOOP:
-			m_EntityManager.Update();
+			m_EntityManager.SystemsUpdate();
 
 			ProcessInput();
 			UpdateLoop();
@@ -47,14 +61,15 @@ namespace Wiwa {
 		}
 	}
 
-	void Scene::Start()
+	void Scene::ModuleUpdate()
 	{
-		
-	}
+		m_CameraManager->Update();
 
-	void Scene::Init()
-	{
-		
+		m_EntityManager.Update();
+
+		if (!SceneManager::IsPlaying()) {
+			m_EntityManager.UpdateWhitelist();
+		}
 	}
 
 	void Scene::Load()

@@ -19,11 +19,15 @@ namespace Wiwa {
 			SCENE_LEAVING
 		};
 
-		void Update();
 
 		void Start();
 
+		void Awake();
 		void Init();
+		void Update();
+
+		void ModuleUpdate();
+
 		void Load();
 		void Unload();
 

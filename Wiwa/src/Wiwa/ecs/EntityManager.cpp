@@ -67,6 +67,19 @@ namespace Wiwa {
 			System* system = m_EntitySystems[eid][i];
 			system->Destroy();
 
+			SystemHash s_hash = m_EntitySystemHashes[eid][i];
+
+			std::vector<System*>& system_list = m_SystemsByHash[s_hash];
+
+			size_t s_size = system_list.size();
+
+			for (size_t i = 0; i < s_size; i++) {
+				if (system_list[i] == system) {
+					system_list.erase(system_list.begin() + i);
+					break;
+				}
+			}
+
 			delete system;
 		}
 
@@ -133,6 +146,54 @@ namespace Wiwa {
 		}
 	}
 
+	void EntityManager::SystemsAwake()
+	{
+		// Awake entity systems
+		size_t entitySize = m_EntitySystems.size();
+
+		for (size_t i = 0; i < entitySize; i++) {
+			size_t system_size = m_EntitySystems[i].size();
+
+			for (size_t j = 0; j < system_size; j++) {
+				System* s = m_EntitySystems[i][j];
+
+				s->Awake();
+			}
+		}
+	}
+
+	void EntityManager::SystemsInit()
+	{
+		// Init entity systems
+		size_t entitySize = m_EntitySystems.size();
+
+		for (size_t i = 0; i < entitySize; i++) {
+			size_t system_size = m_EntitySystems[i].size();
+
+			for (size_t j = 0; j < system_size; j++) {
+				System* s = m_EntitySystems[i][j];
+
+				s->Init();
+			}
+		}
+	}
+
+	void EntityManager::SystemsUpdate()
+	{
+		// Update entity systems
+		size_t entitySize = m_EntitySystems.size();
+
+		for (size_t i = 0; i < entitySize; i++) {
+			size_t system_size = m_EntitySystems[i].size();
+
+			for (size_t j = 0; j < system_size; j++) {
+				System* s = m_EntitySystems[i][j];
+
+				s->Update();
+			}
+		}
+	}
+
 	void EntityManager::Update()
 	{
 		// Remove entities in pool
@@ -146,19 +207,41 @@ namespace Wiwa {
 
 		// Update transforms
 		UpdateTransforms();
+	}
 
-		// Update entity systems
-		size_t entitySize = m_EntitySystems.size();
+	void EntityManager::UpdateWhitelist()
+	{
+		size_t sw_size = m_SystemWhiteList.size();
 
-		for (size_t i = 0; i < entitySize; i++) {
-			size_t system_size = m_EntitySystems[i].size();
+		for (size_t i = 0; i < sw_size; i++) {
+			std::vector<System*>& system_list = m_SystemsByHash[m_SystemWhiteList[i]];
 
-			for (size_t j = 0; j < system_size; j++) {
-				System* s = m_EntitySystems[i][j];
+			size_t s_count = system_list.size();
 
-				s->Update();
+			for (size_t j = 0; j < s_count; j++) {
+				system_list[j]->Update();
 			}
 		}
+	}
+
+	void EntityManager::AddSystemToWhitelist(SystemHash system_hash)
+	{
+		if (IsWhitelistedSystem(system_hash)) return;
+
+		m_SystemWhiteList.push_back(system_hash);
+	}
+
+	bool EntityManager::IsWhitelistedSystem(SystemHash system_hash)
+	{
+		size_t sw_size = m_SystemWhiteList.size();
+
+		for (size_t i = 0; i < sw_size; i++) {
+			if (m_SystemWhiteList[i] == system_hash) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	EntityId EntityManager::CreateEntity_impl()
@@ -573,6 +656,7 @@ namespace Wiwa {
 
 			m_EntitySystems[eid].push_back(system);
 			m_EntitySystemHashes[eid].push_back(system_hash);
+			m_SystemsByHash[stype->hash].push_back(system);
 		}
 		else {
 			WI_CORE_ERROR("System hash not found [{}]", system_hash);

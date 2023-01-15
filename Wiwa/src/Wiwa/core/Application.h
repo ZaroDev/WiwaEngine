@@ -109,7 +109,6 @@ namespace Wiwa
 
 		void OpenDir(const char *url);
 		void Quit();
-
 	private:
 		int m_ArgC;
 		std::vector<std::string> m_Argv;
@@ -117,7 +116,7 @@ namespace Wiwa
 		std::vector<const Type*> m_ComponentTypes;
 		std::vector<const Type*> m_SystemTypes;
 
-		Size2i m_TargetResolution;		
+		Size2i m_TargetResolution;
 
 		bool OnWindowClose(WindowCloseEvent &e);
 		bool OnLoad(OnLoadEvent &e);

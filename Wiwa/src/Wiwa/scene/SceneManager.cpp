@@ -7,10 +7,30 @@
 namespace Wiwa {
 	std::vector<Scene*> SceneManager::m_Scenes;
 	SceneId SceneManager::m_ActiveScene = -1;
+	bool SceneManager::m_PlayScene = true;
+
+	void SceneManager::Awake()
+	{
+		m_Scenes[m_ActiveScene]->Awake();
+	}
+
+	void SceneManager::Init()
+	{
+		m_Scenes[m_ActiveScene]->Init();
+	}
 
 	void SceneManager::Update()
 	{
 		m_Scenes[m_ActiveScene]->Update();
+	}
+
+	void SceneManager::ModuleUpdate()
+	{
+		m_Scenes[m_ActiveScene]->ModuleUpdate();
+
+		if (m_PlayScene) {
+			Update();
+		}
 	}
 
 	void SceneManager::CleanUp()
@@ -28,12 +48,7 @@ namespace Wiwa {
 
 		Scene* sc = new Scene();
 
-		// Create default camera for scene
-		Size2i& resolution = Application::Get().GetTargetResolution();
-
 		m_Scenes.push_back(sc);
-
-		sc->Init();
 
 		return scene_id;
 	}
@@ -373,6 +388,16 @@ namespace Wiwa {
 		scene_file.Close();
 
 		return sceneid;
+	}
+
+	void SceneManager::SetScene(SceneId sceneId) {
+		m_ActiveScene = sceneId;
+
+		m_Scenes[sceneId]->Start();
+
+		SceneChangeEvent event(sceneId);
+		Action<Wiwa::Event&> act = { &Application::OnEvent, &Application::Get() };
+		act(event);
 	}
 
 	void SceneManager::ChangeScene(SceneId sceneId)

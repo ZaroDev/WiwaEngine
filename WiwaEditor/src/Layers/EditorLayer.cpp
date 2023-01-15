@@ -36,7 +36,10 @@ void EditorLayer::OnAttach()
 {
 	// Editor scene
 	m_EditorSceneId = Wiwa::SceneManager::CreateScene();
+	Wiwa::SceneManager::StopScene();
+
 	m_EditorScene = Wiwa::SceneManager::getScene(m_EditorSceneId);
+	m_EditorScene->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
 
 	Wiwa::SceneManager::SetScene(m_EditorSceneId);
 
@@ -222,6 +225,10 @@ void EditorLayer::MainMenuBar()
 			{
 				OpenScene();
 			}
+			if (ImGui::MenuItem("Save scene", ""))
+			{
+				SaveScene();
+			}
 			if (ImGui::MenuItem("Save scene as..."))
 			{
 				SaveSceneAs();
@@ -294,17 +301,45 @@ void EditorLayer::MainMenuBar()
 			ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
 			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
 			ImTextureID play = Wiwa::Time::IsPlaying() ? m_StopIcon : m_PlayIcon;
+
+			bool is_playing = Wiwa::Time::IsPlaying();
+
+			// Play button
 			if (ImGui::ImageButton(play, {15, 15}))
 			{
-				if (!Wiwa::Time::IsPlaying())
+				if (!is_playing) {
 					Wiwa::Time::Play();
-				else
+
+					SaveScene();
+
+					m_SimulationSceneId = Wiwa::SceneManager::LoadScene(m_OpenedScenePath.c_str());
+					Wiwa::SceneManager::SetScene(m_SimulationSceneId);
+
+					Wiwa::SceneManager::Awake();
+					Wiwa::SceneManager::Init();
+
+					Wiwa::SceneManager::PlayScene();
+				}
+				else {
 					Wiwa::Time::Stop();
+
+					Wiwa::SceneManager::SetScene(m_EditorSceneId);
+					Wiwa::SceneManager::StopScene();
+				}
 			}
 
 			if (ImGui::ImageButton(m_PauseIcon, {15, 15}))
 			{
-				Wiwa::Time::PauseUnPause();
+				if (is_playing) {
+					Wiwa::Time::PauseUnPause();
+
+					if (Wiwa::SceneManager::IsPlaying()) {
+						Wiwa::SceneManager::StopScene();
+					}
+					else {
+						Wiwa::SceneManager::PlayScene();
+					}
+				}
 			}
 
 			ImGui::PopStyleColor();
@@ -402,7 +437,18 @@ void EditorLayer::SaveSceneAs()
 			filePath += ".wiscene";
 		}
 		Wiwa::SceneManager::SaveScene(Wiwa::SceneManager::getActiveSceneId(), filePath.c_str());
+		m_OpenedScenePath = filePath;
 		WI_INFO("Succesfully saved scene at path {0}", filePath.c_str());
+	}
+}
+
+void EditorLayer::SaveScene()
+{
+	if (m_OpenedScenePath == "") {
+		SaveSceneAs();
+	}
+	else {
+		Wiwa::SceneManager::SaveScene(Wiwa::SceneManager::getActiveSceneId(), m_OpenedScenePath.c_str());
 	}
 }
 
@@ -412,7 +458,10 @@ void EditorLayer::OpenScene()
 	if (!filePath.empty())
 	{
 		SceneId id = Wiwa::SceneManager::LoadScene(filePath.c_str());
+		Wiwa::Scene* scene = Wiwa::SceneManager::getScene(id);
+		scene->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
 		Wiwa::SceneManager::SetScene(id);
+		m_OpenedScenePath = filePath;
 		WI_INFO("Succesfully opened scene at path {0}", filePath.c_str());
 	}
 }

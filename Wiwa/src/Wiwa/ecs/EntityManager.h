@@ -62,7 +62,10 @@ namespace Wiwa {
 		void UpdateChildTransforms(EntityId eid, Transform3D* t3dparent);
 		void UpdateTransforms();
 
-		// System functions
+		// System management
+		std::unordered_map<SystemHash, std::vector<System*>> m_SystemsByHash;
+		std::vector<SystemHash> m_SystemWhiteList;
+
 		size_t getSystemIndex(EntityId entityId, SystemHash system_hash);
 	public:
 		EntityManager();
@@ -73,8 +76,26 @@ namespace Wiwa {
 		// System registration functions
 		//Action<> registrations[10];
 
+		// Systems awake
+		void SystemsAwake();
+
+		// Systems init
+		void SystemsInit();
+
+		// Systems update
+		void SystemsUpdate();
+
 		// Update entity manager
 		void Update();
+
+		// Update whitelist
+		void UpdateWhitelist();
+
+		// Add system to whitelist
+		void AddSystemToWhitelist(SystemHash system_hash);
+
+		// Checks if a system is whitelisted
+		bool IsWhitelistedSystem(SystemHash system_hash);
 
 		// Create entity
 		EntityId CreateEntity();
