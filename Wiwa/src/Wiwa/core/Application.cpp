@@ -142,6 +142,8 @@ namespace Wiwa {
 
 			Audio::Update();
 			
+			ExecuteMainThreadQueue();
+
 			m_Renderer2D->Update();
 			m_Renderer3D->Update();
 
@@ -219,6 +221,21 @@ namespace Wiwa {
 		if (!type) m_ComponentTypes.push_back(component);
 	}
 
+	void Application::DeleteComponentType(const Type* component)
+	{
+		const Type* type = GetSystemTypeH(component->hash);
+
+		for (size_t i = 0; i < m_ComponentTypes.size(); i++)
+		{
+			if (m_ComponentTypes[i] == type)
+			{
+				m_ComponentTypes.erase(m_ComponentTypes.begin() + i);
+				i--;
+				break;
+			}
+		}
+	}
+
 	const Type* Application::GetSystemTypeH(size_t hash) const
 	{
 		size_t size = m_SystemTypes.size();
@@ -247,6 +264,21 @@ namespace Wiwa {
 		if (!type) m_SystemTypes.push_back(system);
 	}
 
+	void Application::DeleteSystemType(const Type* system)
+	{
+		const Type* type = GetSystemTypeH(system->hash);
+
+		for (size_t i = 0; i < m_SystemTypes.size(); i++)
+		{
+			if (m_SystemTypes[i] == type)
+			{
+				m_SystemTypes.erase(m_SystemTypes.begin() + i);
+				i--;
+				break;
+			}
+		}
+	}
+
 	void Application::OpenDir(const char* path)
 	{
 		ShellExecuteA(0, "open", path, NULL, NULL, SW_SHOWNORMAL);
@@ -257,6 +289,21 @@ namespace Wiwa {
 		OnSaveEvent event;
 		OnEvent(event);
 		m_Running = false;
+	}
+
+	void Application::SubmitToMainThread(const std::function<void()> func)
+	{
+		std::scoped_lock<std::mutex> lock(m_MainThreadQueueMutex);
+
+		m_MainThreadQueue.emplace_back(func);
+	}
+
+	void Application::ExecuteMainThreadQueue()
+	{
+		for (auto& func : m_MainThreadQueue)
+			func();
+
+		m_MainThreadQueue.clear();
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

@@ -98,17 +98,24 @@ namespace Wiwa
 		const Type* GetComponentTypeH(size_t hash) const;
 		const Type* GetComponentType(size_t index) const;
 		void RegisterComponentType(const Type* component);
+		void DeleteComponentType(const Type* component);
 		// System reflection
 		size_t GetSystemTypeCount() const { return m_SystemTypes.size(); }
 		const Type* GetSystemTypeH(size_t hash) const;
 		const Type* GetSystemType(size_t index) const;
 		void RegisterSystemType(const Type* system);
+		void DeleteSystemType(const Type* system);
 
 		inline void SetRenderColor(Vector4f color) { m_RenderColor = color; }
 		inline Vector4f GetRenderColor() { return m_RenderColor; }
 
 		void OpenDir(const char *url);
 		void Quit();
+
+		void SubmitToMainThread(const std::function<void()> func);
+
+	private:
+		void ExecuteMainThreadQueue();
 	private:
 		int m_ArgC;
 		std::vector<std::string> m_Argv;
@@ -140,6 +147,9 @@ namespace Wiwa
 
 		LayerStack m_LayerStack;
 		ImGuiLayer *m_ImGuiLayer;
+
+		std::vector<std::function<void()>> m_MainThreadQueue;
+		std::mutex m_MainThreadQueueMutex;
 
 	private:
 		static Application *s_Instance;

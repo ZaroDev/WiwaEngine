@@ -18,6 +18,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDirs = {}
 IncludeDirs["Wiwa"] = "%{wks.location}/Wiwa/src"
 IncludeDirs["GLFW"] = "%{wks.location}/Wiwa/vendor/GLFW/include"
+IncludeDirs["filewatch"] = "%{wks.location}/Wiwa/vendor/filewatch"
 IncludeDirs["Glew"] = "%{wks.location}/Wiwa/vendor/Glew/include/GL"
 IncludeDirs["ImGui"] = "%{wks.location}/Wiwa/vendor/imgui"
 IncludeDirs["GLM"] = "%{wks.location}/Wiwa/vendor/glm"

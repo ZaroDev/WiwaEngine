@@ -2,7 +2,9 @@
 
 #include <filesystem>
 #include <string>
+#include <memory>
 #include <unordered_map>
+#include "FileWatch.h"
 
 struct Type;
 
@@ -27,9 +29,11 @@ namespace Wiwa {
 		static void LoadAppAssembly(const std::filesystem::path& filepath);
 		static MonoArray* CreateArray(MonoClass* type, uint32_t size);
 
+		static void ReloadAssembly();
+
 		static std::unordered_map<size_t, Type*>& getSystems();
 		static std::unordered_map<size_t, Type*>& getComponents();
-	private:
+	
 		struct ScriptEngineData
 		{
 			MonoDomain* RootDomain;
@@ -39,11 +43,18 @@ namespace Wiwa {
 			MonoAssembly* SystemAssembly = nullptr;
 			MonoAssembly* AppAssembly = nullptr;
 
+			std::filesystem::path CoreAssemblyFilePath;
+			std::filesystem::path AppAssemblyFilePath;
+
+			std::unique_ptr<filewatch::FileWatch<std::string>> AppAssemblyFileWatcher;
+			bool AssemblyReloadPending = false;
+
 			std::unordered_map<size_t, Type*> Components;
 			std::unordered_map<size_t, Type*> Systems;
 		};
 		static ScriptEngineData* s_Data;
 
+	private:
 		static void InitMono();
 		static void ShutDownMono();
 

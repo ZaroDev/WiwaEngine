@@ -19,8 +19,6 @@ public:
 		REFLECTION_REGISTER();
 
 		PushOverlay(new EditorLayer());
-
-		Wiwa::SceneManager::getActiveScene()->GetEntityManager().ApplySystem(0, FNV1A_HASH("EnemyController"));
 	}
 
 	~WiwaApp()

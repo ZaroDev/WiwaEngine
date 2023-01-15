@@ -18,7 +18,8 @@ project "WiwaEditor"
 		"%{IncludeDirs.GLM}",
 		"%{IncludeDirs.Wiwa}",
 		"%{IncludeDirs.Optick}",
-		"%{IncludeDirs.ImGuizmo}"
+		"%{IncludeDirs.ImGuizmo}",
+		"%{IncludeDirs.filewatch}"
 	}
 
 	links

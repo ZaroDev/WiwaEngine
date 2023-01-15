@@ -18,6 +18,7 @@
 #include <Wiwa/ecs/systems/MeshRenderer.h>
 #include <Wiwa/ecs/systems/AudioSystem.h>
 #include <Wiwa/ecs/components/Sprite.h>
+#include <Wiwa/scripting/ScriptEngine.h>
 
 #include <Wiwa/core/Renderer2D.h>
 
@@ -254,6 +255,13 @@ void EditorLayer::MainMenuBar()
 				if (ImGui::MenuItem(p->GetName(), "", p->active))
 					p->SwitchActive();
 			}
+
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Script"))
+		{
+			if (ImGui::MenuItem("Reload assembly", "ALT + R"))
+				Wiwa::ScriptEngine::ReloadAssembly();
 
 			ImGui::EndMenu();
 		}

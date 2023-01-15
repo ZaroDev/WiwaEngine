@@ -25,6 +25,7 @@ project "Wiwa"
 		"src",
 		"%{IncludeDirs.SPDLOG}",
 		"%{IncludeDirs.GLFW}",
+		"%{IncludeDirs.filewatch}",
 		"%{IncludeDirs.ImGui}",
 		"%{IncludeDirs.GLM}",
 		"%{IncludeDirs.Glew}",

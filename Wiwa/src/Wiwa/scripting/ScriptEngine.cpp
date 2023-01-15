@@ -17,6 +17,9 @@
 
 #include "SystemScriptClass.h"
 
+
+
+
 namespace Wiwa {
 	ScriptEngine::ScriptEngineData* ScriptEngine::s_Data = nullptr;
 	
@@ -25,15 +28,17 @@ namespace Wiwa {
 		s_Data = new ScriptEngineData();
 
 		InitMono();
+
 		LoadAssembly("resources/scripts/Wiwa-ScriptCore.dll");
 		LoadAppAssembly("resources/scripts/Wiwa-AppAssembly.dll");
+		
+		//Debug
 		WI_CORE_WARN("Components");
 		Utils::PrintReflectionTypes(s_Data->Components);
 		WI_CORE_WARN("Systems");
 		Utils::PrintReflectionTypes(s_Data->Systems);
+		
 		ScriptGlue::RegisterFunctions();
-
-		Type* type = s_Data->Systems[FNV1A_HASH("EnemyController")];
 	}
 	void ScriptEngine::ShutDown()
 	{
@@ -46,6 +51,7 @@ namespace Wiwa {
 		s_Data->AppDomain = mono_domain_create_appdomain("WiwaScriptRuntime", nullptr);
 		mono_domain_set(s_Data->AppDomain, true);
 
+		s_Data->CoreAssemblyFilePath = filepath;
 		s_Data->CoreAssembly = Utils::LoadMonoAssembly(filepath.string().c_str());
 		s_Data->SystemAssembly = Utils::LoadMonoAssembly("mono/lib/mono/4.5/mscorlib.dll");
 		LoadAssemblyTypes(s_Data->CoreAssembly);
@@ -54,11 +60,31 @@ namespace Wiwa {
 		
 		//WI_CORE_ASSERT(false, "");
 	}
+	//Function not called in the main thread
+	static void OnAppAssemblyFSEvent(const std::string& path, const filewatch::Event change_type)
+	{
+		if (!ScriptEngine::s_Data->AssemblyReloadPending && change_type == filewatch::Event::modified)
+		{
+			using namespace std::chrono_literals;
+			std::this_thread::sleep_for(500ms);
+			//Add reload to main thread queue
+			Application::Get().SubmitToMainThread([]()
+			{
+				ScriptEngine::s_Data->AssemblyReloadPending = true;
+				ScriptEngine::s_Data->AppAssemblyFileWatcher.reset();
+				ScriptEngine::ReloadAssembly();
+			});
+		}
+	}
 
 	void ScriptEngine::LoadAppAssembly(const std::filesystem::path& filepath)
 	{
 		s_Data->AppAssembly = Utils::LoadMonoAssembly(filepath.string().c_str());
+		s_Data->AppAssemblyFilePath = filepath;
 		LoadAssemblyTypes(s_Data->AppAssembly);
+
+		s_Data->AppAssemblyFileWatcher = std::make_unique<filewatch::FileWatch<std::string>>(filepath.string(),OnAppAssemblyFSEvent);
+		s_Data->AssemblyReloadPending = false;
 	}
 	
 	void ScriptEngine::InitMono()
@@ -87,6 +113,22 @@ namespace Wiwa {
 	{
 		return mono_array_new(s_Data->AppDomain, type, (uintptr_t)size);
 	}
+
+	void ScriptEngine::ReloadAssembly()
+	{
+		mono_domain_set(mono_get_root_domain(), false);
+
+		mono_domain_unload(s_Data->AppDomain);
+
+		LoadAssembly(s_Data->CoreAssemblyFilePath);
+		LoadAppAssembly(s_Data->AppAssemblyFilePath);
+
+		WI_CORE_WARN("Components");
+		Utils::PrintReflectionTypes(s_Data->Components);
+		WI_CORE_WARN("Systems");
+		Utils::PrintReflectionTypes(s_Data->Systems);
+	}
+
 	std::unordered_map<size_t, Type*>& ScriptEngine::getSystems()
 	{
 		return s_Data->Systems;
@@ -103,6 +145,16 @@ namespace Wiwa {
 	}
 	void ScriptEngine::LoadAssemblyTypes(MonoAssembly* assembly)
 	{
+		for (auto& [Key, Type] : s_Data->Systems)
+		{
+			Application::Get().DeleteSystemType(Type);
+		}
+		for (auto& [Key, Type] : s_Data->Components)
+		{
+			Application::Get().DeleteComponentType(Type);
+		}
+		s_Data->Systems.clear();
+		s_Data->Components.clear();
 		MonoImage* image = mono_assembly_get_image(assembly);
 		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
 		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
