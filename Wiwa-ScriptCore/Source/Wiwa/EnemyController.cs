@@ -20,6 +20,9 @@ namespace Wiwa
             AddComponent<Transform3D>(entity);
             ref TestComponent test = ref AddComponent<TestComponent>(entity);
             test.val1 = (int)entity;
+            ApplySystem<MeshRenderer>(entity);
+
+            DestroyEntity();
         }
 
         void Init()

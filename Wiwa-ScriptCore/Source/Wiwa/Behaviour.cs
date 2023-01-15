@@ -19,6 +19,10 @@
         {
             InternalCalls.ApplySystem(entity, typeof(T));
         }
+        public void DestroyEntity(EntityId entity)
+        {
+            InternalCalls.DestroyEntity(entity);
+        }
 
         public ref T GetComponent<T>() where T : unmanaged
         {
@@ -34,10 +38,15 @@
         {
             InternalCalls.ApplySystem(m_EntityId, typeof(T));
         }
+        public void DestroyEntity()
+        {
+            InternalCalls.DestroyEntity(m_EntityId);
+        }
 
         public EntityId CreateEntity()
         {
             return InternalCalls.CreateEntity();
         }
+        
     }
 }

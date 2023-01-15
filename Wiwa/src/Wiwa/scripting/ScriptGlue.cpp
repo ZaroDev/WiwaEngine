@@ -286,6 +286,12 @@ namespace Wiwa
 		return em.CreateEntity();
 	}
 
+	void DestroyEntity(EntityId eid) {
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+		em.DestroyEntity(eid);
+	}
+
 	// Input
 	bool IsKeyDownIntr(KeyCode keycode)
 	{
@@ -329,6 +335,7 @@ namespace Wiwa
 		WI_ADD_INTERNAL_CALL(AddComponent);
 		WI_ADD_INTERNAL_CALL(ApplySystem);
 		WI_ADD_INTERNAL_CALL(CreateEntity);
+		WI_ADD_INTERNAL_CALL(DestroyEntity);
 
 		//Time
 		WI_ADD_INTERNAL_CALL(GetDeltaTimeIntr);

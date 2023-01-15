@@ -20,6 +20,8 @@ namespace Wiwa
         internal extern static void ApplySystem(EntityId id, System.Type type);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static EntityId CreateEntity();
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void DestroyEntity(EntityId eid);
         #endregion
         #region Input
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

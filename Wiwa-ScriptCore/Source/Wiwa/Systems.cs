@@ -1,0 +1,7 @@
+﻿namespace Wiwa
+{
+    class MeshRenderer
+    {
+
+    }
+}
