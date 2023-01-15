@@ -147,8 +147,10 @@ void ScenePanel::Draw()
             if (p.extension() == ".wiscene")
             {
                 SceneId id = Wiwa::SceneManager::LoadScene(pathS.c_str());
-                Wiwa::SceneManager::SetScene(id);
-                Wiwa::SceneManager::getActiveScene()->GetEntityManager().AddSystemToWhitelist(FNV1_HASH("MeshRenderer"));
+				Wiwa::Scene* scene = Wiwa::SceneManager::getScene(id);
+				scene->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
+				Wiwa::SceneManager::SetScene(id);
+           
             }
 
         }

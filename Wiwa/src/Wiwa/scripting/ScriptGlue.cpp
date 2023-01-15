@@ -303,7 +303,15 @@ namespace Wiwa
 	{
 		return Input::GetMouseY();
 	}
-
+	//Time
+	int GetDeltaTimeIntr()
+	{
+		return Time::GetDeltaTime();
+	}
+	int GetTimeIntr()
+	{
+		return Time::GetTime();
+	}
 	void ScriptGlue::RegisterFunctions()
 	{
 		// Logging
@@ -321,5 +329,9 @@ namespace Wiwa
 		WI_ADD_INTERNAL_CALL(AddComponent);
 		WI_ADD_INTERNAL_CALL(ApplySystem);
 		WI_ADD_INTERNAL_CALL(CreateEntity);
+
+		//Time
+		WI_ADD_INTERNAL_CALL(GetDeltaTimeIntr);
+		WI_ADD_INTERNAL_CALL(GetTimeIntr);
 	}
 }

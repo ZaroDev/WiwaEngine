@@ -19,7 +19,6 @@ struct DirectorySpecs
 	std::filesystem::path path;
 	std::vector<DirectorySpecs*> directories;
 	std::vector<FileSpecs> files;
-	std::unique_ptr<filewatch::FileWatch<std::string>> folderFileWatcher;
 };
 
 class AssetsPanel : public Panel

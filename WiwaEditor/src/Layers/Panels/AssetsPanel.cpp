@@ -51,7 +51,6 @@ void AssetsPanel::Update()
 				DirectorySpecs*dir = new DirectorySpecs();
 				dir->path = p.path();
 				m_Directory.directories.push_back(dir);
-				m_Directory.folderFileWatcher = std::make_unique<filewatch::FileWatch<std::string>>(p.path().string(), OnFSEvent);
 				for (auto &p1 : std::filesystem::directory_iterator(dir->path))
 				{
 					UpdateDir(p1, dir);
