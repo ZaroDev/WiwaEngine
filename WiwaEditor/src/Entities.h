@@ -158,6 +158,7 @@ inline void CreateEntityWithModelHierarchy(const char* model_path) {
 	// Prepare mesh data
 	Wiwa::Mesh mesh;
 	sprintf_s(mesh.mesh_path, "%s", model_path);
+
 	mesh.meshId = Wiwa::Resources::Load<Wiwa::Model>(mesh.mesh_path);
 	mesh.drawChildren = false;
 

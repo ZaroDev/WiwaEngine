@@ -22,6 +22,8 @@ public:
 	virtual ~InspectorPanel();
 
 	void Draw() override;
+	void DrawComponents(Wiwa::EntityManager& em);
+	void DrawSystems(Wiwa::EntityManager& em);
 	void Update() override;
 
 	void OnEvent(Wiwa::Event&) override;

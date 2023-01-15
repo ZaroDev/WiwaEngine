@@ -249,58 +249,114 @@ void InspectorPanel::Draw()
 		if (strcmp(edit.c_str(), entName) != 0)
 			em.SetEntityName(m_CurrentID, edit.c_str());
 		
-		std::map<ComponentId, size_t>& map = em.GetEntityComponents(m_CurrentID);
-		bool removed = false;
-		size_t idToRemove;
+		if(ImGui::CollapsingHeader("Components"))
+			DrawComponents(em);
 
-		for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
-		{
-			if (!DrawComponent(comp->first))
-			{
-				idToRemove = comp->first;
-				removed = true;
-			}
-		}
-
-		if (removed) { 
-			em.RemoveComponentById(m_CurrentID, idToRemove);
-		}
-
-		if (ButtonCenteredOnLine("Add component"))
-			ImGui::OpenPopup("Components");
-
-		size_t c_count = Wiwa::Application::Get().GetComponentTypeCount();
-
-		if (ImGui::BeginPopup("Components"))
-		{
-			static ImGuiTextFilter filter;
-			ImGui::Text("Search:");
-			filter.Draw("##searchbar", 340.f);
-			ImGui::BeginChild("listbox child", ImVec2(300, 200));
-			for (size_t i = 0; i < c_count; i++) {
-				const Type* type = Wiwa::Application::Get().GetComponentType(i);
-				const char* paintkit = type->name.c_str();
-				if (filter.PassFilter(paintkit))
-				{
-					std::string label = paintkit;
-
-					label += "##" + std::to_string(i);
-					if (ImGui::MenuItem(label.c_str()))
-					{
-						em.AddComponent(m_CurrentID, type);
-						ImGui::CloseCurrentPopup();
-					}
-				}
-			}
-			ImGui::EndChild();
-			ImGui::EndPopup();
-		}
+		if (ImGui::CollapsingHeader("Systems"))
+			DrawSystems(em);
 	}
 	else
 	{
 		TextCentered("Select an entity to inspect");
 	}
 	ImGui::End();
+}
+
+void InspectorPanel::DrawComponents(Wiwa::EntityManager& em)
+{
+	std::map<ComponentId, size_t>& map = em.GetEntityComponents(m_CurrentID);
+	bool removed = false;
+	size_t idToRemove;
+
+	for (std::map<ComponentId, size_t>::iterator comp = map.begin(); comp != map.end(); comp++)
+	{
+		if (!DrawComponent(comp->first))
+		{
+			idToRemove = comp->first;
+			removed = true;
+		}
+	}
+
+	if (removed) {
+		em.RemoveComponentById(m_CurrentID, idToRemove);
+	}
+
+	if (ButtonCenteredOnLine("Add component"))
+		ImGui::OpenPopup("Components");
+
+	size_t c_count = Wiwa::Application::Get().GetComponentTypeCount();
+
+	if (ImGui::BeginPopup("Components"))
+	{
+		static ImGuiTextFilter filter;
+		ImGui::Text("Search:");
+		filter.Draw("##searchbar", 340.f);
+		ImGui::BeginChild("listbox child", ImVec2(300, 200));
+		for (size_t i = 0; i < c_count; i++) {
+			const Type* type = Wiwa::Application::Get().GetComponentType(i);
+			const char* paintkit = type->name.c_str();
+			if (filter.PassFilter(paintkit))
+			{
+				std::string label = paintkit;
+
+				label += "##" + std::to_string(i);
+				if (ImGui::MenuItem(label.c_str()))
+				{
+					em.AddComponent(m_CurrentID, type);
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
+		ImGui::EndChild();
+		ImGui::EndPopup();
+	}
+}
+
+void InspectorPanel::DrawSystems(Wiwa::EntityManager& em)
+{
+	std::vector<SystemHash>& systems = em.GetEntitySystemHashes(m_CurrentID);
+
+	for (size_t i = 0; i < systems.size(); i++)
+	{
+		const Type* system = Wiwa::Application::Get().GetSystemTypeH(systems[i]);
+		if (ImGui::CollapsingHeader(system->name.c_str()))
+		{
+			if (ImGui::Button("Delete"))
+			{
+				//TODO delete system
+			}
+		}
+	}
+
+	if (ButtonCenteredOnLine("Add System"))
+		ImGui::OpenPopup("System");
+
+	size_t c_count = Wiwa::Application::Get().GetSystemTypeCount();
+
+	if (ImGui::BeginPopup("System"))
+	{
+		static ImGuiTextFilter filter;
+		ImGui::Text("Search:");
+		filter.Draw("##searchbar", 340.f);
+		ImGui::BeginChild("listbox child", ImVec2(300, 200));
+		for (size_t i = 0; i < c_count; i++) {
+			const Type* type = Wiwa::Application::Get().GetSystemType(i);
+			const char* paintkit = type->name.c_str();
+			if (filter.PassFilter(paintkit))
+			{
+				std::string label = paintkit;
+
+				label += "##" + std::to_string(i);
+				if (ImGui::MenuItem(label.c_str()))
+				{
+					em.ApplySystem(m_CurrentID, type);
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
+		ImGui::EndChild();
+		ImGui::EndPopup();
+	}
 }
 
 void InspectorPanel::Update()

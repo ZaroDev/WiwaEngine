@@ -337,6 +337,38 @@ bool MaterialExtensionComp(const std::filesystem::path file)
 	return false;
 }
 
+void CreateScriptFile(const char* filePath, const char* name)
+{
+	std::string file = filePath;
+	file += ".cs";
+
+	std::ofstream scriptFile(file.c_str());
+	scriptFile << "using Wiwa;\n";
+	scriptFile << "namespace Wiwa\n";
+	scriptFile << "{\n";
+	scriptFile << "	public class ";
+	scriptFile << name;
+	scriptFile << " : Behaviour\n";
+	scriptFile << "	{\n";
+	scriptFile << "		//Called the first frame\n";
+	scriptFile << "		void Awake()\n";
+	scriptFile << "		{\n";
+	scriptFile << "		}\n";
+	scriptFile << "		//Called after Awake()\n";
+	scriptFile << "		void Init()\n";
+	scriptFile << "		{\n";
+	scriptFile << "		}\n";
+	scriptFile << "		//Called every frame\n";
+	scriptFile << "		void Update()\n";
+	scriptFile << "		{\n";
+	scriptFile << "		}\n";
+	scriptFile << "	}\n";
+	scriptFile << "}\n";
+	scriptFile.close();
+
+
+}
+
 void DrawVec3Control(const std::string& label, float* values, float resetValue, float columnWidth)
 {
 	ImGuiIO& io = ImGui::GetIO();

@@ -138,8 +138,6 @@ void EditorLayer::OnAttach()
 	LoadCallback();
 
 	WI_TRACE("Editor layer attached!");
-
-	Wiwa::SceneManager::getActiveScene()->GetEntityManager().ApplySystem(0, FNV1A_HASH("TankController"));
 }
 
 void EditorLayer::OnDetach()

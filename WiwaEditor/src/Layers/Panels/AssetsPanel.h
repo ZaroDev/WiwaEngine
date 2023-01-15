@@ -34,10 +34,9 @@ public:
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnDragAndDrop(Wiwa::WindowDropEvent& e);
 private:
-	static void OnFSEvent(const std::string& path, const filewatch::Event change_type);
 	void DisplayNode(DirectorySpecs* directoryEntry);
 	void TopBar();
-
+	static void OnAssetsFolderEvent(const std::string& path, const filewatch::Event change_type);
 private:
 	ImTextureID m_FileIcon;
 	ImTextureID m_FolderIcon;
@@ -48,4 +47,5 @@ private:
 	std::filesystem::directory_entry m_SelectedEntry;
 	std::filesystem::file_time_type lastWriteTime;
 	float m_ButtonSize = 1.0f;
+	std::unique_ptr<filewatch::FileWatch<std::string>> DirWatcher;
 };

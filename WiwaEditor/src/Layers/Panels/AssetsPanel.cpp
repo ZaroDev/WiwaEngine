@@ -30,6 +30,7 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	m_FileIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
 	m_BackIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(backId)->GetTextureId();
 	m_MaterialIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(matId)->GetTextureId();
+	std::make_unique<filewatch::FileWatch<std::string>>(s_AssetsPath.string(), OnAssetsFolderEvent);
 }
 
 AssetsPanel::~AssetsPanel()
@@ -44,6 +45,7 @@ void AssetsPanel::Update()
 	if (lastWriteTime != lastAbsoluteDirTime)
 	{
 		m_Directory.directories.clear();
+		m_Directory.files.clear();
 		for (auto &p : std::filesystem::directory_iterator(m_Directory.path))
 		{
 			if (p.is_directory())
@@ -248,31 +250,7 @@ void AssetsPanel::Draw()
 	ImGui::End();
 }
 
-void AssetsPanel::OnFSEvent(const std::string& path, const filewatch::Event change_type)
-{
-	switch (change_type)
-	{
-	case filewatch::Event::modified:
-		{
-		EditorLayer::Get().SubmitToMainThread([]() {
-			WI_TRACE("File modified");
-		});
-		}break;
-	case filewatch::Event::added:
-	{
-		EditorLayer::Get().SubmitToMainThread([]() {
-			WI_TRACE("File modified");
-			});
-	}break;
-	case filewatch::Event::removed:
-	{
-		EditorLayer::Get().SubmitToMainThread([]() {
-			WI_TRACE("File modified");
-		});
-	}break;
-	}
-	
-}
+
 
 void AssetsPanel::TopBar()
 {
@@ -360,6 +338,24 @@ void AssetsPanel::TopBar()
 			}
 			ImGui::PopID();
 		}
+		{
+			ImGui::PushID(id++);
+			static char buffer[64] = { 0 };
+			ImGui::Text("Script");
+			ImGui::Text("Behaviour name");
+			ImGui::InputText("##inputfolder", buffer, IM_ARRAYSIZE(buffer));
+			ImGui::SameLine();
+			if (ImGui::Button("Create"))
+			{
+				std::filesystem::path path = m_CurrentPath;
+				std::filesystem::path dir = buffer;
+				path /= dir;
+				std::string file = path.string();
+				CreateScriptFile(path.string().c_str(), buffer);
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::PopID();
+		}
 		ImGui::EndPopup();
 	}
 
@@ -368,6 +364,11 @@ void AssetsPanel::TopBar()
 	ImGui::SliderFloat("##size", &m_ButtonSize, 0.5f, 2.0f);
 	ImGui::PopItemWidth();
 	ImGui::Separator();
+}
+
+void AssetsPanel::OnAssetsFolderEvent(const std::string& path, const filewatch::Event change_type)
+{
+	std::cout << path << " - " << (int)change_type;
 }
 
 void AssetsPanel::OnEvent(Wiwa::Event& e)
