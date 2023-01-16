@@ -1,0 +1,1 @@
+{"vertex":"#version 330 core\n\nlayout (location = 0) in vec3 v_pos;\n\nuniform mat4 u_Model;\nuniform mat4 u_View;\nuniform mat4 u_Proj;\n\nvoid main()\n{\n    gl_Position = u_Proj * u_View * u_Model * vec4(v_pos, 1.0);\n}","fragment":"#version 330 core\n\nuniform vec4 u_Color;\n\nout vec4 out_color;\n\nvoid main() {\n\tout_color = u_Color;\n}","uniforms":{"u_Color":6}}

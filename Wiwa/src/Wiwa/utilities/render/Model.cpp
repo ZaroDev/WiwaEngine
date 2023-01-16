@@ -76,41 +76,46 @@ namespace Wiwa {
 
 				float shininess = 0.1f;
 				aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &shininess);
-
-				Material material; // Default settings
-				size_t id;
 				
-				if (texture_diffuse.length > 0)
-				{
-					
-					std::filesystem::current_path(path);
-
-					std::filesystem::path texture_path = texture_diffuse.C_Str();
-					texture_path = std::filesystem::absolute(texture_path);
-
-					std::filesystem::current_path(curr_path);
-
-					texture_path = std::filesystem::relative(texture_path);
-					
-					id = Resources::Load<Shader>("resources/shaders/model_texture");
-					material.setShader(Resources::GetResourceById<Shader>(id), "resources/shaders/model_texture");
-					uint32_t imgId = Resources::Load<Image>(texture_path.string().c_str());
-					Image* img = Resources::GetResourceById<Image>(imgId);
-					material.SetUniformData("u_Tex0", glm::ivec2(img->GetTextureId(), imgId));
-				}
-				else
-				{
-					//Set the color of the material
-					id = Resources::Load<Shader>("resources/shaders/model_color");
-					material.setShader(Resources::GetResourceById<Shader>(id),"resources/shaders/model_color");
-					material.SetUniformData("u_Color", glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a));
-				}
 				std::filesystem::path mat_path = path;
 				mat_path += name.C_Str();
 				mat_path += ".wimaterial";
 
-				Material::SaveMaterial(mat_path.string().c_str(), &material);
+				ResourceId matID = Resources::Load<Material>(mat_path.string().c_str());
+				if (matID == -1)
+				{
+					Material material; // Default settings
+					size_t id;
 
+					if (texture_diffuse.length > 0)
+					{
+
+						std::filesystem::current_path(path);
+
+						std::filesystem::path texture_path = texture_diffuse.C_Str();
+						texture_path = std::filesystem::absolute(texture_path);
+
+						std::filesystem::current_path(curr_path);
+
+						texture_path = std::filesystem::relative(texture_path);
+
+						id = Resources::Load<Shader>("resources/shaders/model_texture");
+						material.setShader(Resources::GetResourceById<Shader>(id), "resources/shaders/model_texture");
+						uint32_t imgId = Resources::Load<Image>(texture_path.string().c_str());
+						Image* img = Resources::GetResourceById<Image>(imgId);
+						material.SetUniformData("u_Tex0", glm::ivec2(img->GetTextureId(), imgId));
+					}
+					else
+					{
+						//Set the color of the material
+						id = Resources::Load<Shader>("resources/shaders/model_color");
+						material.setShader(Resources::GetResourceById<Shader>(id), "resources/shaders/model_color");
+						material.SetUniformData("u_Color", glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a));
+					}
+
+
+					Material::SaveMaterial(mat_path.string().c_str(), &material);
+				}
 				materials.push_back(mat_path.string());
 			}
 		}

@@ -126,12 +126,13 @@ namespace Wiwa {
 		std::filesystem::path export_file = _assetToLibPath(file_path);
 		export_file.replace_extension(".wishader");
 		std::filesystem::path export_path = export_file.parent_path();
-
+		import_file.replace_extension(".wishader");
 
 		if (_preparePath(export_path.string())) {
 			document.save_file(export_file.string().c_str());
 			CreateMeta<Shader>(file_path.c_str());
 		}
+		document.save_file(import_file.string().c_str());
 	}
 	template<>
 	inline const char* Resources::getResourcePathById<Shader>(size_t id)

@@ -15,6 +15,10 @@ namespace Wiwa {
 	template<>
 	inline ResourceId Resources::Load<Material>(const char* file)
 	{
+		if (!std::filesystem::exists(file))
+		{
+			return -1;
+		}
 		std::filesystem::path library_file = _assetToLibPath(file);
 
 		std::string file_path = library_file.string();

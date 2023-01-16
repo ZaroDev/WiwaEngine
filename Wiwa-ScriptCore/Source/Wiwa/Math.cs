@@ -7,6 +7,7 @@ namespace Wiwa
         public static Vector3 forward = new Vector3(0f, 0f, 1f);
         public static Vector3 right = new Vector3(1f, 0f, 0f);
         public static Vector3 up = new Vector3(0f, 1f, 0f);
+        #region Trigonometry
         public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
         {
             if (val.CompareTo(min) < 0) return min;
@@ -17,13 +18,21 @@ namespace Wiwa
         {
             return degrees * System.Math.PI / 180f;
         }
-        public static double Cos(double val)
+        public static double Cos(double value)
         {
-            return System.Math.Cos(val);
+            return System.Math.Cos(value);
         }
-        public static double Sin(double val)
+        public static float Cos(float value)
         {
-            return System.Math.Sin(val);
+            return (float)Cos((double)value);
+        }
+        public static double Sin(double value)
+        {
+            return System.Math.Sin(value);
+        }
+        public static float Sin(float value)
+        {
+            return (float)Sin((double)value);
         }
         public static double Sqrt(double value)
         {
@@ -47,21 +56,44 @@ namespace Wiwa
 
             return new Vector3(x, y, z);
         }
+        #endregion
+
+        #region Transforms
+        //X Pitch
+        //Y Roll
+        //Z Yaw
+        public static Vector3 CalculateUp(ref Transform3D t3d)
+        {
+            Vector3 up;
+            up.x = Sin(t3d.Rotation.x) * Sin(t3d.Rotation.z);
+            up.y = Cos(t3d.Rotation.x);
+            up.z = Sin(t3d.Rotation.x) * Cos(t3d.Rotation.z);
+
+            return up;
+        }
+
+        public static Vector3 CalculateForward(ref Transform3D t3d)
+        {
+            Vector3 forward;
+            forward.x = Cos(t3d.Rotation.x) * Sin(t3d.Rotation.z);
+            forward.y = -Sin(t3d.Rotation.x);
+            forward.z = Cos(t3d.Rotation.x) * Cos(t3d.Rotation.z);
+
+            return forward;
+        }
+        public static Vector3 CalculateRight(ref Transform3D t3d)
+        {
+            Vector3 right;
+            right.x = Cos(t3d.Rotation.z);
+            right.y = 0f;
+            right.z = -Sin(t3d.Rotation.z);
+            return right;
+        }
         public static void Translate(ref Transform3D transform, Vector3 pos)
         {
-            //X Pitch
-            //Y Roll
-            //Z Yaw
-            // Calculate the forward, right and up vectors
-            Quaternion rotation =
-                new Quaternion(transform.LocalRotation.x, transform.LocalRotation.z, transform.LocalRotation.z);
-
-            Vector3 forward = rotation * Math.forward;
-            Vector3 right = rotation * Math.right;
-            Vector3 up = rotation * Math.up;
-
             // Translate the transform based on the pos vector and the rotation of the object
-            transform.LocalPosition += forward * pos.z + right * pos.x + up * pos.y;
+            transform.LocalPosition +=
+            CalculateForward(ref transform) * pos.z + CalculateRight(ref transform) * pos.x + CalculateUp(ref transform) * pos.y;
         }
         public static Vector3 ToEuler(Quaternion q)
         {
@@ -84,6 +116,7 @@ namespace Wiwa
 
             return angles;
         }
+        #endregion
     }
     public struct Quaternion
     {
@@ -123,6 +156,7 @@ namespace Wiwa
             y = cr * sp * cy + sr * cp * sy;
             z = cr * cp * sy - sr * sp * cy;
         }
+        //Bullshit from ChatGPT
         public static Vector3 operator *(Quaternion rotation, Vector3 point)
         {
             float num = rotation.x * 2f;

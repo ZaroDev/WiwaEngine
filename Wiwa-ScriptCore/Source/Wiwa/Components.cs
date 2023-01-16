@@ -5,9 +5,9 @@
     [Component]
     public struct Transform3D
     {
-        public Vector3 Position { get; private set; }
-        public Vector3 Rotation { get; private set; }
-        public Vector3 Scale { get; private set; }
+        public Vector3 Position;
+        public Vector3 Rotation;
+        public Vector3 Scale;
 
         public Vector3 LocalPosition;
         public Vector3 LocalRotation;

@@ -341,8 +341,8 @@ void EditorLayer::MainMenuBar()
 				}
 				else {
 					Wiwa::Time::Stop();
-
-					Wiwa::SceneManager::SetScene(m_EditorSceneId);
+					m_SimulationSceneId = Wiwa::SceneManager::LoadScene(m_OpenedScenePath.c_str());
+					Wiwa::SceneManager::SetScene(m_SimulationSceneId);
 					Wiwa::SceneManager::StopScene();
 				}
 			}
@@ -463,7 +463,7 @@ void EditorLayer::SaveSceneAs()
 
 void EditorLayer::SaveScene()
 {
-	if (m_OpenedScenePath == "") {
+	if (m_OpenedScenePath.empty()) {
 		SaveSceneAs();
 	}
 	else {
