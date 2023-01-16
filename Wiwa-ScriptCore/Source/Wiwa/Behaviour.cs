@@ -45,8 +45,10 @@
 
         public EntityId CreateEntity()
         {
-            return InternalCalls.CreateEntity();
+            EntityId id = InternalCalls.CreateEntity();
+            AddComponent<Transform3D>(id);
+            return id;
         }
-        
+
     }
 }
