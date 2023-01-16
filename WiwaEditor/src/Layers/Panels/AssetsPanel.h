@@ -42,6 +42,10 @@ private:
 	ImTextureID m_FolderIcon;
 	ImTextureID m_BackIcon;
 	ImTextureID m_MaterialIcon;
+	ImTextureID m_ModelIcon;
+	ImTextureID m_ScriptIcon;
+	ImTextureID m_ShaderIcon;
+
 	 
 	std::filesystem::path m_CurrentPath;
 	std::filesystem::directory_entry m_SelectedEntry;

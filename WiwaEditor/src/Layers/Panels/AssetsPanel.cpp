@@ -25,12 +25,20 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	ResourceId fileId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/file_icon.png");
 	ResourceId backId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/back_icon.png");
 	ResourceId matId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/material_icon.png");
+	ResourceId modId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/model_icon.png");
+	ResourceId scrptId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/script_icon.png");
+	ResourceId shaderId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/shader_icon.png");
+	
 
 	m_FolderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
 	m_FileIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
 	m_BackIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(backId)->GetTextureId();
 	m_MaterialIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(matId)->GetTextureId();
-	std::make_unique<filewatch::FileWatch<std::string>>(s_AssetsPath.string(), OnAssetsFolderEvent);
+	m_ScriptIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(scrptId)->GetTextureId();
+	m_ModelIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(modId)->GetTextureId();
+	m_ShaderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(shaderId)->GetTextureId();
+
+	//std::make_unique<filewatch::FileWatch<std::string>>(s_AssetsPath.string(), OnAssetsFolderEvent);
 }
 
 AssetsPanel::~AssetsPanel()
@@ -174,13 +182,22 @@ void AssetsPanel::Draw()
 				std::string filenameString = relativePath.filename().string();
 				
 				ImTextureID texID = directoryEntry.is_directory() ? m_FolderIcon : m_FileIcon;
-				if (directoryEntry.path().extension() == ".png")
+				if (ImageExtensionComp(directoryEntry.path()))
 				{
 					ResourceId pngID = Wiwa::Resources::Load<Wiwa::Image>(path.string().c_str());
 					texID = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pngID)->GetTextureId();
 				}
-				if (directoryEntry.path().extension() == ".wimaterial")
+				if (ModelExtensionComp(directoryEntry.path()))
+					texID = m_ModelIcon;
+				if (MaterialExtensionComp(directoryEntry.path()))
 					texID = m_MaterialIcon;
+				if (directoryEntry.path().extension() == ".cs")
+					texID = m_ScriptIcon;
+				if (directoryEntry.path().extension() == ".vs" 
+					|| directoryEntry.path().extension() == ".fs"
+					|| directoryEntry.path().extension() == ".gs")
+					texID = m_ShaderIcon;
+				
 
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 				if (ImGui::ImageButton(texID, { thumbnailSize, thumbnailSize }))

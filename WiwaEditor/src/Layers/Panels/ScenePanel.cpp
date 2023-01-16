@@ -341,9 +341,12 @@ void ScenePanel::Draw()
                 transform = glm::rotate(transform, trs->rotation.z, { 0,0,1 });
                 transform = glm::scale(transform, scale);
                 float intersectDist = 0.0f;
-
                 Wiwa::Math::AABB& AABB = model->boundingBox;
                 AABB.scale(scale, AABB.getCenter());
+
+                if (!m_Camera->frustrum.IsBoxVisible(AABB.getMin(), AABB.getMax()))
+                    continue;
+
                 if (Wiwa::Math::TestRayOBBIntersection(
                     out_origin,
                     out_dir,
