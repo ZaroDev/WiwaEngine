@@ -9,7 +9,8 @@
 namespace Wiwa
 {
 	Input* Input::s_Instance = new WindowsInput();
-
+	float Input::prevMouseX = 0;
+	float Input::prevMouseY = 0;
 	bool WindowsInput::IsKeyPressedImpl(int keycode)
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
@@ -40,4 +41,25 @@ namespace Wiwa
 		auto [x, y] = GetMousePosition();
 		return y;
 	}
+
+	float WindowsInput::GetMouseXDeltaImpl()
+	{
+		float res = GetMouseX() - prevMouseX;
+		CLAMP(res, -1.0f, 1.0f);
+		return res;
+	}
+
+	float WindowsInput::GetMouseYDeltaImpl()
+	{
+		float res = GetMouseY() - prevMouseY;
+		CLAMP(res, -1.0f, 1.0f);
+		return res;
+	}
+
+	void WindowsInput::UpdateImpl()
+	{
+		prevMouseY = GetMouseY();
+		prevMouseX = GetMouseX();
+	}
+
 }

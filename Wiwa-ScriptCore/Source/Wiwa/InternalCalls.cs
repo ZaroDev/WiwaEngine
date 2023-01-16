@@ -29,9 +29,15 @@ namespace Wiwa
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool IsMouseButtonPressedIntr(int button);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static int GetMouseXIntr();
+        internal extern static float GetMouseXIntr();
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static int GetMouseYIntr();
+        internal extern static float GetMouseYIntr();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float GetMouseXDeltaIntr();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static float GetMouseYDeltaIntr();
         #endregion
         #region Time
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

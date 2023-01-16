@@ -73,6 +73,8 @@ namespace Wiwa {
 
 		SetHwInfo();
 
+		
+
 		m_Renderer2D = new Renderer2D();
 		m_Renderer2D->Init();
 		
@@ -144,6 +146,7 @@ namespace Wiwa {
 			
 			ExecuteMainThreadQueue();
 
+			Input::Update();
 			m_Renderer2D->Update();
 			m_Renderer3D->Update();
 

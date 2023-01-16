@@ -10,13 +10,21 @@
         {
             return InternalCalls.IsMouseButtonPressedIntr(button);
         }
-        public static int GetMouseX()
+        public static float GetMouseX()
         {
             return InternalCalls.GetMouseXIntr();
         }
-        public static int GetMouseY()
+        public static float GetMouseY()
         {
             return InternalCalls.GetMouseYIntr();
+        }
+        public static float GetMouseXDelta()
+        {
+            return InternalCalls.GetMouseXDeltaIntr();
+        }
+        public static float GetMouseYDelta()
+        {
+            return InternalCalls.GetMouseYDeltaIntr();
         }
     }
 }

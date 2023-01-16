@@ -301,20 +301,28 @@ namespace Wiwa
 	{
 		return Input::IsMouseButtonPressed(button);
 	}
-	int GetMouseXIntr()
+	float GetMouseXIntr()
 	{
 		return Input::GetMouseX();
 	}
-	int GetMouseYIntr()
+	float GetMouseYIntr()
 	{
 		return Input::GetMouseY();
 	}
+	float GetMouseXDeltaIntr()
+	{
+		return Input::GetMouseXDelta();
+	}
+	float GetMouseYDeltaIntr()
+	{
+		return Input::GetMouseYDelta();
+	}
 	//Time
-	int GetDeltaTimeIntr()
+	float GetDeltaTimeIntr()
 	{
 		return Time::GetDeltaTime();
 	}
-	int GetTimeIntr()
+	float GetTimeIntr()
 	{
 		return Time::GetTime();
 	}
@@ -329,6 +337,8 @@ namespace Wiwa
 		WI_ADD_INTERNAL_CALL(IsMouseButtonPressedIntr);
 		WI_ADD_INTERNAL_CALL(GetMouseXIntr);
 		WI_ADD_INTERNAL_CALL(GetMouseYIntr);
+		WI_ADD_INTERNAL_CALL(GetMouseXDeltaIntr);
+		WI_ADD_INTERNAL_CALL(GetMouseYDeltaIntr);
 
 		// ECS
 		WI_ADD_INTERNAL_CALL(GetComponent);

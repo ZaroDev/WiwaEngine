@@ -12,5 +12,8 @@ namespace Wiwa
 		virtual std::pair<float, float> GetMousePositionImpl() override;
 		virtual float GetMouseXImpl() override;
 		virtual float GetMouseYImpl() override;
+		virtual float GetMouseXDeltaImpl() override;
+		virtual float GetMouseYDeltaImpl() override;
+		virtual void UpdateImpl() override;
 	};
 }
