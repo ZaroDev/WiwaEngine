@@ -12,6 +12,11 @@ Wiwa engine is a 3D Game Engine developed during the Game Engines subject. Our g
 
 ## Info
 
+### What's new in 0.3:
+- Scriting ECS
+- Wwise Audio engine
+- Custom shader and material pipeline
+
 For now the engine has the following features.
 
 - Reflection
@@ -27,7 +32,6 @@ For now the engine has the following features.
 - Frustrum culling
 - Mouse picking
 - AABB support
-- WIP scriting ECS
 
 ## Authors
 
