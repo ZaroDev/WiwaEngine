@@ -162,9 +162,11 @@ You can edit the files with the editor that you desire.
 ``Note: to compile the scripting code you need VS2019 or VS2022``
 
 To choose between diferent visual studio compiler and settings go to ``View->Configuration->External tools`` there you can change the visual studio version for the compiler and the configuration.
+
 ``Note: we strongly recomend using Release for better performance``
 
 At this point in time you can't debug C# code.
+
 ``Note: Don't compile while on play mode this will crash the engine.``
 
 To see more in detail how to use the C# API click [here](https://github.com/ZaroDev/WiwaEngine/wiki/Scripting-API).
