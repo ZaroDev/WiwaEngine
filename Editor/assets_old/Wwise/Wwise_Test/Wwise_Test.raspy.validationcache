@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationCache Version="1" SchemaVersion="110">
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Wwise_Test.wproj" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Wwise_Test.raspy.wsettings" DateLow="1673656047" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Virtual Acoustics\Factory Acoustic Textures.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Virtual Acoustics\Default Work Unit.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Triggers\Default Work Unit.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Switches\Default Work Unit.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\States\Default Work Unit.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Soundcaster Sessions\Default Work Unit.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\SoundBanks\Default Work Unit.wwu" DateLow="1673652707" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Queries\Factory Queries.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Queries\Default Work Unit.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Presets\Factory Spatial Audio.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Presets\Factory Reflect.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Presets\Default Work Unit.wwu" DateLow="1673133320" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Modulators\Default Work Unit.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Mixing Sessions\Default Work Unit.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Metadata\Default Work Unit.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Master-Mixer Hierarchy\Default Work Unit.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Interactive Music Hierarchy\Default Work Unit.wwu" DateLow="1673652707" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Game Parameters\Factory Soundseed Air Game Syncs.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Game Parameters\Default Work Unit.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Events\Default Work Unit.wwu" DateLow="1673652064" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory Reflect.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory McDSP Effects.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory Mastering Suite.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory iZotope Singleband Distortion.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory iZotope Multiband Distortion.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory iZotope Hybrid Reverb Effects.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory iZotope Filters.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory iZotope Dynamics.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory iZotope Delay.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory iZotope Box Modeler.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory Effects.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Factory Auro Headphone.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Effects\Default Work Unit.wwu" DateLow="1673133319" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Dynamic Dialogue\Default Work Unit.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Conversion Settings\Factory Conversion Settings.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Conversion Settings\Default Work Unit.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Control Surface Sessions\Default Work Unit.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Audio Devices\Default Work Unit.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Attenuations\Default Work Unit.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Actor-Mixer Hierarchy\Factory Synth One.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Actor-Mixer Hierarchy\Factory Soundseed Air Objects.wwu" DateLow="1673133318" DateHigh="0"/>
+	<ValidationCacheItem File="E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\Actor-Mixer Hierarchy\Default Work Unit.wwu" DateLow="1673652064" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Wwise_Test.wproj" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Virtual Acoustics\Factory Acoustic Textures.wwu" DateLow="1672680853" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Virtual Acoustics\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Triggers\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Switches\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\States\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Soundcaster Sessions\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\SoundBanks\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Queries\Factory Queries.wwu" DateLow="1672680853" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Queries\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Presets\Factory Spatial Audio.wwu" DateLow="1672680853" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Presets\Factory Reflect.wwu" DateLow="1672681146" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Presets\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Modulators\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Mixing Sessions\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Metadata\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Master-Mixer Hierarchy\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Interactive Music Hierarchy\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Game Parameters\Factory Soundseed Air Game Syncs.wwu" DateLow="1672681152" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Game Parameters\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Events\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory Reflect.wwu" DateLow="1672681146" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory McDSP Effects.wwu" DateLow="1672681141" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory Mastering Suite.wwu" DateLow="1672681157" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory iZotope Singleband Distortion.wwu" DateLow="1672681116" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory iZotope Multiband Distortion.wwu" DateLow="1672681116" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory iZotope Hybrid Reverb Effects.wwu" DateLow="1672681116" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory iZotope Filters.wwu" DateLow="1672681116" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory iZotope Dynamics.wwu" DateLow="1672681116" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory iZotope Delay.wwu" DateLow="1672681116" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory iZotope Box Modeler.wwu" DateLow="1672681116" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory Effects.wwu" DateLow="1672680853" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Factory Auro Headphone.wwu" DateLow="1672681096" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Effects\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Dynamic Dialogue\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Conversion Settings\Factory Conversion Settings.wwu" DateLow="1672680853" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Conversion Settings\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Control Surface Sessions\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Audio Devices\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Attenuations\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Actor-Mixer Hierarchy\Factory Synth One.wwu" DateLow="1672680853" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Actor-Mixer Hierarchy\Factory Soundseed Air Objects.wwu" DateLow="1672681152" DateHigh="0"/>
+	<ValidationCacheItem File="D:\Pavlito\C++\Wwise\Wwise\assets\wwise\Wwise_Test\Actor-Mixer Hierarchy\Default Work Unit.wwu" DateLow="1672700962" DateHigh="0"/>
+</ValidationCache>

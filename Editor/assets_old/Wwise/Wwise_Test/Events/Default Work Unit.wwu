@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{962844BC-059E-4C5C-A3AB-34F83CDFF907}" SchemaVersion="110">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{962844BC-059E-4C5C-A3AB-34F83CDFF907}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Ruido" ID="{07141615-26A9-4A4B-BEC6-BBD535E951C6}">
+					<ChildrenList>
+						<Action Name="" ID="{CC015AEA-BEC1-443B-80B5-082F2DA80FB9}" ShortID="1072177024">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Bass" ID="{709F7559-78B3-416C-BEE3-598286F65D16}" WorkUnitID="{92C90852-0101-4792-8587-FC6E78698BBF}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Background_music" ID="{FC2AAD76-BB83-4D91-9C1D-329510ED1D5D}">
+					<ChildrenList>
+						<Action Name="" ID="{F17BB05C-A4BC-455D-9864-D5CBC024C748}" ShortID="632131906">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Background_music" ID="{053AD717-18E9-4F72-B291-F8638DA2752E}" WorkUnitID="{5BCB111F-760A-4FEC-97BA-3C293D5772D6}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

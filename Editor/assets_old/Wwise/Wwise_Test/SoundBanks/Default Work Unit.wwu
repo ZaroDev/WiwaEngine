@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{3F7C03D7-AB58-4940-8998-51E1EF0143C4}" SchemaVersion="110">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{3F7C03D7-AB58-4940-8998-51E1EF0143C4}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="Music_demo" ID="{F0A43F71-77A6-4480-87AE-308337A8AFDE}">
+					<ObjectInclusionList>
+						<ObjectRef Name="Ruido" ID="{07141615-26A9-4A4B-BEC6-BBD535E951C6}" WorkUnitID="{962844BC-059E-4C5C-A3AB-34F83CDFF907}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Background_music" ID="{FC2AAD76-BB83-4D91-9C1D-329510ED1D5D}" WorkUnitID="{962844BC-059E-4C5C-A3AB-34F83CDFF907}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>

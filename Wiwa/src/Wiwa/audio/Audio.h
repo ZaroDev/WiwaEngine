@@ -109,14 +109,25 @@ public:
 	// Stop event for the default gameobject
 	static bool StopEvent(const char* event_name) { return StopEvent(event_name, m_DefaultListener); }
 
+	// Stop all events
+	static bool StopAllEvents();
+
 	// Register a gameobject
 	static bool RegisterGameObject(uint64_t go_id);
 
-	// Unregister a gameobject
+	/* Unregister a gameobject
+	* Also clears object from default listeners
+	*/
 	static bool UnregisterGameObject(uint64_t go_id);
 
+	// Set gameobject's position and orientation
+	static bool SetPositionAndOrientation(uint64_t go_id, const Wiwa::Vector3f& position, const Wiwa::Vector3f& front, const Wiwa::Vector3f& up);
+
 	// Set gameobject's position
-	static bool SetPosition(uint64_t go_id, const Wiwa::Vector3f& position, const Wiwa::Vector3f& front, const Wiwa::Vector3f& up);
+	static bool SetPosition(uint64_t go_id, const Wiwa::Vector3f& position);
+
+	// Add default listener
+	static bool AddDefaultListener(uint64_t go_id);
 
 	// Unregister all gameobjects
 	static bool UnregisterAllGameObjects();
@@ -128,6 +139,9 @@ public:
 
 	// Returns last error
 	static const char* GetLastError() { return m_LastErrorMsg.c_str(); }
+
+	// Returns project path
+	static std::string GetProjectPath() { return m_InitBankPath; }
 
 	static const uint32_t INVALID_ID = -1;
 };

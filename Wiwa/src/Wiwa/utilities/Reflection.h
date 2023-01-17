@@ -240,5 +240,6 @@ enum class TypeHash : size_t {
 
 	// Components
 	Transform3D = FNV1A_HASH("Transform3D"),
-	Mesh = FNV1A_HASH("Mesh")
+	Mesh = FNV1A_HASH("Mesh"),
+	AudioSource = FNV1A_HASH("AudioSource")
 };

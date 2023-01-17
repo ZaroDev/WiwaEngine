@@ -3,6 +3,7 @@
 #include <Wiwa/ecs/systems/MeshRenderer.h>
 #include <Wiwa/events/Event.h>
 #include <Wiwa/events/ApplicationEvent.h>
+#include <Wiwa/audio/Audio.h>
 
 namespace Wiwa {
 	std::vector<Scene*> SceneManager::m_Scenes;
@@ -258,7 +259,56 @@ namespace Wiwa {
 				// Write camera rotation
 				scene_file.Write(glm::value_ptr(rot), sizeof(glm::vec3));
 			}
+
+			// Save audio
+			bool loaded_audio = Audio::LoadedProject();
+
+			// Save if audio loaded
+			scene_file.Write(&loaded_audio, sizeof(bool));
+
+			if (loaded_audio) {
+				// Save project path
+				std::string project_path = Audio::GetProjectPath();
+
+				size_t n_len = project_path.size() + 1;
+
+				scene_file.Write(&n_len, sizeof(size_t));
+				scene_file.Write(project_path.data(), n_len);
+
+				const std::vector<Audio::BankData>& bank_list = Audio::GetLoadedBankList();
+
+				size_t bank_size = bank_list.size();
+
+				// Save bank size
+				scene_file.Write(&bank_size, sizeof(size_t));
+
+				if (bank_size > 0) {
+					for (size_t i = 0; i < bank_size; i++) {
+						size_t n_size = bank_list[i].path.size() + 1;
+
+						scene_file.Write(&n_size, sizeof(size_t));
+						scene_file.Write(bank_list[i].path.data(), n_size);
+					}
+				}
+
+				const std::vector<Audio::EventData>& event_list = Audio::GetLoadedEventList();
+
+				size_t event_size = event_list.size();
+
+				// Save event size
+				scene_file.Write(&event_size, sizeof(size_t));
+
+				if (event_size > 0) {
+					for (size_t i = 0; i < event_size; i++) {
+						size_t n_size = event_list[i].name.size() + 1;
+
+						scene_file.Write(&n_size, sizeof(size_t));
+						scene_file.Write(event_list[i].name.data(), n_size);
+					}
+				}
+			}
 			
+			// Save entities
 			EntityManager& em = sc->GetEntityManager();
 			std::vector<EntityId>* pentities = em.GetParentEntitiesAlive();
 			size_t p_entity_count = pentities->size();
@@ -360,6 +410,64 @@ namespace Wiwa {
 				camera->setRotation(rot);
 			}
 
+			// Load audio
+			bool loaded_audio;
+
+			// Save if audio loaded
+			scene_file.Read(&loaded_audio, sizeof(bool));
+
+			if (loaded_audio) {
+				size_t n_len;
+				std::string project_path;
+
+				scene_file.Read(&n_len, sizeof(size_t));
+
+				project_path.resize(n_len - 1);
+
+				scene_file.Read(&project_path[0], n_len);
+
+				Audio::LoadProject(project_path.c_str());
+
+				size_t bank_size;
+				std::string bank_path;
+
+				// Save bank size
+				scene_file.Read(&bank_size, sizeof(size_t));
+
+				if (bank_size > 0) {
+					for (size_t i = 0; i < bank_size; i++) {
+						size_t n_size;
+
+						scene_file.Read(&n_size, sizeof(size_t));
+
+						bank_path.resize(n_size - 1);
+
+						scene_file.Read(&bank_path[0], n_size);
+
+						Audio::LoadBank(bank_path.c_str());
+					}
+				}
+
+				size_t event_size;
+				std::string event_path;
+
+				// Save event size
+				scene_file.Read(&event_size, sizeof(size_t));
+
+				if (event_size > 0) {
+					for (size_t i = 0; i < event_size; i++) {
+						size_t n_size;
+						scene_file.Read(&n_size, sizeof(size_t));
+
+						event_path.resize(n_size - 1);
+
+						scene_file.Read(&event_path[0], n_size);
+
+						Audio::LoadEvent(event_path.c_str());
+					}
+				}
+			}
+
 			// Load entities
 			EntityManager& em = sc->GetEntityManager();
 
@@ -392,8 +500,6 @@ namespace Wiwa {
 
 	void SceneManager::SetScene(SceneId sceneId) {
 		m_ActiveScene = sceneId;
-
-		m_Scenes[sceneId]->Start();
 
 		SceneChangeEvent event(sceneId);
 		Action<Wiwa::Event&> act = { &Application::OnEvent, &Application::Get() };

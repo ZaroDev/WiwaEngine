@@ -15,6 +15,9 @@
 #include <mono/metadata/metadata.h>
 #include <mono/metadata/class.h>
 #include <Wiwa/core/Input.h>
+#include <Wiwa/core/Resources.h>
+
+#include <Wiwa/ecs/components/Mesh.h>
 
 #include <Wiwa/scene/SceneManager.h>
 
@@ -326,6 +329,61 @@ namespace Wiwa
 	{
 		return Time::GetTime();
 	}
+
+	CameraId GetActiveCamera() {
+		Wiwa::CameraManager& cm = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
+
+		return cm.getActiveCameraId();
+	}
+
+	void SetCameraPosition(CameraId camid, Vector3f vector) {
+		Wiwa::CameraManager& cm = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
+		Wiwa::Camera* cam = cm.getCamera(camid);
+		cam->setPosition(vector);
+	}
+
+	void CameraLookAt(CameraId camid, Vector3f vec){
+		Wiwa::CameraManager& cm = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
+		Wiwa::Camera* cam = cm.getCamera(camid);
+		cam->lookat(vec);
+	}
+
+	void SetCameraFront(CameraId camid, Vector3f vector) {
+		Wiwa::CameraManager& cm = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
+		Wiwa::Camera* cam = cm.getCamera(camid);
+		cam->setFront(vector);
+	}
+
+	void SetCameraRotation(CameraId camid, Vector3f angles) {
+		Wiwa::CameraManager& cm = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
+		Wiwa::Camera* cam = cm.getCamera(camid);
+		cam->setRotation({angles.x, angles.y, angles.z});
+	}
+
+	ResourceId LoadResourceModel(MonoString* str) {
+		char* model = mono_string_to_utf8(str);
+
+		return Resources::Load<Model>(model);
+	}
+
+	void AddMeshToEntity(EntityId eid, MonoString* model, MonoString* mat) {
+		char* model_p = mono_string_to_utf8(model);
+		char* mat_p = mono_string_to_utf8(mat);
+
+		Mesh mesh;
+		mesh.drawChildren = false;
+		mesh.modelIndex = 0;
+		sprintf_s(mesh.mesh_path, "%s", model_p);
+		sprintf_s(mesh.mat_path, "%s", mat_p);
+
+		mesh.meshId = Resources::Load<Model>(mesh.mesh_path);
+		mesh.materialId = Resources::Load<Material>(mesh.mat_path);
+
+		Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
+
+		em.AddComponent<Mesh>(eid, mesh);
+	}
+
 	void ScriptGlue::RegisterFunctions()
 	{
 		// Logging
@@ -350,5 +408,16 @@ namespace Wiwa
 		//Time
 		WI_ADD_INTERNAL_CALL(GetDeltaTimeIntr);
 		WI_ADD_INTERNAL_CALL(GetTimeIntr);
+
+		// Camera
+		WI_ADD_INTERNAL_CALL(GetActiveCamera);
+		WI_ADD_INTERNAL_CALL(SetCameraPosition);
+		WI_ADD_INTERNAL_CALL(CameraLookAt);
+		WI_ADD_INTERNAL_CALL(SetCameraFront);
+		WI_ADD_INTERNAL_CALL(SetCameraRotation);
+
+		// Resources
+		WI_ADD_INTERNAL_CALL(LoadResourceModel);
+		WI_ADD_INTERNAL_CALL(AddMeshToEntity);
 	}
 }

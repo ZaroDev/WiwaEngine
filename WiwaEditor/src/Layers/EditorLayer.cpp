@@ -21,6 +21,7 @@
 #include <Wiwa/scripting/ScriptEngine.h>
 
 #include <Wiwa/core/Renderer2D.h>
+#include <Wiwa/audio/Audio.h>
 
 #include "../Entities.h"
 EditorLayer* EditorLayer::s_Instance = nullptr;
@@ -327,23 +328,28 @@ void EditorLayer::MainMenuBar()
 			if (ImGui::ImageButton(play, {15, 15}))
 			{
 				if (!is_playing) {
-					Wiwa::Time::Play();
-
 					SaveScene();
 
-					m_SimulationSceneId = Wiwa::SceneManager::LoadScene(m_OpenedScenePath.c_str());
-					Wiwa::SceneManager::SetScene(m_SimulationSceneId);
+					if (m_OpenedScenePath != "") {
+						Wiwa::Time::Play();
+						Wiwa::Time::Update();
 
-					Wiwa::SceneManager::Awake();
-					Wiwa::SceneManager::Init();
+						m_SimulationSceneId = Wiwa::SceneManager::LoadScene(m_OpenedScenePath.c_str());
+						Wiwa::SceneManager::SetScene(m_SimulationSceneId);
 
-					Wiwa::SceneManager::PlayScene();
+						Wiwa::SceneManager::Awake();
+						Wiwa::SceneManager::Init();
+
+						Wiwa::SceneManager::PlayScene();
+					}
 				}
 				else {
 					Wiwa::Time::Stop();
-					m_SimulationSceneId = Wiwa::SceneManager::LoadScene(m_OpenedScenePath.c_str());
-					Wiwa::SceneManager::SetScene(m_SimulationSceneId);
+
+					Wiwa::SceneManager::SetScene(m_EditorSceneId);
 					Wiwa::SceneManager::StopScene();
+
+					Audio::StopAllEvents();
 				}
 			}
 
@@ -481,6 +487,10 @@ void EditorLayer::OpenScene()
 		scene->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
 		Wiwa::SceneManager::SetScene(id);
 		m_OpenedScenePath = filePath;
+
+		m_EditorSceneId = id;
+		m_EditorScene = scene;
+
 		WI_INFO("Succesfully opened scene at path {0}", filePath.c_str());
 	}
 }

@@ -12,17 +12,6 @@ namespace Wiwa
             //transform = new URef<Transform3D>(ref GetComponent<Transform3D>());
 
             //transform.Get().LocalPosition.x += 3;
-
-            ref TestComponent tc = ref AddComponent<TestComponent>();
-            tc.val1 = (int)m_EntityId;
-
-            EntityId entity = CreateEntity();
-            AddComponent<Transform3D>(entity);
-            ref TestComponent test = ref AddComponent<TestComponent>(entity);
-            test.val1 = (int)entity;
-            ApplySystem<MeshRenderer>(entity);
-
-            DestroyEntity();
         }
 
         void Init()

@@ -1,0 +1,9 @@
+Event	ID	Name			Wwise Object Path	Notes
+	518582580	Ruido			\Default Work Unit\Ruido	
+	1585661381	Background_music			\Default Work Unit\Background_music	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	290326742	Bass	E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\.cache\Windows\SFX\Bass_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Bass		2304096
+	382564713	Background_1	E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\.cache\Windows\SFX\Background_1_D79FB2B7.wem		\Interactive Music Hierarchy\Default Work Unit\Background_music\Background_1\Background_1		11031648
+	1011466697	Background_2	E:\UPC\Year 3\Game Engines\WiwaEngine\Editor\assets\Wwise\Wwise_Test\.cache\Windows\SFX\Background_2_D79FB2B7.wem		\Interactive Music Hierarchy\Default Work Unit\Background_music\Background_2\Background_2		2423904
+

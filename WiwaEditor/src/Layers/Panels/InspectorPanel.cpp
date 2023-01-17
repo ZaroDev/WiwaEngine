@@ -11,6 +11,7 @@
 #include "../../Utils/EditorUtils.h"
 
 #include <Wiwa/ecs/components/Mesh.h>
+#include <Wiwa/ecs/components/AudioSource.h>
 
 bool InspectorPanel::DrawComponent(size_t componentId)
 {
@@ -35,8 +36,10 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 		byte* data = em.GetComponent(m_CurrentID, componentId, type->size);
 
 		// Custom component interface
-		if (type->hash == FNV1A_HASH("Mesh")) {	DrawMeshComponent(data); } else
-		if (type->hash == FNV1A_HASH("Transform3D")) { DrawTransform3dComponent(data); } else
+		if (type->hash == (size_t)TypeHash::Mesh) {	DrawMeshComponent(data); } else
+		if (type->hash == (size_t)TypeHash::Transform3D) { DrawTransform3dComponent(data); } else
+		if (type->hash == (size_t)TypeHash::AudioSource) { DrawAudioSourceComponent(data); } else
+			
 		// Basic component interface
 		if (type->is_class) {
 			const Class* cl = (const Class*)type;
@@ -217,6 +220,14 @@ void InspectorPanel::DrawTransform3dComponent(byte* data)
 	DrawVec3Control("Position", &transform->localPosition, 0.0f, 100.0f);
 	DrawVec3Control("Rotation", &transform->localRotation, 0.0f, 100.0f);
 	DrawVec3Control("Scale", &transform->localScale, 1.0f, 100.0f);
+}
+
+void InspectorPanel::DrawAudioSourceComponent(byte* data)
+{
+	Wiwa::AudioSource* asrc = (Wiwa::AudioSource*)data;
+
+	ImGui::Checkbox("Is default listener", &asrc->isDefaultListener);
+	ImGui::InputText("Event", asrc->eventName, sizeof(asrc->eventName));
 }
 
 InspectorPanel::InspectorPanel(EditorLayer* instance)

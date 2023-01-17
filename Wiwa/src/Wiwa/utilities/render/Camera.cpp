@@ -68,6 +68,19 @@ namespace Wiwa {
 		UpdateFrustrum();
 	}
 
+	void Camera::setRotation(const glm::vec3 rot)
+	{
+		m_CameraRot = rot;
+
+		glm::vec3 direction;
+		direction.x = cos(glm::radians(rot.x)) * cos(glm::radians(rot.y));
+		direction.y = sin(glm::radians(rot.y));
+		direction.z = sin(glm::radians(rot.x)) * cos(glm::radians(rot.y));
+
+		glm::vec3 front = glm::normalize(direction);
+		setFront({ front.x, front.y, front.z });
+	}
+
 	void Camera::setPlanes(const float nearPlane, const float farPlane)
 	{
 		m_NearPlaneDist = nearPlane;
@@ -119,8 +132,6 @@ namespace Wiwa {
 
 		updateView();
 	}
-
-
 
 	void Camera::lookat(const Vector3f position)
 	{

@@ -83,13 +83,6 @@ void CamerasPanel::Draw()
 			ImGui::DragFloat("Near", &nearP);
 			ImGui::DragFloat("Far", &farP);
 			cam->setPosition({ pos.x, pos.y, pos.z });
-			glm::vec3 direction;
-			direction.x = cos(glm::radians(angles.x)) * cos(glm::radians(angles.y));
-			direction.y = sin(glm::radians(angles.y));
-			direction.z = sin(glm::radians(angles.x)) * cos(glm::radians(angles.y));
-
-			glm::vec3 front = glm::normalize(direction);
-			cam->setFront({ front.x, front.y, front.z });
 			
 			cam->setFOV(fov);
 			cam->setPlanes(nearP, farP);

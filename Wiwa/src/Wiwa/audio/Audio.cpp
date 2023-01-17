@@ -352,7 +352,7 @@ bool Audio::Init()
         return false;
     }
 
-    m_DefaultListener = 25;
+    m_DefaultListener = 20000;
 
     AKRESULT gres = AK::SoundEngine::RegisterGameObj(m_DefaultListener);
 
@@ -368,7 +368,7 @@ bool Audio::Init()
     }
 
     AkSoundPosition position;
-    position.SetPosition(0.0f, 0.0f, 0.0f);
+    position.SetPosition(0.0f, 300.0f, 0.0f);
     position.SetOrientation(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
 
     gres = AK::SoundEngine::SetPosition(m_DefaultListener, position);
@@ -610,6 +610,13 @@ bool Audio::StopEvent(const char* event_name, uint64_t game_object)
     return true;
 }
 
+bool Audio::StopAllEvents()
+{
+    AK::SoundEngine::StopAll();
+
+    return true;
+}
+
 bool Audio::RegisterGameObject(uint64_t go_id)
 {
     AKRESULT res = AK::SoundEngine::RegisterGameObj(go_id);
@@ -634,13 +641,40 @@ bool Audio::UnregisterGameObject(uint64_t go_id)
     return true;
 }
 
-bool Audio::SetPosition(uint64_t go_id, const Wiwa::Vector3f& position, const Wiwa::Vector3f& front, const Wiwa::Vector3f& up)
+bool Audio::SetPositionAndOrientation(uint64_t go_id, const Wiwa::Vector3f& position, const Wiwa::Vector3f& front, const Wiwa::Vector3f& up)
 {
     AkSoundPosition soundposition;
     soundposition.SetPosition(position.x, position.y, position.z);
     soundposition.SetOrientation(front.x, front.y, front.z, up.x, up.y, up.z);
 
     AKRESULT res = AK::SoundEngine::SetPosition(go_id, soundposition);
+
+    if (res != AK_Success) {
+        setLastError(res);
+        return false;
+    }
+
+    return true;
+}
+
+bool Audio::SetPosition(uint64_t go_id, const Wiwa::Vector3f& position)
+{
+    AkSoundPosition soundposition;
+    soundposition.SetPosition(position.x, position.y, position.z);
+
+    AKRESULT res = AK::SoundEngine::SetPosition(go_id, soundposition);
+
+    if (res != AK_Success) {
+        setLastError(res);
+        return false;
+    }
+
+    return false;
+}
+
+bool Audio::AddDefaultListener(uint64_t go_id)
+{
+    AKRESULT res = AK::SoundEngine::AddDefaultListener(go_id);
 
     if (res != AK_Success) {
         setLastError(res);

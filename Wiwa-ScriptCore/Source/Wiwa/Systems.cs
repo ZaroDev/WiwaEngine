@@ -1,6 +1,6 @@
 ﻿namespace Wiwa
 {
-    class MeshRenderer
+    public class MeshRenderer
     {
 
     }

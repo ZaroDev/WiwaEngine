@@ -27,18 +27,16 @@
     }
     #endregion
     #region Mesh
-    [Component]
-    public struct Mesh
-    {
-        public ResourceId MeshId;
-        public ResourceId MaterialId;
-
-        public Mesh(ResourceId meshId, ResourceId matId)
-        {
-            MeshId = meshId;
-            MaterialId = matId;
-        }
-    }
+    //[Component]
+    //public unsafe struct Mesh
+    //{
+    //    public ResourceId meshId;
+    //    public ResourceId materialId;
+    //    public bool drawChildren;
+    //    public ulong modelIndex;
+    //    public fixed char mesh_path[128];
+    //    public fixed char mat_path[128];
+    //}
     #endregion
     #region Utils
     [Component]

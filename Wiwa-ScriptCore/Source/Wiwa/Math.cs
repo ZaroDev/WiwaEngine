@@ -74,12 +74,21 @@ namespace Wiwa
 
         public static Vector3 CalculateForward(ref Transform3D t3d)
         {
-            Vector3 forward;
-            forward.x = Cos(t3d.Rotation.x) * Sin(t3d.Rotation.z);
-            forward.y = -Sin(t3d.Rotation.x);
-            forward.z = Cos(t3d.Rotation.x) * Cos(t3d.Rotation.z);
+            Vector3 rotrad;
+            rotrad.x = Math.DegToRad(t3d.Rotation.x);
+            rotrad.y = Math.DegToRad(t3d.Rotation.y);
+            rotrad.z = Math.DegToRad(t3d.Rotation.z);
 
-            return forward;
+            Vector3 forward;
+            forward.x = Cos(rotrad.x) * Sin(rotrad.z);
+            forward.y = -Sin(rotrad.x);
+            forward.z = Cos(rotrad.x) * Cos(rotrad.z);
+
+            forward.x = Math.RadToDeg(forward.x);
+            forward.y = Math.RadToDeg(forward.y);
+            forward.z = Math.RadToDeg(forward.z);
+
+            return forward.Normalized();
         }
         public static Vector3 CalculateRight(ref Transform3D t3d)
         {
@@ -117,6 +126,18 @@ namespace Wiwa
             return angles;
         }
         #endregion
+
+        public static float PI = 3.14159265358979323846f;
+
+        public static float DegToRad(float deg)
+        {
+            return deg * Math.PI / 180.0f;
+        }
+
+        public static float RadToDeg(float rad)
+        {
+            return rad * 180.0f / Math.PI;
+        }
     }
     public struct Quaternion
     {
@@ -205,6 +226,31 @@ namespace Wiwa
         {
             return new Vector3(a.x * k, a.y * k, a.z * k);
         }
+        public static Vector3 operator-(Vector3 v)
+        {
+            return new Vector3(-v.x, -v.y, -v.z);
+        }
+
+        public float Magnitude()
+        {
+            return (float)System.Math.Sqrt(x * x + y * y + z * z);
+        }
+
+        public Vector3 Normalized()
+        {
+            float mag = Magnitude();
+
+            return new Vector3(x / mag, y / mag, z / mag);
+        }
+
+        public void Normalize()
+        {
+            float mag = Magnitude();
+
+            x /= mag;
+            y /= mag;
+            z /= mag;
+        }
     }
     public struct Vector2
     {
@@ -217,5 +263,5 @@ namespace Wiwa
         }
     }
 
-
+    
 }

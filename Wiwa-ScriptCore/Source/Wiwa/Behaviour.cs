@@ -50,5 +50,9 @@
             return id;
         }
 
+        public static void AddMesh(EntityId eid, string model, string material)
+        {
+            InternalCalls.AddMeshToEntity(eid, model, material);
+        }
     }
 }

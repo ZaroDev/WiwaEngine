@@ -63,7 +63,7 @@ namespace Wiwa {
 		inline float getFar() { return m_FarPlaneDist; }
 		inline float getNear() { return m_NearPlaneDist; }
 
-		inline void setRotation(const glm::vec3 rot) { m_CameraRot = rot; }
+		inline void setRotation(const glm::vec3 rot);
 		void lookat(const Vector3f position);
 		void lookat(const Vector3f cameraPos, const Vector3f position, const Vector3f camUp);
 		void SetPerspective(const float fov, const float aspectRatio, const float nearPlaneDistance=0.1f, const float farPlaneDistance=100.0f);
