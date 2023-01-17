@@ -1,7 +1,7 @@
 
-# <img style="vertical-align:middle" src="Editor/resources/icons/wiwa_icon.png" width="30"> Wiwa Engine
+# <img style="vertical-align:middle" src="images/wiwa_icon.png" width="30"> Wiwa Engine
 
-![editor.png](images/editor.png)
+![editor.png](images/demo.png)
 
 ## About the project
 
@@ -12,7 +12,8 @@ Wiwa engine is a 3D Game Engine developed during the Game Engines subject. Our g
 
 ## Info
 
-### What's new in 0.3:
+### What's new in 0.3
+
 - Scriting ECS
 - Wwise Audio engine
 - Custom shader and material pipeline
@@ -59,13 +60,32 @@ Advise: the project only supports Windows
 
 ## How to use
 
-### Entities
+- [Demo](#0)
+- [Entities](#1)
+- [Editor camera](#2)
+- [Camera manager](#3)
+- [Resource manager](#4)
+- [Materials](#5)
+- [Projects](#6)
+- [Time](#7)
+- [Shader pipeline](#8)
+- [Scripting](#9)
+- [Audio](#10)
+
+### Demo <a id = "0"></a>
+
+In order to showcase the different features of Wiwa it includes a demo scene.
+To open it go to ``Scenes`` and drag and drop ``Full_demo.wiscene`` to the ``Scene`` window.
+
+![editor.png](images/editor.png)
+
+### Entities <a id = "1"></a>
 
 To create an entity left click on the Hierarchy window and select an option. You can create either a blank entity or a primitive.
 
 Entities can have be parented and have local and global positions.
 
-### Editor Camera
+### Editor Camera <a id = "2"></a>
 
 - Hold right click to look  
 - Right click + WASD to move
@@ -77,13 +97,13 @@ Entities can have be parented and have local and global positions.
 - E to rotate an object
 - R to scale
 
-### Camera Manager
+### Camera Manager <a id = "3"></a>
 
 To create a camera just open the ``Cameras`` panel from ``View->Cameras`` then ``Create Camera``. To make the camera frustum cull the option cull needs to be active.
 
 ![Cameras panel](images/cameraswindow.png)
 
-### Resource Manager
+### Resource Manager <a id = "4"></a>
 
 The resource manager automatically imports each ``Model`` or ``Texture`` from the ``Assets\`` folder, the result of that import can be seen in the generated ``Library\``.
 The resources once loaded they keep loaded until a new scene is loaded. This keeps the engine from loading and unloading assets in a middle of a scene.
@@ -97,7 +117,7 @@ To change the import options of an asset the ``Import`` window can be checked.
 
 ``Note: for now image import settings is WIP``
 
-### Materials
+### Materials <a id = "5"></a>
 
 To create a material click the button Create Material at the Assets window.
 ![Create material](images/creatematerial.png)
@@ -110,15 +130,48 @@ Open the material editor window and select a material you want to edit.
 
 ![Material window](images/materialwindow.png)
 
-### Projects WIP
+### Projects WIP <a id = "6"></a>
 
 For now projects only contain info about the project such as the company and project name.
 In the future this tab will allow the user to select the scenes from the project to build the game.
 
-### Time
+### Time <a id = "7"></a>
 
 The play and pause buttons allow the user to enter play mode. This allows the ``deltaTime`` to be updated each frame, and in the future will make the scripting work. The time variables and time scale can be seen under the ``Time`` tab at ``View->Configuration``
 ![Time window](images/timewindow.png)
+
+### Shader pipeline <a id = "8"></a>
+
+The shader pipeline allows the user to create their own shaders using GLSL. To use it create a new shader on ``assets`` browser,
+then open the ``.vs`` and ``.fs`` those are the shader files, you can add a geometry shader by just making another file with the same name ended in ``.gs``.
+
+To add the uniforms to the engine just go to ``View->Shaders`` from that menu uniforms from various types can be added or deleted. To compile or save the shader click ``Compile``.
+
+![Shader panel](images/shaderpanel.png)
+
+If there's an error on the files when compiling the console will print a message and the status of the shader will change to ``Error``.
+``Note: uniform names must be the shame as in the shader files``
+
+### Scripting <a id = "9"></a>
+
+The scripting pipeline allows the user to create fast iterations of systems and components in C# without re-compiling the engine. When oppening the engine a solution named ``AppAssembly`` is created.
+To create new files click on the ``Assets`` window ``Create``.
+This will generate a new C# system script with the template.
+You can edit the files with the editor that you desire.
+
+``Note: to compile the scripting code you need VS2019 or VS2022``
+
+To choose between diferent visual studio compiler and settings go to ``View->Configuration->External tools`` there you can change the visual studio version for the compiler and the configuration.
+``Note: we strongly recomend using Release for better performance``
+
+At this point in time you can't debug C# code.
+``Note: Don't compile while on play mode this will crash the engine.``
+
+To see more in detail how to use the C# API click [here](https://github.com/ZaroDev/WiwaEngine/wiki/Scripting-API).
+
+### Audio <a id = "10"></a>
+
+The audio engine works using the ``Wwise`` API and allows the user to add audio to the engine.
 
 ## MIT License
 
