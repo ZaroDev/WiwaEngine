@@ -16,11 +16,14 @@
 static DirectorySpecs m_Directory;
 
 static const std::filesystem::path s_AssetsPath = "Assets";
+
+std::vector<std::function<void()>> AssetsPanel::m_AssetsThreadQueue;
+std::mutex AssetsPanel::m_AssetsThreadQueueMutex;
+
 AssetsPanel::AssetsPanel(EditorLayer* instance)
 	: Panel("Assets", instance), m_CurrentPath("Assets")
 {
 	m_Directory.path = "Assets";
-	Update();
 	ResourceId folderId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/folder_icon.png");
 	ResourceId fileId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/file_icon.png");
 	ResourceId backId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/back_icon.png");
@@ -38,15 +41,43 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	m_ModelIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(modId)->GetTextureId();
 	m_ShaderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(shaderId)->GetTextureId();
 
-	//std::make_unique<filewatch::FileWatch<std::string>>(s_AssetsPath.string(), OnAssetsFolderEvent);
+	Update();
 }
-
 AssetsPanel::~AssetsPanel()
 {
 	m_Directory.directories.clear();
 	m_Directory.files.clear();
 }
+void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type)
+{	
+	if (path.extension() == ".cs")
+	{
+		system("call tools\\buildsln.bat AppAssembly.sln Release");
+	}
+	switch (change_type)
+	{
+	case filewatch::Event::added:
+	{
+		
+	}break;
+	case filewatch::Event::removed:
+	{
 
+	}break;
+	case filewatch::Event::modified:
+	{
+
+	}break;
+	case filewatch::Event::renamed_old:
+	{
+
+	}break;
+	case filewatch::Event::renamed_new:
+	{
+
+	}break;
+	};
+}
 void AssetsPanel::Update()
 {
 	auto lastAbsoluteDirTime = std::filesystem::last_write_time(m_CurrentPath);
@@ -61,6 +92,7 @@ void AssetsPanel::Update()
 				DirectorySpecs*dir = new DirectorySpecs();
 				dir->path = p.path();
 				m_Directory.directories.push_back(dir);
+				dir->watcher = std::make_unique<filewatch::FileWatch<std::filesystem::path>>(p.path(), OnFolderEvent);
 				for (auto &p1 : std::filesystem::directory_iterator(dir->path))
 				{
 					UpdateDir(p1, dir);
@@ -79,7 +111,9 @@ void AssetsPanel::Update()
 
 		lastWriteTime = lastAbsoluteDirTime;
 	}
+	ExecuteAssetsThreadQueue();
 }
+
 void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, DirectorySpecs*dir)
 {
 	if (p1.is_directory())
@@ -102,6 +136,7 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 		CheckImport(p1);
 	}
 }
+
 void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 {
 	std::string p = path.path().string();
@@ -133,6 +168,7 @@ void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 		Wiwa::Resources::Import<Wiwa::Material>(p.c_str());
 	}
 }
+
 void AssetsPanel::Draw()
 {
 	ImGui::Begin(name, &active);
@@ -267,8 +303,6 @@ void AssetsPanel::Draw()
 	ImGui::End();
 }
 
-
-
 void AssetsPanel::TopBar()
 {
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
@@ -383,9 +417,21 @@ void AssetsPanel::TopBar()
 	ImGui::Separator();
 }
 
-void AssetsPanel::OnAssetsFolderEvent(const std::string& path, const filewatch::Event change_type)
+
+
+void AssetsPanel::SubmitToAssetsThread(const std::function<void()> func)
 {
-	std::cout << path << " - " << (int)change_type;
+	std::scoped_lock<std::mutex> lock(m_AssetsThreadQueueMutex);
+
+	m_AssetsThreadQueue.emplace_back(func);
+}
+
+void AssetsPanel::ExecuteAssetsThreadQueue()
+{
+	for (auto& func : m_AssetsThreadQueue)
+		func();
+
+	m_AssetsThreadQueue.clear();
 }
 
 void AssetsPanel::OnEvent(Wiwa::Event& e)
