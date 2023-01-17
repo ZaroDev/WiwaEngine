@@ -120,6 +120,7 @@ To change the import options of an asset the ``Import`` window can be checked.
 ### Materials <a id = "5"></a>
 
 To create a material click the button Create Material at the Assets window.
+
 ![Create material](images/creatematerial.png)
 
 Assing a name to the material and click create.
@@ -138,6 +139,7 @@ In the future this tab will allow the user to select the scenes from the project
 ### Time <a id = "7"></a>
 
 The play and pause buttons allow the user to enter play mode. This allows the ``deltaTime`` to be updated each frame, and in the future will make the scripting work. The time variables and time scale can be seen under the ``Time`` tab at ``View->Configuration``
+
 ![Time window](images/timewindow.png)
 
 ### Shader pipeline <a id = "8"></a>
@@ -150,6 +152,7 @@ To add the uniforms to the engine just go to ``View->Shaders`` from that menu un
 ![Shader panel](images/shaderpanel.png)
 
 If there's an error on the files when compiling the console will print a message and the status of the shader will change to ``Error``.
+
 ``Note: uniform names must be the shame as in the shader files``
 
 ### Scripting <a id = "9"></a>
