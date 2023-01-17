@@ -319,7 +319,8 @@ bool ShaderExtensionComp(const std::filesystem::path file)
 	Wiwa::Resources::_toLower(path);
 	std::filesystem::path formatedFile = path.c_str();
 
-	if (formatedFile.extension() == ".vs")
+	if (formatedFile.extension() == ".vs"
+		|| formatedFile.extension() == ".wishader")
 		return true;
 
 	return false;

@@ -55,6 +55,10 @@ public:
 	inline int GetGizmo() { return m_GizmoType; }
 
 	void SubmitToMainThread(const std::function<void()> func);
+
+	static void RegenSol();
+
+
 private:
 	void MainMenuBar();
 	void OpenCloseAssetsFolder();
@@ -80,6 +84,7 @@ private:
 	bool OnWindowClose(Wiwa::WindowCloseEvent &e);
 
 	void ExecuteMainThreadQueue();
+
 private:
 	bool m_ShowConsole = false;
 	bool m_ShowDemo = false;
@@ -127,6 +132,10 @@ private:
 
 	std::vector<std::function<void()>> m_EditorThreadQueue;
 	std::mutex m_EditorThreadMutex;
+public:
+	static std::string s_SolVersion;
+	static std::string s_BuildConf;
 private:
 	static EditorLayer* s_Instance;
+
 };

@@ -25,6 +25,8 @@
 
 #include "../Entities.h"
 EditorLayer* EditorLayer::s_Instance = nullptr;
+std::string EditorLayer::s_SolVersion = "vs2022";
+std::string EditorLayer::s_BuildConf = "Release";
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -37,7 +39,7 @@ EditorLayer::~EditorLayer()
 void EditorLayer::OnAttach()
 {
 	WI_CORE_ASSERT(!s_Instance, "Application already exists!");
-
+	RegenSol();
 	s_Instance = this;
 	// Editor scene
 	m_EditorSceneId = Wiwa::SceneManager::CreateScene();
@@ -206,6 +208,15 @@ void EditorLayer::SubmitToMainThread(const std::function<void()> func)
 	m_EditorThreadQueue.emplace_back(func);
 }
 
+void EditorLayer::RegenSol()
+{
+	std::string call = "call tools\\generatesol.bat ";
+	call += s_SolVersion;
+	call += " AppAssembly.sln ";
+	call += s_BuildConf;
+	system(call.c_str());
+}
+
 void EditorLayer::MainMenuBar()
 {
 	if (ImGui::BeginMainMenuBar())
@@ -255,7 +266,7 @@ void EditorLayer::MainMenuBar()
 		{
 			if (ImGui::MenuItem("Project settings"))
 			{
-				m_ProjectPanel.get()->SwitchActive();
+				m_ProjectPanel->SwitchActive();
 			}
 			ImGui::EndMenu();
 		}
@@ -531,6 +542,13 @@ void EditorLayer::LoadPanelConfig()
 
 	size_t psize = m_Panels.size();
 
+	if (config.HasMember("sol_version"))
+		s_SolVersion = config["sol_version"].get<const char*>();
+	if (config.HasMember("build_conf"))
+		s_SolVersion = config["build_conf"].get<const char*>();
+
+
+
 	for (size_t i = 0; i < psize; i++)
 	{
 		const auto &p = m_Panels[i];
@@ -547,6 +565,9 @@ void EditorLayer::SavePanelConfig()
 	Wiwa::JSONDocument config;
 
 	size_t psize = m_Panels.size();
+
+	config.AddMember("sol_version", s_SolVersion.c_str());
+	config.AddMember("build_conf", s_BuildConf.c_str());
 
 	for (size_t i = 0; i < psize; i++)
 	{

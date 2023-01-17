@@ -52,7 +52,7 @@ void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewat
 {	
 	if (path.extension() == ".cs")
 	{
-		system("call tools\\buildsln.bat AppAssembly.sln Release");
+		EditorLayer::Get().RegenSol();
 	}
 	switch (change_type)
 	{
@@ -157,10 +157,24 @@ void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 	}
 	else if (ShaderExtensionComp(path.path()))
 	{
-		p = p.substr(0, p.size() - 3);
-		Wiwa::ResourceId id = Wiwa::Resources::Load<Wiwa::Shader>(p.c_str());
-		Wiwa::Resources::CreateMeta<Wiwa::Shader>(p.c_str());
-		Wiwa::Resources::Import<Wiwa::Shader>(p.c_str(), Wiwa::Resources::GetResourceById<Wiwa::Shader>(id));
+		if (path.path().extension() == ".wishader")
+		{
+			p = p.substr(0, p.size() - 9);
+			Wiwa::ResourceId id = Wiwa::Resources::Load<Wiwa::Shader>(p.c_str());
+			Wiwa::Resources::CreateMeta<Wiwa::Shader>(p.c_str());
+			Wiwa::Resources::Import<Wiwa::Shader>(p.c_str(), Wiwa::Resources::GetResourceById<Wiwa::Shader>(id));
+		}
+		else
+		{
+			p = p.substr(0, p.size() - 3);
+			Wiwa::ResourceId id = Wiwa::Resources::Load<Wiwa::Shader>(p.c_str());
+			Wiwa::Shader* shader = Wiwa::Resources::GetResourceById<Wiwa::Shader>(id);
+			if (shader->getState() == Wiwa::Shader::ToCompile)
+			{
+				Wiwa::Resources::CreateMeta<Wiwa::Shader>(p.c_str());
+				Wiwa::Resources::Import<Wiwa::Shader>(p.c_str(), Wiwa::Resources::GetResourceById<Wiwa::Shader>(id));
+			}
+		}
 	}
 	else if (MaterialExtensionComp(path.path()))
 	{

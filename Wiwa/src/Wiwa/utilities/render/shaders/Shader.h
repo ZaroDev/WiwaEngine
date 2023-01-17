@@ -36,7 +36,7 @@ namespace Wiwa {
 		void CompileWishader(const char* filename);
 		void CompileFiles(const char* vertexShaderSource, const char* fragmentShaderSource, bool hasGS, std::string* geometryShaderSourceStr, bool& retflag);
 
-		void LoadFromWiasset(const char* filename);
+		bool LoadFromWiasset(const char* filename);
 
 		uint32_t getID() { return m_IDprogram; }
 		void Bind();

@@ -6,6 +6,7 @@
 #include "psapi.h"
 
 #include <Wiwa/utilities/AllocationMetrics.h>
+#include "../EditorLayer.h"
 
 ConfigurationPanel::ConfigurationPanel(EditorLayer* instance)
 	: Panel("Configuration", instance), info()
@@ -28,6 +29,60 @@ void ConfigurationPanel::Draw()
 	m_ByteLog.push_back((float)Wiwa::AllocationMetrics::bytes_allocated);
 
 	ImGui::Begin(name, &active);
+
+	if (ImGui::CollapsingHeader("External tools"))
+	{
+		{		
+			const char* types[] = { "vs2022", "vs2019" };
+		static const char* currentItem =
+			instance->s_SolVersion == "vs2022" ? types[0] : types[1];
+		if (ImGui::BeginCombo("Solution version", currentItem))
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				bool isSelected = (currentItem == types[i]);
+				if (ImGui::Selectable(types[i], isSelected))
+				{
+					currentItem = types[i];
+					instance->s_SolVersion = currentItem;
+				}
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+		}
+		ImGui::Separator();
+		{
+			const char* types[] = { "Release", "Debug" };
+			static const char* currentItem =
+				instance->s_BuildConf == "Release" ? types[0] : types[1];
+			if (ImGui::BeginCombo("Build config", currentItem))
+			{
+				for (int i = 0; i < 2; i++)
+				{
+					bool isSelected = (currentItem == types[i]);
+					if (ImGui::Selectable(types[i], isSelected))
+					{
+						currentItem = types[i];
+						instance->s_BuildConf = currentItem;
+					}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+
+			if (ImGui::Button("Regenerate solution"))
+			{
+				instance->RegenSol();
+			}
+		}
+	}
+
+
 	if (ImGui::CollapsingHeader("Window"))
 	{
 		if (ImGui::Checkbox("Fullscreen", &m_Fullscreen))

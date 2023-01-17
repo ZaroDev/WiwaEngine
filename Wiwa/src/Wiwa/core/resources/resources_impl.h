@@ -18,6 +18,8 @@
 #include <sstream>
 #include <time.h>
 
+#define RES_NOT_LOADED -1
+
 typedef size_t ResourceId;
 
 namespace Wiwa {
@@ -95,8 +97,6 @@ namespace Wiwa {
 		static ResourceId getResourcePosition(ResourceType rt, const char* file);
 
 		// Resource path for importing
-		static std::string _assetToLibPath(std::string path);
-		static bool _preparePath(std::string path);
 		inline static const char* getPathById(ResourceType type, size_t id)
 		{
 			if (id >= m_Resources[type].size())
@@ -108,6 +108,8 @@ namespace Wiwa {
 		static void _import_image_impl(const char* origin, const char* destination);
 		static void _import_model_impl(const char* origin, const char* destination, ModelSettings* settings);
 	public:
+		static bool _preparePath(std::string path);
+		static std::string _assetToLibPath(std::string path);
 		static inline void standarizePath(std::string& file_path)
 		{
 			size_t index = 0;

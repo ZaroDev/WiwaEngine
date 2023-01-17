@@ -60,6 +60,7 @@ namespace Wiwa {
 			Shader* shader = new Shader();
 			
 			shader->LoadFromWiasset(file_path.c_str());
+
 			//shader->Compile(file);
 			PushResource(WRT_SHADER, file_path.c_str(), shader);
 

@@ -86,11 +86,12 @@ namespace Wiwa {
 
 		bool retflag;
 		CompileFiles(vertexShaderSource, fragmentShaderSource, hasGS, geometryShaderSourceStr, retflag);
-		if (retflag) return;
-
 		delete vertexShaderSourceStr;
 		delete fragmentShaderSourceStr;
 		delete geometryShaderSourceStr;
+
+		if (retflag) return;
+
 
 		m_AllOk = true;
 
@@ -210,6 +211,7 @@ namespace Wiwa {
 		glDeleteShader(fragmentShader);
 		if (hasGS)
 			glDeleteShader(geometryShader);
+
 		retflag = false;
 
 		m_CompileState = State::Compiled;
@@ -219,14 +221,19 @@ namespace Wiwa {
 		m_View = glGetUniformLocation(m_IDprogram, "u_View");
 	}
 
-	void Shader::LoadFromWiasset(const char* filename)
+	bool Shader::LoadFromWiasset(const char* filename)
 	{
 		std::string file_name = filename;
 		file_name += ".wishader";
 		JSONDocument shaderFile;
 
 		if (!shaderFile.load_file(file_name.c_str()))
-			return;
+		{
+			Resources::SetAssetPath(file_name);
+			if (!shaderFile.load_file(file_name.c_str()))
+				return false;
+		}
+		
 		std::string vertexShader;
 		std::string fragmentShader;
 		std::string geometryShader;
@@ -255,6 +262,19 @@ namespace Wiwa {
 				addUniform(p->name.GetString(), (UniformType)p->value.GetInt());
 			}
 		}
+		/*std::string file_path = filename;
+		Resources::standarizePath(file_path);
+		std::filesystem::path import_file = file_path;
+		std::filesystem::path export_file = Resources::_assetToLibPath(file_path);
+		export_file.replace_extension(".wishader");
+		std::filesystem::path export_path = export_file.parent_path();
+
+		if (Resources::_preparePath(export_path.string())) {
+			shaderFile.save_file(export_file.string().c_str());
+			Resources::CreateMeta<Shader>(file_path.c_str());
+		}*/
+
+		return true;
 	}
 
 	void Shader::Bind()
