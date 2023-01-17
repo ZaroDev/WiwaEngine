@@ -120,7 +120,6 @@ To change the import options of an asset the ``Import`` window can be checked.
 ### Materials <a id = "5"></a>
 
 To create a material click the button Create Material at the Assets window.
-
 ![Create material](images/creatematerial.png)
 
 Assing a name to the material and click create.
@@ -139,7 +138,6 @@ In the future this tab will allow the user to select the scenes from the project
 ### Time <a id = "7"></a>
 
 The play and pause buttons allow the user to enter play mode. This allows the ``deltaTime`` to be updated each frame, and in the future will make the scripting work. The time variables and time scale can be seen under the ``Time`` tab at ``View->Configuration``
-
 ![Time window](images/timewindow.png)
 
 ### Shader pipeline <a id = "8"></a>
@@ -152,7 +150,6 @@ To add the uniforms to the engine just go to ``View->Shaders`` from that menu un
 ![Shader panel](images/shaderpanel.png)
 
 If there's an error on the files when compiling the console will print a message and the status of the shader will change to ``Error``.
-
 ``Note: uniform names must be the shame as in the shader files``
 
 ### Scripting <a id = "9"></a>
@@ -165,11 +162,9 @@ You can edit the files with the editor that you desire.
 ``Note: to compile the scripting code you need VS2019 or VS2022``
 
 To choose between diferent visual studio compiler and settings go to ``View->Configuration->External tools`` there you can change the visual studio version for the compiler and the configuration.
-
 ``Note: we strongly recomend using Release for better performance``
 
 At this point in time you can't debug C# code.
-
 ``Note: Don't compile while on play mode this will crash the engine.``
 
 To see more in detail how to use the C# API click [here](https://github.com/ZaroDev/WiwaEngine/wiki/Scripting-API).
@@ -177,6 +172,19 @@ To see more in detail how to use the C# API click [here](https://github.com/Zaro
 ### Audio <a id = "10"></a>
 
 The audio engine works using the ``Wwise`` API and allows the user to add audio to the engine.
+
+To work with the audio engine you need to download [Wwise](https://www.audiokinetic.com/en/products/wwise/). When downloaded you can create a new project in Wwise where you can work with music sound and effects.
+
+In engine you just need to load the ``.bnk`` project in the ``Audio`` window.
+And load the necessary banks in order to execute all the events.
+
+![AudioWindow](images/audio_window.png)
+
+#### Audio Source component
+
+Add the component to an Entity to make it execute an event on Play.
+
+![AudioComp](images/audio_source.png)
 
 ## MIT License
 
