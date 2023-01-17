@@ -123,6 +123,7 @@ namespace Wiwa {
 		LoadAssembly(s_Data->CoreAssemblyFilePath);
 		LoadAppAssembly(s_Data->AppAssemblyFilePath);
 
+		WI_CORE_TRACE("Reloaded app assembly");
 		WI_CORE_WARN("Components");
 		Utils::PrintReflectionTypes(s_Data->Components);
 		WI_CORE_WARN("Systems");

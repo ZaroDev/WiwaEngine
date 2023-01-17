@@ -17,6 +17,7 @@ struct FileSpecs
 struct DirectorySpecs
 {
 	std::filesystem::path path;
+	std::unique_ptr<filewatch::FileWatch<std::filesystem::path>> watcher;
 	std::vector<DirectorySpecs*> directories;
 	std::vector<FileSpecs> files;
 };
@@ -36,7 +37,10 @@ public:
 private:
 	void DisplayNode(DirectorySpecs* directoryEntry);
 	void TopBar();
-	static void OnAssetsFolderEvent(const std::string& path, const filewatch::Event change_type);
+
+	static void OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type);
+	static void SubmitToAssetsThread(const std::function<void()> func);
+	static void ExecuteAssetsThreadQueue();
 private:
 	ImTextureID m_FileIcon;
 	ImTextureID m_FolderIcon;
@@ -51,5 +55,7 @@ private:
 	std::filesystem::directory_entry m_SelectedEntry;
 	std::filesystem::file_time_type lastWriteTime;
 	float m_ButtonSize = 1.0f;
-	std::unique_ptr<filewatch::FileWatch<std::string>> DirWatcher;
+
+	static std::vector<std::function<void()>> m_AssetsThreadQueue;
+	static std::mutex m_AssetsThreadQueueMutex;
 };
