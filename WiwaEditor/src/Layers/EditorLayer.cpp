@@ -346,6 +346,8 @@ void EditorLayer::MainMenuBar()
 						Wiwa::Time::Update();
 
 						m_SimulationSceneId = Wiwa::SceneManager::LoadScene(m_OpenedScenePath.c_str());
+						Wiwa::Scene* sc = Wiwa::SceneManager::getScene(m_SimulationSceneId);
+						sc->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
 						Wiwa::SceneManager::SetScene(m_SimulationSceneId);
 
 						Wiwa::SceneManager::Awake();
