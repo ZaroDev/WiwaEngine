@@ -79,9 +79,11 @@ namespace Wiwa {
 		m_CurrentState = SCENE_ENTERING;
 	}
 
-	void Scene::Unload()
+	void Scene::Unload(bool unload_resources)
 	{
-		Wiwa::Resources::UnloadSceneResources();
+		if (unload_resources) {
+			Wiwa::Resources::UnloadSceneResources();
+		}
 	}
 
 	void Scene::ChangeScene(size_t scene)

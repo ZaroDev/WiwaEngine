@@ -16,6 +16,7 @@ namespace Wiwa {
 	private:
 		static std::vector<Scene*> m_Scenes;
 		static SceneId m_ActiveScene;
+		static std::vector<SceneId> m_RemovedSceneIds;
 
 		static void LoadEntity(File& scene_file, EntityId parent, EntityManager& em, bool is_parent);
 		static void SaveEntity(File& scene_file, EntityId eid, EntityManager& em);
@@ -53,6 +54,11 @@ namespace Wiwa {
 		static std::vector<Scene*>& getScenes() { return m_Scenes; }
 
 		static void SaveScene(SceneId scene_id, const char* scene_path);
+
+		// Load a scene file to memory
 		static SceneId LoadScene(const char* scene_path);
+
+		// Unload a scene id
+		static void UnloadScene(SceneId scene_id, bool unload_resources=true);
 	};
 }

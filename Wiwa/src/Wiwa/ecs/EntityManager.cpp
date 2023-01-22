@@ -17,7 +17,26 @@ namespace Wiwa {
 
 	EntityManager::~EntityManager()
 	{
+		// Destroy entity systems
+		size_t entitySize = m_EntitySystems.size();
 
+		for (size_t i = 0; i < entitySize; i++) {
+			size_t system_size = m_EntitySystems[i].size();
+
+			for (size_t j = 0; j < system_size; j++) {
+				System* s = m_EntitySystems[i][j];
+
+				s->Destroy();
+				delete s;
+			}
+		}
+
+		// Destroy all components at once
+		size_t c_size = m_Components.size();
+
+		for (size_t i = 0; i < c_size; i++) {
+			delete[] m_Components[i];
+		}
 	}
 
 	void EntityManager::RemoveEntity(EntityId eid)
@@ -227,8 +246,14 @@ namespace Wiwa {
 	void EntityManager::AddSystemToWhitelist(SystemHash system_hash)
 	{
 		if (IsWhitelistedSystem(system_hash)) return;
+		if (!Application::Get().HasSystemH(system_hash)) return;
 
 		m_SystemWhiteList.push_back(system_hash);
+	}
+
+	void EntityManager::AddSystemToWhitelist(const char* system_name)
+	{
+		AddSystemToWhitelist(FNV1A_HASH(system_name));
 	}
 
 	bool EntityManager::IsWhitelistedSystem(SystemHash system_hash)

@@ -7,6 +7,11 @@
 #include <mono/metadata/object.h>
 
 namespace Wiwa {
+	SystemScriptClass::~SystemScriptClass()
+	{
+
+	}
+
 	SystemScriptClass::SystemScriptClass(MonoAssembly* assembly, const std::string& classNamespace, const std::string& className) :
 		scriptClass(assembly, classNamespace, className)
 	{

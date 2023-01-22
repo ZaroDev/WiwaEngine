@@ -161,7 +161,6 @@ namespace Wiwa {
 				delete m_Resources[i][j]->resource;
 				delete m_Resources[i][j];
 				j--;
-				i--;
 			}
 		}
 	}

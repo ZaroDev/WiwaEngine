@@ -50,7 +50,7 @@ public:
 	void OnImGuiRender() override;
 	void OnEvent(Wiwa::Event &e) override;
 
-	void LoadedPayloadScene(const std::string& m_Path, SceneId id) { m_OpenedScenePath = m_Path;  m_EditorSceneId = id; m_EditorScene = Wiwa::SceneManager::getScene(id); }
+	void LoadScene(const std::string& m_Path);
 
 	inline int GetGizmo() { return m_GizmoType; }
 

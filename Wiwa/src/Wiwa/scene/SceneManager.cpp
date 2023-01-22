@@ -10,6 +10,8 @@ namespace Wiwa {
 	SceneId SceneManager::m_ActiveScene = -1;
 	bool SceneManager::m_PlayScene = true;
 
+	std::vector<SceneId> SceneManager::m_RemovedSceneIds;
+
 	void SceneManager::Awake()
 	{
 		m_Scenes[m_ActiveScene]->Awake();
@@ -45,11 +47,20 @@ namespace Wiwa {
 
 	SceneId SceneManager::CreateScene()
 	{
-		SceneId scene_id = m_Scenes.size();
-
 		Scene* sc = new Scene();
 
-		m_Scenes.push_back(sc);
+		SceneId scene_id;
+
+		if (m_RemovedSceneIds.size() > 0) {
+			scene_id = m_RemovedSceneIds[m_RemovedSceneIds.size() - 1];
+			m_RemovedSceneIds.pop_back();
+
+			m_Scenes[scene_id] = sc;
+		}
+		else {
+			scene_id = m_Scenes.size();
+			m_Scenes.push_back(sc);
+		}
 
 		return scene_id;
 	}
@@ -496,6 +507,15 @@ namespace Wiwa {
 		scene_file.Close();
 
 		return sceneid;
+	}
+
+	void SceneManager::UnloadScene(SceneId scene_id, bool unload_resources)
+	{
+		m_Scenes[scene_id]->Unload(unload_resources);
+		delete m_Scenes[scene_id];
+		m_Scenes[scene_id] = NULL;
+
+		m_RemovedSceneIds.push_back(scene_id);
 	}
 
 	void SceneManager::SetScene(SceneId sceneId) {

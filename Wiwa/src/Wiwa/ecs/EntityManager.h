@@ -94,6 +94,12 @@ namespace Wiwa {
 		// Add system to whitelist
 		void AddSystemToWhitelist(SystemHash system_hash);
 
+		// Add system to whitelist by name
+		void AddSystemToWhitelist(const char* system_name);
+
+		// Add system to whitelist by type
+		template<class T> void AddSystemToWhitelist();
+
 		// Checks if a system is whitelisted
 		bool IsWhitelistedSystem(SystemHash system_hash);
 
@@ -371,6 +377,16 @@ namespace Wiwa {
 		return HasComponent<T>(entityId);
 	}
 
+	template<class T>
+	inline void EntityManager::AddSystemToWhitelist()
+	{
+		const Type* stype = GetType<T>();
+
+		assert(stype->custom_id == 1);
+
+		AddSystemToWhitelist(stype->hash);
+	}
+
 	template<class T, class T2, class ...TArgs>
 	inline bool EntityManager::HasComponents(EntityId entityId)
 	{
@@ -381,6 +397,8 @@ namespace Wiwa {
 	inline void EntityManager::ApplySystem(EntityId eid)
 	{
 		const Type* stype = GetType<T>();
+
+		assert(stype->custom_id == 1);
 
 		ApplySystem(eid, stype->hash);
 	}

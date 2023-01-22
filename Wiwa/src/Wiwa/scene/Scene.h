@@ -29,7 +29,7 @@ namespace Wiwa {
 		void ModuleUpdate();
 
 		void Load();
-		void Unload();
+		void Unload(bool unload_resources=true);
 
 		State getState() { return m_CurrentState; }
 

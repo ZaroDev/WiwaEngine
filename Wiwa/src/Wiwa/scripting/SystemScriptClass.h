@@ -11,7 +11,7 @@ namespace Wiwa {
 	{
 	public:
 		SystemScriptClass() = default;
-		~SystemScriptClass() = default;
+		~SystemScriptClass();
 
 		SystemScriptClass(MonoAssembly* assembly,const std::string& classNamespace, const std::string& className);
 

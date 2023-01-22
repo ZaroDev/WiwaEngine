@@ -201,6 +201,23 @@ void EditorLayer::OnEvent(Wiwa::Event &e)
 	}
 }
 
+void EditorLayer::LoadScene(const std::string& m_Path)
+{
+	// Unload editor scene before loading new scene into editor
+	Wiwa::SceneManager::UnloadScene(m_EditorSceneId);
+
+	// Load scene and prepare it
+	SceneId id = Wiwa::SceneManager::LoadScene(m_Path.c_str());
+	Wiwa::Scene* scene = Wiwa::SceneManager::getScene(id);
+	scene->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
+	Wiwa::SceneManager::SetScene(id);
+
+	// Update editor scene references
+	m_OpenedScenePath = m_Path;
+	m_EditorSceneId = id;
+	m_EditorScene = scene;
+}
+
 void EditorLayer::SubmitToMainThread(const std::function<void()> func)
 {
 	std::scoped_lock<std::mutex> lock(m_EditorThreadMutex);
@@ -347,7 +364,7 @@ void EditorLayer::MainMenuBar()
 
 						m_SimulationSceneId = Wiwa::SceneManager::LoadScene(m_OpenedScenePath.c_str());
 						Wiwa::Scene* sc = Wiwa::SceneManager::getScene(m_SimulationSceneId);
-						sc->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
+						sc->GetEntityManager().AddSystemToWhitelist<Wiwa::MeshRenderer>();
 						Wiwa::SceneManager::SetScene(m_SimulationSceneId);
 
 						Wiwa::SceneManager::Awake();
@@ -358,6 +375,9 @@ void EditorLayer::MainMenuBar()
 				}
 				else {
 					Wiwa::Time::Stop();
+
+					// Unload simulated scene but keep resources for the editor
+					Wiwa::SceneManager::UnloadScene(m_SimulationSceneId, false);
 
 					Wiwa::SceneManager::SetScene(m_EditorSceneId);
 					Wiwa::SceneManager::StopScene();
@@ -495,14 +515,7 @@ void EditorLayer::OpenScene()
 	std::string filePath = Wiwa::FileDialogs::OpenFile("Wiwa Scene (*.wiscene)\0*.wiscene\0");
 	if (!filePath.empty())
 	{
-		SceneId id = Wiwa::SceneManager::LoadScene(filePath.c_str());
-		Wiwa::Scene* scene = Wiwa::SceneManager::getScene(id);
-		scene->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
-		Wiwa::SceneManager::SetScene(id);
-		m_OpenedScenePath = filePath;
-
-		m_EditorSceneId = id;
-		m_EditorScene = scene;
+		LoadScene(filePath);
 
 		WI_INFO("Succesfully opened scene at path {0}", filePath.c_str());
 	}

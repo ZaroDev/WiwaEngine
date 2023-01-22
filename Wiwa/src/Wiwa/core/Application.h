@@ -103,6 +103,8 @@ namespace Wiwa
 		size_t GetSystemTypeCount() const { return m_SystemTypes.size(); }
 		const Type* GetSystemTypeH(size_t hash) const;
 		const Type* GetSystemType(size_t index) const;
+		bool HasSystemH(size_t hash) const;
+
 		void RegisterSystemType(const Type* system);
 		void DeleteSystemType(const Type* system);
 

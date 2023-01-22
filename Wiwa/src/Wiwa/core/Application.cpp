@@ -260,6 +260,13 @@ namespace Wiwa {
 		return m_SystemTypes[index];
 	}
 
+	bool Application::HasSystemH(size_t hash) const
+	{
+		const Type* stype = GetSystemTypeH(hash);
+
+		return stype != NULL;
+	}
+
 	void Application::RegisterSystemType(const Type* system)
 	{
 		const Type* type = GetSystemTypeH(system->hash);

@@ -146,14 +146,8 @@ void ScenePanel::Draw()
             }
             if (p.extension() == ".wiscene")
             {
-                SceneId id = Wiwa::SceneManager::LoadScene(pathS.c_str());
-				Wiwa::Scene* scene = Wiwa::SceneManager::getScene(id);
-				scene->GetEntityManager().AddSystemToWhitelist(FNV1A_HASH("MeshRenderer"));
-                Wiwa::SceneManager::SetScene(id);
-
-                EditorLayer::Get().LoadedPayloadScene(pathS, id);
+                EditorLayer::Get().LoadScene(pathS);
             }
-
         }
 
         ImGui::EndDragDropTarget();
