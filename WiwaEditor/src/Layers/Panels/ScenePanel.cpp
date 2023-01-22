@@ -189,8 +189,7 @@ void ScenePanel::Draw()
         if (m_GizmoType != -1)
         {
             ImGuizmo::SetOrthographic(false);
-            ImVec2 winPos = ImGui::GetWindowPos();
-            ImVec2 cursorPos = ImGui::GetCursorPos();
+
             ImGuizmo::SetDrawlist();
             ImGuizmo::SetRect(rectPos.x, rectPos.y, isize.x, isize.y);
 
@@ -213,12 +212,7 @@ void ScenePanel::Draw()
 
                 scale[0] = m_SelectedTransform->scale.x;
                 scale[1] = m_SelectedTransform->scale.y;
-                scale[2] = m_SelectedTransform->scale.z;
-
-
-                
-                
-                
+                scale[2] = m_SelectedTransform->scale.z;                
 
                 ImGuizmo::RecomposeMatrixFromComponents(translation, rotation, scale, tmpMatrix);
                 ImGuizmo::MODE mode = isParent ? ImGuizmo::WORLD : ImGuizmo::LOCAL;
@@ -243,26 +237,14 @@ void ScenePanel::Draw()
                     {
                     case ImGuizmo::OPERATION::TRANSLATE:
                     {
-                        /*if (isParent)
-                            m_SelectedTransform->position = Wiwa::Vector3f(translation[0], translation[1], translation[2]);
-                        else
-                            m_SelectedTransform->localPosition += Wiwa::Vector3f(translation[0], translation[1], translation[2]) - m_SelectedTransform->position;*/
                         m_SelectedTransform->localPosition += Wiwa::Vector3f(translation[0], translation[1], translation[2]) - m_SelectedTransform->position;
                     }break;
                     case ImGuizmo::OPERATION::ROTATE: 
                     {
-                        /*if(isParent)
-                            m_SelectedTransform->rotation = Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]);
-                        else
-                            m_SelectedTransform->localRotation += Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]) - m_SelectedTransform->rotation;*/
                         m_SelectedTransform->localRotation += Wiwa::Vector3f(rotation[0], rotation[1], rotation[2]) - m_SelectedTransform->rotation;
                     }break;
                     case ImGuizmo::OPERATION::SCALE: 
                     {
-                        /*if (isParent)
-                            m_SelectedTransform->scale = Wiwa::Vector3f(scale[0], scale[1], scale[2]);
-                        else
-                            m_SelectedTransform->localScale += Wiwa::Vector3f(scale[0], scale[1], scale[2]) - m_SelectedTransform->scale;*/
                         m_SelectedTransform->localScale += Wiwa::Vector3f(scale[0], scale[1], scale[2]) - m_SelectedTransform->scale;
                     }break;
                     default:
@@ -313,10 +295,12 @@ void ScenePanel::Draw()
         {
             glm::vec3 out_dir;
             glm::vec3 out_origin;
-            rpos.y -= isize.y;
-            rpos.y = glm::abs(rpos.y);
 
-            Wiwa::Math::ScreenPosToWorldRay(rpos.x, rpos.y, isize.x, isize.y, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
+            // Position on screen with pixels, invert Y for left-down origin
+            Wiwa::Vector2f pospixels = { lastPos.x * 1920, (1.0f - lastPos.y) * 1080 };
+
+            // Send mouse position in pixels with left-down origin coordinates and game resolution size
+            Wiwa::Math::ScreenPosToWorldRay(pospixels.x, pospixels.y, 1920, 1080, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
             float minDist = FLT_MAX;
             int id = -1;
             for (size_t i = 0; i < entityManager.GetEntityCount(); i++)
