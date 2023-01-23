@@ -314,9 +314,9 @@ void ScenePanel::Draw()
                 glm::mat4 transform(1.0f);
                 glm::vec3 scale = glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z);
                 transform = glm::translate(transform, glm::vec3(trs->position.x, trs->position.y, trs->position.z));
-                transform = glm::rotate(transform, trs->rotation.x, { 1,0,0 });
-                transform = glm::rotate(transform, trs->rotation.y, { 0,1,0 });
-                transform = glm::rotate(transform, trs->rotation.z, { 0,0,1 });
+                transform = glm::rotate(transform, glm::radians(trs->rotation.x), { 1,0,0 });
+                transform = glm::rotate(transform, glm::radians(trs->rotation.y), { 0,1,0 });
+                transform = glm::rotate(transform, glm::radians(trs->rotation.z), { 0,0,1 });
                 transform = glm::scale(transform, scale);
                 float intersectDist = 0.0f;
                 Wiwa::Math::AABB& AABB = model->boundingBox;
@@ -334,12 +334,12 @@ void ScenePanel::Draw()
                     intersectDist
                 ))
                 {
-                    if (i == 0)
+                    /*if (i == 0)
                     {
                         minDist = intersectDist;
                         id = i;
                     }
-                    else if (intersectDist < minDist)
+                    else */if (intersectDist < minDist)
                     {
                         minDist = intersectDist;
                         id = i;
