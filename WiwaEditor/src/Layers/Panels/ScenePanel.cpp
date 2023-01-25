@@ -322,8 +322,8 @@ void ScenePanel::Draw()
                 Wiwa::Math::AABB& AABB = model->boundingBox;
                 AABB.scale(scale, AABB.getCenter());
 
-                if (!m_Camera->frustrum.IsBoxVisible(AABB.getMin(), AABB.getMax()))
-                    continue;
+                /*if (!m_Camera->frustrum.IsBoxVisible(AABB.getMin(), AABB.getMax()))
+                    continue;*/
 
                 if (Wiwa::Math::TestRayOBBIntersection(
                     out_origin,
