@@ -64,12 +64,21 @@ namespace Wiwa
         //Z Yaw
         public static Vector3 CalculateUp(ref Transform3D t3d)
         {
-            Vector3 up;
-            up.x = Sin(t3d.Rotation.x) * Sin(t3d.Rotation.z);
-            up.y = Cos(t3d.Rotation.x);
-            up.z = Sin(t3d.Rotation.x) * Cos(t3d.Rotation.z);
+            Vector3 rotrad;
+            rotrad.x = Math.DegToRad(t3d.Rotation.x);
+            rotrad.y = Math.DegToRad(t3d.Rotation.y);
+            rotrad.z = Math.DegToRad(t3d.Rotation.z);
 
-            return up;
+            Vector3 up;
+            up.x = Sin(rotrad.x) * Sin(rotrad.z);
+            up.y = Cos(rotrad.x);
+            up.z = Sin(rotrad.x) * Cos(rotrad.z);
+
+            up.x = Math.RadToDeg(up.x);
+            up.y = Math.RadToDeg(up.y);
+            up.z = Math.RadToDeg(up.z);
+
+            return up.Normalized();
         }
 
         public static Vector3 CalculateForward(ref Transform3D t3d)
@@ -80,9 +89,9 @@ namespace Wiwa
             rotrad.z = Math.DegToRad(t3d.Rotation.z);
 
             Vector3 forward;
-            forward.x = Cos(rotrad.x) * Sin(rotrad.z);
+            forward.x = Cos(rotrad.x) * Sin(rotrad.y);
             forward.y = -Sin(rotrad.x);
-            forward.z = Cos(rotrad.x) * Cos(rotrad.z);
+            forward.z = Cos(rotrad.x) * Cos(rotrad.y);
 
             forward.x = Math.RadToDeg(forward.x);
             forward.y = Math.RadToDeg(forward.y);
@@ -92,11 +101,21 @@ namespace Wiwa
         }
         public static Vector3 CalculateRight(ref Transform3D t3d)
         {
+            Vector3 rotrad;
+            rotrad.x = Math.DegToRad(t3d.Rotation.x);
+            rotrad.y = Math.DegToRad(t3d.Rotation.y);
+            rotrad.z = Math.DegToRad(t3d.Rotation.z);
+
             Vector3 right;
-            right.x = Cos(t3d.Rotation.z);
+            right.x = Cos(rotrad.z);
             right.y = 0f;
-            right.z = -Sin(t3d.Rotation.z);
-            return right;
+            right.z = -Sin(rotrad.z);
+
+            right.x = Math.RadToDeg(right.x);
+            right.y = Math.RadToDeg(right.y);
+            right.z = Math.RadToDeg(right.z);
+
+            return right.Normalized();
         }
         public static void Translate(ref Transform3D transform, Vector3 pos)
         {

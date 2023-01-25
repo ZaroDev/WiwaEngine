@@ -37,10 +37,14 @@ namespace Wiwa {
 		Material* mat = Wiwa::Resources::GetResourceById<Wiwa::Material>(mesh->materialId);
 
 		CameraManager& man = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
-		
+		EntityManager& eman = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
 		size_t cameraCount = man.getCameraSize();
 		std::vector<CameraId>& cameras = man.getCameras();
+
+		EntityId parent = eman.GetEntityParent(m_EntityId);
+		Transform3D* parent_t3d = eman.GetComponent<Transform3D>(parent);
+
 		for (size_t i = 0; i < cameraCount; i++)
 		{
 			CameraId cam_id = cameras[i];
@@ -49,9 +53,20 @@ namespace Wiwa {
 			if (camera->cull && !camera->frustrum.IsBoxVisible(mod->boundingBox.getMin(), mod->boundingBox.getMax()))
 				return;
 
-
-			r3d.RenderMesh(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, camera);
+			if (parent == m_EntityId) {
+				r3d.RenderMesh(mod, *t3d, mat, false, camera);
+			}
+			else {
+				r3d.RenderMesh(mod, *t3d, *parent_t3d, mat, false, camera);
+			}
+			
 		}
-		r3d.RenderMesh(mod, t3d->position, t3d->rotation, t3d->scale, mat, false, man.editorCamera);
+
+		if (parent == m_EntityId) {
+			r3d.RenderMesh(mod, *t3d, mat, false, man.editorCamera);
+		}
+		else {
+			r3d.RenderMesh(mod, *t3d, *parent_t3d, mat, false, man.editorCamera);
+		}
 	}
 }

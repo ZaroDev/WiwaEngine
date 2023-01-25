@@ -70,7 +70,7 @@ namespace Wiwa {
 
 
 
-	void Renderer3D::RenderMesh(Model* mesh, Vector3f position, Vector3f rotation, Vector3f scale, Material* material, bool clear/*=false*/, Camera* camera/*=NULL*/, bool cull /*= false*/)
+	void Renderer3D::RenderMesh(Model* mesh, const Transform3D& t3d, Material* material, bool clear/*=false*/, Camera* camera/*=NULL*/, bool cull /*= false*/)
 	{
 		if (!camera)
 		{
@@ -82,11 +82,13 @@ namespace Wiwa {
 		camera->frameBuffer->Bind(clear);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-		model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-		model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-		model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
-		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
+
+		model = glm::translate(model, glm::vec3(t3d.position.x, t3d.position.y, t3d.position.z));
+		model = glm::rotate(model, glm::radians(t3d.rotation.x), glm::vec3(1, 0, 0));
+		model = glm::rotate(model, glm::radians(t3d.rotation.y), glm::vec3(0, 1, 0));
+		model = glm::rotate(model, glm::radians(t3d.rotation.z), glm::vec3(0, 0, 1));
+		model = glm::scale(model, glm::vec3(t3d.scale.x, t3d.scale.y, t3d.scale.z));
+
 		material->getShader()->Bind();
 		material->getShader()->SetMVP(model, camera->getView(), camera->getProjection());
 		
@@ -95,7 +97,6 @@ namespace Wiwa {
 		mesh->Render();
 
 		material->UnBind();
-
 
 		if (mesh->showNormals)
 		{
@@ -117,6 +118,118 @@ namespace Wiwa {
 			m_BBDisplayShader->UnBind();
 		}
 		
+		camera->frameBuffer->Unbind();
+	}
+
+	void Renderer3D::RenderMesh(Model* mesh, const Transform3D& t3d, const Transform3D& parent, Material* material, bool clear, Camera* camera, bool cull)
+	{
+		if (!camera)
+		{
+			camera = m_ActiveCamera;
+		}
+
+		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
+
+		camera->frameBuffer->Bind(clear);
+
+		glm::mat4 model = glm::mat4(1.0f);
+
+		// Local transformation
+		model = glm::translate(model, glm::vec3(t3d.localPosition.x, t3d.localPosition.y, t3d.localPosition.z));
+		model = glm::rotate(model, glm::radians(t3d.localRotation.x), glm::vec3(1, 0, 0));
+		model = glm::rotate(model, glm::radians(t3d.localRotation.y), glm::vec3(0, 1, 0));
+		model = glm::rotate(model, glm::radians(t3d.localRotation.z), glm::vec3(0, 0, 1));
+		model = glm::scale(model, glm::vec3(t3d.localScale.x, t3d.localScale.y, t3d.localScale.z));
+
+		// Parent transformation
+		glm::mat4 parent_model = glm::mat4(1.0f);
+		parent_model = glm::translate(parent_model, glm::vec3(parent.position.x, parent.position.y, parent.position.z));
+		parent_model = glm::rotate(parent_model, glm::radians(parent.rotation.x), glm::vec3(1, 0, 0));
+		parent_model = glm::rotate(parent_model, glm::radians(parent.rotation.y), glm::vec3(0, 1, 0));
+		parent_model = glm::rotate(parent_model, glm::radians(parent.rotation.z), glm::vec3(0, 0, 1));
+		parent_model = glm::scale(parent_model, glm::vec3(parent.scale.x, parent.scale.y, parent.scale.z));
+
+		model = parent_model * model;
+
+		// Material bind
+		material->getShader()->Bind();
+		material->getShader()->SetMVP(model, camera->getView(), camera->getProjection());
+
+		material->Bind();
+
+		mesh->Render();
+
+		material->UnBind();
+
+		if (mesh->showNormals)
+		{
+			m_NormalDisplayShader->Bind();
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
+
+			mesh->Render();
+			m_NormalDisplayShader->UnBind();
+		}
+		if (camera->drawBoundingBoxes)
+		{
+			m_BBDisplayShader->Bind();
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, model);
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
+			mesh->DrawBoudingBox();
+			m_BBDisplayShader->UnBind();
+		}
+
+		camera->frameBuffer->Unbind();
+	}
+
+	void Renderer3D::RenderMesh(Model* mesh, const Vector3f& position, const Vector3f& rotation, const Vector3f& scale, Material* material, bool clear, Camera* camera, bool cull)
+	{
+		if (!camera)
+		{
+			camera = m_ActiveCamera;
+		}
+
+		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
+
+		camera->frameBuffer->Bind(clear);
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+		model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+		model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+		model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+		model = glm::scale(model, glm::vec3(scale.x, scale.y, scale.z));
+		material->getShader()->Bind();
+		material->getShader()->SetMVP(model, camera->getView(), camera->getProjection());
+
+		material->Bind();
+
+		mesh->Render();
+
+		material->UnBind();
+
+		if (mesh->showNormals)
+		{
+			m_NormalDisplayShader->Bind();
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, model);
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
+
+			mesh->Render();
+			m_NormalDisplayShader->UnBind();
+		}
+		if (camera->drawBoundingBoxes)
+		{
+			m_BBDisplayShader->Bind();
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, model);
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
+			mesh->DrawBoudingBox();
+			m_BBDisplayShader->UnBind();
+		}
+
 		camera->frameBuffer->Unbind();
 	}
 
