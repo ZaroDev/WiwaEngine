@@ -303,24 +303,50 @@ void ScenePanel::Draw()
             Wiwa::Math::ScreenPosToWorldRay(pospixels.x, pospixels.y, 1920, 1080, m_Camera->getView(), m_Camera->getProjection(), out_origin, out_dir);
             float minDist = FLT_MAX;
             int id = -1;
-            for (size_t i = 0; i < entityManager.GetEntityCount(); i++)
+            std::vector<EntityId>* entities_alive = entityManager.GetEntitiesAlive();
+            size_t entity_count = entities_alive->size();
+            for (size_t i = 0; i < entity_count; i++)
             {
-                if (!entityManager.HasComponent<Wiwa::Mesh>(i))
+                EntityId eid = entities_alive->at(i);
+
+                if (!entityManager.HasComponent<Wiwa::Mesh>(eid))
                     continue;
-                Wiwa::Mesh* mesh = entityManager.GetComponent<Wiwa::Mesh>(i);
+                Wiwa::Mesh* mesh = entityManager.GetComponent<Wiwa::Mesh>(eid);
                 Wiwa::Model* model = Wiwa::Resources::GetResourceById<Wiwa::Model>(mesh->meshId);
                 model = model->getModelAt(mesh->modelIndex);
-                Wiwa::Transform3D* trs = entityManager.GetComponent<Wiwa::Transform3D>(i);
+                Wiwa::Transform3D* trs = entityManager.GetComponent<Wiwa::Transform3D>(eid);
+                glm::vec3 scale = glm::vec3(trs->localScale.x, trs->localScale.y, trs->localScale.z);
+
+                // Begin transformation
                 glm::mat4 transform(1.0f);
-                glm::vec3 scale = glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z);
-                transform = glm::translate(transform, glm::vec3(trs->position.x, trs->position.y, trs->position.z));
-                transform = glm::rotate(transform, glm::radians(trs->rotation.x), { 1,0,0 });
-                transform = glm::rotate(transform, glm::radians(trs->rotation.y), { 0,1,0 });
-                transform = glm::rotate(transform, glm::radians(trs->rotation.z), { 0,0,1 });
+                transform = glm::translate(transform, glm::vec3(trs->localPosition.x, trs->localPosition.y, trs->localPosition.z));
+                transform = glm::rotate(transform, glm::radians(trs->localRotation.x), { 1,0,0 });
+                transform = glm::rotate(transform, glm::radians(trs->localRotation.y), { 0,1,0 });
+                transform = glm::rotate(transform, glm::radians(trs->localRotation.z), { 0,0,1 });
                 transform = glm::scale(transform, scale);
+
+                EntityId parent = entityManager.GetEntityParent(eid);
+
+                if (parent != eid) {
+                    Wiwa::Transform3D* parent_trns = entityManager.GetComponent<Wiwa::Transform3D>(parent);
+
+                    glm::mat4 parent_transform(1.0f);
+                    parent_transform = glm::translate(parent_transform, glm::vec3(parent_trns->position.x, parent_trns->position.y, parent_trns->position.z));
+                    parent_transform = glm::rotate(parent_transform, glm::radians(parent_trns->rotation.x), glm::vec3(1, 0, 0));
+                    parent_transform = glm::rotate(parent_transform, glm::radians(parent_trns->rotation.y), glm::vec3(0, 1, 0));
+                    parent_transform = glm::rotate(parent_transform, glm::radians(parent_trns->rotation.z), glm::vec3(0, 0, 1));
+                    parent_transform = glm::scale(parent_transform, glm::vec3(parent_trns->scale.x, parent_trns->scale.y, parent_trns->scale.z));
+
+                    transform = parent_transform * transform;
+
+                    scale = glm::vec3(trs->scale.x, trs->scale.y, trs->scale.z);
+                }
+
+                // End transformation
+
                 float intersectDist = 0.0f;
-                Wiwa::Math::AABB& AABB = model->boundingBox;
-                AABB.scale(scale, AABB.getCenter());
+                Wiwa::Math::AABB AABB = model->boundingBox;
+                //AABB.scale(scale, AABB.getCenter());
 
                 /*if (!m_Camera->frustrum.IsBoxVisible(AABB.getMin(), AABB.getMax()))
                     continue;*/
