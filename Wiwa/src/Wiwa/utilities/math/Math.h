@@ -75,7 +75,7 @@ namespace Wiwa {
 			glm::mat4 ModelMatrix,       // Transformation applied to the mesh (which will thus be also applied to its bounding box)
 			float& intersection_distance// Output : distance between ray_origin and the intersection with the OBB
 		) {
-
+			
 			// Intersection method from Real-Time Rendering and Essential Mathematics for Games
 
 			float tMin = 0.0f;
@@ -182,7 +182,7 @@ namespace Wiwa {
 
 			intersection_distance = tMin;
 			return true;
-
+			
 		}
 		inline bool DecomposeTransform(const glm::mat4& transform, glm::vec3& translation, glm::vec3& rotation, glm::vec3& scale)
 		{

@@ -68,6 +68,8 @@ namespace Wiwa {
 		void RenderMesh(Model* mesh, const Transform3D& t3d, const Transform3D& parent, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
 		void RenderMesh(Model* mesh, const Vector3f& position, const Vector3f& rotation, const Vector3f& scale, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
 
+		void RenderMesh(Model* mesh, const glm::mat4& transform, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
+
 		void Close();
 		void RenderFrustrums(Camera* camera = NULL);
 		inline void SetLight(const DirectionalLight& light) { m_ActiveCamera->frameBuffer->setLight(light); }

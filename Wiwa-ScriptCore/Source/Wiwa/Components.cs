@@ -12,18 +12,18 @@
         public Vector3 LocalPosition;
         public Vector3 LocalRotation;
         public Vector3 LocalScale;
-        public Transform3D(Vector3 pos, Vector3 rot, Vector3 scl)
-        {
-            LocalPosition = pos;
-            LocalRotation = rot;
-            LocalScale = scl;
 
-            Position = pos;
-            Rotation = rot;
-            Scale = scl;
-        }
+        //public Matrix4x4 worldMatrix;
+        //public Matrix4x4 localMatrix;
+        public Vector4 world_mat_r1;
+        public Vector4 world_mat_r2;
+        public Vector4 world_mat_r3;
+        public Vector4 world_mat_r4;
 
-
+        public Vector4 local_mat_r1;
+        public Vector4 local_mat_r2;
+        public Vector4 local_mat_r3;
+        public Vector4 local_mat_r4;
     }
     #endregion
     #region Mesh

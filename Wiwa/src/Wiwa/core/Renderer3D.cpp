@@ -233,6 +233,49 @@ namespace Wiwa {
 		camera->frameBuffer->Unbind();
 	}
 
+	void Renderer3D::RenderMesh(Model* mesh, const glm::mat4& transform, Material* material, bool clear, Camera* camera, bool cull)
+	{
+		if (!camera)
+		{
+			camera = m_ActiveCamera;
+		}
+
+		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
+
+		camera->frameBuffer->Bind(clear);
+
+		material->getShader()->Bind();
+		material->getShader()->SetMVP(transform, camera->getView(), camera->getProjection());
+
+		material->Bind();
+
+		mesh->Render();
+
+		material->UnBind();
+
+		if (mesh->showNormals)
+		{
+			m_NormalDisplayShader->Bind();
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Model, transform);
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.View, camera->getView());
+			m_NormalDisplayShader->setUniform(m_NDSUniforms.Projection, camera->getProjection());
+
+			mesh->Render();
+			m_NormalDisplayShader->UnBind();
+		}
+		if (camera->drawBoundingBoxes)
+		{
+			m_BBDisplayShader->Bind();
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Model, transform);
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.View, camera->getView());
+			m_BBDisplayShader->setUniform(m_BBDSUniforms.Projection, camera->getProjection());
+			mesh->DrawBoudingBox();
+			m_BBDisplayShader->UnBind();
+		}
+
+		camera->frameBuffer->Unbind();
+	}
+
 	void Renderer3D::SetOption(Options option)
 	{
 		switch (option)

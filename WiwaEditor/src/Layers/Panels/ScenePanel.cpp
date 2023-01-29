@@ -323,7 +323,7 @@ void ScenePanel::Draw()
                 transform = glm::rotate(transform, glm::radians(trs->localRotation.x), { 1,0,0 });
                 transform = glm::rotate(transform, glm::radians(trs->localRotation.y), { 0,1,0 });
                 transform = glm::rotate(transform, glm::radians(trs->localRotation.z), { 0,0,1 });
-                transform = glm::scale(transform, scale);
+                //transform = glm::scale(transform, scale);
 
                 EntityId parent = entityManager.GetEntityParent(eid);
 
@@ -335,7 +335,7 @@ void ScenePanel::Draw()
                     parent_transform = glm::rotate(parent_transform, glm::radians(parent_trns->rotation.x), glm::vec3(1, 0, 0));
                     parent_transform = glm::rotate(parent_transform, glm::radians(parent_trns->rotation.y), glm::vec3(0, 1, 0));
                     parent_transform = glm::rotate(parent_transform, glm::radians(parent_trns->rotation.z), glm::vec3(0, 0, 1));
-                    parent_transform = glm::scale(parent_transform, glm::vec3(parent_trns->scale.x, parent_trns->scale.y, parent_trns->scale.z));
+                    //parent_transform = glm::scale(parent_transform, glm::vec3(parent_trns->scale.x, parent_trns->scale.y, parent_trns->scale.z));
 
                     transform = parent_transform * transform;
 
@@ -346,7 +346,7 @@ void ScenePanel::Draw()
 
                 float intersectDist = 0.0f;
                 Wiwa::Math::AABB AABB = model->boundingBox;
-                //AABB.scale(scale, AABB.getCenter());
+                AABB.scale(scale, {0.0f, 0.0f, 0.0f});
 
                 /*if (!m_Camera->frustrum.IsBoxVisible(AABB.getMin(), AABB.getMax()))
                     continue;*/

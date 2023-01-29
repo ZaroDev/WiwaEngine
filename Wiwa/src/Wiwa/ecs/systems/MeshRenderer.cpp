@@ -53,20 +53,9 @@ namespace Wiwa {
 			if (camera->cull && !camera->frustrum.IsBoxVisible(mod->boundingBox.getMin(), mod->boundingBox.getMax()))
 				return;
 
-			if (parent == m_EntityId) {
-				r3d.RenderMesh(mod, *t3d, mat, false, camera);
-			}
-			else {
-				r3d.RenderMesh(mod, *t3d, *parent_t3d, mat, false, camera);
-			}
-			
+			r3d.RenderMesh(mod, t3d->worldMatrix, mat, false, camera);
 		}
 
-		if (parent == m_EntityId) {
-			r3d.RenderMesh(mod, *t3d, mat, false, man.editorCamera);
-		}
-		else {
-			r3d.RenderMesh(mod, *t3d, *parent_t3d, mat, false, man.editorCamera);
-		}
+		r3d.RenderMesh(mod, t3d->worldMatrix, mat, false, man.editorCamera);
 	}
 }

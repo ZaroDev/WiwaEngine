@@ -133,6 +133,17 @@ namespace Wiwa {
 		t3d->rotation = t3dparent->rotation + t3d->localRotation;
 		t3d->scale = t3dparent->scale * t3d->localScale;
 
+		// Calculate local matrix
+		t3d->localMatrix = glm::mat4(1.0f);
+		t3d->localMatrix = glm::translate(t3d->localMatrix, glm::vec3(t3d->localPosition.x, t3d->localPosition.y, t3d->localPosition.z));
+		t3d->localMatrix = glm::rotate(t3d->localMatrix, glm::radians(t3d->localRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+		t3d->localMatrix = glm::rotate(t3d->localMatrix, glm::radians(t3d->localRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+		t3d->localMatrix = glm::rotate(t3d->localMatrix, glm::radians(t3d->localRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+		t3d->localMatrix = glm::scale(t3d->localMatrix, glm::vec3(t3d->localScale.x, t3d->localScale.y, t3d->localScale.z));
+
+		// Calculate world matrix
+		t3d->worldMatrix = t3dparent->worldMatrix * t3d->localMatrix;
+
 		// Update children
 		std::vector<EntityId>& children = m_EntityChildren[eid];
 		size_t c_size = children.size();
@@ -154,6 +165,17 @@ namespace Wiwa {
 			t3d->position = t3d->localPosition;
 			t3d->rotation = t3d->localRotation;
 			t3d->scale = t3d->localScale;
+
+			// Calculate local matrix
+			t3d->localMatrix = glm::mat4(1.0f);
+			t3d->localMatrix = glm::translate(t3d->localMatrix, glm::vec3(t3d->localPosition.x, t3d->localPosition.y, t3d->localPosition.z));
+			t3d->localMatrix = glm::rotate(t3d->localMatrix, glm::radians(t3d->localRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+			t3d->localMatrix = glm::rotate(t3d->localMatrix, glm::radians(t3d->localRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+			t3d->localMatrix = glm::rotate(t3d->localMatrix, glm::radians(t3d->localRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+			t3d->localMatrix = glm::scale(t3d->localMatrix, glm::vec3(t3d->localScale.x, t3d->localScale.y, t3d->localScale.z));
+
+			// Calculate world matrix
+			t3d->worldMatrix = t3d->localMatrix;
 
 			// Update children
 			std::vector<EntityId>& children = m_EntityChildren[p_ent];
