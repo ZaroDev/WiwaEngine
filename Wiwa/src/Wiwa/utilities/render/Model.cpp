@@ -550,48 +550,40 @@ namespace Wiwa {
 	void Model::generateBuffers()
 	{
 		if (is_root) return;
-#if 0
-		printf("Vertices\n");
-		for (float vert : vbo_data)
-			printf("%.2f,", vert);
-		printf("\nIndicies\n");
-		for (int ind : ebo_data)
-			printf("%i,", ind);
-#endif
 		WI_CORE_INFO("Generating buffers...");
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &ebo);
 		glGenVertexArrays(1, &vao);
-		WI_CORE_INFO("Generating buffers DONE");
+		//WI_CORE_INFO("Generating buffers DONE");
 		
 		if (glGetError() != 0)
 		{
 			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
 		}
 
-		WI_CORE_INFO("Binding the vertex array ...");
+		//WI_CORE_INFO("Binding the vertex array ...");
 		glBindVertexArray(vao);
-		WI_CORE_INFO("Binding the vertex array DONE");
+		//WI_CORE_INFO("Binding the vertex array DONE");
 
 		if (glGetError() != 0)
 		{
 			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
 		}
 
-		WI_CORE_INFO("Binding the vertex buffer ...");
+		//WI_CORE_INFO("Binding the vertex buffer ...");
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vbo_data.size() * sizeof(float), vbo_data.data(), GL_STATIC_DRAW);
-		WI_CORE_INFO("Binding the vertex buffer DONE");
+		//WI_CORE_INFO("Binding the vertex buffer DONE");
 
 		if (glGetError() != 0)
 		{
 			WI_CORE_ERROR("Check error {0}", glewGetErrorString(glGetError()));
 		}
 
-		WI_CORE_INFO("Binding the index buffer ...");
+		//WI_CORE_INFO("Binding the index buffer ...");
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_data.size() * sizeof(int), ebo_data.data(), GL_STATIC_DRAW);
-		WI_CORE_INFO("Binding the index buffer DONE");
+		//WI_CORE_INFO("Binding the index buffer DONE");
 
 		if (glGetError() != 0)
 		{
