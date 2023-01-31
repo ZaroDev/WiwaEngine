@@ -112,12 +112,12 @@ void EditorLayer::OnAttach()
 	m_StopIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId();
 
 	// Test
-	Wiwa::EntityManager &em = m_EditorScene->GetEntityManager();
-	CreateEntityWithModelHierarchy("models/street2");
+	//Wiwa::EntityManager &em = m_EditorScene->GetEntityManager();
+	//CreateEntityWithModelHierarchy("models/street2");
 	// SceneId scene = Wiwa::SceneManager::CreateScene();//Wiwa::SceneManager::LoadScene("Assets/Scenes/SampleScene.wiscene");
 	// Wiwa::SceneManager::SetScene(scene);
-	Wiwa::Vector2i pos = Wiwa::Vector2i{0, 0};
-	Wiwa::Size2i size = Wiwa::Size2i{20, 20};
+	/*Wiwa::Vector2i pos = Wiwa::Vector2i{0, 0};
+	Wiwa::Size2i size = Wiwa::Size2i{20, 20};*/
 	//uint32_t id = Wiwa::Application::Get().GetRenderer2D().CreateInstancedQuadTex(stopId, pos, size, Wiwa::Renderer2D::Pivot::CENTER);
 
 	/*for (size_t i = 0; i < children_size; i++) {
