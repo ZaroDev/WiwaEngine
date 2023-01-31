@@ -138,10 +138,12 @@ private:
 
 	std::vector<std::function<void()>> m_EditorThreadQueue;
 	std::mutex m_EditorThreadMutex;
+
 public:
 	static std::string s_SolVersion;
 	static std::string s_BuildConf;
 private:
 	static EditorLayer* s_Instance;
+	static std::thread* s_RegenThread;
 
 };

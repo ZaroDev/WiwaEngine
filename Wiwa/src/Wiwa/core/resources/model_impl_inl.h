@@ -25,9 +25,7 @@ namespace Wiwa {
 		doc.AddMember("file", file);
 		doc.AddMember("folderAsset", false);
 		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-		char buff[64];
-		ctime_s(buff, sizeof(buff), &time);
-		doc.AddMember("timeCreated", buff);
+		doc.AddMember("timeCreated", time);
 		JSONValue modelSettignsObject = doc.AddMemberObject("modelImportSettings");
 		modelSettignsObject.AddMember("pre_translated_vertices", settings->preTranslatedVertices);
 		doc.save_file(filePath.string().c_str());

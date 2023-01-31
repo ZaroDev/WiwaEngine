@@ -27,6 +27,7 @@
 EditorLayer* EditorLayer::s_Instance = nullptr;
 std::string EditorLayer::s_SolVersion = "vs2022";
 std::string EditorLayer::s_BuildConf = "Release";
+std::thread* EditorLayer::s_RegenThread;
 EditorLayer::EditorLayer()
 	: Layer("Editor Layer")
 {
@@ -176,7 +177,7 @@ void EditorLayer::OnUpdate()
 
 void EditorLayer::OnImGuiRender()
 {
-	ImGuiContext *ctx = Wiwa::Application::Get().GetImGuiContext();
+	ImGuiContext* ctx = Wiwa::Application::Get().GetImGuiContext();
 	ImGui::SetCurrentContext(ctx);
 
 	MainMenuBar();
@@ -228,23 +229,49 @@ void EditorLayer::LoadScene(const std::string& m_Path)
 	m_EditorScene = scene;
 }
 
+
+static bool threadExec = false;
+static bool finishedThread = false;
+static std::mutex mutex;
+
+void EditorLayer::RegenSolutionThread()
+{
+	std::string call = "call tools\\generatesol.bat ";
+	call += s_SolVersion;
+	call += " AppAssembly.sln ";
+	call += s_BuildConf;
+	system(call.c_str());
+	mutex.lock();
+	finishedThread = true;
+	mutex.unlock();
+
+}
+
+void EditorLayer::RegenSol()
+{
+	if (threadExec)
+	{
+		mutex.lock();
+		if (finishedThread)
+			s_RegenThread->join();
+	
+		mutex.unlock();
+
+		delete s_RegenThread;
+	}
+
+	s_RegenThread = new std::thread(RegenSolutionThread);
+	threadExec = true;
+	finishedThread = false;
+		
+}
+
 void EditorLayer::SubmitToMainThread(const std::function<void()> func)
 {
 	std::scoped_lock<std::mutex> lock(m_EditorThreadMutex);
 
 	m_EditorThreadQueue.emplace_back(func);
 }
-
-
-
-void EditorLayer::RegenSol()
-{
-	std::thread worker(RegenSolutionThread);
-
-	worker.join();
-}
-
-
 
 void EditorLayer::MainMenuBar()
 {
@@ -756,11 +783,3 @@ void EditorLayer::ExecuteMainThreadQueue()
 	m_EditorThreadQueue.clear();
 }
 
-void EditorLayer::RegenSolutionThread()
-{
-	std::string call = "call tools\\generatesol.bat ";
-	call += s_SolVersion;
-	call += " AppAssembly.sln ";
-	call += s_BuildConf;
-	system(call.c_str());
-}

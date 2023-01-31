@@ -92,7 +92,14 @@ namespace Wiwa {
 			}
 		}
 	}
-
+	template <typename TP>
+	std::time_t to_time_t(TP tp)
+	{
+		using namespace std::chrono;
+		auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
+			+ system_clock::now());
+		return system_clock::to_time_t(sctp);
+	}
 	Resources::MetaResult Resources::CheckMeta(const char* filename)
 	{
 		std::filesystem::path metaPath = filename;
@@ -102,6 +109,7 @@ namespace Wiwa {
 		if (!std::filesystem::exists(filename))
 		{
 			std::filesystem::remove(metaPath);
+			//TODO: Delete the library
 			return DELETED;
 		}
 
@@ -111,9 +119,13 @@ namespace Wiwa {
 
 		if (metaFile.HasMember("timeCreated"))
 		{
+			time_t metaTime = metaFile["timeCreated"].get<time_t>();
+			time_t fileTime = to_time_t(std::filesystem::last_write_time(filename));
 
+			if (metaTime != fileTime)
+				return TOUPDATE;
 		}
-		return TOUPDATE;
+		return UPDATED;
 	}
 
 	void Resources::_import_image_impl(const char* origin, const char* destination)

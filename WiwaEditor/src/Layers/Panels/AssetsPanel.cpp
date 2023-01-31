@@ -41,13 +41,13 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	m_ModelIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(modId)->GetTextureId();
 	m_ShaderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(shaderId)->GetTextureId();
 
-	Update();
 }
 AssetsPanel::~AssetsPanel()
 {
 	m_Directory.directories.clear();
 	m_Directory.files.clear();
 }
+
 void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type)
 {	
 	if (path.extension() == ".cs")
@@ -66,7 +66,7 @@ void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewat
 	}break;
 	case filewatch::Event::modified:
 	{
-
+		
 	}break;
 	case filewatch::Event::renamed_old:
 	{

@@ -10,7 +10,14 @@ namespace Wiwa {
 	template<>
 	inline void Resources::CreateMeta<Material>(const char* file)
 	{
-
+		std::filesystem::path filePath = file;
+		filePath += ".meta";
+		if (!std::filesystem::exists(filePath))
+			return;
+		JSONDocument doc;
+		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		doc.AddMember("timeCreated", time);
+		doc.save_file(filePath.string().c_str());
 	}
 	template<>
 	inline ResourceId Resources::Load<Material>(const char* file)

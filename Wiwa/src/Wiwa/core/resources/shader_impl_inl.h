@@ -17,8 +17,6 @@ namespace Wiwa {
 			return;
 		JSONDocument doc;
 		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-		char buff[64];
-		ctime_s(buff, sizeof(buff), &time);
 		doc.AddMember("timeCreated", time);
 		doc.save_file(filePath.string().c_str());
 	}
