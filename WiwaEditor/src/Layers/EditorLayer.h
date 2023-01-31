@@ -84,6 +84,7 @@ private:
 	bool OnWindowClose(Wiwa::WindowCloseEvent &e);
 
 	void ExecuteMainThreadQueue();
+	static void RegenSolutionThread();
 
 private:
 	bool m_ShowConsole = false;

@@ -225,14 +225,16 @@ void EditorLayer::SubmitToMainThread(const std::function<void()> func)
 	m_EditorThreadQueue.emplace_back(func);
 }
 
+
+
 void EditorLayer::RegenSol()
 {
-	std::string call = "call tools\\generatesol.bat ";
-	call += s_SolVersion;
-	call += " AppAssembly.sln ";
-	call += s_BuildConf;
-	system(call.c_str());
+	std::thread worker(RegenSolutionThread);
+
+	worker.join();
 }
+
+
 
 void EditorLayer::MainMenuBar()
 {
@@ -735,4 +737,13 @@ void EditorLayer::ExecuteMainThreadQueue()
 		func();
 
 	m_EditorThreadQueue.clear();
+}
+
+void EditorLayer::RegenSolutionThread()
+{
+	std::string call = "call tools\\generatesol.bat ";
+	call += s_SolVersion;
+	call += " AppAssembly.sln ";
+	call += s_BuildConf;
+	system(call.c_str());
 }
