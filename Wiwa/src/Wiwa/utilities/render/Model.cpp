@@ -583,7 +583,6 @@ namespace Wiwa {
 		//WI_CORE_INFO("Binding the index buffer ...");
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_data.size() * sizeof(int), ebo_data.data(), GL_STATIC_DRAW);
-		//WI_CORE_INFO("Binding the index buffer DONE");
 
 		if (glGetError() != 0)
 		{
