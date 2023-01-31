@@ -12,6 +12,7 @@ namespace Wiwa
 		static std::chrono::time_point<std::chrono::steady_clock> m_GameClock;
 		static std::chrono::time_point<std::chrono::steady_clock> m_RealTimeClock;
 		static uint32_t m_FrameCount;
+		static uint32_t m_GameFrameCount;
 		static std::chrono::duration<float> m_Time;
 		static float m_TimeScale;
 		static std::chrono::duration<float> m_DeltaTime;
@@ -21,15 +22,18 @@ namespace Wiwa
 		static std::chrono::duration<float> m_RealTimeDeltaTime;
 		static bool m_IsPlaying;
 		static bool m_IsPaused;
+		static bool m_Step;
 	private:
 		Time();
 	public:
 		static void Play();
 		static void PauseUnPause();
+		static void Step();
 		static void Update();
 		static void Stop();
 
 		static inline uint32_t GetFrameCount() { return m_FrameCount; }
+		static inline uint32_t GetGameFrameCount() { return m_GameFrameCount; }
 		static inline float GetTime() { return m_Time.count(); }
 		static inline float GetTimeScale() { return m_TimeScale; }
 		static void SetTimeScale(const int value);

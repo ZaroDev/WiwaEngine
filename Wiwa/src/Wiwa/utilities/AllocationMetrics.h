@@ -16,7 +16,8 @@ inline void* operator new(size_t size) {
 
 	Wiwa::AllocationMetrics::allocation_count++;
 	Wiwa::AllocationMetrics::bytes_allocated += size;
-
+	if (Wiwa::AllocationMetrics::bytes_allocated > FLT_MAX)
+		Wiwa::AllocationMetrics::bytes_allocated = FLT_MAX;
 	return malloc(size);
 }
 

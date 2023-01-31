@@ -99,17 +99,27 @@ void EditorLayer::OnAttach()
 
 	ResourceId playId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/play_icon.png");
 	ResourceId pauseId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/pause_icon.png");
+	ResourceId stepId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/step_icon.png");
 	ResourceId infoId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/info_icon.png");
 	ResourceId warnId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/warning_icon.png");
 	ResourceId errorId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/error_icon.png");
 	ResourceId stopId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/stop_icon.png");
+	ResourceId moveId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/move_icon.png");
+	ResourceId rotId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/rotate_icon.png");
+	ResourceId scaleId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/scale_icon.png");
+	ResourceId handId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/hand_icon.png");
 
 	m_PlayIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(playId)->GetTextureId();
 	m_PauseIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pauseId)->GetTextureId();
+	m_StepIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stepId)->GetTextureId();
 	m_InfoIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(infoId)->GetTextureId();
 	m_WarningIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(warnId)->GetTextureId();
 	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
 	m_StopIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId();
+	m_MoveIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(moveId)->GetTextureId();
+	m_RotIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(rotId)->GetTextureId();
+	m_SclIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(scaleId)->GetTextureId();
+	m_HandIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(handId)->GetTextureId();
 
 	// Test
 	//Wiwa::EntityManager &em = m_EditorScene->GetEntityManager();
@@ -399,6 +409,13 @@ void EditorLayer::MainMenuBar()
 					else {
 						Wiwa::SceneManager::PlayScene();
 					}
+				}
+			}
+
+			if (ImGui::ImageButton(m_StepIcon, { 15, 15 }))
+			{
+				if (is_playing) {
+					Wiwa::Time::Step();
 				}
 			}
 

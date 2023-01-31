@@ -114,10 +114,15 @@ private:
 
 	ImTextureID m_PlayIcon = nullptr;
 	ImTextureID m_PauseIcon = nullptr;
+	ImTextureID m_StepIcon = nullptr;
 	ImTextureID m_InfoIcon = nullptr;
 	ImTextureID m_WarningIcon = nullptr;
 	ImTextureID m_ErrorIcon = nullptr;
 	ImTextureID m_StopIcon = nullptr;
+	ImTextureID m_MoveIcon = nullptr;
+	ImTextureID m_RotIcon = nullptr;
+	ImTextureID m_SclIcon = nullptr;
+	ImTextureID m_HandIcon = nullptr;
 
 	Action<Wiwa::Event &> m_EventCallback;
 
