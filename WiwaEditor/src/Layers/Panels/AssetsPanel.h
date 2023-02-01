@@ -30,7 +30,7 @@ public:
 
 	void Update() override;
 	void UpdateDir(const std::filesystem::directory_entry &p1, DirectorySpecs*dir);
-	void CheckImport(const std::filesystem::directory_entry& p1);
+	static void CheckImport(const std::filesystem::path& p1);
 	void Draw() override;
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnDragAndDrop(Wiwa::WindowDropEvent& e);
@@ -38,7 +38,7 @@ private:
 	void DisplayNode(DirectorySpecs* directoryEntry);
 	void TopBar();
 
-	static void OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type);
+	static void OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type, const std::filesystem::path& dir);
 	static void SubmitToAssetsThread(const std::function<void()> func);
 	static void ExecuteAssetsThreadQueue();
 private:

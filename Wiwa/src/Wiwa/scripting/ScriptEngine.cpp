@@ -61,7 +61,7 @@ namespace Wiwa {
 		//WI_CORE_ASSERT(false, "");
 	}
 	//Function not called in the main thread
-	static void OnAppAssemblyFSEvent(const std::string& path, const filewatch::Event change_type)
+	static void OnAppAssemblyFSEvent(const std::string& path, const filewatch::Event change_type, const std::string& dir)
 	{
 		if (!ScriptEngine::s_Data->AssemblyReloadPending && change_type == filewatch::Event::modified)
 		{

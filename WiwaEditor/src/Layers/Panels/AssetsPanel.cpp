@@ -48,25 +48,51 @@ AssetsPanel::~AssetsPanel()
 	m_Directory.files.clear();
 }
 
-void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type)
+void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type, const std::filesystem::path& dir)
 {	
+	std::cout << dir << std::endl;
+	//Exclude the meta
+	if (path.extension() == ".meta")
+		return;
 	if (path.extension() == ".cs")
 	{
 		EditorLayer::Get().RegenSol();
+		return;
 	}
 	switch (change_type)
 	{
 	case filewatch::Event::added:
 	{
-		
+		CheckImport(path);
 	}break;
 	case filewatch::Event::removed:
 	{
+		std::filesystem::path libraryPath = Wiwa::Resources::_assetToLibPath(path.string());
+		std::string extension;
+		if (ImageExtensionComp(path))
+		{
+			extension = ".dds";
+		}
+		else if (ModelExtensionComp(path))
+		{
+			extension = ".wimodel";
+		}
+		else if (MaterialExtensionComp(path))
+		{
+			extension = ".wimaterial";
+		}
+		else if (ShaderExtensionComp(path))
+		{
+			extension = ".wishader";
+		}
+		libraryPath.replace_extension(extension);
+		std::filesystem::remove(path);
+		std::filesystem::remove(libraryPath);
 
 	}break;
 	case filewatch::Event::modified:
 	{
-		
+		CheckImport(path);
 	}break;
 	case filewatch::Event::renamed_old:
 	{
@@ -137,27 +163,27 @@ void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, Director
 	}
 }
 
-void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
+void AssetsPanel::CheckImport(const std::filesystem::path& path)
 {
-	std::string p = path.path().string();
+	std::string p = path.string();
 	Wiwa::Resources::standarizePath(p);
-	if (ImageExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Image>(p.c_str()))
+	if (ImageExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Image>(p.c_str()))
 	{
 		Wiwa::ImageSettings settings;
 		Wiwa::Resources::LoadMeta<Wiwa::Image>(p.c_str(), &settings);
 		Wiwa::Resources::CreateMeta<Wiwa::Image>(p.c_str(), &settings);
 		Wiwa::Resources::Import<Wiwa::Image>(p.c_str());
 	}
-	else if (ModelExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Model>(p.c_str()))
+	else if (ModelExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Model>(p.c_str()))
 	{
 		Wiwa::ModelSettings settings;
 		Wiwa::Resources::LoadMeta<Wiwa::Model>(p.c_str(), &settings);
 		Wiwa::Resources::CreateMeta<Wiwa::Model>(p.c_str(), &settings);
 		Wiwa::Resources::Import<Wiwa::Model>(p.c_str(), &settings);
 	}
-	else if (ShaderExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Shader>(p.c_str()))
+	else if (ShaderExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Shader>(p.c_str()))
 	{
-		if (path.path().extension() == ".wishader")
+		if (path.extension() == ".wishader")
 		{
 			p = p.substr(0, p.size() - 9);
 			Wiwa::ResourceId id = Wiwa::Resources::Load<Wiwa::Shader>(p.c_str());
@@ -176,7 +202,7 @@ void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 			}
 		}
 	}
-	else if (MaterialExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Material>(p.c_str()))
+	else if (MaterialExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Material>(p.c_str()))
 	{
 		Wiwa::Resources::CreateMeta<Wiwa::Material>(p.c_str());
 		Wiwa::Resources::Import<Wiwa::Material>(p.c_str());
