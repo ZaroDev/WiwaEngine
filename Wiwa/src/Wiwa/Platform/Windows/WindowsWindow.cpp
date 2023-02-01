@@ -48,7 +48,8 @@ namespace Wiwa {
 		m_OldData.Height = props.Height;
 		m_OldData.Refresh = props.Refresh;
 
-		
+
+		WI_CORE_WARN("=======Initializing window========");
 		WI_CORE_INFO("Creating window {0} {1} {2}", props.Title, props.Width, props.Height);
 		if (!s_GLFWInitialized)
 		{
@@ -61,12 +62,14 @@ namespace Wiwa {
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
 		GLenum status = glewInit();
+
 		WI_CORE_INFO("Using Glew {0}", glewGetString(GLEW_VERSION));
 		WI_CORE_INFO("Vendor: {0}", glGetString(GL_VENDOR));
 		WI_CORE_INFO("Renderer: {0}", glGetString(GL_RENDERER));
 		WI_CORE_INFO("OpenGL version supported {0}", glGetString(GL_VERSION));
-		WI_CORE_INFO("GLSL: {0}\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+		WI_CORE_INFO("GLSL: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
 		WI_CORE_ASSERT(!status, "Failed to initialize Glew!");
+		WI_CORE_WARN("=========Window intialized========");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		//SetVSync(true);
 		//SetResizable(true);

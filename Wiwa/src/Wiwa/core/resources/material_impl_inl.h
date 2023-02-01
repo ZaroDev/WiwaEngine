@@ -79,6 +79,13 @@ namespace Wiwa {
 			source.close();
 			dest.close();
 		}
+
+		WI_CORE_INFO("Material at {} imported succesfully!", import_file.string().c_str());
+	}
+	template<>
+	inline bool Resources::CheckImport<Material>(const char* file)
+	{
+		return _check_import_impl(file, ".wimaterial");
 	}
 	template<>
 	inline const char* Resources::getResourcePathById<Material>(size_t id)

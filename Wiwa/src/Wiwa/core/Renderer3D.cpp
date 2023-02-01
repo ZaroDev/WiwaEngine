@@ -18,6 +18,7 @@ namespace Wiwa {
 
 	bool Renderer3D::Init()
 	{
+		
 		Size2i& resolution = Application::Get().GetTargetResolution();
 
 		// Init perspective camera for 3D

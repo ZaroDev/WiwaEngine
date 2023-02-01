@@ -141,21 +141,21 @@ void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 {
 	std::string p = path.path().string();
 	Wiwa::Resources::standarizePath(p);
-	if (ImageExtensionComp(path.path()))
+	if (ImageExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Image>(p.c_str()))
 	{
 		Wiwa::ImageSettings settings;
 		Wiwa::Resources::LoadMeta<Wiwa::Image>(p.c_str(), &settings);
 		Wiwa::Resources::CreateMeta<Wiwa::Image>(p.c_str(), &settings);
 		Wiwa::Resources::Import<Wiwa::Image>(p.c_str());
 	}
-	else if (ModelExtensionComp(path.path()))
+	else if (ModelExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Model>(p.c_str()))
 	{
 		Wiwa::ModelSettings settings;
 		Wiwa::Resources::LoadMeta<Wiwa::Model>(p.c_str(), &settings);
 		Wiwa::Resources::CreateMeta<Wiwa::Model>(p.c_str(), &settings);
 		Wiwa::Resources::Import<Wiwa::Model>(p.c_str(), &settings);
 	}
-	else if (ShaderExtensionComp(path.path()))
+	else if (ShaderExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Shader>(p.c_str()))
 	{
 		if (path.path().extension() == ".wishader")
 		{
@@ -176,7 +176,7 @@ void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 			}
 		}
 	}
-	else if (MaterialExtensionComp(path.path()))
+	else if (MaterialExtensionComp(path.path()) && !Wiwa::Resources::CheckImport<Wiwa::Material>(p.c_str()))
 	{
 		Wiwa::Resources::CreateMeta<Wiwa::Material>(p.c_str());
 		Wiwa::Resources::Import<Wiwa::Material>(p.c_str());
@@ -430,8 +430,6 @@ void AssetsPanel::TopBar()
 	ImGui::PopItemWidth();
 	ImGui::Separator();
 }
-
-
 
 void AssetsPanel::SubmitToAssetsThread(const std::function<void()> func)
 {

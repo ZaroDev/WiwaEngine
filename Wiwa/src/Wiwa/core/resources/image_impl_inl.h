@@ -74,25 +74,20 @@ namespace Wiwa {
 	{
 		std::string path = file;
 		standarizePath(path);
-		ResourceId position = getResourcePosition(WRT_IMAGE, path.c_str());
+		std::string libPath = _assetToLibPath(path);
+		ResourceId position = getResourcePosition(WRT_IMAGE, libPath.c_str());
 		size_t size = m_Resources[WRT_IMAGE].size();
-		ImageSettings* settings = new ImageSettings();
-		//CreateMeta<Image>(file, settings);
+		
 		ResourceId resourceId;
 
 		if (position == size) {
 			Image* image = new Image();
-			/*std::string file_path = "library/";
-			file_path += file;
-			std::filesystem::path path = file_path;
+
+			std::filesystem::path path = libPath;
 			path.replace_extension(".dds");
-			file_path = path.string().c_str();
-			standarizePath(file_path);
-			image->InitDDS(file_path.c_str());*/
+			image->InitDDS(path.string().c_str());
 
-			image->Init(path.c_str());
-
-			PushResource(WRT_IMAGE, path.c_str(), image);
+			PushResource(WRT_IMAGE, path.string().c_str(), image);
 
 			resourceId = size;
 		}
@@ -141,15 +136,16 @@ namespace Wiwa {
 	template<>
 	inline void Resources::Import<Image>(const char* file)
 	{
-		std::filesystem::path load_path = file;
-
-		std::filesystem::path import_path = "library/";
-		import_path += load_path.filename();
-		import_path.replace_extension(".dds");
-
+		std::filesystem::path import_path = _import_path_impl(file, ".dds");
 		_import_image_impl(file, import_path.string().c_str());
-	}
 
+		WI_CORE_INFO("Image at {} imported succesfully!", import_path.string().c_str());
+	}
+	template<>
+	inline bool Resources::CheckImport<Image>(const char* file)
+	{
+		return _check_import_impl(file, ".dds");
+	}
 	template<>
 	inline const char* Resources::getResourcePathById<Image>(size_t id)
 	{

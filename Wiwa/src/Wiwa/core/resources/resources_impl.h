@@ -104,12 +104,18 @@ namespace Wiwa {
 			
 			return m_Resources[type][id]->filePath.c_str();
 		}
+		
+		
 		// Implementations
 		static void _import_image_impl(const char* origin, const char* destination);
 		static void _import_model_impl(const char* origin, const char* destination, ModelSettings* settings);
+		static bool _check_import_impl(const char* file, const char* extension);
+		
 	public:
 		static bool _preparePath(std::string path);
 		static std::string _assetToLibPath(std::string path);
+		static std::filesystem::path _import_path_impl(const std::filesystem::path& path, const char* extension);
+
 		static inline void standarizePath(std::string& file_path)
 		{
 			size_t index = 0;
@@ -118,7 +124,10 @@ namespace Wiwa {
 				file_path.replace(index, 1, "/");
 				index++;
 			}
+			_toLower(file_path);
 		}
+
+
 		static void _toLower(std::string& path);
 		inline static std::vector<Resource*>& GetResourcesOf(ResourceType rt) { return m_Resources[rt]; }
 		static void UnloadSceneResources();
@@ -135,6 +144,7 @@ namespace Wiwa {
 		template<class T> static ResourceId Load(const char* file);
 		template<class T> static ResourceId LoadNative(const char* file);
 		template<class T> static T* GetResourceById(ResourceId id);
+		template<class T> static bool CheckImport(const char* file);
 		template<class T, class... T2> static void Import(const char* file, T2... settings);
 		template<class T, class... T2> static void CreateMeta(const char* file, T2... settings);
 		template<class T, class... T2> static void LoadMeta(const char* file, T2... settings);
@@ -159,7 +169,7 @@ namespace Wiwa {
 				if (std::filesystem::create_directories(path))
 					WI_CORE_ERROR("Can't create a folder at {0}", path.c_str());
 			}
-			path = "Library/";
+			path = "library/";
 			path += file;
 			path += ".wiasset";
 
@@ -183,6 +193,7 @@ namespace Wiwa {
 			return new std::string(buffer.str());
 		}
 		static void Clear();
+		
 	};
 }
 
