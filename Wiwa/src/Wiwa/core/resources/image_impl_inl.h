@@ -72,10 +72,9 @@ namespace Wiwa {
 	template<>
 	inline ResourceId Resources::Load<Image>(const char* file)
 	{
-		std::string path = file;
-		standarizePath(path);
-		std::string libPath = _assetToLibPath(path);
-		ResourceId position = getResourcePosition(WRT_IMAGE, libPath.c_str());
+		std::filesystem::path file_path = _assetToLibPath(file);
+		file_path.replace_extension(".dds");
+		ResourceId position = getResourcePosition(WRT_IMAGE, file_path.string().c_str());
 		size_t size = m_Resources[WRT_IMAGE].size();
 		
 		ResourceId resourceId;
@@ -83,11 +82,9 @@ namespace Wiwa {
 		if (position == size) {
 			Image* image = new Image();
 
-			std::filesystem::path path = libPath;
-			path.replace_extension(".dds");
-			image->InitDDS(path.string().c_str());
+			image->InitDDS(file_path.string().c_str());
 
-			PushResource(WRT_IMAGE, path.string().c_str(), image);
+			PushResource(WRT_IMAGE, file_path.string().c_str(), image);
 
 			resourceId = size;
 		}
