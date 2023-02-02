@@ -5,7 +5,7 @@
 
 
 ShaderPanel::ShaderPanel(EditorLayer* instance)
-	: Panel("Shaders", instance)
+	: Panel("Shaders",ICON_FK_MAP_O, instance)
 {
 
 }
@@ -17,7 +17,7 @@ ShaderPanel::~ShaderPanel()
 
 void ShaderPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	
 	std::string str = m_Shader ? m_ShaderPath : "Shaders";
 	if (ButtonCenteredOnLine(str.c_str()))

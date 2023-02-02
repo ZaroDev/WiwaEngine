@@ -13,20 +13,16 @@
 #include "../EditorLayer.h"
 #include "../../Utils/EditorUtils.h"
 
-static DirectorySpecs m_Directory;
-
 static const std::filesystem::path s_AssetsPath = "Assets";
 
 std::vector<std::function<void()>> AssetsPanel::m_AssetsThreadQueue;
 std::mutex AssetsPanel::m_AssetsThreadQueueMutex;
 
 AssetsPanel::AssetsPanel(EditorLayer* instance)
-	: Panel("Assets", instance), m_CurrentPath("Assets")
+	: Panel("Assets", ICON_FK_FILES_O, instance), m_CurrentPath("Assets")
 {
-	m_Directory.path = "Assets";
 	ResourceId folderId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/folder_icon.png");
 	ResourceId fileId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/file_icon.png");
-	ResourceId backId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/back_icon.png");
 	ResourceId matId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/material_icon.png");
 	ResourceId modId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/model_icon.png");
 	ResourceId scrptId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/script_icon.png");
@@ -35,17 +31,15 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 
 	m_FolderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(folderId)->GetTextureId();
 	m_FileIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(fileId)->GetTextureId();
-	m_BackIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(backId)->GetTextureId();
 	m_MaterialIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(matId)->GetTextureId();
 	m_ScriptIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(scrptId)->GetTextureId();
 	m_ModelIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(modId)->GetTextureId();
 	m_ShaderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(shaderId)->GetTextureId();
 
+	watcher = std::make_unique<filewatch::FileWatch<std::filesystem::path>>(s_AssetsPath, OnFolderEvent);
 }
 AssetsPanel::~AssetsPanel()
 {
-	m_Directory.directories.clear();
-	m_Directory.files.clear();
 }
 
 void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type)
@@ -77,64 +71,6 @@ void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewat
 
 	}break;
 	};
-}
-void AssetsPanel::Update()
-{
-	auto lastAbsoluteDirTime = std::filesystem::last_write_time(m_CurrentPath);
-	if (lastWriteTime != lastAbsoluteDirTime)
-	{
-		m_Directory.directories.clear();
-		m_Directory.files.clear();
-		for (auto &p : std::filesystem::directory_iterator(m_Directory.path))
-		{
-			if (p.is_directory())
-			{
-				DirectorySpecs*dir = new DirectorySpecs();
-				dir->path = p.path();
-				m_Directory.directories.push_back(dir);
-				dir->watcher = std::make_unique<filewatch::FileWatch<std::filesystem::path>>(p.path(), OnFolderEvent);
-				for (auto &p1 : std::filesystem::directory_iterator(dir->path))
-				{
-					UpdateDir(p1, dir);
-				}
-			}
-			else
-			{
-				FileSpecs f;
-				f.path = p.path();
-				f.size = p.file_size();
-				m_Directory.files.push_back(f);
-
-				CheckImport(p);
-			}
-		}
-
-		lastWriteTime = lastAbsoluteDirTime;
-	}
-	ExecuteAssetsThreadQueue();
-}
-
-void AssetsPanel::UpdateDir(const std::filesystem::directory_entry &p1, DirectorySpecs*dir)
-{
-	if (p1.is_directory())
-	{
-		DirectorySpecs*d = new DirectorySpecs();
-		d->path = p1.path();
-		dir->directories.push_back(d);
-		for (auto &p2 : std::filesystem::directory_iterator(d->path))
-		{
-			UpdateDir(p2, d);
-		}
-	}
-	else
-	{
-		FileSpecs f;
-		f.path = p1.path();
-		f.size = p1.file_size();
-		dir->files.push_back(f);
-
-		CheckImport(p1);
-	}
 }
 
 void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
@@ -185,7 +121,7 @@ void AssetsPanel::CheckImport(const std::filesystem::directory_entry& path)
 
 void AssetsPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 
 	if (ImGui::BeginTable("##content_browser", 2, ImGuiTableFlags_Resizable))
 	{
@@ -195,7 +131,7 @@ void AssetsPanel::Draw()
 		{
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			for (auto &path : m_Directory.directories)
+			for (auto &path : std::filesystem::directory_iterator(s_AssetsPath))
 			{
 				DisplayNode(path);
 			}
@@ -320,9 +256,9 @@ void AssetsPanel::Draw()
 void AssetsPanel::TopBar()
 {
 	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-	if (ImGui::ImageButton((ImTextureID)m_BackIcon, { 16, 16 }))
+	if (ImGui::Button(ICON_FK_ARROW_LEFT))
 	{
-		if (m_CurrentPath != std::filesystem::path(m_Directory.path))
+		if (m_CurrentPath != s_AssetsPath)
 			m_CurrentPath = m_CurrentPath.parent_path();
 	}
 	ImGui::PopStyleColor();
@@ -474,13 +410,14 @@ bool AssetsPanel::OnDragAndDrop(Wiwa::WindowDropEvent& e)
 	return true;
 }
 
-void AssetsPanel::DisplayNode(DirectorySpecs*directoryEntry)
+void AssetsPanel::DisplayNode(std::filesystem::directory_entry directoryEntry)
 {
-	const auto &path = directoryEntry->path;
+	const auto &path = directoryEntry.path();
 
 	// ImGui::Text("%s", path.string().c_str());
 	// auto relativePath = std::filesystem::relative(directoryEntry.path(), s_EditorPath);
-	std::string filenameString = path.filename().string();
+	std::string filenameString = ICON_FK_FOLDER " ";
+	filenameString += path.filename().string().c_str();
 	static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	bool isDir = std::filesystem::is_directory(path);
 	if (isDir)
@@ -488,7 +425,7 @@ void AssetsPanel::DisplayNode(DirectorySpecs*directoryEntry)
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
 		ImGui::AlignTextToFramePadding();
-		if (!directoryEntry->directories.empty())
+		if (!directoryEntry.path().empty())
 		{
 			bool open = ImGui::TreeNodeEx(filenameString.c_str(), base_flags);
 			if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
@@ -497,7 +434,7 @@ void AssetsPanel::DisplayNode(DirectorySpecs*directoryEntry)
 			}
 			if (open)
 			{
-				for (auto &p : directoryEntry->directories)
+				for (auto &p : std::filesystem::directory_iterator(directoryEntry))
 				{
 					DisplayNode(p);
 				}

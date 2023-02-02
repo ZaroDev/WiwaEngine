@@ -36,7 +36,8 @@ project "Wiwa"
 		"%{IncludeDirs.Optick}",
 		"%{IncludeDirs.assimp}",
 		"%{IncludeDirs.ImGuizmo}",
-		"%{IncludeDirs.Wwise}"
+		"%{IncludeDirs.Wwise}",
+		"%{IncludeDirs.IconFontCppHeaders}"
 	}
 
 	links

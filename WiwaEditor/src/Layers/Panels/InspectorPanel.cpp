@@ -231,7 +231,7 @@ void InspectorPanel::DrawAudioSourceComponent(byte* data)
 }
 
 InspectorPanel::InspectorPanel(EditorLayer* instance)
-	: Panel("Inspector", instance)
+	: Panel("Inspector", ICON_FK_INFO_CIRCLE, instance)
 {
 }
 
@@ -243,7 +243,7 @@ void InspectorPanel::Draw()
 {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	if (m_EntitySet && m_CurrentID >= 0)
 	{
 		const char* entName = em.GetEntityName(m_CurrentID);

@@ -33,7 +33,7 @@
 #include <Wiwa/utilities/filesystem/FileSystem.h>
 
 ScenePanel::ScenePanel(EditorLayer* instance)
-    : Panel("Scene", instance)
+    : Panel("Scene", ICON_FK_GLOBE_W, instance)
 {
     m_LocalMode = false;
     m_Shadings.push_back(new ShadingView("Depth Test", Wiwa::Renderer3D::Options::DEPTH_TEST, true));
@@ -63,7 +63,7 @@ ScenePanel::~ScenePanel()
 
 void ScenePanel::Draw()
 {
-    ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
+    ImGui::Begin(iconName.c_str(), &active, ImGuiWindowFlags_MenuBar);
     m_Camera = Wiwa::SceneManager::getActiveScene()->GetCameraManager().editorCamera;
     if (ImGui::BeginMenuBar())
     {

@@ -6,7 +6,7 @@
 #include <Wiwa/core/Application.h>
 
 SystemsPanel::SystemsPanel(EditorLayer* instance) 
-	: Panel("Systems", instance)
+	: Panel("Systems", ICON_FK_FILTER, instance)
 {
 
 }
@@ -18,7 +18,7 @@ SystemsPanel::~SystemsPanel()
 
 void SystemsPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	ImGui::Text("Active Systems:");
 	ImGui::Separator();
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;

@@ -6,7 +6,7 @@
 #include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/core/Application.h>
 CamerasPanel::CamerasPanel(EditorLayer* instance)
-	: Panel("Cameras", instance)
+	: Panel("Cameras", ICON_FK_CAMERA, instance)
 {
 }
 
@@ -16,7 +16,7 @@ CamerasPanel::~CamerasPanel()
 
 void CamerasPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	Wiwa::CameraManager& cameraManager = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
 	Wiwa::Camera* editorCam = cameraManager.editorCamera;
 	if (ImGui::Button("Create Camera"))

@@ -1,7 +1,10 @@
 #include "Panel.h"
 
-Panel::Panel(const char* name, EditorLayer* instance_) : name(name), instance(instance_)
-{}
+Panel::Panel(const char* name, const char* icon, EditorLayer* instance_) 
+	: name(name),icon(icon), instance(instance_)
+{
+	iconName = std::string(icon).append(name).c_str();
+}
 
 Panel::~Panel()
 {}
@@ -20,4 +23,5 @@ bool Panel::IsActive() const
 {
 	return active;
 }
+
 

@@ -32,6 +32,7 @@ IncludeDirs["assimp"] = "%{wks.location}/Wiwa/vendor/assimp/include"
 IncludeDirs["ImGuizmo"] = "%{wks.location}/Wiwa/vendor/imguizmo"
 IncludeDirs["GLI"] = "%{wks.location}/Wiwa/vendor/gli/gli"
 IncludeDirs["Wwise"] = "%{wks.location}/Wiwa/vendor/Wwise/include"
+IncludeDirs["IconFontCppHeaders"] = "%{wks.location}/WiwaEditor/vendor/IconFontCppHeaders"
 
 LibraryDirs = {}
 LibraryDirs["mono"] = "%{wks.location}/Wiwa/vendor/mono/lib/%{cfg.buildcfg}"

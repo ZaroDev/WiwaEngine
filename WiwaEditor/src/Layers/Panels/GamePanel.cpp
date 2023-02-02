@@ -6,7 +6,7 @@
 
 
 GamePanel::GamePanel(EditorLayer* instance)
-	: Panel("Game",instance)
+	: Panel("Game", ICON_FK_GAMEPAD,instance)
 {
 }
 
@@ -18,7 +18,7 @@ void GamePanel::Draw()
 {
     Wiwa::CameraManager& cameraManager = Wiwa::SceneManager::getActiveScene()->GetCameraManager();
 
-    ImGui::Begin(name, &active);
+    ImGui::Begin(iconName.c_str(), &active);
 
     ImGui::Checkbox("Show stats", &m_ShowStats);
     ImGui::Separator();

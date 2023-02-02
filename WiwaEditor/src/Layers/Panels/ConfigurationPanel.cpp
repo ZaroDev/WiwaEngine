@@ -9,7 +9,7 @@
 #include "../EditorLayer.h"
 
 ConfigurationPanel::ConfigurationPanel(EditorLayer* instance)
-	: Panel("Configuration", instance), info()
+	: Panel("Configuration", ICON_FK_COG, instance), info()
 {
 	
 }
@@ -28,7 +28,7 @@ void ConfigurationPanel::Draw()
 	m_AllocLog.push_back((float)Wiwa::AllocationMetrics::allocation_count);
 	//m_ByteLog.push_back((float)Wiwa::AllocationMetrics::bytes_allocated);
 
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 
 	if (ImGui::CollapsingHeader("External tools"))
 	{
