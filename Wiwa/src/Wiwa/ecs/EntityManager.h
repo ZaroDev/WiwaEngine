@@ -193,6 +193,9 @@ namespace Wiwa {
 		template<class T> void ApplySystem(EntityId eid);
 		void ApplySystem(EntityId eid, SystemHash system_hash);
 		void ApplySystem(EntityId eid, const Type* system_type);
+
+		// Remove system from entity
+		void RemoveSystem(EntityId eid, SystemHash system_hash);
 	};
 
 	// Get component ID using Reflection

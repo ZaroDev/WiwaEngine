@@ -714,4 +714,28 @@ namespace Wiwa {
 	{
 		ApplySystem(eid, system_type->hash);
 	}
+
+	void EntityManager::RemoveSystem(EntityId eid, SystemHash system_hash)
+	{
+		size_t sindex = getSystemIndex(eid, system_hash);
+
+		if (sindex == INVALID_INDEX) return;
+
+		System* system = m_EntitySystems[eid][sindex];
+
+		m_EntitySystems[eid].erase(m_EntitySystems[eid].begin() + sindex);
+		m_EntitySystemHashes[eid].erase(m_EntitySystemHashes[eid].begin() + sindex);
+
+		std::vector<System*>& sys = m_SystemsByHash[system_hash];
+		size_t size = sys.size();
+
+		for (size_t i = 0; i < size; i++){
+			if (sys[i] == system) {
+				sys.erase(sys.begin() + i);
+				break;
+			}
+		}
+
+		delete system;
+	}
 }
