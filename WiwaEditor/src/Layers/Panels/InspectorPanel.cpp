@@ -333,13 +333,15 @@ void InspectorPanel::DrawSystems(Wiwa::EntityManager& em)
 
 	for (size_t i = 0; i < systems.size(); i++)
 	{
+		ImGui::PushID(i);
 		const Type* system = Wiwa::Application::Get().GetSystemTypeH(systems[i]);
 		ImGui::Text(system->name.c_str());
 		ImGui::SameLine();
 		if (ImGui::Button("Delete"))
 		{
-			//TODO delete system
+			em.RemoveSystem(m_CurrentID, system->hash);
 		}
+		ImGui::PopID();
 	}
 
 	if (ButtonCenteredOnLine("Add System"))
