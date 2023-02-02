@@ -157,7 +157,7 @@ void ScenePanel::Draw()
 
     if (m_ShowFPS)
     {
-        ImVec2 rectSize(rectPos.x + 150.0f, rectPos.y + 50.0f);
+        ImVec2 rectSize(rectPos.x + 200.0f, rectPos.y + 50.0f);
         ImGui::GetWindowDrawList()->AddRectFilled(
             ImVec2(rectPos.x + 10.0f, rectPos.y),
             rectSize,
@@ -178,7 +178,7 @@ void ScenePanel::Draw()
 
         ImGui::SetCursorPos(ImVec2(x, y + 20.0f));
         ImGui::TextColored(ImColor(255, 255, 255, 128), "Frame time");
-        ImGui::SetCursorPos(ImVec2(x + 70.0f, y + 20.0f));
+        ImGui::SetCursorPos(ImVec2(x + 100.0f, y + 20.0f));
         ImGui::TextColored(ImColor(255, 255, 255, 128), "%.3f ms", Wiwa::Time::GetRealDeltaTime());
     }
     //Gizmos

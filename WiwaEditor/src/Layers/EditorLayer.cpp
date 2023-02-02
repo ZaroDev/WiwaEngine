@@ -255,41 +255,41 @@ void EditorLayer::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("New project", "Ctrl+N"))
+			if (ImGui::MenuItem("New", "Ctrl+N"))
 			{
 				NewProject();
 			}
-			if (ImGui::MenuItem("Open project", "Ctrl+O"))
+			if (ImGui::MenuItem("Open", "Ctrl+O"))
 			{
 				OpenProject();
 			}
-			if (ImGui::MenuItem("Save project", "Ctrl+S"))
+			if (ImGui::MenuItem("Save", "Ctrl+S"))
 			{
 				Utils::ProjectManager::SaveProject();
 			}
-			if (ImGui::MenuItem("Save project as...", "Ctrl+Shift+S"))
+			if (ImGui::MenuItem("Save as...", "Ctrl+Shift+S"))
 			{
 				SaveProjectAs();
 			}
 			ImGui::Separator();
-			if (ImGui::MenuItem("New scene", ""))
+			if (ImGui::MenuItem(ICON_FK_FILE " New scene", ""))
 			{
 				size_t id = Wiwa::SceneManager::CreateScene();
 				Wiwa::SceneManager::ChangeScene(id);
 			}
-			if (ImGui::MenuItem("Open scene", ""))
+			if (ImGui::MenuItem(ICON_FK_FOLDER " Open scene", ""))
 			{
 				OpenScene();
 			}
-			if (ImGui::MenuItem("Save scene", ""))
+			if (ImGui::MenuItem(ICON_FK_FLOPPY_O " Save scene", ""))
 			{
 				SaveScene();
 			}
-			if (ImGui::MenuItem("Save scene as..."))
+			if (ImGui::MenuItem(ICON_FK_FILES_O " Save scene as..."))
 			{
 				SaveSceneAs();
 			}
-			if (ImGui::MenuItem("Close", "ALT + Q"))
+			if (ImGui::MenuItem(ICON_FK_TIMES " Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
 
 			ImGui::EndMenu();
@@ -328,7 +328,7 @@ void EditorLayer::MainMenuBar()
 			if (ImGui::MenuItem("Documentation"))
 				Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/wiki");
 
-			if (ImGui::MenuItem("Download Latest"))
+			if (ImGui::MenuItem(ICON_FK_GITHUB " Download Latest"))
 				Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/releases");
 
 			if (ImGui::MenuItem("Report a bug"))
