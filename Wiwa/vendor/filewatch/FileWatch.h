@@ -90,7 +90,7 @@ namespace filewatch
         typedef std::basic_regex<C, std::regex_traits<C>> UnderpinningRegex;
 
     public:
-        FileWatch(T path, UnderpinningRegex pattern, std::function<void(const T &file, const Event event_type, const T& dir)> callback) : _path(path),
+        FileWatch(T path, UnderpinningRegex pattern, std::function<void(const T &file, const Event event_type)> callback) : _path(path),
                                                                                                                             _pattern(pattern),
                                                                                                                             _callback(callback),
                                                                                                                             _directory(get_directory(path))
@@ -98,7 +98,7 @@ namespace filewatch
             init();
         }
 
-        FileWatch(T path, std::function<void(const T &file, const Event event_type, const T& dir)> callback) : FileWatch<T>(path, UnderpinningRegex(_regex_all), callback) {}
+        FileWatch(T path, std::function<void(const T &file, const Event event_type)> callback) : FileWatch<T>(path, UnderpinningRegex(_regex_all), callback) {}
 
         ~FileWatch()
         {
@@ -147,7 +147,7 @@ namespace filewatch
         T _filename;
 
         std::atomic<bool> _destory = {false};
-        std::function<void(const T &file, const Event event_type, const T&directory)> _callback;
+        std::function<void(const T &file, const Event event_type)> _callback;
 
         std::thread _watch_thread;
 
@@ -554,7 +554,7 @@ namespace filewatch
                     {
                         try
                         {
-                            _callback(file.first, file.second, _path);
+                            _callback(file.first, file.second);
                         }
                         catch (const std::exception &)
                         {
