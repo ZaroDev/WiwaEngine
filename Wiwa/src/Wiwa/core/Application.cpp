@@ -72,9 +72,7 @@ namespace Wiwa {
 		sprintf_s(m_SysInfo.glfwVer, 32, "%i.%i.%i", min, major, rev);
 
 		SetHwInfo();
-
-		
-
+		WI_CORE_WARN("=======Initializing systems=======");
 		m_Renderer2D = new Renderer2D();
 		m_Renderer2D->Init();
 		
@@ -94,8 +92,9 @@ namespace Wiwa {
 		if (!res) {
 			WI_CORE_ERROR("Audio engine error: [{}]", Audio::GetLastError());
 		}
-
 		ScriptEngine::Init();
+
+		WI_CORE_WARN("=======Systems initialized=======");
 	}
 
 	void Application::SetHwInfo()

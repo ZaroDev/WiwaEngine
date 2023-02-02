@@ -5,7 +5,8 @@
 #include <Wiwa/audio/Audio.h>
 #include <Wiwa/Platform/Windows/WindowsPlatformUtils.h>
 
-AudioPanel::AudioPanel(EditorLayer* instance) : Panel("Audio", instance)
+AudioPanel::AudioPanel(EditorLayer* instance) 
+	: Panel("Audio", ICON_FK_HEADPHONES, instance)
 {
 }
 
@@ -15,7 +16,7 @@ AudioPanel::~AudioPanel()
 
 void AudioPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 
 	bool loaded_project = Audio::LoadedProject();
 

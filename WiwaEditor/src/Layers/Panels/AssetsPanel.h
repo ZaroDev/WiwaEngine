@@ -9,18 +9,6 @@
 #include <memory>
 
 typedef void* ImTextureID;
-struct FileSpecs
-{
-	std::filesystem::path path;
-	uintmax_t size = 0;
-};
-struct DirectorySpecs
-{
-	std::filesystem::path path;
-	std::unique_ptr<filewatch::FileWatch<std::filesystem::path>> watcher;
-	std::vector<DirectorySpecs*> directories;
-	std::vector<FileSpecs> files;
-};
 
 class AssetsPanel : public Panel
 {
@@ -28,23 +16,22 @@ public:
 	AssetsPanel(EditorLayer* instance);
 	virtual ~AssetsPanel();
 
-	void Update() override;
-	void UpdateDir(const std::filesystem::directory_entry &p1, DirectorySpecs*dir);
-	void CheckImport(const std::filesystem::directory_entry& p1);
 	void Draw() override;
 	void OnEvent(Wiwa::Event& e) override;
 	bool OnDragAndDrop(Wiwa::WindowDropEvent& e);
+
 private:
-	void DisplayNode(DirectorySpecs* directoryEntry);
+	void DisplayNode(std::filesystem::directory_entry directoryEntry);
 	void TopBar();
 
 	static void OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type);
+	static void CheckImport(const std::filesystem::path& p1);
+	
 	static void SubmitToAssetsThread(const std::function<void()> func);
 	static void ExecuteAssetsThreadQueue();
 private:
 	ImTextureID m_FileIcon;
 	ImTextureID m_FolderIcon;
-	ImTextureID m_BackIcon;
 	ImTextureID m_MaterialIcon;
 	ImTextureID m_ModelIcon;
 	ImTextureID m_ScriptIcon;
@@ -58,4 +45,6 @@ private:
 
 	static std::vector<std::function<void()>> m_AssetsThreadQueue;
 	static std::mutex m_AssetsThreadQueueMutex;
+
+	std::unique_ptr<filewatch::FileWatch<std::filesystem::path>> watcher;
 };

@@ -98,30 +98,6 @@ void EditorLayer::OnAttach()
 	m_Settings.push_back(m_ProjectPanel.get());
 	m_Settings.push_back(m_About.get());
 
-	ResourceId playId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/play_icon.png");
-	ResourceId pauseId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/pause_icon.png");
-	ResourceId stepId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/step_icon.png");
-	ResourceId infoId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/info_icon.png");
-	ResourceId warnId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/warning_icon.png");
-	ResourceId errorId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/error_icon.png");
-	ResourceId stopId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/stop_icon.png");
-	ResourceId moveId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/move_icon.png");
-	ResourceId rotId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/rotate_icon.png");
-	ResourceId scaleId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/scale_icon.png");
-	ResourceId handId = Wiwa::Resources::LoadNative<Wiwa::Image>("resources/icons/hand_icon.png");
-
-	m_PlayIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(playId)->GetTextureId();
-	m_PauseIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(pauseId)->GetTextureId();
-	m_StepIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stepId)->GetTextureId();
-	m_InfoIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(infoId)->GetTextureId();
-	m_WarningIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(warnId)->GetTextureId();
-	m_ErrorIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(errorId)->GetTextureId();
-	m_StopIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(stopId)->GetTextureId();
-	m_MoveIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(moveId)->GetTextureId();
-	m_RotIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(rotId)->GetTextureId();
-	m_SclIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(scaleId)->GetTextureId();
-	m_HandIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(handId)->GetTextureId();
-
 	// Test
 	//Wiwa::EntityManager &em = m_EditorScene->GetEntityManager();
 	//CreateEntityWithModelHierarchy("models/street2");
@@ -279,41 +255,41 @@ void EditorLayer::MainMenuBar()
 	{
 		if (ImGui::BeginMenu("File"))
 		{
-			if (ImGui::MenuItem("New project", "Ctrl+N"))
+			if (ImGui::MenuItem("New", "Ctrl+N"))
 			{
 				NewProject();
 			}
-			if (ImGui::MenuItem("Open project", "Ctrl+O"))
+			if (ImGui::MenuItem("Open", "Ctrl+O"))
 			{
 				OpenProject();
 			}
-			if (ImGui::MenuItem("Save project", "Ctrl+S"))
+			if (ImGui::MenuItem("Save", "Ctrl+S"))
 			{
 				Utils::ProjectManager::SaveProject();
 			}
-			if (ImGui::MenuItem("Save project as...", "Ctrl+Shift+S"))
+			if (ImGui::MenuItem("Save as...", "Ctrl+Shift+S"))
 			{
 				SaveProjectAs();
 			}
 			ImGui::Separator();
-			if (ImGui::MenuItem("New scene", ""))
+			if (ImGui::MenuItem(ICON_FK_FILE " New scene", ""))
 			{
 				size_t id = Wiwa::SceneManager::CreateScene();
 				Wiwa::SceneManager::ChangeScene(id);
 			}
-			if (ImGui::MenuItem("Open scene", ""))
+			if (ImGui::MenuItem(ICON_FK_FOLDER " Open scene", ""))
 			{
 				OpenScene();
 			}
-			if (ImGui::MenuItem("Save scene", ""))
+			if (ImGui::MenuItem(ICON_FK_FLOPPY_O " Save scene", ""))
 			{
 				SaveScene();
 			}
-			if (ImGui::MenuItem("Save scene as..."))
+			if (ImGui::MenuItem(ICON_FK_FILES_O " Save scene as..."))
 			{
 				SaveSceneAs();
 			}
-			if (ImGui::MenuItem("Close", "ALT + Q"))
+			if (ImGui::MenuItem(ICON_FK_TIMES " Close", "ALT + Q"))
 				Wiwa::Application::Get().Quit();
 
 			ImGui::EndMenu();
@@ -352,7 +328,7 @@ void EditorLayer::MainMenuBar()
 			if (ImGui::MenuItem("Documentation"))
 				Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/wiki");
 
-			if (ImGui::MenuItem("Download Latest"))
+			if (ImGui::MenuItem(ICON_FK_GITHUB " Download Latest"))
 				Wiwa::Application::Get().OpenDir("https://github.com/ZaroDev/WiwaEngine/releases");
 
 			if (ImGui::MenuItem("Report a bug"))
@@ -373,26 +349,26 @@ void EditorLayer::MainMenuBar()
 	{
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::Button("None"))
+			ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
+			if (ImGui::Button(ICON_FK_MOUSE_POINTER))
 				m_GizmoType = -1;
 
-			if (ImGui::Button("Trns"))
+			if (ImGui::Button(ICON_FK_ARROWS))
 				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
 
-			if (ImGui::Button("Rot"))
+			if (ImGui::Button(ICON_FK_REPEAT))
 				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
 
-			if (ImGui::Button("Scl"))
+			if (ImGui::Button(ICON_FK_EXPAND))
 				m_GizmoType = ImGuizmo::OPERATION::SCALE;
 
-			ImGui::PushStyleColor(ImGuiCol_Button, {0, 0, 0, 0});
 			ImGui::SetCursorPosX(Wiwa::Application::Get().GetWindow().GetWidth() / 2 - 15.0f);
-			ImTextureID play = Wiwa::Time::IsPlaying() ? m_StopIcon : m_PlayIcon;
+			const char* play = Wiwa::Time::IsPlaying() ? ICON_FK_STOP : ICON_FK_PLAY;
 
 			bool is_playing = Wiwa::Time::IsPlaying();
 
 			// Play button
-			if (ImGui::ImageButton(play, {15, 15}))
+			if (ImGui::Button(play))
 			{
 				if (!is_playing) {
 					SaveScene();
@@ -425,7 +401,7 @@ void EditorLayer::MainMenuBar()
 				}
 			}
 
-			if (ImGui::ImageButton(m_PauseIcon, {15, 15}))
+			if (ImGui::Button(ICON_FK_PAUSE))
 			{
 				if (is_playing) {
 					Wiwa::Time::PauseUnPause();
@@ -439,7 +415,7 @@ void EditorLayer::MainMenuBar()
 				}
 			}
 
-			if (ImGui::ImageButton(m_StepIcon, { 15, 15 }))
+			if (ImGui::Button(ICON_FK_STEP_FORWARD))
 			{
 				if (is_playing) {
 					Wiwa::Time::Step();
@@ -461,32 +437,25 @@ void EditorLayer::MainMenuBar()
 				OpenCloseAssetsFolder();
 			}
 
-			float iconSize = 16.0f;
 			ImGuiLog log = Wiwa::Application::Get().GetImGuiLayer().GetConsole();
 
-			int pos = ImGui::GetCursorPosX();
 			ImGui::PushStyleColor(ImGuiCol_Button, {0.0, 0, 0, 0});
 			ImGui::AlignTextToFramePadding();
-			if (ImGui::ImageButton(m_InfoIcon, {iconSize, iconSize}))
-			{
-			}
-			ImGui::SetCursorPosX(pos + 40.0f);
+
 			char buff[16];
 			sprintf_s(buff, 16, "%i", log.infoCount);
 			ImGui::Text(buff);
-			if (ImGui::ImageButton(m_WarningIcon, {iconSize, iconSize}))
-			{
-			}
-			ImGui::SetCursorPosX(pos + 102.0f);
+			ImGui::Text(ICON_FK_INFO_CIRCLE);
+			
 			sprintf_s(buff, 16, "%i", log.warnCount);
 			ImGui::Text(buff);
-			if (ImGui::ImageButton(m_ErrorIcon, {iconSize, iconSize}))
-			{
-			}
-			ImGui::SetCursorPosX(pos + 162.0f);
+			ImGui::Text(ICON_FK_EXCLAMATION_TRIANGLE);
+		
 			sprintf_s(buff, 16, "%i", log.errorCount);
 			ImGui::Text(buff);
 			ImGui::PopStyleColor();
+			ImGui::Text(ICON_FK_EXCLAMATION_CIRCLE);
+
 			const char *beg = log.Buf.begin() + log.LineOffsets[log.LineOffsets.Size - 2];
 			ImGui::TextUnformatted(beg, log.Buf.end());
 

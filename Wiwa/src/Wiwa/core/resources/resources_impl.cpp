@@ -42,8 +42,7 @@ namespace Wiwa {
 
 	std::string Resources::_assetToLibPath(std::string path)
 	{
-		_toLower(path);
-
+		standarizePath(path);
 		size_t a_ind = path.find("assets");
 
 		if (a_ind != path.npos) {
@@ -58,6 +57,15 @@ namespace Wiwa {
 			path = res_path;
 		}
 		return path;
+	}
+
+	std::filesystem::path Resources::_import_path_impl(const std::filesystem::path& path, const char* extension)
+	{
+		std::string pathFile = _assetToLibPath(path.string().c_str());
+		std::filesystem::path importPath = pathFile;
+		_preparePath(importPath.parent_path().string());
+		importPath.replace_extension(extension);
+		return importPath;
 	}
 
 	bool Resources::_preparePath(std::string path)
@@ -151,6 +159,14 @@ namespace Wiwa {
 		Model::SaveModel(model, destination);
 
 		delete model;
+	}
+	
+	bool Resources::_check_import_impl(const char* file, const char* extension)
+	{
+		std::string fileStr = _assetToLibPath(file);
+		std::filesystem::path fileFS = fileStr;
+		fileFS.replace_extension(extension);
+		return std::filesystem::exists(fileFS);
 	}
 
 	void Resources::SetAssetPath(std::string& path)

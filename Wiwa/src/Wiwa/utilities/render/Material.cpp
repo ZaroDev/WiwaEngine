@@ -163,6 +163,7 @@ namespace Wiwa {
 				case Wiwa::UniformType::Sampler2D:
 				{
 					const char* texPath = p->value.GetString();
+					Resources::Import<Image>(texPath);
 					size_t id = Resources::Load<Image>(texPath);
 					Image* img = Resources::GetResourceById<Image>(id);
 					uniform->setData(img->GetTextureId(), uniform->getType());

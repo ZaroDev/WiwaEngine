@@ -23,7 +23,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 MeshViewPanel::MeshViewPanel(EditorLayer* instance)
-    : Panel("Mesh view", instance)
+    : Panel("Mesh view",ICON_FK_MALE, instance)
 {
     Wiwa::Size2i& res = Wiwa::Application::Get().GetTargetResolution();
     float ar = res.w / (float)res.h;
@@ -61,7 +61,7 @@ void MeshViewPanel::Update()
 
 void MeshViewPanel::Draw()
 {
-    ImGui::Begin(name, &active, ImGuiWindowFlags_MenuBar);
+    ImGui::Begin(iconName.c_str(), &active, ImGuiWindowFlags_MenuBar);
 
     
     // Calculate viewport aspect ratio

@@ -5,7 +5,8 @@
 
 #include <Wiwa/core/Application.h>
 
-UIPanel::UIPanel(EditorLayer* instance) : Panel("UI", instance)
+UIPanel::UIPanel(EditorLayer* instance) 
+	: Panel("UI", ICON_FK_TELEVISION, instance)
 {
 }
 
@@ -15,7 +16,7 @@ UIPanel::~UIPanel()
 
 void UIPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 
 	ImGui::End();
 }

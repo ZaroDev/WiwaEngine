@@ -4,7 +4,8 @@
 
 #include <Wiwa/core/Application.h>
 
-ProjectPanel::ProjectPanel(EditorLayer* instance) : Panel("Project", instance)
+ProjectPanel::ProjectPanel(EditorLayer* instance) 
+	: Panel("Project", ICON_FK_DATABASE, instance)
 {
 }
 
@@ -14,7 +15,7 @@ ProjectPanel::~ProjectPanel()
 
 void ProjectPanel::Draw()
 {
-	ImGui::Begin(name, &active, ImGuiWindowFlags_NoDocking);
+	ImGui::Begin(iconName.c_str(), &active, ImGuiWindowFlags_NoDocking);
 	const char* buff = Wiwa::Application::Get().GetProjectName();
 	std::string edit = buff;
 

@@ -4,7 +4,8 @@
 
 #include <Wiwa/core/Application.h>
 
-AboutPanel::AboutPanel(EditorLayer* instance) : Panel("About", instance)
+AboutPanel::AboutPanel(EditorLayer* instance) 
+	: Panel("About", ICON_FK_INFO, instance)
 {
 }
 
@@ -16,7 +17,7 @@ void AboutPanel::Draw()
 {
 	Wiwa::SysInfo& info = Wiwa::Application::Get().GetSystemInfo();
 
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	ImGui::Separator();
 	ImGui::Text("Wiwa Engine version: %s", Wiwa::Application::Get().GetVersion());
 	ImGui::Text("Our attempt at doing a 3D Game engine");

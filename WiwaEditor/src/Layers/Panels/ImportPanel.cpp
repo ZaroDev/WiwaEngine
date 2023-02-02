@@ -6,7 +6,7 @@
 #include <Wiwa/utilities/render/Image.h>
 
 ImportPanel::ImportPanel(EditorLayer* instance)
-	: Panel("Import", instance)
+	: Panel("Import", ICON_FK_FILE_ARCHIVE_O, instance)
 {
 }
 
@@ -16,7 +16,7 @@ ImportPanel::~ImportPanel()
 
 void ImportPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	AssetContainer(m_CurrentPath.string().c_str());
     if (ImGui::BeginDragDropTarget())
     {

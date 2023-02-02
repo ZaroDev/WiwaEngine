@@ -19,7 +19,8 @@ project "WiwaEditor"
 		"%{IncludeDirs.Wiwa}",
 		"%{IncludeDirs.Optick}",
 		"%{IncludeDirs.ImGuizmo}",
-		"%{IncludeDirs.filewatch}"
+		"%{IncludeDirs.filewatch}",
+		"%{IncludeDirs.IconFontCppHeaders}"
 	}
 
 	links

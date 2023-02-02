@@ -31,7 +31,6 @@ namespace Wiwa {
 			Shader* shader = new Shader();
 
 			shader->Init(file);
-			//shader->Compile(file);
 			PushResource(WRT_SHADER, file, shader);
 
 			resourceId = size;
@@ -118,20 +117,19 @@ namespace Wiwa {
 		delete fragmentShader;
 		delete geometryShader;
 
+		std::filesystem::path import_file = _import_path_impl(file, ".wishader");
+		std::filesystem::path assets_file = file;
+		assets_file.replace_extension(".wishader");
 
-		std::string file_path = file;
-		standarizePath(file_path);
-		std::filesystem::path import_file = file_path;
-		std::filesystem::path export_file = _assetToLibPath(file_path);
-		export_file.replace_extension(".wishader");
-		std::filesystem::path export_path = export_file.parent_path();
-		import_file.replace_extension(".wishader");
-
-		if (_preparePath(export_path.string())) {
-			document.save_file(export_file.string().c_str());
-			CreateMeta<Shader>(file_path.c_str());
-		}
 		document.save_file(import_file.string().c_str());
+		document.save_file(assets_file.string().c_str());
+		
+		WI_CORE_INFO("Shader at {} imported succesfully!", import_file.string().c_str());
+	}
+	template<>
+	inline bool Resources::CheckImport<Shader>(const char* file)
+	{
+		return _check_import_impl(file, ".wishader");
 	}
 	template<>
 	inline const char* Resources::getResourcePathById<Shader>(size_t id)

@@ -13,7 +13,7 @@
 
 
 MaterialPanel::MaterialPanel(EditorLayer* instance)
-	: Panel("Material Editor", instance)
+	: Panel("Material Editor", ICON_FK_CIRCLE_O, instance)
 {
 }
 
@@ -23,7 +23,7 @@ MaterialPanel::~MaterialPanel()
 
 void MaterialPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 
     
     if (m_Material)

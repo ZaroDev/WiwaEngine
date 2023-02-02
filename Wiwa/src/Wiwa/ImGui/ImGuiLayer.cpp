@@ -7,7 +7,8 @@
 
 #include <Wiwa/core/Application.h>
 #include <Wiwa/core/KeyCodes.h>
-
+#include <FontIcons/IconsForkAwesome.h>
+#include <FontIcons/IconsKenney.h>
 //Temp
 #include <glew.h>
 #include <GLFW/glfw3.h>
@@ -179,10 +180,43 @@ namespace Wiwa {
 		//style->GrabRounding = 3.0f;
 
 		ImGuiIO& io = ImGui::GetIO();
-		io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 15);
-		io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 13);
-		io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 18);
-		io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 23);
+		io.Fonts->AddFontFromFileTTF("resources/fonts/CascadiaCode.ttf", 16.0f);
+
+		{
+			const ImWchar icons_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
+			ImFontConfig icons_config;
+			icons_config.MergeMode = true;
+			icons_config.GlyphMinAdvanceX = 16.0f;
+			io.Fonts->AddFontFromFileTTF("resources/fonts/forkawesome-webfont.ttf", 16.0f, &icons_config, icons_ranges);
+		}
+		{
+			ImVector<ImWchar> ranges;
+			ImFontGlyphRangesBuilder builder;
+			builder.AddChar(0xf016);//ICON_FK_FILE_O
+			builder.AddChar(0xf114);//ICON_FK_FOLDER_O
+			builder.BuildRanges(&ranges);
+
+			io.Fonts->AddFontFromFileTTF("resources/fonts/forkawesome-webfont.ttf", 150, 0, ranges.Data);
+		}
+		io.Fonts->Build();
+		/*{
+			const ImWchar icons_ranges[] = { ICON_MIN_KI, ICON_MAX_KI, 0 };
+			ImFontConfig icons_config;
+			icons_config.MergeMode = true;
+			icons_config.GlyphMinAdvanceX = 16.0f;
+			io.Fonts->AddFontFromFileTTF("resources/fonts/kenney-icon-font.ttf", 16.0f, &icons_config, icons_ranges);
+		}
+		{
+			ImVector<ImWchar> ranges;
+			ImFontGlyphRangesBuilder builder;
+			
+			builder.BuildRanges(&ranges);
+
+			io.Fonts->AddFontFromFileTTF("resources/fonts/kenney-icon-font.ttf", 150, 0, ranges.Data);
+		}
+		io.Fonts->Build();*/
+		//io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 15);
+
 		/*style->Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
 		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 		style->Colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);

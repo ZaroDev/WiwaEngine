@@ -21,7 +21,7 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 
 	std::string name = type->name;
 
-	if (ImGui::CollapsingHeader(name.c_str()))
+	if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		std::string del_label = "Delete##comp";
 		del_label += name.c_str();
@@ -49,7 +49,9 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 				DrawField(data, cl->fields[i]);
 			}
 		}
+		ImGui::TreePop();
 	}
+	
 	return true;
 }
 
@@ -231,7 +233,7 @@ void InspectorPanel::DrawAudioSourceComponent(byte* data)
 }
 
 InspectorPanel::InspectorPanel(EditorLayer* instance)
-	: Panel("Inspector", instance)
+	: Panel("Inspector", ICON_FK_INFO_CIRCLE, instance)
 {
 }
 
@@ -243,7 +245,7 @@ void InspectorPanel::Draw()
 {
 	Wiwa::EntityManager& em = Wiwa::SceneManager::getActiveScene()->GetEntityManager();
 
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	if (m_EntitySet && m_CurrentID >= 0)
 	{
 		const char* entName = em.GetEntityName(m_CurrentID);
@@ -291,6 +293,8 @@ void InspectorPanel::DrawComponents(Wiwa::EntityManager& em)
 	if (removed) {
 		em.RemoveComponentById(m_CurrentID, idToRemove);
 	}
+	
+	ImGui::Separator();
 
 	if (ButtonCenteredOnLine("Add component"))
 		ImGui::OpenPopup("Components");
@@ -330,12 +334,11 @@ void InspectorPanel::DrawSystems(Wiwa::EntityManager& em)
 	for (size_t i = 0; i < systems.size(); i++)
 	{
 		const Type* system = Wiwa::Application::Get().GetSystemTypeH(systems[i]);
-		if (ImGui::CollapsingHeader(system->name.c_str()))
+		ImGui::Text(system->name.c_str());
+		ImGui::SameLine();
+		if (ImGui::Button("Delete"))
 		{
-			if (ImGui::Button("Delete"))
-			{
-				//TODO delete system
-			}
+			//TODO delete system
 		}
 	}
 

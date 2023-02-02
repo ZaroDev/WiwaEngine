@@ -4,7 +4,7 @@
 #include <Wiwa/core/Resources.h>
 
 ResourcesPanel::ResourcesPanel(EditorLayer* instance) 
-	: Panel("Resources", instance)
+	: Panel("Resources", ICON_FK_FILE, instance)
 {
 }
 
@@ -14,7 +14,7 @@ ResourcesPanel::~ResourcesPanel()
 
 void ResourcesPanel::Draw()
 {
-	ImGui::Begin(name, &active);
+	ImGui::Begin(iconName.c_str(), &active);
 	ImGui::Text("Resources Loaded");
 	ImGui::Separator();
 
