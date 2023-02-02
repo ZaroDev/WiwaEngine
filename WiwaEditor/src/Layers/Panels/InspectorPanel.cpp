@@ -21,7 +21,7 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 
 	std::string name = type->name;
 
-	if (ImGui::CollapsingHeader(name.c_str()))
+	if (ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		std::string del_label = "Delete##comp";
 		del_label += name.c_str();
@@ -49,6 +49,7 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 				DrawField(data, cl->fields[i]);
 			}
 		}
+		ImGui::TreePop();
 	}
 	return true;
 }
@@ -330,12 +331,11 @@ void InspectorPanel::DrawSystems(Wiwa::EntityManager& em)
 	for (size_t i = 0; i < systems.size(); i++)
 	{
 		const Type* system = Wiwa::Application::Get().GetSystemTypeH(systems[i]);
-		if (ImGui::CollapsingHeader(system->name.c_str()))
+		ImGui::TreeNodeEx(system->name.c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+		ImGui::SameLine();
+		if (ImGui::Button("Delete"))
 		{
-			if (ImGui::Button("Delete"))
-			{
-				//TODO delete system
-			}
+			//TODO delete system
 		}
 	}
 
