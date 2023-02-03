@@ -15,7 +15,7 @@ namespace Wiwa {
 	class WI_API InstanceRenderer {
 	private:
 		ResourceId m_InstanceShaderId;
-		Shader* m_InstanceShader;
+		Shader m_InstanceShader;
 
 		std::vector<int> m_Textures;
 
@@ -35,7 +35,7 @@ namespace Wiwa {
 
 		void Init(const char* shader_path);
 		void Update();
-		void Render();
+		void Render(glm::mat4& proj, glm::mat4& view);
 
 		uint32_t AddInstance(uint32_t textureId, const Vector2i& position, const Size2i& size, const Color4f& color, const TextureClip& clip, Renderer2D::Pivot pivot = Renderer2D::Pivot::CENTER);
 

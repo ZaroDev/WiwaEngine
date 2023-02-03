@@ -21,6 +21,7 @@
 #include <Wiwa/scripting/ScriptEngine.h>
 
 #include <Wiwa/core/Renderer2D.h>
+#include <Wiwa/core/Renderer3D.h>
 #include <Wiwa/audio/Audio.h>
 
 #include "../Entities.h"

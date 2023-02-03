@@ -7,6 +7,7 @@
 
 #include <Wiwa/audio/Audio.h>
 #include <Wiwa/core/Renderer2D.h>
+#include <Wiwa/core/Renderer3D.h>
 
 USE_REFLECTION;
 class WiwaApp : public Wiwa::Application
@@ -20,7 +21,7 @@ public:
 
 		PushOverlay(new EditorLayer());
 
-		/*ResourceId imgid = Wiwa::Resources::Load<Wiwa::Image>("assets/samuel.jpg");
+		ResourceId imgid = Wiwa::Resources::Load<Wiwa::Image>("assets/Textures/Building_V01_C.png");
 
 		Wiwa::Image* img = Wiwa::Resources::GetResourceById<Wiwa::Image>(imgid);
 
@@ -29,7 +30,7 @@ public:
 		Wiwa::Vector2i pos = { 0,0 };
 		Wiwa::Size2i size = img->GetSize();
 
-		r2d.CreateInstancedQuadTex(imgid, pos, size);*/
+		r2d.CreateInstancedQuadTex(img->GetTextureId(), img->GetSize(), pos, size, Wiwa::Renderer2D::Pivot::UPLEFT);
 	}
 
 	~WiwaApp()

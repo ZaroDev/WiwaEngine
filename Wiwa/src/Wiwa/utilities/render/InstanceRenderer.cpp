@@ -26,11 +26,11 @@ namespace Wiwa {
 		// Load shader
 		// TODO: Use shader pipeline
 		//m_InstanceShaderId = Resources::Load<Shader>(shader_path);
-		m_InstanceShader = new Shader();//Resources::GetResourceById<Shader>(m_InstanceShaderId);
-		m_InstanceShader->Init(shader_path);
+		//m_InstanceShader = new Shader();//Resources::GetResourceById<Shader>(m_InstanceShaderId);
+		m_InstanceShader.Init(shader_path);
 
-		m_InstanceShader->Bind();
-		uint32_t texs_id = glGetUniformLocation(m_InstanceShader->getID(), "u_Textures");
+		m_InstanceShader.Bind();
+		uint32_t texs_id = glGetUniformLocation(m_InstanceShader.getID(), "u_Textures");
 
 		// Set samplers id
 		int samplers[MAX_INSTANCE_TEXTURES];
@@ -106,10 +106,12 @@ namespace Wiwa {
 
 		m_InstanceVertex = new VertexInstanceTexture[m_MaxInstances];
 
-		m_OrthoLocation = m_InstanceShader->getUniformLocation("u_Proj");
-		m_ViewLocation = m_InstanceShader->getUniformLocation("u_View");
+		m_OrthoLocation = m_InstanceShader.getUniformLocation("u_Proj");
+		m_ViewLocation = m_InstanceShader.getUniformLocation("u_View");
 
 		m_InstanceCount = 0;
+
+		m_InstanceShader.UnBind();
 	}
 
 	void InstanceRenderer::Update()
@@ -119,11 +121,11 @@ namespace Wiwa {
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(VertexInstanceTexture) * m_InstanceCount, m_InstanceVertex);
 	}
 
-	void InstanceRenderer::Render()
+	void InstanceRenderer::Render(glm::mat4& proj, glm::mat4& view)
 	{
-		m_InstanceShader->Bind();
-		m_InstanceShader->setUniform(m_OrthoLocation, Application::Get().GetRenderer2D().GetOrthoProjection());
-		m_InstanceShader->setUniform(m_ViewLocation, Application::Get().GetRenderer2D().GetView());
+		m_InstanceShader.Bind();
+		m_InstanceShader.setUniform(m_OrthoLocation, proj);
+		m_InstanceShader.setUniform(m_ViewLocation, view);
 
 		GLuint texSize = static_cast<GLuint>(m_Textures.size());
 
@@ -134,6 +136,8 @@ namespace Wiwa {
 		}
 
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, m_InstanceCount);
+
+		m_InstanceShader.UnBind();
 	}
 
 	uint32_t InstanceRenderer::AddInstance(uint32_t textureId, const Vector2i& position, const Size2i& size, const Color4f& color, const TextureClip& clip, Renderer2D::Pivot pivot)
@@ -145,9 +149,7 @@ namespace Wiwa {
 		m_InstanceVertex[m_InstanceCount].scale = { static_cast<float>(size.x), static_cast<float>(size.y) };
 		m_InstanceVertex[m_InstanceCount].color = color;
 
-		Image* spr = Resources::GetResourceById<Image>(textureId);
-
-		int texid = AddTexture(spr->GetTextureId());
+		int texid = AddTexture(textureId);
 
 		m_InstanceVertex[m_InstanceCount].textureId = static_cast<float>(texid);
 

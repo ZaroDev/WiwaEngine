@@ -10,6 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <Wiwa/render/RenderManager.h>
+
 namespace Wiwa {
 	Renderer2D::Renderer2D() {
 		//IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
@@ -88,19 +90,14 @@ namespace Wiwa {
 		Window& window = Application::Get().GetWindow();
 		Size2i& resolution = Application::Get().GetTargetResolution();
 
-		// Init framebuffer
-		m_FrameBuffer.Init(resolution.w, resolution.h);
-
-		// Init orthographic projection
-		m_OrthoProj = glm::ortho(0.0f, (float)resolution.w, (float)resolution.h, 0.0f, 0.1f, 100.0f);
-		// Init main camera view
-		m_View = glm::mat4(1.0f);
-		m_View = glm::translate(m_View, glm::vec3(0.0f, 0.0f, -3.0f));
-
 		instanceRenderer = new InstanceRenderer(MAXQUADS);
 		instanceRenderer->Init("resources/shaders/instanced_tex_color");
 
-		//m_ActiveCamera.SetOrthographic(resolution.w, resolution.h);
+		// Set camera
+		m_ActiveCamera.SetOrthographic(resolution.w, resolution.h);
+		m_ActiveCamera.setPosition({ 0.0f, 0.0f, 3.0f });
+
+		RenderManager::SetLayerCamera(1, &m_ActiveCamera);
 
 		WI_CORE_INFO("Renderer2D initialized");
 		return true;
@@ -117,16 +114,14 @@ namespace Wiwa {
 		//delete instanceRenderer;
 	}
 
-	uint32_t Renderer2D::CreateInstancedQuadTex(uint32_t textureId, const Vector2i& position, const Size2i& size, const Color4f& color, const Rect2i& clip, Pivot pivot)
+	uint32_t Renderer2D::CreateInstancedQuadTex(uint32_t textureId, const Size2i& srcSize, const Vector2i& position, const Size2i& size, const Color4f& color, const Rect2i& clip, Pivot pivot)
 	{
-		Image* spr = Resources::GetResourceById<Image>(textureId);
-		Size2i spsize = spr->GetSize();
-		TextureClip tclip = CalculateTextureClip(clip, spsize);
+		TextureClip tclip = CalculateTextureClip(clip, srcSize);
 
 		return instanceRenderer->AddInstance(textureId, position, size, color, tclip, pivot);
 	}
 
-	uint32_t Renderer2D::CreateInstancedQuadTex(uint32_t textureId, const Vector2i& position, const Size2i& size, Pivot pivot)
+	uint32_t Renderer2D::CreateInstancedQuadTex(uint32_t textureId, const Size2i& srcSize, const Vector2i& position, const Size2i& size, Pivot pivot)
 	{
 		TextureClip clip = {
 			{ 1.0f, 1.0f },
@@ -140,11 +135,9 @@ namespace Wiwa {
 		return instanceRenderer->AddInstance(textureId, position, size, color, clip, pivot);
 	}
 
-	uint32_t Renderer2D::CreateInstancedQuadTex(uint32_t textureId, const Vector2i& position, const Size2i& size, const Rect2i& clip, Pivot pivot)
+	uint32_t Renderer2D::CreateInstancedQuadTex(uint32_t textureId, const Size2i& srcSize, const Vector2i& position, const Size2i& size, const Rect2i& clip, Pivot pivot)
 	{
-		Image* spr = Resources::GetResourceById<Image>(textureId);
-		Size2i spsize = spr->GetSize();
-		TextureClip tclip = CalculateTextureClip(clip, spsize);
+		TextureClip tclip = CalculateTextureClip(clip, srcSize);
 
 		Color4f color = Color::WHITE;
 		return instanceRenderer->AddInstance(textureId, position, size, color, tclip, pivot);
@@ -162,14 +155,15 @@ namespace Wiwa {
 
 	void Renderer2D::UpdateInstanced()
 	{
-		glViewport(0, 0, m_FrameBuffer.getWidth(), m_FrameBuffer.getHeight());
+		FrameBuffer& framebuffer = *m_ActiveCamera.frameBuffer;
+		glViewport(0, 0, framebuffer.getWidth(), framebuffer.getHeight());
 
-		m_FrameBuffer.Bind();
+		framebuffer.Bind();
 
 		instanceRenderer->Update();
-		instanceRenderer->Render();
+		instanceRenderer->Render(m_ActiveCamera.getProjection(), m_ActiveCamera.getView());
 
-		m_FrameBuffer.Unbind();
+		framebuffer.Unbind();
 
 		m_RenderCallsInstancedCount++;
 	}

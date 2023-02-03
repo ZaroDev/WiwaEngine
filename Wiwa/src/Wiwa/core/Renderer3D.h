@@ -18,6 +18,8 @@
 //#include "Empathy/headers/utilities/renderer/Batch.h"
 #include <Wiwa/utilities/render/FrameBuffer.h>
 #include <Wiwa/utilities/render/Camera.h>
+#include <Wiwa/utilities/render/CameraManager.h>
+#include <Wiwa/scene/SceneManager.h>
 #include <Wiwa/utilities/render/Model.h>
 #include <Wiwa/utilities/render/Material.h>
 #include <Wiwa/ecs/components/Transform3D.h>
@@ -39,8 +41,6 @@ namespace Wiwa {
 	private:
 		glm::mat4 m_PersProj{ 0.0f };
 		glm::mat4 m_View{ 0.0f };
-		Camera* m_ActiveCamera;
-
 
 		ResourceId m_BBDisplayShaderId;
 		Shader* m_BBDisplayShader;
@@ -57,10 +57,6 @@ namespace Wiwa {
 		bool Init();
 		void Update();
 
-		inline void SetActiveCamera(Camera* cam) 
-		{
-			m_ActiveCamera = cam; 
-		}
 		void SetOption(Options option);
 		void DisableOption(Options option);
 
@@ -72,14 +68,14 @@ namespace Wiwa {
 
 		void Close();
 		void RenderFrustrums(Camera* camera = NULL);
-		inline void SetLight(const DirectionalLight& light) { m_ActiveCamera->frameBuffer->setLight(light); }
+		inline void SetLight(const DirectionalLight& light) { SceneManager::getActiveScene()->GetCameraManager().getActiveCamera()->frameBuffer->setLight(light); }
 
 		// Getters
-		inline uint32_t getColorBufferTexture() { return m_ActiveCamera->frameBuffer->getColorBufferTexture(); }
+		inline uint32_t getColorBufferTexture() { return SceneManager::getActiveScene()->GetCameraManager().getActiveCamera()->frameBuffer->getColorBufferTexture(); }
 
-		inline FrameBuffer* getFrameBuffer() { return m_ActiveCamera->frameBuffer; }
+		inline FrameBuffer* getFrameBuffer() { return SceneManager::getActiveScene()->GetCameraManager().getActiveCamera()->frameBuffer; }
 
-		glm::mat4 GetPersProjection() { return m_ActiveCamera->getProjection(); }
-		glm::mat4 GetView() { return m_ActiveCamera->getView(); }
+		glm::mat4 GetPersProjection() { return SceneManager::getActiveScene()->GetCameraManager().getActiveCamera()->getProjection(); }
+		glm::mat4 GetView() { return SceneManager::getActiveScene()->GetCameraManager().getActiveCamera()->getView(); }
 	};
 }

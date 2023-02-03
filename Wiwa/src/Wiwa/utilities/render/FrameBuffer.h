@@ -41,7 +41,7 @@ namespace Wiwa {
 		FrameBuffer();
 		~FrameBuffer();
 
-		void Init(int width, int height);
+		void Init(int width, int height, bool depth=true);
 
 		void Bind(bool clear=true);
 		void Unbind();

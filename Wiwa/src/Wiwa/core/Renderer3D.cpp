@@ -18,14 +18,7 @@ namespace Wiwa {
 
 	bool Renderer3D::Init()
 	{
-		
 		Size2i& resolution = Application::Get().GetTargetResolution();
-
-		// Init perspective camera for 3D
-		m_ActiveCamera = new Camera();
-		m_ActiveCamera->SetPerspective(45.0f, resolution.w / (float)resolution.h);
-		m_ActiveCamera->setPosition({ 0.0f, 1.0f, 5.0f });
-		m_ActiveCamera->lookat({ 0.0f, 0.0f, 0.0f });
 
 		WI_CORE_INFO("Renderer3D initialized");
 		SetOption(Options::DEPTH_TEST);
@@ -66,7 +59,7 @@ namespace Wiwa {
 
 	void Renderer3D::Update()
 	{
-		m_ActiveCamera->frameBuffer->Clear();
+		
 	}
 
 
@@ -75,7 +68,7 @@ namespace Wiwa {
 	{
 		if (!camera)
 		{
-			camera = m_ActiveCamera;
+			camera = SceneManager::getActiveScene()->GetCameraManager().getActiveCamera();
 		}
 
 		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
@@ -126,7 +119,7 @@ namespace Wiwa {
 	{
 		if (!camera)
 		{
-			camera = m_ActiveCamera;
+			camera = SceneManager::getActiveScene()->GetCameraManager().getActiveCamera();;
 		}
 
 		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
@@ -189,7 +182,7 @@ namespace Wiwa {
 	{
 		if (!camera)
 		{
-			camera = m_ActiveCamera;
+			camera = SceneManager::getActiveScene()->GetCameraManager().getActiveCamera();
 		}
 
 		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
@@ -238,7 +231,7 @@ namespace Wiwa {
 	{
 		if (!camera)
 		{
-			camera = m_ActiveCamera;
+			camera = SceneManager::getActiveScene()->GetCameraManager().getActiveCamera();
 		}
 
 		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
@@ -334,13 +327,13 @@ namespace Wiwa {
 
 	void Renderer3D::Close()
 	{
-		delete m_ActiveCamera;
+		
 	}
 	void Renderer3D::RenderFrustrums(Camera* camera)
 	{
 		if (!camera)
 		{
-			camera = m_ActiveCamera;
+			camera = SceneManager::getActiveScene()->GetCameraManager().getActiveCamera();
 		}
 		glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
 		CameraManager& cameraManager = SceneManager::getActiveScene()->GetCameraManager();

@@ -170,7 +170,6 @@ namespace Wiwa {
 		Size2i res = Application::Get().GetTargetResolution();
 		frameBuffer = new FrameBuffer();
 		frameBuffer->Init(res.w, res.h);
-		
 	}
 
 	void Camera::UpdateFrustrum()
@@ -187,6 +186,9 @@ namespace Wiwa {
 		m_AspectRatio = width / (float)height;
 		m_NearPlaneDist = nearPlaneDistance;
 		m_FarPlaneDist = farPlaneDistance;
+
+		frameBuffer = new FrameBuffer();
+		frameBuffer->Init(width, height);
 	}
 	void Camera::DrawFrustrum()
 	{

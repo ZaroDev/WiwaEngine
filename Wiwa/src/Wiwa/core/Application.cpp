@@ -36,6 +36,8 @@
 #include <Wiwa/core/Resources.h>
 #include <Wiwa/audio/Audio.h>
 
+#include <Wiwa/render/RenderManager.h>
+
 USE_REFLECTION;
 
 namespace Wiwa {
@@ -87,6 +89,8 @@ namespace Wiwa {
 
 		m_RenderColor = { 0.1f, 0.1f, 0.1f, 1.0f };
 
+		RenderManager::Init(m_TargetResolution.w, m_TargetResolution.h);
+
 		bool res = Audio::Init();
 
 		if (!res) {
@@ -126,6 +130,7 @@ namespace Wiwa {
 	Application::~Application()
 	{
 		SceneManager::CleanUp();
+		RenderManager::Destroy();
 		ScriptEngine::ShutDown();
 		Audio::Terminate();
 	}
@@ -135,28 +140,37 @@ namespace Wiwa {
 		while (m_Running)
 		{
 			OPTICK_FRAME("Application Loop");
+
+			// Clear main window
 			glClearColor(m_RenderColor.r, m_RenderColor.g, m_RenderColor.b, m_RenderColor.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			// Update scene manager
 			SceneManager::ModuleUpdate();
 
+			// Update audio
 			Audio::Update();
 			
+			// Execute main thread queue
 			ExecuteMainThreadQueue();
 
+			// Update inputs
 			Input::Update();
+
+			// Update renderers
 			m_Renderer2D->Update();
 			m_Renderer3D->Update();
 
-			m_Renderer2D->Update();
+			RenderManager::Update();
 
 			// Update time
 			Time::Update();
 
+			// Update layers
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 
+			// Render layers
 			m_ImGuiLayer->Begin();
 			{
 				//TODO: Optick On ImGuiRender call
@@ -165,6 +179,7 @@ namespace Wiwa {
 			}
 			m_ImGuiLayer->End();
 
+			// Update main window
 			m_Window->OnUpdate();
 		}
 	}

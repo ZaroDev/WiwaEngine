@@ -4,6 +4,8 @@
 #include <Wiwa/core/Renderer3D.h>
 #include "../../Utils/EditorUtils.h"
 
+#include <Wiwa/render/RenderManager.h>
+#include <Wiwa/core/Renderer2D.h>
 
 GamePanel::GamePanel(EditorLayer* instance)
 	: Panel("Game", ICON_FK_GAMEPAD,instance)
@@ -35,9 +37,9 @@ void GamePanel::Draw()
 
     if (cameraManager.getCameraSize() > 0)
     {
-        Wiwa::Camera* cam = cameraManager.getActiveCamera();
+        uint32_t cbt = Wiwa::Application::Get().GetRenderer2D().getColorBufferTexture();
 
-        ImTextureID tex = (ImTextureID)(intptr_t)cam->frameBuffer->getColorBufferTexture();
+        ImTextureID tex = (ImTextureID)(intptr_t)Wiwa::RenderManager::getColorTexture();
 
         ImVec2 cpos = ImGui::GetCursorPos();
         cpos.x = (viewportPanelSize.x - isize.x) / 2;

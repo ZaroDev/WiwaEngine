@@ -35,12 +35,9 @@ namespace Wiwa {
 		};
 	private:
 		// Default FrameBuffer
-		FrameBuffer m_FrameBuffer;
 
 		uint32_t m_RenderCallsInstancedCount;
 
-		glm::mat4 m_OrthoProj;
-		glm::mat4 m_View;
 		Camera m_ActiveCamera;
 
 		InstanceRenderer* instanceRenderer;
@@ -57,9 +54,9 @@ namespace Wiwa {
 
 		void Close();
 
-		uint32_t CreateInstancedQuadTex(uint32_t textureId, const Vector2i& position, const Size2i& size, const Color4f& color, const Rect2i& clip, Pivot pivot = Pivot::CENTER);
-		uint32_t CreateInstancedQuadTex(uint32_t textureId, const Vector2i& position, const Size2i& size, Pivot pivot = Pivot::CENTER);
-		uint32_t CreateInstancedQuadTex(uint32_t textureId, const Vector2i& position, const Size2i& size, const Rect2i& clip, Pivot pivot = Pivot::CENTER);
+		uint32_t CreateInstancedQuadTex(uint32_t textureId, const Size2i& srcSize, const Vector2i& position, const Size2i& size, const Color4f& color, const Rect2i& clip, Pivot pivot = Pivot::CENTER);
+		uint32_t CreateInstancedQuadTex(uint32_t textureId, const Size2i& srcSize, const Vector2i& position, const Size2i& size, Pivot pivot = Pivot::CENTER);
+		uint32_t CreateInstancedQuadTex(uint32_t textureId, const Size2i& srcSize, const Vector2i& position, const Size2i& size, const Rect2i& clip, Pivot pivot = Pivot::CENTER);
 
 		void UpdateInstancedQuadTex(uint32_t id, const Vector2i& position, Pivot pivot = Pivot::CENTER);
 
@@ -70,9 +67,9 @@ namespace Wiwa {
 		// Getters
 		uint32_t getRenderInstancedCalls() { return m_RenderCallsInstancedCount; }
 		uint32_t getRenderInstanceCount() { return MAXQUADS; }
-		uint32_t getColorBufferTexture() { return m_FrameBuffer.getColorBufferTexture(); }
+		uint32_t getColorBufferTexture() { return m_ActiveCamera.frameBuffer->getColorBufferTexture(); }
 
-		glm::mat4 GetOrthoProjection() { return m_OrthoProj; }
-		glm::mat4 GetView() { return m_View; }
+		glm::mat4 GetOrthoProjection() { return m_ActiveCamera.getProjection(); }
+		glm::mat4 GetView() { return m_ActiveCamera.getView(); }
 	};
 }
