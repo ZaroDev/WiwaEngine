@@ -77,13 +77,18 @@ namespace Wiwa {
 
 	void RenderManager::Update()
 	{
+		// Set viewport
 		glViewport(0, 0, m_FrameBuffer.getWidth(), m_FrameBuffer.getHeight());
 
-		m_FrameBuffer.Bind(false);
+		// Bind framebuffer
+		m_FrameBuffer.Bind(false); // No clear so we clear without transparency
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Bind shader
 		m_Shader.Bind();
+
+		// Set MVP uniforms
 		m_Shader.setUniform(m_OrthoLoc, m_OrthoProj);
 		m_Shader.setUniform(m_ViewLoc, m_View);
 		m_Shader.setUniform(m_ModelLoc, m_Model);
@@ -92,6 +97,7 @@ namespace Wiwa {
 		glBindVertexArray(m_VAO);
 
 		for (int i = 0; i < MAX_LAYERS; i++) {
+			// Take cameras in reverse order for proper drawing order
 			Camera* cam = m_RenderLayers[MAX_LAYERS - i - 1].getCamera();
 			if (cam) {
 				// Bind texture
@@ -101,6 +107,7 @@ namespace Wiwa {
 			}
 		}
 
+		// Unbind shader and framebuffer
 		m_Shader.UnBind();
 		m_FrameBuffer.Unbind();
 	}
