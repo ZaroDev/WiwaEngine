@@ -52,3 +52,4 @@ Intermediates/
 Editor/.vs/AppAssembly/v17/.suo
 Editor/.vs/AppAssembly/v17/.suo
 *.pdb
+*.ngfx-proj
