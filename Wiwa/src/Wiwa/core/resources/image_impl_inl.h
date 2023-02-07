@@ -7,9 +7,9 @@ namespace Wiwa {
 	inline void Resources::LoadMeta<Image>(const char* file, ImageSettings* settings)
 	{
 		std::filesystem::path filePath = file;
-		filePath += ".meta";
 		if (!std::filesystem::exists(filePath))
 			return;
+		filePath += ".meta";
 		JSONDocument doc(filePath.string().c_str());
 		if (!doc.HasMember("imageImportSettings"))
 			return;
@@ -45,7 +45,7 @@ namespace Wiwa {
 		doc.AddMember("fileFormatVersion", 1);
 		doc.AddMember("file", file);
 		doc.AddMember("folderAsset", false);
-		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		std::time_t time = to_time_t(std::filesystem::last_write_time(file));
 		doc.AddMember("timeCreated", time);
 		JSONValue imageSettingsObj = doc.AddMemberObject("imageImportSettings");
 		imageSettingsObj.AddMember("compression", (int)settings->Compression);

@@ -37,6 +37,42 @@ AssetsPanel::AssetsPanel(EditorLayer* instance)
 	m_ShaderIcon = (ImTextureID)(intptr_t)Wiwa::Resources::GetResourceById<Wiwa::Image>(shaderId)->GetTextureId();
 
 	watcher = std::make_unique<filewatch::FileWatch<std::filesystem::path>>(s_AssetsPath, OnFolderEvent);
+
+
+	InitImports(s_AssetsPath);
+}
+void AssetsPanel::InitImports(const std::filesystem::path& path)
+{
+	for (auto& p : std::filesystem::directory_iterator(path))
+	{
+		if (p.is_directory() && !std::filesystem::is_empty(p))
+		{
+			for (auto& p1 : std::filesystem::directory_iterator(path))
+			{
+				UpdateImports(p1);
+			}
+		}
+		else
+		{
+			CheckMeta(p);
+			CheckImport(p);
+		}
+	}
+}
+void AssetsPanel::UpdateImports(const std::filesystem::directory_entry& path)
+{
+	if (path.is_directory())
+	{
+		for (auto& p : std::filesystem::directory_iterator(path))
+		{
+			UpdateImports(p);
+		}
+	}
+	else
+	{
+		CheckMeta(path.path());
+		CheckImport(path.path());
+	}
 }
 AssetsPanel::~AssetsPanel()
 {
@@ -44,7 +80,13 @@ AssetsPanel::~AssetsPanel()
 
 void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type)
 {	
-	if (path.extension() == ".cs")
+	std::filesystem::path assetsPath = "assets";
+	assetsPath /= path;
+
+	if (assetsPath.extension() == ".meta")
+		return;
+	
+	if (assetsPath.extension() == ".cs")
 	{
 		EditorLayer::Get().RegenSol();
 	}
@@ -52,52 +94,80 @@ void AssetsPanel::OnFolderEvent(const std::filesystem::path& path, const filewat
 	{
 	case filewatch::Event::added:
 	{
-		CheckImport(path);
+		CheckImport(assetsPath);
 	}break;
 	case filewatch::Event::removed:
 	{
-
+		DeleteFileAssets(assetsPath);
 	}break;
 	case filewatch::Event::modified:
 	{
-		
+		CheckImport(assetsPath);
 	}break;
 	case filewatch::Event::renamed_old:
 	{
-
+		DeleteFileAssets(assetsPath);
 	}break;
 	case filewatch::Event::renamed_new:
 	{
-
+		CheckImport(assetsPath);
 	}break;
 	};
+}
+
+void AssetsPanel::DeleteFileAssets(std::filesystem::path& assetsPath)
+{
+	//Remove the meta file
+	std::string metaPath = assetsPath.string();
+	metaPath += ".meta";
+	std::filesystem::remove(metaPath);
+	//Remove from library
+	std::string extension;
+	std::filesystem::path libraryPath = Wiwa::Resources::_assetToLibPath(assetsPath.string());
+	if (ImageExtensionComp(assetsPath))
+		extension = ".dds";
+	else if (ModelExtensionComp(assetsPath))
+		extension = ".wimodel";
+	else if (MaterialExtensionComp(assetsPath))
+		extension = ".wimaterial";
+	else if (ShaderExtensionComp(assetsPath))
+		extension = ".wishader";
+
+	libraryPath.replace_extension(extension);
+	std::filesystem::remove(libraryPath);
 }
 
 void AssetsPanel::CheckImport(const std::filesystem::path& path)
 {
 	std::string p = path.string();
 	Wiwa::Resources::standarizePath(p);
-	if (ImageExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Image>(p.c_str()))
+	if (ImageExtensionComp(path) 
+		&& (!Wiwa::Resources::CheckImport<Wiwa::Image>(p.c_str())
+		|| Wiwa::Resources::CheckMeta(p.c_str()) == Wiwa::Resources::TOUPDATE))
 	{
 		Wiwa::ImageSettings settings;
 		Wiwa::Resources::LoadMeta<Wiwa::Image>(p.c_str(), &settings);
 		Wiwa::Resources::CreateMeta<Wiwa::Image>(p.c_str(), &settings);
 		Wiwa::Resources::Import<Wiwa::Image>(p.c_str());
 	}
-	else if (ModelExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Model>(p.c_str()))
+	else if (ModelExtensionComp(path) 
+		&& (!Wiwa::Resources::CheckImport<Wiwa::Model>(p.c_str())
+		|| Wiwa::Resources::CheckMeta(p.c_str()) == Wiwa::Resources::TOUPDATE))
 	{
 		Wiwa::ModelSettings settings;
 		Wiwa::Resources::LoadMeta<Wiwa::Model>(p.c_str(), &settings);
 		Wiwa::Resources::CreateMeta<Wiwa::Model>(p.c_str(), &settings);
 		Wiwa::Resources::Import<Wiwa::Model>(p.c_str(), &settings);
 	}
-	else if (ShaderExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Shader>(p.c_str()))
+	else if (ShaderExtensionComp(path) 
+		&& (!Wiwa::Resources::CheckImport<Wiwa::Shader>(p.c_str())
+		|| Wiwa::Resources::CheckMeta(p.c_str()) == Wiwa::Resources::TOUPDATE))
 	{
 		if (path.extension() == ".wishader")
 		{
+			Wiwa::Resources::CreateMeta<Wiwa::Shader>(p.c_str());
 			p = p.substr(0, p.size() - 9);
 			Wiwa::ResourceId id = Wiwa::Resources::Load<Wiwa::Shader>(p.c_str());
-			Wiwa::Resources::CreateMeta<Wiwa::Shader>(p.c_str());
 			Wiwa::Resources::Import<Wiwa::Shader>(p.c_str(), Wiwa::Resources::GetResourceById<Wiwa::Shader>(id));
 		}
 		else
@@ -112,7 +182,9 @@ void AssetsPanel::CheckImport(const std::filesystem::path& path)
 			}
 		}
 	}
-	else if (MaterialExtensionComp(path) && !Wiwa::Resources::CheckImport<Wiwa::Material>(p.c_str()))
+	else if (MaterialExtensionComp(path) 
+		&& (!Wiwa::Resources::CheckImport<Wiwa::Material>(p.c_str())
+		|| Wiwa::Resources::CheckMeta(p.c_str()) == Wiwa::Resources::TOUPDATE))
 	{
 		Wiwa::Resources::CreateMeta<Wiwa::Material>(p.c_str());
 		Wiwa::Resources::Import<Wiwa::Material>(p.c_str());
@@ -307,8 +379,8 @@ void AssetsPanel::TopBar()
 				std::string file = path.string() + ".wimaterial";
 
 				Wiwa::Material material;
-
 				Wiwa::Material::SaveMaterial(file.c_str(), &material);
+				Wiwa::Resources::CreateMeta<Wiwa::Material>(path.string().c_str());
 
 				ImGui::CloseCurrentPopup();
 			}
@@ -327,13 +399,15 @@ void AssetsPanel::TopBar()
 				std::filesystem::path path = m_CurrentPath;
 				std::filesystem::path dir = buffer;
 				path /= dir;
-				std::string file = path.string();
 				
-				Wiwa::Shader::CreateDefault(file.c_str());
+				Wiwa::Shader::CreateDefault(path.string().c_str());
 				Wiwa::Shader* shader = new Wiwa::Shader();
-				shader->setPath(file.c_str());
-				Wiwa::Resources::Import<Wiwa::Shader>(file.c_str(), shader);
-				Wiwa::Resources::Load<Wiwa::Shader>(file.c_str());
+				shader->setPath(path.string().c_str());
+				Wiwa::Resources::Import<Wiwa::Shader>(path.string().c_str(), shader);
+				std::string shaderPath = path.string();
+				shaderPath += ".wishader";
+				Wiwa::Resources::CreateMeta<Wiwa::Shader>(shaderPath.c_str());
+				Wiwa::Resources::Load<Wiwa::Shader>(path.string().c_str());
 				
 				ImGui::CloseCurrentPopup();
 			}
@@ -365,6 +439,32 @@ void AssetsPanel::TopBar()
 	ImGui::SliderFloat("##size", &m_ButtonSize, 0.5f, 2.0f);
 	ImGui::PopItemWidth();
 	ImGui::Separator();
+}
+
+void AssetsPanel::CheckMeta(const std::filesystem::path& path)
+{
+
+	std::string p = path.string();
+	Wiwa::Resources::standarizePath(p);
+	std::string metaPath = p;
+	metaPath += ".meta";
+	if (!std::filesystem::exists(metaPath))
+	{
+		if (ImageExtensionComp(path))
+		{
+			Wiwa::ImageSettings settings;
+			Wiwa::Resources::CreateMeta<Wiwa::Image>(p.c_str(), &settings);
+		}
+		else if (ModelExtensionComp(path))
+		{
+			Wiwa::ModelSettings settings;
+			Wiwa::Resources::CreateMeta<Wiwa::Model>(p.c_str(), &settings);
+		}
+		else if (path.extension() == ".wishader")
+			Wiwa::Resources::CreateMeta<Wiwa::Shader>(p.c_str());
+		else if (MaterialExtensionComp(path))
+			Wiwa::Resources::CreateMeta<Wiwa::Material>(p.c_str());
+	}
 }
 
 void AssetsPanel::SubmitToAssetsThread(const std::function<void()> func)

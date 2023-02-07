@@ -115,7 +115,14 @@ namespace Wiwa {
 		static bool _preparePath(std::string path);
 		static std::string _assetToLibPath(std::string path);
 		static std::filesystem::path _import_path_impl(const std::filesystem::path& path, const char* extension);
-
+		template <typename TP>
+		static inline std::time_t to_time_t(TP tp)
+		{
+			using namespace std::chrono;
+			auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
+				+ system_clock::now());
+			return system_clock::to_time_t(sctp);
+		}
 		static inline void standarizePath(std::string& file_path)
 		{
 			size_t index = 0;
@@ -138,7 +145,7 @@ namespace Wiwa {
 		// ToUpdate: the meta last updated doesnt equal the file reference
 		// Not found: there's no meta file for the reference
 		static MetaResult CheckMeta(const char* filename);
-
+		static void UpdateMeta(const char* filename);
 		template<class T> static const char* getResourcePathById(size_t id);
 
 		template<class T> static ResourceId Load(const char* file);

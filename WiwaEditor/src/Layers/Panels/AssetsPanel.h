@@ -21,11 +21,14 @@ public:
 	bool OnDragAndDrop(Wiwa::WindowDropEvent& e);
 
 private:
+	void InitImports(const std::filesystem::path& path);
+	void UpdateImports(const std::filesystem::directory_entry& path);
 	void DisplayNode(std::filesystem::directory_entry directoryEntry);
 	void TopBar();
-
+	static void CheckMeta(const std::filesystem::path& path);
 	static void OnFolderEvent(const std::filesystem::path& path, const filewatch::Event change_type);
-	static void CheckImport(const std::filesystem::path& p1);
+	static void DeleteFileAssets(std::filesystem::path& assetsPath);
+	static void CheckImport(const std::filesystem::path& path);
 	
 	static void SubmitToAssetsThread(const std::function<void()> func);
 	static void ExecuteAssetsThreadQueue();

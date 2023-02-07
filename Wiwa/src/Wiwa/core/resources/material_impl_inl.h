@@ -11,11 +11,11 @@ namespace Wiwa {
 	inline void Resources::CreateMeta<Material>(const char* file)
 	{
 		std::filesystem::path filePath = file;
-		filePath += ".meta";
 		if (!std::filesystem::exists(filePath))
 			return;
+		filePath += ".meta";
 		JSONDocument doc;
-		std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		std::time_t time = to_time_t(std::filesystem::last_write_time(file));
 		doc.AddMember("timeCreated", time);
 		doc.save_file(filePath.string().c_str());
 	}

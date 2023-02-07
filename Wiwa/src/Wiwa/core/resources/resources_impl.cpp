@@ -100,19 +100,11 @@ namespace Wiwa {
 			}
 		}
 	}
-	template <typename TP>
-	std::time_t to_time_t(TP tp)
-	{
-		using namespace std::chrono;
-		auto sctp = time_point_cast<system_clock::duration>(tp - TP::clock::now()
-			+ system_clock::now());
-		return system_clock::to_time_t(sctp);
-	}
+	
 	Resources::MetaResult Resources::CheckMeta(const char* filename)
 	{
-		std::filesystem::path metaPath = filename;
-		metaPath.replace_extension(".meta");
-		
+		std::string metaPath = filename;
+		metaPath += ".meta";
 
 		if (!std::filesystem::exists(filename))
 		{
@@ -122,7 +114,7 @@ namespace Wiwa {
 		}
 
 		JSONDocument metaFile;
-		if (!metaFile.load_file(metaPath.string().c_str()))
+		if (!metaFile.load_file(metaPath.c_str()))
 			return NOTFOUND;
 
 		if (metaFile.HasMember("timeCreated"))
@@ -134,6 +126,25 @@ namespace Wiwa {
 				return TOUPDATE;
 		}
 		return UPDATED;
+	}
+
+	void Resources::UpdateMeta(const char* filename)
+	{
+		std::filesystem::path metaPath = filename;
+		metaPath.replace_extension(".meta");
+
+
+		if (!std::filesystem::exists(filename))
+			return;
+		JSONDocument metaFile;
+		if (!metaFile.load_file(metaPath.string().c_str()))
+			return;
+
+		if (metaFile.HasMember("timeCreated"))
+		{
+			time_t fileTime = to_time_t(std::filesystem::last_write_time(filename));
+			metaFile["timeCreated"] = fileTime;
+		}
 	}
 
 	void Resources::_import_image_impl(const char* origin, const char* destination)
