@@ -26,6 +26,8 @@
 
 #include <Wiwa/utilities/render/Uniforms.h>
 
+#include <Wiwa/utilities/render/Skybox.h>
+
 namespace Wiwa {
 	class WI_API Renderer3D {
 	public:
@@ -50,6 +52,8 @@ namespace Wiwa {
 		Shader* m_NormalDisplayShader;
 		DefaultUnlitUniforms m_NDSUniforms;
 
+		Skybox m_DefaultSkybox;
+
 	public:
 		Renderer3D();
 		~Renderer3D();
@@ -65,6 +69,8 @@ namespace Wiwa {
 		void RenderMesh(Model* mesh, const Vector3f& position, const Vector3f& rotation, const Vector3f& scale, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
 
 		void RenderMesh(Model* mesh, const glm::mat4& transform, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
+		
+		void RenderSkybox();
 
 		void Close();
 		void RenderFrustrums(Camera* camera = NULL);

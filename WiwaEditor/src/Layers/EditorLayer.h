@@ -26,6 +26,7 @@
 #include "Panels/ImportPanel.h"
 #include "Panels/ShaderPanel.h"
 #include "Panels/AudioPanel.h"
+#include "Panels/EnvoirmentPanel.h"
 
 #include <Wiwa/scene/SceneManager.h>
 
@@ -107,6 +108,7 @@ private:
 	std::unique_ptr<Panel> m_ImportPanel;
 	std::unique_ptr<Panel> m_ShaderPanel;
 	std::unique_ptr<Panel> m_AudioPanel;
+	std::unique_ptr<Panel> m_EnvPanel;
 
 
 	std::vector<Panel *> m_Panels;

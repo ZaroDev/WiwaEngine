@@ -54,12 +54,24 @@ namespace Wiwa {
 		m_BBDSUniforms.View = m_BBDisplayShader->getUniformLocation("u_View");
 		m_BBDSUniforms.Projection = m_BBDisplayShader->getUniformLocation("u_Proj");
 
+
+		std::vector<const char*> faces = {
+			"resources/images/skybox/right.jpg",
+			"resources/images/skybox/left.jpg",
+			"resources/images/skybox/top.jpg",
+			"resources/images/skybox/bottom.jpg",
+			"resources/images/skybox/front.jpg",
+			"resources/images/skybox/back.jpg"
+		};
+		
+		m_DefaultSkybox.LoadCubemap(faces);
+
 		return true;
 	}
 
 	void Renderer3D::Update()
 	{
-		
+		RenderSkybox();
 	}
 
 
@@ -177,7 +189,6 @@ namespace Wiwa {
 
 		camera->frameBuffer->Unbind();
 	}
-
 	void Renderer3D::RenderMesh(Model* mesh, const Vector3f& position, const Vector3f& rotation, const Vector3f& scale, Material* material, bool clear, Camera* camera, bool cull)
 	{
 		if (!camera)
@@ -226,7 +237,6 @@ namespace Wiwa {
 
 		camera->frameBuffer->Unbind();
 	}
-
 	void Renderer3D::RenderMesh(Model* mesh, const glm::mat4& transform, Material* material, bool clear, Camera* camera, bool cull)
 	{
 		if (!camera)
@@ -269,7 +279,44 @@ namespace Wiwa {
 
 		camera->frameBuffer->Unbind();
 	}
+	void Renderer3D::RenderSkybox()
+	{
+		{
+			Camera* camera = SceneManager::getActiveScene()->GetCameraManager().getActiveCamera();
 
+			glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
+
+			camera->frameBuffer->Bind(false);
+			glDepthFunc(GL_LEQUAL);
+			Shader* shader = m_DefaultSkybox.m_Material->getShader();
+			shader->Bind();
+			shader->setUniform(shader->getProjLoc(), camera->getProjection());
+			shader->setUniform(shader->getViewLoc(), camera->getView());
+			m_DefaultSkybox.Render();
+			shader->UnBind();
+			glDepthFunc(GL_LESS);
+
+			camera->frameBuffer->Unbind();
+		}
+		{
+			Camera* camera = SceneManager::getActiveScene()->GetCameraManager().editorCamera;
+
+			glViewport(0, 0, camera->frameBuffer->getWidth(), camera->frameBuffer->getHeight());
+
+			camera->frameBuffer->Bind(false);
+			glDepthFunc(GL_LEQUAL);
+			Shader* shader = m_DefaultSkybox.m_Material->getShader();
+			shader->Bind();
+			shader->setUniform(shader->getProjLoc(), camera->getProjection());
+			glm::mat4 view = glm::mat4(glm::mat3(camera->getView()));
+			shader->setUniform(shader->getViewLoc(), view);
+			m_DefaultSkybox.Render();
+			shader->UnBind();
+			glDepthFunc(GL_LESS);
+
+			camera->frameBuffer->Unbind();
+		}
+	}
 	void Renderer3D::SetOption(Options option)
 	{
 		switch (option)
@@ -297,7 +344,6 @@ namespace Wiwa {
 		}
 		
 	}
-
 	void Renderer3D::DisableOption(Options option)
 	{
 		switch (option)
@@ -324,7 +370,6 @@ namespace Wiwa {
 			break;
 		}
 	}
-
 	void Renderer3D::Close()
 	{
 		

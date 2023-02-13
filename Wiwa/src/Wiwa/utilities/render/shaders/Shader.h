@@ -66,6 +66,12 @@ namespace Wiwa {
 		void SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj);
 		UniformField* getUniform(const char* name);
 		
+		
+		inline uint32_t getProjLoc() {return m_Proj;}
+		inline uint32_t getViewLoc() {return m_View;}
+		inline uint32_t getModelLoc() {return m_Model;}
+		
+		
 		inline const char* getPath() { return m_Path.c_str(); }
 		inline void setPath(const char* path) { m_Path = path; }
 

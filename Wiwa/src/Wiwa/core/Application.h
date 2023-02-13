@@ -47,7 +47,7 @@ namespace Wiwa
 	{
 	public:
 		Application(int argc, char** argv);
-		virtual ~Application();
+		~Application();
 
 		void Run();
 

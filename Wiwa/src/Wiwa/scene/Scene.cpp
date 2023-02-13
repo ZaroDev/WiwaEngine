@@ -4,6 +4,7 @@
 
 #include <Wiwa/core/Application.h>
 #include <Wiwa/ecs/systems/MeshRenderer.h>
+#include <Wiwa\utilities\render\LightManager.h>
 
 namespace Wiwa {
 	Scene::Scene()
@@ -11,11 +12,13 @@ namespace Wiwa {
 		mMaxTimeEntering = 0;
 		mMaxTimeLeaving = 0;
 		m_CameraManager = new CameraManager();
+		m_LightManager = new LightManager();
 	}
 
 	Scene::~Scene()
 	{
-		
+		delete m_CameraManager;
+		delete m_LightManager;
 	}
 
 	void Scene::Start()
