@@ -12,6 +12,7 @@
 
 #include <Wiwa/ecs/components/Mesh.h>
 #include <Wiwa/ecs/components/AudioSource.h>
+#include <Wiwa/ecs/components/LightSource.h>
 
 bool InspectorPanel::DrawComponent(size_t componentId)
 {
@@ -39,6 +40,7 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 		if (type->hash == (size_t)TypeHash::Mesh) {	DrawMeshComponent(data); } else
 		if (type->hash == (size_t)TypeHash::Transform3D) { DrawTransform3dComponent(data); } else
 		if (type->hash == (size_t)TypeHash::AudioSource) { DrawAudioSourceComponent(data); } else
+		if (type->hash == (size_t)TypeHash::LightSource) { DrawLightSourceComponent(data); } else
 			
 		// Basic component interface
 		if (type->is_class) {
@@ -230,6 +232,19 @@ void InspectorPanel::DrawAudioSourceComponent(byte* data)
 
 	ImGui::Checkbox("Is default listener", &asrc->isDefaultListener);
 	ImGui::InputText("Event", asrc->eventName, sizeof(asrc->eventName));
+}
+
+void InspectorPanel::DrawLightSourceComponent(byte* data)
+{
+	Wiwa::LightSource* lsrc = (Wiwa::LightSource*)data;
+
+	ImGui::InputFloat("Constant", &lsrc->constant);
+	ImGui::InputFloat("Quadratic", &lsrc->quadratic);
+	ImGui::InputFloat("Linear", &lsrc->linear);
+
+	ImGui::ColorEdit3("Ambient", glm::value_ptr(lsrc->ambient));
+	ImGui::ColorEdit3("Diffuse", glm::value_ptr(lsrc->diffuse));
+	ImGui::ColorEdit3("Specular", glm::value_ptr(lsrc->specular));
 }
 
 InspectorPanel::InspectorPanel(EditorLayer* instance)

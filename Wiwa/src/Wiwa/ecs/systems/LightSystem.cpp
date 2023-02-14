@@ -7,11 +7,16 @@
 
 Wiwa::LightSystem::LightSystem()
 {
-	SceneManager::getActiveScene()->GetLightManager().AddLight(m_EntityId);
+	
 }
 
 Wiwa::LightSystem::~LightSystem()
 {
 	SceneManager::getActiveScene()->GetLightManager().RemoveLight(m_EntityId);
+}
+
+void Wiwa::LightSystem::OnEntitySet()
+{
+	SceneManager::getActiveScene()->GetLightManager().AddLight(m_EntityId);
 }
 

@@ -9,7 +9,7 @@ namespace Wiwa {
 
 		LightManager();
 		~LightManager();
-
+		
 
 		void AddLight(size_t light);
 		void RemoveLight(size_t light);

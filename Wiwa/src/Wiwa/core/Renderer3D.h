@@ -74,7 +74,6 @@ namespace Wiwa {
 
 		void Close();
 		void RenderFrustrums(Camera* camera = NULL);
-		inline void SetLight(const DirectionalLight& light) { SceneManager::getActiveScene()->GetCameraManager().getActiveCamera()->frameBuffer->setLight(light); }
 
 		// Getters
 		inline uint32_t getColorBufferTexture() { return SceneManager::getActiveScene()->GetCameraManager().getActiveCamera()->frameBuffer->getColorBufferTexture(); }

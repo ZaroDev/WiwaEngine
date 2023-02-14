@@ -1,7 +1,7 @@
 #pragma once
 #pragma warning(disable : 4302)
 #include <Wiwa/core/Core.h>
-#include <Wiwa/utilities/math/Math.h>
+#include <glm/glm.hpp>
 #include <Wiwa/utilities/Reflection.h>
 
 
@@ -11,9 +11,9 @@ namespace Wiwa {
 		float linear;
 		float quadratic;
 
-		Vector3f ambient;
-		Vector3f diffuse;
-		Vector3f specular;
+		glm::vec3 ambient;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
 	};
 }
 

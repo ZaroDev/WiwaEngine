@@ -23,12 +23,7 @@ namespace Wiwa {
 	{
 		m_Init = true;
 
-		m_Light = {
-			glm::vec3{0.0f, 0.0f, 0.0f},	//Direction
-			glm::vec3{1.0f, 1.0f, 1.0f},		//Ambient
-			glm::vec3{1.0f, 1.0f, 1.0f},		//Diffuse
-			glm::vec3{1.0f, 1.0f, 1.0f}		//Specular
-		};
+		
 
 		m_Width = width;
 		m_Height = height;

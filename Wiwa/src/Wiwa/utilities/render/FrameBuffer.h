@@ -7,25 +7,7 @@
 #include <glm/glm.hpp>
 
 namespace Wiwa {
-	struct DirectionalLight
-	{
-		glm::vec3 Direction;
-		glm::vec3 Ambient;
-		glm::vec3 Diffuse;
-		glm::vec3 Specular;
-	};
-	struct PointLight
-	{
-		glm::vec3 Position;
-
-		glm::vec3 Ambient;
-		glm::vec3 Diffuse;
-		glm::vec3 Specular;
-
-		float Constant;
-		float Linear;
-		float Quadratic;
-	};
+	
 	class WI_API FrameBuffer {
 	private:
 		uint32_t m_FBO;
@@ -34,9 +16,6 @@ namespace Wiwa {
 		int m_Width, m_Height;
 
 		bool m_Init;
-
-		DirectionalLight m_Light;
-		List<PointLight> m_PointLights;
 	public:
 		FrameBuffer();
 		~FrameBuffer();
@@ -53,11 +32,5 @@ namespace Wiwa {
 
 		inline uint32_t getColorBufferTexture() { return m_ColorBufferTexture; }
 		inline uint32_t getDepthBufferTexture() { return m_RBO; }
-
-		inline void setLight(const DirectionalLight& light) { m_Light = light; }
-		inline void addPointLight(const PointLight& light) { m_PointLights.emplace_back(light); }
-
-		inline DirectionalLight& getDirectionalLight() { return m_Light; }
-		inline List<PointLight>* getPointLights() { return &m_PointLights; }
 	};
 }

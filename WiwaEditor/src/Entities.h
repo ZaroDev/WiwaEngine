@@ -44,6 +44,12 @@ inline void CreateLightSource()
 	t3d.localScale = { 0.0f, 0.0f, 0.0f };
 
 	Wiwa::LightSource lightSource;
+	lightSource.linear = 1.0f;
+	lightSource.quadratic = 1.0f;
+	lightSource.constant = 1.0f;
+	lightSource.ambient = glm::vec3(1.f);
+	lightSource.diffuse = glm::vec3(1.f);
+	lightSource.specular = glm::vec3(1.f);
 
 	em.AddComponent<Wiwa::Transform3D>(myEntity, t3d);
 	em.ApplySystem<Wiwa::MeshRenderer>(myEntity);
