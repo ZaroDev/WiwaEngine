@@ -140,6 +140,11 @@ void EditorLayer::OnDetach()
 
 void EditorLayer::OnUpdate()
 {
+	if (m_ReloadLayout) {
+		ImGui::LoadIniSettingsFromDisk(("config/layouts/"+m_ActiveLayout).c_str());
+		m_ReloadLayout = false;
+	}
+
 	for (auto &p : m_Panels)
 	{
 		if (p->active)
@@ -315,10 +320,10 @@ void EditorLayer::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Layout")) {
 			if (ImGui::MenuItem("Scene layout")) {
-				if (m_ActiveLayout != "scene_layout.ini") {
-					m_ActiveLayout = "scene_layout.ini";
-					m_ReloadLayout = true;
-				}
+				m_ActiveLayout = "scene_layout.ini";
+				m_ReloadLayout = true;
+			}
+			if (ImGui::MenuItem("UI layout")) {
 				
 			}
 			ImGui::EndMenu();
