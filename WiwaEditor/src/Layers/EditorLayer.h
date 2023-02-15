@@ -112,6 +112,10 @@ private:
 	std::vector<Panel *> m_Panels;
 	std::vector<Panel *> m_Settings;
 
+	// Editor layouts
+	std::string m_ActiveLayout;
+	bool m_ReloadLayout;
+
 	Action<Wiwa::Event &> m_EventCallback;
 
 	SceneId m_EditorSceneId;

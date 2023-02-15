@@ -192,7 +192,7 @@ void EditorLayer::OnEvent(Wiwa::Event &e)
 void EditorLayer::LoadScene(const std::string& m_Path)
 {
 	// Unload editor scene before loading new scene into editor
-	Wiwa::SceneManager::UnloadScene(m_EditorSceneId);
+	//Wiwa::SceneManager::UnloadScene(m_EditorSceneId);
 
 	// Load scene and prepare it
 	SceneId id = Wiwa::SceneManager::LoadScene(m_Path.c_str());
@@ -221,7 +221,6 @@ void EditorLayer::RegenSolutionThread()
 	mutex.lock();
 	finishedThread = true;
 	mutex.unlock();
-
 }
 
 void EditorLayer::RegenSol()
@@ -312,6 +311,16 @@ void EditorLayer::MainMenuBar()
 					p->SwitchActive();
 			}
 
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Layout")) {
+			if (ImGui::MenuItem("Scene layout")) {
+				if (m_ActiveLayout != "scene_layout.ini") {
+					m_ActiveLayout = "scene_layout.ini";
+					m_ReloadLayout = true;
+				}
+				
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Script"))
@@ -577,7 +586,13 @@ void EditorLayer::LoadPanelConfig()
 		s_SolVersion = config["sol_version"].get<const char*>();
 	if (config.HasMember("build_conf"))
 		s_SolVersion = config["build_conf"].get<const char*>();
+	if (config.HasMember("active_layout")) {
+		m_ActiveLayout = config["active_layout"].as_string();
 
+		ImGuiContext* ctx = Wiwa::Application::Get().GetImGuiContext();
+		ImGui::SetCurrentContext(ctx);
+		ImGui::LoadIniSettingsFromDisk(("config/layouts/" + m_ActiveLayout).c_str());
+	}
 
 
 	for (size_t i = 0; i < psize; i++)
@@ -599,6 +614,7 @@ void EditorLayer::SavePanelConfig()
 
 	config.AddMember("sol_version", s_SolVersion.c_str());
 	config.AddMember("build_conf", s_BuildConf.c_str());
+	config.AddMember("active_layout", m_ActiveLayout.c_str());
 
 	for (size_t i = 0; i < psize; i++)
 	{

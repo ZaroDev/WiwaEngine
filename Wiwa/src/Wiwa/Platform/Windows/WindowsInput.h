@@ -15,5 +15,7 @@ namespace Wiwa
 		virtual float GetMouseXDeltaImpl() override;
 		virtual float GetMouseYDeltaImpl() override;
 		virtual void UpdateImpl() override;
+		virtual void LockCursorImpl() override;
+		virtual void UnlockCursorImpl() override;
 	};
 }

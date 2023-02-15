@@ -14,6 +14,8 @@ namespace Wiwa
 		inline static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
 		inline static float GetMouseXDelta() { return s_Instance->GetMouseXDeltaImpl(); }
 		inline static float GetMouseYDelta() { return s_Instance->GetMouseYDeltaImpl(); }
+		inline static void LockCursor() { s_Instance->LockCursorImpl(); }
+		inline static void UnlockCursor() { s_Instance->UnlockCursorImpl(); }
 
 		inline static void Update() { return s_Instance->UpdateImpl(); }
 	protected:
@@ -25,6 +27,8 @@ namespace Wiwa
 		virtual float GetMouseXDeltaImpl() = 0;
 		virtual float GetMouseYDeltaImpl() = 0;
 		virtual void UpdateImpl() = 0;
+		virtual void LockCursorImpl() = 0;
+		virtual void UnlockCursorImpl() = 0;
 	private:
 		static Input* s_Instance;
 	protected:

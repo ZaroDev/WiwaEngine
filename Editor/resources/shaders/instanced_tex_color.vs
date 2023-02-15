@@ -20,14 +20,7 @@ out vec2 f_TexCoord;
 out float f_TexID;
 
 void main()
-{
-	mat4 idmatrix = mat4(
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-	0, 0, 1, 0,
-	0, 0, 0, 1
-	);
-	
+{	
 	// Scale
 	vec3 vpos = l_VPos;
 	vpos.xy = vpos.xy * l_Scale.xy;
@@ -36,7 +29,7 @@ void main()
 	vpos.xy += l_PosOffset;
 	
 	// Out position
-	gl_Position = u_Proj * u_View * idmatrix * vec4(vpos, 1.0);
+	gl_Position = u_Proj * u_View * vec4(vpos, 1.0);
 	
 	f_Color = l_Color;
 	f_TexCoord = l_TexClip[gl_VertexID];

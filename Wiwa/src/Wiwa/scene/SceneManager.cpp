@@ -202,6 +202,153 @@ namespace Wiwa {
 		}
 	}
 
+	bool SceneManager::_loadSceneImpl(Scene* scene, File& scene_file)
+	{
+		// Load cameras
+		CameraManager& cm = scene->GetCameraManager();
+		size_t camera_count;
+
+		// Read camera count
+		scene_file.Read(&camera_count, sizeof(size_t));
+
+		for (size_t i = 0; i < camera_count; i++) {
+			Wiwa::Camera::CameraType camtype;
+			float fov;
+			float ar;
+			float nplane;
+			float fplane;
+			Vector3f pos;
+			glm::vec3 rot;
+			bool is_active;
+
+			// Read camera active
+			scene_file.Read(&is_active, 1);
+
+			// Read camera type
+			scene_file.Read(&camtype, sizeof(Wiwa::Camera::CameraType));
+
+			// Read camera FOV
+			scene_file.Read(&fov, sizeof(float));
+
+			// Read camera aspect ratio
+			scene_file.Read(&ar, sizeof(float));
+
+			// Write camera near plane distance
+			scene_file.Read(&nplane, sizeof(float));
+
+			// Write camera far plane distance
+			scene_file.Read(&fplane, sizeof(float));
+
+			CameraId cam_id = -1;
+
+			if (camtype == Wiwa::Camera::CameraType::PERSPECTIVE) {
+				cam_id = cm.CreatePerspectiveCamera(fov, ar, nplane, fplane);
+			}
+			else {
+				// TODO: LOAD ORTHOGRAPHIC
+			}
+
+			if (is_active) cm.setActiveCamera(cam_id);
+
+			Camera* camera = cm.getCamera(cam_id);
+
+			// Read camera cull
+			scene_file.Read(&camera->cull, 1);
+
+			// Read camera draw BB
+			scene_file.Read(&camera->drawBoundingBoxes, 1);
+
+			// Read camera draw frustums
+			scene_file.Read(&camera->drawFrustrums, 1);
+
+			// Read camera position
+			scene_file.Read(&pos, sizeof(Vector3f));
+
+			// Read camera rotation
+			scene_file.Read(glm::value_ptr(rot), sizeof(glm::vec3));
+
+			camera->setPosition(pos);
+			camera->setRotation(rot);
+		}
+
+		// Load audio
+		bool loaded_audio;
+
+		// Save if audio loaded
+		scene_file.Read(&loaded_audio, sizeof(bool));
+
+		if (loaded_audio) {
+			size_t n_len;
+			std::string project_path;
+
+			scene_file.Read(&n_len, sizeof(size_t));
+
+			project_path.resize(n_len - 1);
+
+			scene_file.Read(&project_path[0], n_len);
+
+			Audio::LoadProject(project_path.c_str());
+
+			size_t bank_size;
+			std::string bank_path;
+
+			// Save bank size
+			scene_file.Read(&bank_size, sizeof(size_t));
+
+			if (bank_size > 0) {
+				for (size_t i = 0; i < bank_size; i++) {
+					size_t n_size;
+
+					scene_file.Read(&n_size, sizeof(size_t));
+
+					bank_path.resize(n_size - 1);
+
+					scene_file.Read(&bank_path[0], n_size);
+
+					Audio::LoadBank(bank_path.c_str());
+				}
+			}
+
+			size_t event_size;
+			std::string event_path;
+
+			// Save event size
+			scene_file.Read(&event_size, sizeof(size_t));
+
+			if (event_size > 0) {
+				for (size_t i = 0; i < event_size; i++) {
+					size_t n_size;
+					scene_file.Read(&n_size, sizeof(size_t));
+
+					event_path.resize(n_size - 1);
+
+					scene_file.Read(&event_path[0], n_size);
+
+					Audio::LoadEvent(event_path.c_str());
+				}
+			}
+		}
+
+		// Load entities
+		EntityManager& em = scene->GetEntityManager();
+
+		size_t entity_count;
+		size_t p_entity_count;
+
+		// Read total entity count
+		scene_file.Read(&entity_count, sizeof(size_t));
+		// Read parent entity count
+		scene_file.Read(&p_entity_count, sizeof(size_t));
+
+		em.ReserveEntities(entity_count);
+
+		for (size_t i = 0; i < p_entity_count; i++) {
+			LoadEntity(scene_file, i, em, true);
+		}
+
+		return true;
+	}
+
 	void SceneManager::SaveScene(SceneId scene_id, const char* scene_path)
 	{
 		File scene_file = FileSystem::Open(scene_path, FileSystem::OM_OUT | FileSystem::OM_BINARY);
@@ -347,157 +494,36 @@ namespace Wiwa {
 		scene_file.Close();
 	}
 
-	SceneId SceneManager::LoadScene(const char* scene_path)
+	SceneId SceneManager::LoadScene(const char* scene_path, int flags)
 	{
+		if (!FileSystem::Exists(scene_path)) return -1;
+
 		SceneId sceneid = -1;
+
+		if (flags & UNLOAD_CURRENT) {
+			UnloadScene(m_ActiveScene, flags & UNLOAD_RESOURCES);
+		}
+
+		if (flags & LOAD_SEPARATE) {
+			sceneid = CreateScene();
+		}
+		else if (flags & LOAD_APPEND) {
+			sceneid = m_ActiveScene;
+		}
+		
 		File scene_file = FileSystem::Open(scene_path, FileSystem::OM_IN | FileSystem::OM_BINARY);
 		if (scene_file.IsOpen()) {
-			sceneid = CreateScene();
 			Scene* sc = m_Scenes[sceneid];
-			// Load cameras
-			CameraManager& cm = sc->GetCameraManager();
-			size_t camera_count;
 
-			// Read camera count
-			scene_file.Read(&camera_count, sizeof(size_t));
+			_loadSceneImpl(sc, scene_file);
 
-			for (size_t i = 0; i < camera_count; i++) {
-				Wiwa::Camera::CameraType camtype;
-				float fov;
-				float ar;
-				float nplane;
-				float fplane;
-				Vector3f pos;
-				glm::vec3 rot;
-				bool is_active;
-
-				// Read camera active
-				scene_file.Read(&is_active, 1);
-
-				// Read camera type
-				scene_file.Read(&camtype, sizeof(Wiwa::Camera::CameraType));
-
-				// Read camera FOV
-				scene_file.Read(&fov, sizeof(float));
-
-				// Read camera aspect ratio
-				scene_file.Read(&ar, sizeof(float));
-
-				// Write camera near plane distance
-				scene_file.Read(&nplane, sizeof(float));
-
-				// Write camera far plane distance
-				scene_file.Read(&fplane, sizeof(float));
-
-				CameraId cam_id = -1;
-				
-				if (camtype == Wiwa::Camera::CameraType::PERSPECTIVE) {
-					cam_id = cm.CreatePerspectiveCamera(fov, ar, nplane, fplane);
-				}
-				else {
-					// TODO: LOAD ORTHOGRAPHIC
-				}
-
-				if (is_active) cm.setActiveCamera(cam_id);
-
-				Camera* camera = cm.getCamera(cam_id);
-
-				// Read camera cull
-				scene_file.Read(&camera->cull, 1);
-
-				// Read camera draw BB
-				scene_file.Read(&camera->drawBoundingBoxes, 1);
-
-				// Read camera draw frustums
-				scene_file.Read(&camera->drawFrustrums, 1);
-
-				// Read camera position
-				scene_file.Read(&pos, sizeof(Vector3f));
-
-				// Read camera rotation
-				scene_file.Read(glm::value_ptr(rot), sizeof(glm::vec3));
-
-				camera->setPosition(pos);
-				camera->setRotation(rot);
-			}
-
-			// Load audio
-			bool loaded_audio;
-
-			// Save if audio loaded
-			scene_file.Read(&loaded_audio, sizeof(bool));
-
-			if (loaded_audio) {
-				size_t n_len;
-				std::string project_path;
-
-				scene_file.Read(&n_len, sizeof(size_t));
-
-				project_path.resize(n_len - 1);
-
-				scene_file.Read(&project_path[0], n_len);
-
-				Audio::LoadProject(project_path.c_str());
-
-				size_t bank_size;
-				std::string bank_path;
-
-				// Save bank size
-				scene_file.Read(&bank_size, sizeof(size_t));
-
-				if (bank_size > 0) {
-					for (size_t i = 0; i < bank_size; i++) {
-						size_t n_size;
-
-						scene_file.Read(&n_size, sizeof(size_t));
-
-						bank_path.resize(n_size - 1);
-
-						scene_file.Read(&bank_path[0], n_size);
-
-						Audio::LoadBank(bank_path.c_str());
-					}
-				}
-
-				size_t event_size;
-				std::string event_path;
-
-				// Save event size
-				scene_file.Read(&event_size, sizeof(size_t));
-
-				if (event_size > 0) {
-					for (size_t i = 0; i < event_size; i++) {
-						size_t n_size;
-						scene_file.Read(&n_size, sizeof(size_t));
-
-						event_path.resize(n_size - 1);
-
-						scene_file.Read(&event_path[0], n_size);
-
-						Audio::LoadEvent(event_path.c_str());
-					}
-				}
-			}
-
-			// Load entities
-			EntityManager& em = sc->GetEntityManager();
-
-			size_t entity_count;
-			size_t p_entity_count;
-
-			// Read total entity count
-			scene_file.Read(&entity_count, sizeof(size_t));
-			// Read parent entity count
-			scene_file.Read(&p_entity_count, sizeof(size_t));
-
-			em.ReserveEntities(entity_count);
-
-			for (size_t i = 0; i < p_entity_count; i++) {
-				LoadEntity(scene_file, i, em, true);
-			}
 			std::filesystem::path path = scene_path;
 			sc->ChangeName(path.filename().stem().string().c_str());
 
+			if (flags & LOAD_SEPARATE) {
+				SetScene(sceneid);
+			}
+			
 			WI_CORE_INFO("Loaded scene in file \"{0}\" successfully!", scene_path);
 		}
 		else {
@@ -511,6 +537,8 @@ namespace Wiwa {
 
 	void SceneManager::UnloadScene(SceneId scene_id, bool unload_resources)
 	{
+		if (!m_Scenes[scene_id]) return;
+
 		m_Scenes[scene_id]->Unload(unload_resources);
 		delete m_Scenes[scene_id];
 		m_Scenes[scene_id] = NULL;

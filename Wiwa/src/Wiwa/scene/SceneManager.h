@@ -21,10 +21,25 @@ namespace Wiwa {
 		static void LoadEntity(File& scene_file, EntityId parent, EntityManager& em, bool is_parent);
 		static void SaveEntity(File& scene_file, EntityId eid, EntityManager& em);
 
+		static bool _loadSceneImpl(Scene* scene, File& scene_file);
+
 		SceneManager();
 
 		static bool m_PlayScene;
 	public:
+		enum LoadFlags {
+			// Unloads current scene
+			UNLOAD_CURRENT = 1,
+			// Unloads current resources (ignored if UNLOAD_CURRENT flag is disabled)
+			UNLOAD_RESOURCES = 2,
+			// Loads the scene in a separate scene instance
+			LOAD_SEPARATE = 4,
+			// Loads the scene and appends it into the current scene (ignored if LOAD_SEPARATE is enabled)
+			LOAD_APPEND = 8,
+			// Default settings = UNLOAD_CURRENT | UNLOAD_RESOURCES
+			LOAD_DEFAULT = UNLOAD_CURRENT | UNLOAD_RESOURCES | LOAD_SEPARATE
+		};
+
 		static void Awake();
 		static void Init();
 		static void Update();
@@ -56,7 +71,7 @@ namespace Wiwa {
 		static void SaveScene(SceneId scene_id, const char* scene_path);
 
 		// Load a scene file to memory
-		static SceneId LoadScene(const char* scene_path);
+		static SceneId LoadScene(const char* scene_path, int flags=LOAD_DEFAULT);
 
 		// Unload a scene id
 		static void UnloadScene(SceneId scene_id, bool unload_resources=true);
