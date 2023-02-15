@@ -153,7 +153,7 @@ void MaterialPanel::RenderUniform(Wiwa::Uniform* uniform)
 		ImGui::DragFloat2(uniform->name.c_str(), uniform->getPtrData<float>());
 		break;
 	case Wiwa::UniformType::fVec3:
-		ImGui::DragFloat3(uniform->name.c_str(), uniform->getPtrData<float>());
+		ImGui::ColorEdit3(uniform->name.c_str(), uniform->getPtrData<float>());
 		break;
 	case Wiwa::UniformType::fVec4:
 		ImGui::ColorEdit4(uniform->name.c_str(), uniform->getPtrData<float>());

@@ -6,7 +6,7 @@
 
 
 namespace Wiwa {
-	struct WI_API LightSource {
+	struct WI_API PointLight {
 		float constant;
 		float linear;
 		float quadratic;
@@ -17,7 +17,7 @@ namespace Wiwa {
 	};
 }
 
-REFLECTION_BEGIN(Wiwa::LightSource)
+REFLECTION_BEGIN(Wiwa::PointLight)
 	REFLECT_MEMBER(constant)
 	REFLECT_MEMBER(linear)
 	REFLECT_MEMBER(quadratic)

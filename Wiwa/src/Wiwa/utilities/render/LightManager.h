@@ -16,8 +16,11 @@ namespace Wiwa {
 		inline size_t GetLightsSize() { return m_Lights.size(); }
 		inline std::vector<size_t>& GetLights() { return m_Lights; }
 
-	private:
+		inline void SetDirectionalLight(size_t light) { m_DirectionalLight = light; }
+		inline size_t GetDirectionalLight() { return m_DirectionalLight; }
 
+	private:
 		std::vector<size_t> m_Lights;
+		size_t m_DirectionalLight;
 	};
 }

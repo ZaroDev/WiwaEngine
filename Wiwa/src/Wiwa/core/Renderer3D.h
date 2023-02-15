@@ -29,6 +29,14 @@
 #include <Wiwa/utilities/render/Skybox.h>
 
 namespace Wiwa {
+	struct WI_API DirectionalLight
+	{
+		glm::vec3 Color;
+		float AmbientIntensity;
+		float DiffuseIntensity;
+		glm::vec3 Direction;
+	};
+
 	class WI_API Renderer3D {
 	public:
 		enum Options
@@ -53,6 +61,7 @@ namespace Wiwa {
 		DefaultUnlitUniforms m_NDSUniforms;
 
 		Skybox m_DefaultSkybox;
+		DirectionalLight m_DirectionalLight;
 
 	public:
 		Renderer3D();
@@ -64,13 +73,14 @@ namespace Wiwa {
 		void SetOption(Options option);
 		void DisableOption(Options option);
 
-		void RenderMesh(Model* mesh, const Transform3D& t3d, Material* material, bool clear=false, Camera* camera=NULL, bool cull = false);
+		void RenderMesh(Model* mesh, const Transform3D& t3d, Material* material,const size_t dirLight, const std::vector<EntityId>& lights, bool clear=false, Camera* camera=NULL, bool cull = false);
+		void SetDirectionalLight(Wiwa::Shader* shader, Camera* camera);
 		void RenderMesh(Model* mesh, const Transform3D& t3d, const Transform3D& parent, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
 		void RenderMesh(Model* mesh, const Vector3f& position, const Vector3f& rotation, const Vector3f& scale, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
-
 		void RenderMesh(Model* mesh, const glm::mat4& transform, Material* material, bool clear = false, Camera* camera = NULL, bool cull = false);
 		
 		void RenderSkybox();
+		void BindLights(Shader* shader, const std::vector<EntityId>& lights);
 
 		void Close();
 		void RenderFrustrums(Camera* camera = NULL);

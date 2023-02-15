@@ -16,15 +16,7 @@ namespace Wiwa {
 		Time,
 		Sampler2D
 	};
-	//struct SamplerData
-	//{
-	//	uint32_t textureId;
-	//	std::string path;
 
-	//	SamplerData(){}
-	//	SamplerData(uint32_t id, const char* _path)
-	//		: textureId(id), path(_path){}
-	//};
 	class Uniform
 	{
 	public:

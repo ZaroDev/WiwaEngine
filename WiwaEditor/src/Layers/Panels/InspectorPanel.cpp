@@ -12,7 +12,7 @@
 
 #include <Wiwa/ecs/components/Mesh.h>
 #include <Wiwa/ecs/components/AudioSource.h>
-#include <Wiwa/ecs/components/LightSource.h>
+#include <Wiwa/ecs/components/PointLight.h>
 
 bool InspectorPanel::DrawComponent(size_t componentId)
 {
@@ -40,7 +40,7 @@ bool InspectorPanel::DrawComponent(size_t componentId)
 		if (type->hash == (size_t)TypeHash::Mesh) {	DrawMeshComponent(data); } else
 		if (type->hash == (size_t)TypeHash::Transform3D) { DrawTransform3dComponent(data); } else
 		if (type->hash == (size_t)TypeHash::AudioSource) { DrawAudioSourceComponent(data); } else
-		if (type->hash == (size_t)TypeHash::LightSource) { DrawLightSourceComponent(data); } else
+		if (type->hash == (size_t)TypeHash::PointLight) { DrawPointLightComponent(data); } else
 			
 		// Basic component interface
 		if (type->is_class) {
@@ -234,9 +234,9 @@ void InspectorPanel::DrawAudioSourceComponent(byte* data)
 	ImGui::InputText("Event", asrc->eventName, sizeof(asrc->eventName));
 }
 
-void InspectorPanel::DrawLightSourceComponent(byte* data)
+void InspectorPanel::DrawPointLightComponent(byte* data)
 {
-	Wiwa::LightSource* lsrc = (Wiwa::LightSource*)data;
+	Wiwa::PointLight* lsrc = (Wiwa::PointLight*)data;
 
 	ImGui::InputFloat("Constant", &lsrc->constant);
 	ImGui::InputFloat("Quadratic", &lsrc->quadratic);

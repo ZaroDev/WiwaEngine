@@ -104,7 +104,6 @@ namespace Wiwa {
 		
 		std::string m_Path;
 
-
 		uint32_t m_Model;
 		uint32_t m_View;
 		uint32_t m_Proj;

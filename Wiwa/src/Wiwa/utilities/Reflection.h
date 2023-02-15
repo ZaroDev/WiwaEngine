@@ -242,5 +242,5 @@ enum class TypeHash : size_t {
 	Transform3D = FNV1A_HASH("Transform3D"),
 	Mesh = FNV1A_HASH("Mesh"),
 	AudioSource = FNV1A_HASH("AudioSource"),
-	LightSource = FNV1A_HASH("LightSource")
+	PointLight = FNV1A_HASH("PointLight")
 };

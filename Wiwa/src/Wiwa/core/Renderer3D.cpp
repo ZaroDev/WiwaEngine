@@ -66,6 +66,11 @@ namespace Wiwa {
 		
 		m_DefaultSkybox.LoadCubemap(faces);
 
+		m_DirectionalLight.Color = glm::vec3(1.0f);
+		m_DirectionalLight.AmbientIntensity = 1.f;
+		m_DirectionalLight.DiffuseIntensity = 1.f;
+		m_DirectionalLight.Direction = glm::vec3(0.0f);
+
 		return true;
 	}
 
@@ -76,7 +81,7 @@ namespace Wiwa {
 
 
 
-	void Renderer3D::RenderMesh(Model* mesh, const Transform3D& t3d, Material* material, bool clear/*=false*/, Camera* camera/*=NULL*/, bool cull /*= false*/)
+	void Renderer3D::RenderMesh(Model* mesh, const Transform3D& t3d, Material* material, const size_t dirLight, const std::vector<EntityId>& lights, bool clear/*=false*/, Camera* camera/*=NULL*/, bool cull /*= false*/)
 	{
 		if (!camera)
 		{
@@ -95,9 +100,14 @@ namespace Wiwa {
 		model = glm::rotate(model, glm::radians(t3d.rotation.z), glm::vec3(0, 0, 1));
 		model = glm::scale(model, glm::vec3(t3d.scale.x, t3d.scale.y, t3d.scale.z));
 
-		material->getShader()->Bind();
-		material->getShader()->SetMVP(model, camera->getView(), camera->getProjection());
+		Shader* shader = material->getShader();
+		shader->Bind();
+		shader->SetMVP(model, camera->getView(), camera->getProjection());
 		
+		SetDirectionalLight(shader, camera);
+	
+		BindLights(shader, lights);
+
 		material->Bind();
 
 		mesh->Render();
@@ -127,6 +137,14 @@ namespace Wiwa {
 		camera->frameBuffer->Unbind();
 	}
 
+	void Renderer3D::SetDirectionalLight(Wiwa::Shader* shader, Camera* camera)
+	{
+		shader->setUniform(shader->getUniformLocation("u_CameraPosition"), camera->getPosition());
+		shader->setUniform(shader->getUniformLocation("u_DirectionalLight.Color"), m_DirectionalLight.Color);
+		shader->setUniform(shader->getUniformLocation("u_DirectionalLight.AmbientIntensity"), m_DirectionalLight.AmbientIntensity);
+		shader->setUniform(shader->getUniformLocation("u_DirectionalLight.DiffuseIntensity"), m_DirectionalLight.DiffuseIntensity);
+		shader->setUniform(shader->getUniformLocation("u_DirectionalLight.Direction"), m_DirectionalLight.Direction);
+	}
 	void Renderer3D::RenderMesh(Model* mesh, const Transform3D& t3d, const Transform3D& parent, Material* material, bool clear, Camera* camera, bool cull)
 	{
 		if (!camera)
@@ -315,6 +333,15 @@ namespace Wiwa {
 			glDepthFunc(GL_LESS);
 
 			camera->frameBuffer->Unbind();
+		}
+	}
+	void Renderer3D::BindLights(Shader* shader, const std::vector<EntityId>& lights)
+	{
+		for (int i = 0; i < lights.size(); i++)
+		{
+			std::string shaderNum = std::to_string(i);
+
+			
 		}
 	}
 	void Renderer3D::SetOption(Options option)
