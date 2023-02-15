@@ -43,6 +43,8 @@ namespace Wiwa {
 	{
 		m_EntitiesRemoved.push_back(eid);
 
+		m_EntityActive[eid] = false;
+
 		// Remove entity from alive entities vector
 		size_t ealive = m_EntitiesAlive.size();
 
@@ -66,6 +68,7 @@ namespace Wiwa {
 				}
 			}
 		}
+
 		// Remove entity from parent's child list
 		else {
 			std::vector<EntityId>& p_entities = m_EntityChildren[p_ent];
@@ -225,12 +228,14 @@ namespace Wiwa {
 		size_t entitySize = m_EntitySystems.size();
 
 		for (size_t i = 0; i < entitySize; i++) {
-			size_t system_size = m_EntitySystems[i].size();
+			if (IsActive(i)) {
+				size_t system_size = m_EntitySystems[i].size();
 
-			for (size_t j = 0; j < system_size; j++) {
-				System* s = m_EntitySystems[i][j];
+				for (size_t j = 0; j < system_size; j++) {
+					System* s = m_EntitySystems[i][j];
 
-				s->Update();
+					s->Update();
+				}
 			}
 		}
 	}
@@ -260,7 +265,9 @@ namespace Wiwa {
 			size_t s_count = system_list.size();
 
 			for (size_t j = 0; j < s_count; j++) {
-				system_list[j]->Update();
+				if (IsActive(system_list[j]->GetEntity())) {
+					system_list[j]->Update();
+				}
 			}
 		}
 	}
@@ -311,6 +318,7 @@ namespace Wiwa {
 			m_EntityNames.emplace_back();
 			m_EntityParent.emplace_back();
 			m_EntityChildren.emplace_back();
+			m_EntityActive.emplace_back(true);
 		}
 
 		m_EntitiesAlive.push_back(eid);
@@ -406,6 +414,7 @@ namespace Wiwa {
 		m_EntitiesAlive.reserve(amount);
 		m_EntitiesRemoved.reserve(amount);
 		m_ParentEntitiesAlive.reserve(amount);
+		m_EntityActive.reserve(amount);
 	}
 
 	void EntityManager::ReserveComponent(ComponentHash hash, size_t amount)

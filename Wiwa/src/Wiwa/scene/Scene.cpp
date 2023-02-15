@@ -15,7 +15,7 @@ namespace Wiwa {
 
 	Scene::~Scene()
 	{
-		
+		delete m_CameraManager;
 	}
 
 	void Scene::Start()

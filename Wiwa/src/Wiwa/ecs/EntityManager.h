@@ -36,6 +36,7 @@ namespace Wiwa {
 		std::vector<std::vector<SystemHash>> m_EntitySystemHashes;
 		std::vector<std::vector<System*>> m_EntitySystems;
 		std::vector<EntityId> m_EntityParent;
+		std::vector<bool> m_EntityActive;
 		std::vector<std::vector<EntityId>> m_EntityChildren;
 
 		std::vector<EntityId> m_EntitiesRemoved;
@@ -112,6 +113,10 @@ namespace Wiwa {
 		void SetParent(EntityId entity, EntityId parent);
 
 		bool IsParent(EntityId entity) { return m_EntityParent[entity] == entity; }
+
+		void SetActive(EntityId entity, bool active) { m_EntityActive[entity] = active; }
+
+		bool IsActive(EntityId entity) { return m_EntityActive[entity]; }
 
 		// Remove entity
 		void DestroyEntity(EntityId entity);

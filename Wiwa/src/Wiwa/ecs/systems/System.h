@@ -27,6 +27,7 @@ namespace Wiwa {
 		virtual ~System(); // Virtual destructor, so that child destructor is called
 
 		void SetEntity(EntityId entity) { m_EntityId = entity; OnEntitySet(); }
+		EntityId GetEntity() { return m_EntityId; }
 
 		void Awake();
 		void Init();
