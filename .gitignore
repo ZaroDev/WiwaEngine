@@ -31,11 +31,11 @@
 *.csproj.user
 
 # User content
-*.ini
 /Editor/WiwaEditor.exe
 /Editor/Assets
 /Editor/Wiwa.dll
 /Editor/Library
+imgui.ini
 
 # VA config
 
